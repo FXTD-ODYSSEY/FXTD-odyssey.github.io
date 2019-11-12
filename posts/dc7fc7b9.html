@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <meta name="baidu-site-verification" content="L6Lm9d5Crl"/>
+  
+  
+  
+  
+  <title>Maya Python - 藤蔓生长快速绑定工具 | 智伤帝的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="奠定我插件UI开发基石">
+<meta name="keywords" content="Python,Maya">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Maya Python - 藤蔓生长快速绑定工具">
+<meta property="og:url" content="https://blog.l0v0.com/posts/dc7fc7b9.html">
+<meta property="og:site_name" content="智伤帝的个人博客">
+<meta property="og:description" content="奠定我插件UI开发基石">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/1.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/2.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/3.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/4.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/5.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/6.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/7.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/8.png">
+<meta property="og:updated_time" content="2019-11-07T13:28:22.856Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Maya Python - 藤蔓生长快速绑定工具">
+<meta name="twitter:description" content="奠定我插件UI开发基石">
+<meta name="twitter:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/1.png">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/avatar.png" class="js-avatar">
+            
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">智伤帝</a></h1>
+        </hgroup>
+        
+        <p class="header-subtitle"><br></p>
+        
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        <!-- <div class="icon-wrap icon-categories hide">
+                            <i class="fa fa-th" aria-hidden="true" style="font: normal normal normal 30px/1 FontAwesome;margin: 2px auto;color: #333;"></i>
+                        </div>
+                        <div class="icon-wrap icon-archive hide" >
+                            <i class="fa fa-archive" aria-hidden="true" style="font: normal normal normal 30px/1 FontAwesome;margin: 2px auto;color: #333;"></i>
+                        </div> -->
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        <!-- <div class="icon-wrap icon-ribbon hide">
+                            <i class="fa fa-search" aria-hidden="true" style="font: normal normal normal 30px/1 FontAwesome;margin: 2px auto;color: #333;"></i>
+                        </div> -->
+                        
+                    </div>
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li idx='0'>菜单</li>
+                        <li idx='1'>标签</li>
+                        <li>分类</li>
+                        <li>归档</li>
+                        
+                        <li idx='2'>友情链接</li>
+                        
+                        
+                        
+                        <li class="popup-trigger">搜索</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a  href="/archives/">所有文章</a></li>
+                        
+                            <li><a  href="/categories/Maya/Maya-100-招/">Maya100招</a></li>
+                        
+                            <li><a  href="/categories/Photogrammetry/">Photogrammetry</a></li>
+                        
+                            <li><a  href="/categories/python/Python-QT-开发教程/">Python Qt 开发教程</a></li>
+                        
+                            <li><a  href="/categories/前端/hexo/">Hexo博客搭建历程</a></li>
+                        
+                            <li><a  href="/categories/Shader学习之路/">Shader学习之路</a></li>
+                        
+                            <li><a  href="/categories/前端/Vue/Vue学习之路/">Vue学习之路</a></li>
+                        
+                            <li><a  href="/my_work/">我的作品</a></li>
+                        
+                            <li><a  href="/about/">关于我</a></li>
+                        
+                            <li><a  href="/categories/总结/回忆录/">回忆录</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl github"  target="_blank" href="https://github.com/FXTD-ODYSSEY" title="github">github</a>
+                            
+                                <a class="fl bilibili"  target="_blank" href="https://space.bilibili.com/12895307" title="bilibili">bilibili</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/Arnold/" style="font-size: 12px;">Arnold</a> <a href="/tags/Autodesk/" style="font-size: 13.2px;">Autodesk</a> <a href="/tags/BlendShape/" style="font-size: 12px;">BlendShape</a> <a href="/tags/C/" style="font-size: 12px;">C#</a> <a href="/tags/C/" style="font-size: 14.4px;">C++</a> <a href="/tags/Hexo/" style="font-size: 12px;">Hexo</a> <a href="/tags/Houdini/" style="font-size: 20.4px;">Houdini</a> <a href="/tags/JavaScript/" style="font-size: 26.4px;">JavaScript</a> <a href="/tags/Laravel/" style="font-size: 12px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 13.2px;">Linux</a> <a href="/tags/MEL/" style="font-size: 15.6px;">MEL</a> <a href="/tags/Maya/" style="font-size: 30px;">Maya</a> <a href="/tags/Photogrammetry/" style="font-size: 15.6px;">Photogrammetry</a> <a href="/tags/Pluralsight/" style="font-size: 12px;">Pluralsight</a> <a href="/tags/PyMel/" style="font-size: 12px;">PyMel</a> <a href="/tags/PyQt/" style="font-size: 24px;">PyQt</a> <a href="/tags/PySide/" style="font-size: 19.2px;">PySide</a> <a href="/tags/Python/" style="font-size: 27.6px;">Python</a> <a href="/tags/Qt/" style="font-size: 19.2px;">Qt</a> <a href="/tags/Qt-Designer/" style="font-size: 12px;">Qt Designer</a> <a href="/tags/React/" style="font-size: 13.2px;">React</a> <a href="/tags/SFML/" style="font-size: 12px;">SFML</a> <a href="/tags/Unity/" style="font-size: 18px;">Unity</a> <a href="/tags/Unreal/" style="font-size: 18px;">Unreal</a> <a href="/tags/VDB/" style="font-size: 12px;">VDB</a> <a href="/tags/VEX/" style="font-size: 12px;">VEX</a> <a href="/tags/VScode/" style="font-size: 14.4px;">VScode</a> <a href="/tags/Vue/" style="font-size: 21.6px;">Vue</a> <a href="/tags/WebGL/" style="font-size: 21.6px;">WebGL</a> <a href="/tags/Ziva/" style="font-size: 12px;">Ziva</a> <a href="/tags/bootstrap/" style="font-size: 12px;">bootstrap</a> <a href="/tags/fancybox/" style="font-size: 12px;">fancybox</a> <a href="/tags/mongodb/" style="font-size: 12px;">mongodb</a> <a href="/tags/mysql/" style="font-size: 12px;">mysql</a> <a href="/tags/node-js/" style="font-size: 13.2px;">node.js</a> <a href="/tags/photo-sphere-viewer/" style="font-size: 12px;">photo sphere viewer</a> <a href="/tags/php/" style="font-size: 12px;">php</a> <a href="/tags/pluralsight/" style="font-size: 15.6px;">pluralsight</a> <a href="/tags/postprocessing/" style="font-size: 12px;">postprocessing</a> <a href="/tags/require-js/" style="font-size: 13.2px;">require.js</a> <a href="/tags/shader/" style="font-size: 18px;">shader</a> <a href="/tags/sop/" style="font-size: 16.8px;">sop</a> <a href="/tags/three-js/" style="font-size: 22.8px;">three.js</a> <a href="/tags/unity/" style="font-size: 12px;">unity</a> <a href="/tags/zplus/" style="font-size: 15.6px;">zplus</a> <a href="/tags/人生/" style="font-size: 25.2px;">人生</a> <a href="/tags/代码块/" style="font-size: 13.2px;">代码块</a> <a href="/tags/体积/" style="font-size: 12px;">体积</a> <a href="/tags/入门/" style="font-size: 12px;">入门</a> <a href="/tags/全景地图/" style="font-size: 12px;">全景地图</a> <a href="/tags/前期基本流程/" style="font-size: 12px;">前期基本流程</a> <a href="/tags/前端/" style="font-size: 28.8px;">前端</a> <a href="/tags/前端框架/" style="font-size: 12px;">前端框架</a> <a href="/tags/动态网页/" style="font-size: 12px;">动态网页</a> <a href="/tags/华强方特/" style="font-size: 12px;">华强方特</a> <a href="/tags/博客/" style="font-size: 22.8px;">博客</a> <a href="/tags/后期基本流程/" style="font-size: 12px;">后期基本流程</a> <a href="/tags/后端/" style="font-size: 13.2px;">后端</a> <a href="/tags/回顾/" style="font-size: 26.4px;">回顾</a> <a href="/tags/图片水印/" style="font-size: 12px;">图片水印</a> <a href="/tags/大二/" style="font-size: 12px;">大二</a> <a href="/tags/大学/" style="font-size: 12px;">大学</a> <a href="/tags/学习/" style="font-size: 20.4px;">学习</a> <a href="/tags/学习笔记/" style="font-size: 18px;">学习笔记</a> <a href="/tags/对象存储/" style="font-size: 12px;">对象存储</a> <a href="/tags/小程序/" style="font-size: 12px;">小程序</a> <a href="/tags/总结/" style="font-size: 12px;">总结</a> <a href="/tags/拍照指南/" style="font-size: 12px;">拍照指南</a> <a href="/tags/搜索/" style="font-size: 12px;">搜索</a> <a href="/tags/摄像机/" style="font-size: 12px;">摄像机</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 12px;">数据结构</a> <a href="/tags/新生/" style="font-size: 12px;">新生</a> <a href="/tags/标记/" style="font-size: 12px;">标记</a> <a href="/tags/模型/" style="font-size: 13.2px;">模型</a> <a href="/tags/正则表达式/" style="font-size: 12px;">正则表达式</a> <a href="/tags/特效/" style="font-size: 12px;">特效</a> <a href="/tags/编辑器/" style="font-size: 14.4px;">编辑器</a> <a href="/tags/网站/" style="font-size: 12px;">网站</a> <a href="/tags/自我思考/" style="font-size: 12px;">自我思考</a> <a href="/tags/设计模式/" style="font-size: 12px;">设计模式</a> <a href="/tags/评论/" style="font-size: 12px;">评论</a> <a href="/tags/遮罩/" style="font-size: 12px;">遮罩</a> <a href="/tags/面向对象/" style="font-size: 12px;">面向对象</a>
+                    </div>
+                </section>
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://ilmvfx.wordpress.com/">【Maya】 一半君的总结纸</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.sucialism.com/">【Maya】 机器猫个人网站</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.aducg.com/">【Maya】 Adu Blog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://technicaldirector.nl/">【Maya】 rj Blog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://noahalzayer.net/">【Maya】 Noah Alzayer</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.sigillarium.com/blog/">【Maya】 sigillarium</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.stepanjirka.com/">【Maya】 Stepan Jirka</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.djx.com.au/blog/">【Maya】 djx</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.fevrierdorian.com/blog/">【Maya】 Dorian Fevrier&#39;s blog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://fredrikaverpil.github.io/">【Maya】 Fredrik Averpil</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://danostrov.com/">【Maya】 Dan Ostrov</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://iwonderwhatjoeisworkingon.blogspot.com/">【Maya】 Joseph Yu</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.braverabbit.com/">【Maya】 brave rabbit</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.animator.idv.tw/">【Maya】 好动分子</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://mayastation.typepad.com/maya-station/">【Maya】 MayaStation</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://tech-artists.org/">【Maya】 tech-artists TA 论坛</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://around-the-corner.typepad.com/adn/">【Maya】 Autokdesk ADN 官方博客</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.toadstorm.com/blog/">【Maya&amp;Houdini】 Toadstorm Nerdblog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.tokeru.com/cgwiki/index.php?title=Main_Page">【Houdini】 cgwiki</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.cnblogs.com/simonxia/">【Houdini】 嘉豪一点点</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://space.bilibili.com/32532051/">【Houdini】 CGBIBI_FX</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://tech-artists.org/">【图形学】 技术奇异点</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.mooooc.com/">【架构】 纯洁的微笑</a>
+                    
+                    </div>
+                </section>
+                
+                
+            </div>
+        </div>
+    </header>
+</div>
+
+<div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索一下" spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+<script>//ESC键退出
+    
+</script>
+
+ <script type="text/javascript">
+ $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        $('.search-popup').hide();
+        $('.search-popup-overlay').remove();
+        $('body').css('overflow', '');
+      }
+    });
+    
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    
+    // Search DB path;
+    var search_path = "search.xml";
+    // var search_path = "{{ config.search.path }}";
+    // if (search_path.length === 0) {
+    //   search_path = "search.xml";
+    // } else if (/json$/i.test(search_path)) {
+    //   isXml = false;
+    // }
+    // var path = "{{ config.root }}" + search_path;
+    var path = window.location.protocol + "//" + window.location.host + "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+      
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          
+          isfetched = true;
+          $('.popup').detach().appendTo('#container');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  // var upperBound = parseInt('{{ theme.local_search.top_n_per_article }}');
+                  // if (upperBound >= 0) {
+                  //   slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  // }
+                  slicesOfContent = slicesOfContent.slice(0, 1);
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+  
+          if ('auto' === '{{ theme.local_search.trigger }}') {//判断总是false
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            input.addEventListener('input', inputEventFunction);
+            // $('.search-icon').click(inputEventFunction);
+            // input.addEventListener('keypress', function (event) {
+            //   if (event.keyCode === 13) {
+            //     inputEventFunction();
+            //   }
+            // });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+    
+  </script>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">智伤帝</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/avatar.png" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">智伤帝</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle"><br></p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/categories/Maya/Maya-100-招/">Maya100招</a></li>
+                
+                    <li><a href="/categories/Photogrammetry/">Photogrammetry</a></li>
+                
+                    <li><a href="/categories/python/Python-QT-开发教程/">Python Qt 开发教程</a></li>
+                
+                    <li><a href="/categories/前端/hexo/">Hexo博客搭建历程</a></li>
+                
+                    <li><a href="/categories/Shader学习之路/">Shader学习之路</a></li>
+                
+                    <li><a href="/categories/前端/Vue/Vue学习之路/">Vue学习之路</a></li>
+                
+                    <li><a href="/my_work/">我的作品</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                    <li><a href="/categories/总结/回忆录/">回忆录</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="github" target="_blank" href="https://github.com/FXTD-ODYSSEY" title="github">github</a>
+                    
+                        <a class="bilibili" target="_blank" href="https://space.bilibili.com/12895307" title="bilibili">bilibili</a>
+                    
+                </div>
+            </nav>
+        </header>
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-Log/fantawild/2_Maya-Python-藤蔓生长快速绑定工具" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Maya Python - 藤蔓生长快速绑定工具
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Maya/">Maya</a><a class="article-category-link" href="/categories/Maya/CG-Programming/">CG Programming</a><a class="article-category-link" href="/categories/Maya/CG-Programming/Python/">Python</a><a class="article-category-link" href="/categories/Maya/CG-Programming/Python/工作/">工作</a><a class="article-category-link" href="/categories/Maya/CG-Programming/Python/工作/华强方特/">华强方特</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Maya/">Maya</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li></ul>
+    </div>
+
+        
+          <div class="article-meta">
+            <a href="/posts/dc7fc7b9.html" class="article-date">
+      <time datetime="2018-12-03T01:45:03.000Z" itemprop="datePublished">2018-12-03</time>
+</a>
+          </div>
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="奠定我插件UI开发基石"><a href="#奠定我插件UI开发基石" class="headerlink" title="奠定我插件UI开发基石"></a>奠定我插件UI开发基石</h1><a id="more"></a>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>&emsp;&emsp;开发藤蔓生长工具可谓是我进入方特一来第一项工作。<br>&emsp;&emsp;难度也是有的，但是并非是无法做到的程度。<br>&emsp;&emsp;当时设置部部长丸子找到我，让我尝试开发这个东西，并且当时给我看了他们当时绑定好的一些设置文件。<br>&emsp;&emsp;其实这种绑定方法我已经很模糊了，但是大一的绑定教程还是有点印象的。<br>&emsp;&emsp;于是我就兴高采烈的拿来进行研究。<br>&emsp;&emsp;我发现这套绑定本质上和脊椎绑定基本相同，而神奇的地方在于设置了骨骼的缩放，从而实现了生长的效果。<br>&emsp;&emsp;那么下面我就要去思考，如何通过插件来快速完成这个步骤。</p>
+</blockquote>
+<h2 id="UI界面开发"><a href="#UI界面开发" class="headerlink" title="UI界面开发"></a>UI界面开发</h2><blockquote>
+<p>&emsp;&emsp;这次依旧是试用 Qt Designer 进行界面开发。<br><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/1.png" alt="Tab 第一页"><br><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/2.png" alt="Tab 第二页"><br>&emsp;&emsp;在Maya上的显示效果。<br><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/3.png" alt="Maya 第一页"><br><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/4.png" alt="Maya 第二页"></p>
+</blockquote>
+<h2 id="UI功能开发"><a href="#UI功能开发" class="headerlink" title="UI功能开发"></a>UI功能开发</h2><blockquote>
+<p>&emsp;&emsp;在之前开发好的 Alembic 导入导出助手的基础上，我继续加入自己所想要的功能。<br>&emsp;&emsp;师兄建议如果界面的开发代码太多的话，希望能将界面的功能和按钮功能分开写。<br>&emsp;&emsp;这样更加有条理，也让人更容易看懂。</p>
+</blockquote>
+<h3 id="Dockable-Window"><a href="#Dockable-Window" class="headerlink" title="Dockable Window"></a>Dockable Window</h3><blockquote>
+<p>&emsp;&emsp;使用ADV的时候，我偶然发现ADV是有Dock按钮的。<br><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/5.png" alt="ADV dock 按钮"><br>&emsp;&emsp;如果window是可以Dock的话那么插件就可以随心所欲地摆放了。<br>&emsp;&emsp;我觉得这种交互是非常人性化的，所以无论如何都要加到自己的插件当中。<br>&emsp;&emsp;通过ADV我后面了解到 workspace 按钮是在 Maya2017之后才加入的全新工作区按钮<br>&emsp;&emsp;在Maya2017以前的版本都是不支持的，在过去都是使用Dock方案<br>&emsp;&emsp;在背后调用的 Maya cmds 是不一样的。<br>&emsp;&emsp;因此我还要去研究如何获取Maya当前的版本，不过幸好ADV就是最棒的参考。<br>&emsp;&emsp;所以后面我需要去研究 Maya 的 dockControl 和 workspaceControl 而已<br>&emsp;&emsp;但是具体要怎么操作呢？又要如何和将这些东西和Qt界面结合在一起呢？</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;首先毋容置疑的，先解析 Qt Designer 生成的 ui 文件，具体的操作方法可以参照<a href="ef451c1b.html">这里</a><br>&emsp;&emsp;后面解析了ui文件就可以通过 setupUi 函数来生成 ui 文件的内容。<br>&emsp;&emsp;但是这样生成的界面有个缺点，那就是它与Maya的主界面完全没有关联。<br>&emsp;&emsp;当你点击一下Maya的窗口，Maya的窗口就会将其盖在下面，交互就很不人性化。<br>&emsp;&emsp;不过幸好 <a href="5c26d29c.html">Python For Maya Artist Friendly Programming</a> 这个教程有提到过解决方案<br>&emsp;&emsp;(我当时一直以为这样将教程的代码全部整理出来是很愚蠢的行为，现在真正干活的时候才体会到真香定律<em>(:з」∠)</em>)<br>&emsp;&emsp;那里提供了workspace的解决方案，原理就是通 OpenMaya API 获取到Maya窗口的元素，然后用Qt进行包裹调用。<br>&emsp;&emsp;于是我就有样学样地整理出dockControl的写法。<br>&emsp;&emsp;当然这个过程也查阅了不少的代码，最后三合一写法如下</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Dock_Win_Management</span><span class="params">(self)</span>:</span></span><br><span class="line">    Title_Name = <span class="string">u"藤蔓生长快速绑定工具"</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Maya窗口转Qt的万能函数，网上搜罗出来的</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mayaToQT</span><span class="params">( name )</span>:</span></span><br><span class="line">        <span class="comment"># Maya -&gt; QWidget</span></span><br><span class="line">        ptr = omui.MQtUtil.findControl( name )</span><br><span class="line">        <span class="keyword">if</span> ptr <span class="keyword">is</span> <span class="keyword">None</span>:         ptr = omui.MQtUtil.findLayout( name )</span><br><span class="line">        <span class="keyword">if</span> ptr <span class="keyword">is</span> <span class="keyword">None</span>:         ptr = omui.MQtUtil.findMenuItem( name )</span><br><span class="line">        <span class="keyword">if</span> ptr <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:     <span class="keyword">return</span> wrapInstance( long( ptr ), QWidget )</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> self.DOCK == <span class="string">"undock"</span>:</span><br><span class="line">        <span class="comment"># undock 窗口</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 这里判断是因为 在Maya2015测试的时候 cc（closeCommand）不起作用  </span></span><br><span class="line">        <span class="keyword">if</span> mel.eval(<span class="string">"getApplicationVersionAsFloat;"</span>)&gt;=<span class="number">2017</span>:</span><br><span class="line">            self.undockWindow = cmds.window( title=Title_Name,cc=partial(self.closeEvent,self.event))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.undockWindow = cmds.window( title=Title_Name,rc=partial(self.closeEvent,self.event))</span><br><span class="line">        <span class="comment"># 给Maya窗口添加一个 Layout 防止后面获取不到</span></span><br><span class="line">        cmds.paneLayout()</span><br><span class="line">        cmds.showWindow(self.undockWindow)</span><br><span class="line">        ptr = mayaToQT(self.undockWindow)</span><br><span class="line">        <span class="keyword">return</span> ptr</span><br><span class="line"></span><br><span class="line">    <span class="keyword">elif</span> self.DOCK == <span class="string">"dock"</span>:</span><br><span class="line">        <span class="comment"># dock 窗口</span></span><br><span class="line">        window = cmds.window( title=Title_Name)</span><br><span class="line">        cmds.paneLayout()</span><br><span class="line">        self.dockControl = cmds.dockControl( area=<span class="string">'right'</span>, content=window, label=Title_Name,floatChangeCommand=self.Win_Size_Adjustment,vcc=self.closeEvent)</span><br><span class="line">        dock = mayaToQT(window)</span><br><span class="line">        <span class="keyword">return</span> dock</span><br><span class="line"></span><br><span class="line">    <span class="keyword">elif</span> self.DOCK == <span class="string">"workspace"</span>:</span><br><span class="line">        <span class="comment"># workspace 窗口</span></span><br><span class="line">        name=<span class="string">'VineGrowDock'</span></span><br><span class="line">        <span class="keyword">if</span> cmds.workspaceControl(name,query=<span class="keyword">True</span>,exists=<span class="keyword">True</span>) :</span><br><span class="line">            cmds.deleteUI(name)</span><br><span class="line">        self.workspaceCtrl = cmds.workspaceControl(name,fl=<span class="keyword">True</span>,label=Title_Name,vcc=self.closeEvent)</span><br><span class="line">        cmds.paneLayout()</span><br><span class="line">        workspace = mayaToQT(self.workspaceCtrl)</span><br><span class="line">        <span class="keyword">return</span> workspace</span><br></pre></td></tr></table></figure>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;如此一来，在初始化函数里面就可以调用这个函数来完成界面创建</p>
+</blockquote>
+<hr>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,dock=<span class="string">"dock"</span>)</span>:</span></span><br><span class="line">    self.DOCK = dock</span><br><span class="line">    <span class="comment"># 读取当前DOCK属性</span></span><br><span class="line">    <span class="keyword">if</span> os.path.exists(GUI_STATE_PATH):</span><br><span class="line">        GUI_STATE = &#123;&#125;</span><br><span class="line">        <span class="keyword">with</span> open(GUI_STATE_PATH,<span class="string">'r'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            GUI_STATE = json.load(f)</span><br><span class="line">        self.DOCK = GUI_STATE[<span class="string">"DOCK"</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 如果2017以下的版 将workspace转换为dock</span></span><br><span class="line">    <span class="keyword">if</span> mel.eval(<span class="string">"getApplicationVersionAsFloat;"</span>)&lt;<span class="number">2017</span>:</span><br><span class="line">        <span class="keyword">if</span> self.DOCK == <span class="string">"workspace"</span>:</span><br><span class="line">            self.DOCK = <span class="string">"dock"</span></span><br><span class="line"></span><br><span class="line">    self.ptr = self.Dock_Win_Management()</span><br><span class="line">    </span><br><span class="line">    super(Interface,self).__init__(parent=self.ptr)</span><br><span class="line"></span><br><span class="line">    self.parent().layout().addWidget(self)</span><br><span class="line">    self.setupUi(self)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;这样确实可以通过传入不同的参数来实现不同窗口的创建。<br>&emsp;&emsp;然而我遇到了让我很头疼的问题，那就是如何去关闭窗口。<br>&emsp;&emsp;如何实现像ADV那样，点击按钮之后自动重新打开我们想要的窗口类型。<br>&emsp;&emsp;然而ADV是用MEL写的，是全局函数来的，而我这里是用Python的Class写的，如何才能实现在外部关闭窗口并且重新打开新的窗口就成了我最大的挑战。<br>&emsp;&emsp;首先我需要在类里面写一个切换函数，但是切换函数又会调用到类本身来创建窗口，此处的类引用变量就无法在类外调用了。<br>&emsp;&emsp;为了确保点击窗口之后不会创建一个全新的窗口，我需要确保类引用变量是一个全局变量，那么就不会在类里面创建调用自己而产生第二窗口。<br>&emsp;&emsp;（想通这点可着实花了我好长时间，最主要是这里类里类外的，逻辑有点绕，写出来之后其实并没有那么复杂）<br>&emsp;&emsp;方法是如此，但是因为我将UI界面和功能函数分开写，但是我又要调用功能函数去生成界面，所以就不得不把这部分的代码写在功能函数的脚本里面<em>(:з」∠)</em><br>&emsp;&emsp;(现在想来自己似乎有点傻，其实用UI界面去生成就完事了。)</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Dockable_Window_Fun</span><span class="params">(self,dock=<span class="string">"undock"</span>,save=True)</span>:</span></span><br><span class="line">    <span class="comment"># 保存当前UI界面</span></span><br><span class="line">    <span class="keyword">if</span> save == <span class="keyword">True</span>:</span><br><span class="line">        self.DOCK = dock</span><br><span class="line">        self.closeEvent(self.event)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 检测不同的UI 全部删除</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">if</span> cmds.window(self.undockWindow,query=<span class="keyword">True</span>,exists=<span class="keyword">True</span>) :</span><br><span class="line">            cmds.deleteUI(self.undockWindow)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">if</span> cmds.dockControl(self.dockControl,query=<span class="keyword">True</span>,exists=<span class="keyword">True</span>) :</span><br><span class="line">            cmds.deleteUI(self.dockControl)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">if</span> cmds.workspaceControl(self.workspaceCtrl,query=<span class="keyword">True</span>,exists=<span class="keyword">True</span>) :</span><br><span class="line">            cmds.deleteUI(self.workspaceCtrl)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 重置json 重置按钮调用的功能</span></span><br><span class="line">    <span class="keyword">if</span> save == <span class="keyword">False</span>:</span><br><span class="line">        os.remove(GUI_STATE_PATH)</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">global</span> Vine_Grow_UI </span><br><span class="line">    Vine_Grow_UI = Vine_Grow(dock=dock)</span><br><span class="line">    Vine_Grow_UI.show()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;另外在外部调用则是写一个Main函数，这样也可以解决插件之间的冲突问题。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 检测不同的UI 全部删除</span></span><br><span class="line">    <span class="keyword">global</span> Vine_Grow_UI </span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">if</span> cmds.window(Vine_Grow_UI.undockWindow,query=<span class="keyword">True</span>,exists=<span class="keyword">True</span>) :</span><br><span class="line">            cmds.deleteUI(Vine_Grow_UI.undockWindow)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">if</span> cmds.dockControl(Vine_Grow_UI.dockControl,query=<span class="keyword">True</span>,exists=<span class="keyword">True</span>) :</span><br><span class="line">            cmds.deleteUI(Vine_Grow_UI.dockControl)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">if</span> cmds.workspaceControl(Vine_Grow_UI.workspaceCtrl,query=<span class="keyword">True</span>,exists=<span class="keyword">True</span>) :</span><br><span class="line">            cmds.deleteUI(Vine_Grow_UI.workspaceCtrl)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    Vine_Grow_UI = Vine_Grow(dock=<span class="string">"undock"</span>)</span><br><span class="line">    Vine_Grow_UI.show()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;这样完整写下来就可以完美实现ADV的Dock功能，不管是按shelf Button 还是点击插件提供的按钮，都可以完美实现界面窗口的切换。</p>
+</blockquote>
+<h3 id="Json-加载保存重置功能"><a href="#Json-加载保存重置功能" class="headerlink" title="Json 加载保存重置功能"></a>Json 加载保存重置功能</h3><blockquote>
+<p>&emsp;&emsp;这次参考着之前开发出来的 PLB Downloader ，也打算弄成 json 可以导入导出，那样插件的所有设置的可控性会更强。<br>&emsp;&emsp;开发的原理和 PLB Downloader 如出一辙的</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Save_Json_File</span><span class="params">(self,path=GUI_STATE_PATH)</span>:</span></span><br><span class="line">    </span><br><span class="line">    GUI_STATE = &#123;&#125;</span><br><span class="line">    <span class="comment"># 判断物体是否存在，存在就存储</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        GUI_STATE[<span class="string">'Rig_Obj_Text'</span>] = self.Rig_Obj_Text.text() <span class="keyword">if</span> len(cmds.ls(self.Rig_Obj_Text.text()))&gt;<span class="number">0</span> <span class="keyword">else</span> <span class="string">""</span></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    GUI_STATE[<span class="string">'Start_JNT_Text'</span>] = self.Start_JNT_Text.text() <span class="keyword">if</span> len(cmds.ls(self.Start_JNT_Text.text()))&gt;<span class="number">0</span> <span class="keyword">else</span> <span class="string">""</span></span><br><span class="line">    GUI_STATE[<span class="string">'End_JNT_Text'</span>] = self.End_JNT_Text.text() <span class="keyword">if</span> len(cmds.ls(self.End_JNT_Text.text()))&gt;<span class="number">0</span> <span class="keyword">else</span> <span class="string">""</span></span><br><span class="line">    GUI_STATE[<span class="string">'Main_JNT_Num'</span>] = self.Main_JNT_Num.text()</span><br><span class="line">    GUI_STATE[<span class="string">'IK_JNT_Num'</span>] = self.IK_JNT_Num.text()</span><br><span class="line">    GUI_STATE[<span class="string">'Curve_Span_Num'</span>] = self.Curve_Span_Num.text()</span><br><span class="line">    GUI_STATE[<span class="string">'IK_CTRL_ColorSlider'</span>] = self.IK_CTRL_ColorSlider.value()</span><br><span class="line">    GUI_STATE[<span class="string">'Start_Ctrl_ColorSlider'</span>] = self.Start_Ctrl_ColorSlider.value()</span><br><span class="line">    GUI_STATE[<span class="string">'End_IK_ColorSlider'</span>] = self.End_IK_ColorSlider.value()</span><br><span class="line">    GUI_STATE[<span class="string">'Character_Ctrl_ColorSlider'</span>] = self.Character_Ctrl_ColorSlider.value()</span><br><span class="line"></span><br><span class="line">    GUI_STATE[<span class="string">'Geo_Name_Text'</span>] = self.Geo_Name_Text.text()</span><br><span class="line">    GUI_STATE[<span class="string">'Main_JNT_Name_Text'</span>] = self.Main_JNT_Name_Text.text()</span><br><span class="line">    GUI_STATE[<span class="string">'Curve_Name_Text'</span>] = self.Curve_Name_Text.text()</span><br><span class="line">    GUI_STATE[<span class="string">'IK_JNT_Name_Text'</span>] = self.IK_JNT_Name_Text.text()</span><br><span class="line">    GUI_STATE[<span class="string">'IK_CTRL_Name_Text'</span>] = self.IK_CTRL_Name_Text.text()</span><br><span class="line">    GUI_STATE[<span class="string">'Start_Ctrl_Text'</span>] = self.Start_Ctrl_Text.text()</span><br><span class="line">    GUI_STATE[<span class="string">'End_IK_Text'</span>] = self.End_IK_Text.text()</span><br><span class="line">    GUI_STATE[<span class="string">'Character_Ctrl_Text'</span>] = self.Character_Ctrl_Text.text()</span><br><span class="line">    GUI_STATE[<span class="string">'X_RadioButton'</span>] = self.X_RadioButton.isChecked()</span><br><span class="line">    GUI_STATE[<span class="string">'Y_RadioButton'</span>] = self.Y_RadioButton.isChecked()</span><br><span class="line">    GUI_STATE[<span class="string">'Z_RadioButton'</span>] = self.Z_RadioButton.isChecked()</span><br><span class="line">    GUI_STATE[<span class="string">'Delete_CheckBox'</span>] = self.Delete_CheckBox.isChecked()</span><br><span class="line">    GUI_STATE[<span class="string">'Rig_Obj_Toggle_Check'</span>] = self.Rig_Obj_Toggle_Check </span><br><span class="line">    GUI_STATE[<span class="string">'Loc_Generate_Toggle_Check'</span>] = self.Loc_Generate_Toggle_Check </span><br><span class="line">    GUI_STATE[<span class="string">'JNT_Setting_Toggle_Check'</span>] = self.JNT_Setting_Toggle_Check </span><br><span class="line">    GUI_STATE[<span class="string">'Rig_Generate_Toggle_Check'</span>] = self.Rig_Generate_Toggle_Check </span><br><span class="line">    GUI_STATE[<span class="string">'Namespace_Toggle_Check'</span>] = self.Namespace_Toggle_Check </span><br><span class="line">    GUI_STATE[<span class="string">'Window_Setting_Toggle_Check'</span>] = self.Window_Setting_Toggle_Check </span><br><span class="line">    GUI_STATE[<span class="string">'Tab_Widget'</span>] = self.Tab_Widget.currentIndex() </span><br><span class="line"></span><br><span class="line">    styleSheet = self.IK_CTRL_ColorBtn.styleSheet().split(<span class="string">"("</span>)[<span class="number">1</span>].split(<span class="string">","</span>)</span><br><span class="line">    r = float(styleSheet[<span class="number">0</span>])</span><br><span class="line">    g = float(styleSheet[<span class="number">1</span>])</span><br><span class="line">    b = float(styleSheet[<span class="number">2</span>].split(<span class="string">")"</span>)[<span class="number">0</span>])</span><br><span class="line">    color = (r,g,b)</span><br><span class="line">    GUI_STATE[<span class="string">'IK_CTRL_ColorBtn'</span>] = (color[<span class="number">0</span>],color[<span class="number">1</span>],color[<span class="number">2</span>])</span><br><span class="line">    </span><br><span class="line">    styleSheet = self.Start_Ctrl_ColorBtn.styleSheet().split(<span class="string">"("</span>)[<span class="number">1</span>].split(<span class="string">","</span>)</span><br><span class="line">    r = float(styleSheet[<span class="number">0</span>])</span><br><span class="line">    g = float(styleSheet[<span class="number">1</span>])</span><br><span class="line">    b = float(styleSheet[<span class="number">2</span>].split(<span class="string">")"</span>)[<span class="number">0</span>])</span><br><span class="line">    color = (r,g,b)</span><br><span class="line">    GUI_STATE[<span class="string">'Start_Ctrl_ColorBtn'</span>] = (color[<span class="number">0</span>],color[<span class="number">1</span>],color[<span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">    styleSheet = self.End_IK_ColorBtn.styleSheet().split(<span class="string">"("</span>)[<span class="number">1</span>].split(<span class="string">","</span>)</span><br><span class="line">    r = float(styleSheet[<span class="number">0</span>])</span><br><span class="line">    g = float(styleSheet[<span class="number">1</span>])</span><br><span class="line">    b = float(styleSheet[<span class="number">2</span>].split(<span class="string">")"</span>)[<span class="number">0</span>])</span><br><span class="line">    color = (r,g,b)</span><br><span class="line">    GUI_STATE[<span class="string">'End_IK_ColorBtn'</span>] = (color[<span class="number">0</span>],color[<span class="number">1</span>],color[<span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">    styleSheet = self.Character_Ctrl_ColorBtn.styleSheet().split(<span class="string">"("</span>)[<span class="number">1</span>].split(<span class="string">","</span>)</span><br><span class="line">    r = float(styleSheet[<span class="number">0</span>])</span><br><span class="line">    g = float(styleSheet[<span class="number">1</span>])</span><br><span class="line">    b = float(styleSheet[<span class="number">2</span>].split(<span class="string">")"</span>)[<span class="number">0</span>])</span><br><span class="line">    color = (r,g,b)</span><br><span class="line">    GUI_STATE[<span class="string">'Character_Ctrl_ColorBtn'</span>] = (color[<span class="number">0</span>],color[<span class="number">1</span>],color[<span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">    GUI_STATE[<span class="string">'DOCK'</span>] = self.DOCK</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">with</span> open(path,<span class="string">'w'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            json.dump(GUI_STATE,f,indent=<span class="number">4</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        QMessageBox.warning(self, <span class="string">"Warning"</span>, <span class="string">"保存失败"</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Load_File</span><span class="params">(self,path=GUI_STATE_PATH,load=False)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> os.path.exists(path):</span><br><span class="line">        GUI_STATE = &#123;&#125;</span><br><span class="line">        <span class="keyword">with</span> open(path,<span class="string">'r'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            GUI_STATE = json.load(f)</span><br><span class="line">        self.X_RadioButton.setChecked(GUI_STATE[<span class="string">'X_RadioButton'</span>])</span><br><span class="line">        self.Y_RadioButton.setChecked(GUI_STATE[<span class="string">'Y_RadioButton'</span>])</span><br><span class="line">        self.Z_RadioButton.setChecked(GUI_STATE[<span class="string">'Z_RadioButton'</span>])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 获取上次打开的text信息</span></span><br><span class="line">        self.Rig_Obj_Text.setText(GUI_STATE[<span class="string">'Rig_Obj_Text'</span>])</span><br><span class="line">        self.Start_JNT_Text.setText(GUI_STATE[<span class="string">'Start_JNT_Text'</span>])</span><br><span class="line">        self.End_JNT_Text.setText(GUI_STATE[<span class="string">'End_JNT_Text'</span>])</span><br><span class="line">        </span><br><span class="line">        self.Main_JNT_Slider.setValue(int(GUI_STATE[<span class="string">'Main_JNT_Num'</span>]))</span><br><span class="line">        self.Main_JNT_Num.setText(GUI_STATE[<span class="string">'Main_JNT_Num'</span>])</span><br><span class="line">        self.IK_JNT_Slider.setValue(int(GUI_STATE[<span class="string">'IK_JNT_Num'</span>]))</span><br><span class="line">        self.IK_JNT_Num.setText(GUI_STATE[<span class="string">'IK_JNT_Num'</span>])</span><br><span class="line">        self.Curve_Span_Slider.setValue(int(GUI_STATE[<span class="string">'Curve_Span_Num'</span>]))</span><br><span class="line">        self.Curve_Span_Num.setText(GUI_STATE[<span class="string">'Curve_Span_Num'</span>])</span><br><span class="line"></span><br><span class="line">        self.Tab_Widget.setCurrentIndex(int(GUI_STATE[<span class="string">'Tab_Widget'</span>])) </span><br><span class="line"></span><br><span class="line">        self.Geo_Name_Text.setText(GUI_STATE[<span class="string">'Geo_Name_Text'</span>])</span><br><span class="line">        self.Main_JNT_Name_Text.setText(GUI_STATE[<span class="string">'Main_JNT_Name_Text'</span>])</span><br><span class="line">        self.Curve_Name_Text.setText(GUI_STATE[<span class="string">'Curve_Name_Text'</span>])</span><br><span class="line">        self.IK_JNT_Name_Text.setText(GUI_STATE[<span class="string">'IK_JNT_Name_Text'</span>])</span><br><span class="line">        self.Delete_CheckBox.setChecked(GUI_STATE[<span class="string">'Delete_CheckBox'</span>])</span><br><span class="line">        self.IK_CTRL_Name_Text.setText(GUI_STATE[<span class="string">'IK_CTRL_Name_Text'</span>]) </span><br><span class="line">        self.Start_Ctrl_Text.setText(GUI_STATE[<span class="string">'Start_Ctrl_Text'</span>]) </span><br><span class="line">        self.End_IK_Text.setText(GUI_STATE[<span class="string">'End_IK_Text'</span>]) </span><br><span class="line">        self.Character_Ctrl_Text.setText(GUI_STATE[<span class="string">'Character_Ctrl_Text'</span>]) </span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.Rig_Obj_Text.text() != <span class="string">""</span>:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                cmds.select(self.Rig_Obj_Text.text())</span><br><span class="line">            <span class="keyword">except</span> Exception:</span><br><span class="line">                <span class="keyword">pass</span></span><br><span class="line">            self.Get_Rig_Obj()</span><br><span class="line">            cmds.select(cl=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.Start_JNT_Text.text() != <span class="string">""</span>:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                cmds.select(self.Start_JNT_Text.text())</span><br><span class="line">            <span class="keyword">except</span> Exception:</span><br><span class="line">                <span class="keyword">pass</span></span><br><span class="line">            self.Get_Start_JNT()</span><br><span class="line">            cmds.select(cl=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.End_JNT_Text.text() != <span class="string">""</span>:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                cmds.select(self.End_JNT_Text.text())</span><br><span class="line">            <span class="keyword">except</span> Exception:</span><br><span class="line">                <span class="keyword">pass</span></span><br><span class="line">            self.Get_End_JNT()</span><br><span class="line">            cmds.select(cl=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">        self.Rig_Generate_Check()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 设置颜色滑竿</span></span><br><span class="line">        self.IK_CTRL_ColorSlider.setValue(int(GUI_STATE[<span class="string">'IK_CTRL_ColorSlider'</span>]))</span><br><span class="line">        self.Start_Ctrl_ColorSlider.setValue(int(GUI_STATE[<span class="string">'Start_Ctrl_ColorSlider'</span>]))</span><br><span class="line">        self.End_IK_ColorSlider.setValue(int(GUI_STATE[<span class="string">'End_IK_ColorSlider'</span>]))</span><br><span class="line">        self.Character_Ctrl_ColorSlider.setValue(int(GUI_STATE[<span class="string">'Character_Ctrl_ColorSlider'</span>]))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 设置按钮颜色</span></span><br><span class="line">        <span class="keyword">if</span> mel.eval(<span class="string">"getApplicationVersionAsFloat;"</span>)&gt;=<span class="number">2017</span>:</span><br><span class="line"></span><br><span class="line">            r = GUI_STATE[<span class="string">'IK_CTRL_ColorBtn'</span>][<span class="number">0</span>]</span><br><span class="line">            g = GUI_STATE[<span class="string">'IK_CTRL_ColorBtn'</span>][<span class="number">1</span>]</span><br><span class="line">            b = GUI_STATE[<span class="string">'IK_CTRL_ColorBtn'</span>][<span class="number">2</span>]</span><br><span class="line">            self.IK_CTRL_ColorBtn.setStyleSheet(<span class="string">'background-color:rgb(%s,%s,%s)'</span>%(r,g,b))</span><br><span class="line"></span><br><span class="line">            r = GUI_STATE[<span class="string">'Start_Ctrl_ColorBtn'</span>][<span class="number">0</span>]</span><br><span class="line">            g = GUI_STATE[<span class="string">'Start_Ctrl_ColorBtn'</span>][<span class="number">1</span>]</span><br><span class="line">            b = GUI_STATE[<span class="string">'Start_Ctrl_ColorBtn'</span>][<span class="number">2</span>]</span><br><span class="line">            self.Start_Ctrl_ColorBtn.setStyleSheet(<span class="string">'background-color:rgb(%s,%s,%s)'</span>%(r,g,b))</span><br><span class="line"></span><br><span class="line">            r = GUI_STATE[<span class="string">'End_IK_ColorBtn'</span>][<span class="number">0</span>]</span><br><span class="line">            g = GUI_STATE[<span class="string">'End_IK_ColorBtn'</span>][<span class="number">1</span>]</span><br><span class="line">            b = GUI_STATE[<span class="string">'End_IK_ColorBtn'</span>][<span class="number">2</span>]</span><br><span class="line">            self.End_IK_ColorBtn.setStyleSheet(<span class="string">'background-color:rgb(%s,%s,%s)'</span>%(r,g,b))</span><br><span class="line"></span><br><span class="line">            r = GUI_STATE[<span class="string">'Character_Ctrl_ColorBtn'</span>][<span class="number">0</span>]</span><br><span class="line">            g = GUI_STATE[<span class="string">'Character_Ctrl_ColorBtn'</span>][<span class="number">1</span>]</span><br><span class="line">            b = GUI_STATE[<span class="string">'Character_Ctrl_ColorBtn'</span>][<span class="number">2</span>]</span><br><span class="line">            self.Character_Ctrl_ColorBtn.setStyleSheet(<span class="string">'background-color:rgb(%s,%s,%s)'</span>%(r,g,b))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 设置滑竿颜色</span></span><br><span class="line">            self.Slider_Change_Color(self.IK_CTRL_ColorBtn,self.IK_CTRL_ColorSlider.value())</span><br><span class="line">            self.Slider_Change_Color(self.Start_Ctrl_ColorBtn,self.Start_Ctrl_ColorSlider.value())</span><br><span class="line">            self.Slider_Change_Color(self.End_IK_ColorBtn,self.End_IK_ColorSlider.value())</span><br><span class="line">            self.Slider_Change_Color(self.Character_Ctrl_ColorBtn,self.Character_Ctrl_ColorSlider.value())</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 根据上次打开的记录expand 或者 collapse 标签</span></span><br><span class="line">        self.Rig_Obj_Toggle_Check = GUI_STATE[<span class="string">'Rig_Obj_Toggle_Check'</span>]</span><br><span class="line">        self.Loc_Generate_Toggle_Check = GUI_STATE[<span class="string">'Loc_Generate_Toggle_Check'</span>]</span><br><span class="line">        self.JNT_Setting_Toggle_Check = GUI_STATE[<span class="string">'JNT_Setting_Toggle_Check'</span>]</span><br><span class="line">        self.JNT_Setting_Toggle_Check = GUI_STATE[<span class="string">'JNT_Setting_Toggle_Check'</span>]</span><br><span class="line">        self.Rig_Generate_Toggle_Check = GUI_STATE[<span class="string">'Rig_Generate_Toggle_Check'</span>]</span><br><span class="line">        self.Namespace_Toggle_Check = GUI_STATE[<span class="string">'Namespace_Toggle_Check'</span>]</span><br><span class="line">        self.Window_Setting_Toggle_Check = GUI_STATE[<span class="string">'Window_Setting_Toggle_Check'</span>]</span><br><span class="line"></span><br><span class="line">        self.Window_Setting_Toggle_Fun()</span><br><span class="line">        self.Rig_Obj_Toggle_Fun()</span><br><span class="line">        self.Loc_Generate_Toggle_Fun()</span><br><span class="line">        self.JNT_Setting_Toggle_Fun()</span><br><span class="line">        self.Rig_Generate_Toggle_Fun()</span><br><span class="line">        self.Namespace_Toggle_Fun()</span><br><span class="line"></span><br><span class="line">        self.Window_Setting_Toggle_Fun()</span><br><span class="line">        self.Rig_Obj_Toggle_Fun()</span><br><span class="line">        self.Loc_Generate_Toggle_Fun()</span><br><span class="line">        self.JNT_Setting_Toggle_Fun()</span><br><span class="line">        self.Rig_Generate_Toggle_Fun()</span><br><span class="line">        self.Namespace_Toggle_Fun()</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> load==<span class="keyword">True</span>:</span><br><span class="line">            QMessageBox.warning(self, <span class="string">"Warning"</span>, <span class="string">"加载失败\n检查路径是否正确"</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 设置默认属性</span></span><br><span class="line">        self.IK_JNT_Slider.setValue(<span class="number">5</span>)</span><br><span class="line">        self.Main_JNT_Slider.setValue(<span class="number">20</span>)</span><br><span class="line">        self.Curve_Span_Slider.setValue(<span class="number">15</span>)</span><br><span class="line">        </span><br><span class="line">        self.Slider_Change_Color(self.IK_CTRL_ColorBtn,<span class="number">17</span>)</span><br><span class="line">        self.Slider_Change_Color(self.Start_Ctrl_ColorBtn,<span class="number">18</span>)</span><br><span class="line">        self.Slider_Change_Color(self.End_IK_ColorBtn,<span class="number">13</span>)</span><br><span class="line">        self.Slider_Change_Color(self.Character_Ctrl_ColorBtn,<span class="number">14</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Save_File_Fun</span><span class="params">(self)</span>:</span></span><br><span class="line">    Save_Path = self.Save_Path_Text.text()</span><br><span class="line">    check = self.Save_Json_File(path=Save_Path)</span><br><span class="line">    <span class="keyword">if</span> check == <span class="keyword">True</span>:</span><br><span class="line">        QMessageBox.information(self, <span class="string">"保存成功"</span>, <span class="string">"保存成功"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Load_File_Fun</span><span class="params">(self)</span>:</span></span><br><span class="line">    Load_Path = self.Load_Path_Text.text()</span><br><span class="line">    check = self.Load_File(path=Load_Path,load=<span class="keyword">True</span>)</span><br><span class="line">    <span class="keyword">if</span> check:</span><br><span class="line">        QMessageBox.information(self, <span class="string">"加载成功"</span>, <span class="string">"加载成功"</span>)</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Browse_Save_File_Path</span><span class="params">(self)</span>:</span></span><br><span class="line">    save_file = QFileDialog.getSaveFileName(self, caption=<span class="string">u"保存文件到"</span>, directory=<span class="string">"."</span>,filter=<span class="string">"json (*.json)"</span>)</span><br><span class="line">    <span class="keyword">if</span> type(save_file) <span class="keyword">is</span> tuple:</span><br><span class="line">        save_file = save_file[<span class="number">0</span>]</span><br><span class="line">    self.Save_Path_Text.setText(QDir.toNativeSeparators(save_file))</span><br><span class="line">    self.Save_Path_Label.setVisible(<span class="keyword">False</span>)</span><br><span class="line">    self.Save_Path_GetBtn.setVisible(<span class="keyword">True</span>)</span><br><span class="line">    <span class="keyword">try</span> :</span><br><span class="line">        self.Save_Path_GetBtn.clicked.disconnect()</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    self.Save_Path_GetBtn.clicked.connect(partial(self.Open_Directory,self.Save_Path_Text))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Browse_Load_File_Path</span><span class="params">(self)</span>:</span></span><br><span class="line">    save_file = QFileDialog.getOpenFileName(self, caption=<span class="string">u"保存文件到"</span>, directory=<span class="string">"."</span>,filter=<span class="string">"json (*.json)"</span>)</span><br><span class="line">    <span class="keyword">if</span> type(save_file) <span class="keyword">is</span> tuple:</span><br><span class="line">        save_file = save_file[<span class="number">0</span>]</span><br><span class="line">    self.Load_Path_Text.setText(QDir.toNativeSeparators(save_file))</span><br><span class="line">    self.Load_Path_Label.setVisible(<span class="keyword">False</span>)</span><br><span class="line">    self.Load_Path_GetBtn.setVisible(<span class="keyword">True</span>)</span><br><span class="line">    <span class="keyword">try</span> :</span><br><span class="line">        self.Load_Path_GetBtn.clicked.disconnect()</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    self.Load_Path_GetBtn.clicked.connect(partial(self.Open_Directory,self.Load_Path_Text))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Open_Directory</span><span class="params">(self,LineEdit)</span>:</span></span><br><span class="line">    Save_Location = LineEdit.text()</span><br><span class="line">    <span class="keyword">if</span> Save_Location == <span class="string">""</span>:</span><br><span class="line">        Save_Location = os.getcwd()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        Save_Location_temp = Save_Location.split(<span class="string">'.'</span>)[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">if</span> Save_Location_temp != Save_Location:</span><br><span class="line">            Save_Location = os.path.split(Save_Location)[<span class="number">0</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> os.path.exists(Save_Location):</span><br><span class="line">        subprocess.call(<span class="string">"explorer %s"</span> % Save_Location, shell=<span class="keyword">True</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        QMessageBox.warning(self, <span class="string">"警告"</span>, <span class="string">"路径不存在\n检查路径是否正确"</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;这个就是json记录加上导入导出的功能，其实并不复杂，导入导出就是参考 PLB Downloader 改写的。<br>&emsp;&emsp;至于存储和载入功能就更为简单，基本上 Alembic 导入导出工具一致<br>&emsp;&emsp;在这个过程中最繁琐的是要写这些UI保存的代码，极度花费时间，所以这个也促成了我开发UI2CG软件的意图。</p>
+</blockquote>
+<h3 id="颜色按钮处理"><a href="#颜色按钮处理" class="headerlink" title="颜色按钮处理"></a>颜色按钮处理</h3><blockquote>
+<p>&emsp;&emsp;这个插件的其他UI功能都不算是太复杂，位移复杂一点的地方就是参考节点的对调按钮。<br>&emsp;&emsp;但是也不过是让获取的参考对调而已，其实底层就和变量交换一样。<br>&emsp;&emsp;所以让我最头疼的开发是 颜色按钮 的开发。<br>&emsp;&emsp;不过幸好 <a href="5c26d29c.html">Python For Maya Artist Friendly Programming</a> 这个教程也有相关的解决方案。<br>&emsp;&emsp;但是不幸的是教程的解决方案是针对灯光颜色的控制，而我需要的是对曲线进行着色。<br>&emsp;&emsp;在不同的Maya版本中，颜色控制也不大一样。<br><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/6.png" alt="颜色控制"><br>&emsp;&emsp;在Maya2015测试的时候，颜色控制制选择滑竿提供的颜色。<br>&emsp;&emsp;而在Maya2017测试的时候则可以选择任意的颜色控制。<br><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/7.png" alt="Maya2017 颜色控制"><br><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Dev/Vine_Grow/8.png" alt="Maya2017 颜色控制"><br>&emsp;&emsp;因此我需要想办法模拟出Maya这种滑竿改变颜色的效果同时又可以启用颜色编辑器来编辑颜色的效果。<br>&emsp;&emsp;本来我是想用Maya自带的颜色组合GUI的，但是这样按钮的颜色就没有办法启用颜色编辑器来修改了。<br>&emsp;&emsp;所以我想了一个办法来模拟滑竿改变颜色的效果，那就是将滑竿颜色的数据记录成json数据，滑动滑竿的时候再次调用写好的json数据。<br>&emsp;&emsp;原理既然如此，后面实现就相对简单了。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setColor</span><span class="params">(self,Btn=None)</span>:</span></span><br><span class="line">    <span class="comment"># 获取灯光的颜色</span></span><br><span class="line">    styleSheet = self.IK_CTRL_ColorBtn.styleSheet().split(<span class="string">"("</span>)[<span class="number">1</span>].split(<span class="string">","</span>)</span><br><span class="line">    r = float(styleSheet[<span class="number">0</span>])/<span class="number">255</span></span><br><span class="line">    g = float(styleSheet[<span class="number">1</span>])/<span class="number">255</span></span><br><span class="line">    b = float(styleSheet[<span class="number">2</span>].split(<span class="string">")"</span>)[<span class="number">0</span>])/<span class="number">255</span></span><br><span class="line">    Btn_Color = (r,g,b)</span><br><span class="line">    cursor = QCursor()</span><br><span class="line">    <span class="comment"># 打开 Maya 的颜色编辑器</span></span><br><span class="line">    color = cmds.colorEditor(rgbValue=Btn_Color,m=<span class="keyword">True</span>,pos=[cursor.pos().x(),cursor.pos().y()])</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Maya 返回了字符串</span></span><br><span class="line">    <span class="comment"># 我们需要手动将其转换为可用的变量</span></span><br><span class="line">    r,g,b,a = [float(c) <span class="keyword">for</span> c <span class="keyword">in</span> color.split()]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置新的颜色值</span></span><br><span class="line">    Btn.setStyleSheet(<span class="string">'background-color:rgb(%s,%s,%s)'</span>%(r*<span class="number">255</span>,g*<span class="number">255</span>,b*<span class="number">255</span>))</span><br><span class="line">    self.Save_Json_File()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Slider_Change_Color</span><span class="params">(self,Btn,Index)</span>:</span></span><br><span class="line"></span><br><span class="line">    COLOR_INDEX = &#123;&#125;</span><br><span class="line">    <span class="keyword">with</span> open(COLOR_INDEX_PATH,<span class="string">'r'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        COLOR_INDEX = json.load(f)</span><br><span class="line">    r = COLOR_INDEX[str(Index)][<span class="number">0</span>]</span><br><span class="line">    g = COLOR_INDEX[str(Index)][<span class="number">1</span>]</span><br><span class="line">    b = COLOR_INDEX[str(Index)][<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    Btn.setStyleSheet(<span class="string">'background-color:rgb(%s,%s,%s)'</span>%(r,g,b))</span><br><span class="line">    self.Save_Json_File()</span><br></pre></td></tr></table></figure>
+<h3 id="藤蔓生长制作"><a href="#藤蔓生长制作" class="headerlink" title="藤蔓生长制作"></a>藤蔓生长制作</h3><blockquote>
+<p>&emsp;&emsp;经历上面各种UI的苦难，我们终于可以回归到插件本身的功能来了。<br>&emsp;&emsp;藤蔓生长的原理是怎样的，其实我最初是一脸茫然的，幸好绑定部门给我提供了一个样品。<br>&emsp;&emsp;基于这个样品，我才研究出方法。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;藤蔓生长不过是使用了线性IK，也就是带曲线的IK控制器，并且将每根骨头的缩放值链接到控制器上。<br>&emsp;&emsp;通过控制器的数值来调整骨骼的缩放值。<br>&emsp;&emsp;另外也要在曲线上蒙皮一套驱动骨骼，用来更方便地控制曲线（这个方法就是当初我入门绑定的时候的脊椎的绑定方法，影响深刻）<br>&emsp;&emsp;实现起来不难，难在如何更具两个参考物体，生成固定数量的骨骼。<br>&emsp;&emsp;经过一番摸索之后，我发现可以根据两个坐标的差值，求平均然后循环递增，就可以求出两个坐标之间的距离。<br>&emsp;&emsp;通过平均可以求出每个骨骼的位置，从而实现藤蔓的根骨骼。<br>&emsp;&emsp;随后就是控制器的创建了，如果骨骼是偏移的，又如何才能求出控制器的旋转值呢？<br>&emsp;&emsp;幸好Circle命令提供了根据曲线方向旋转的方法，如此一来，只要输入坐标差值，曲线就会自动沿着曲线方向了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;后面，最大的问题就是要整理藤蔓生长绑定的层级，公司有制定了一套完整的命名规则。<br>&emsp;&emsp;不过经过问题不大，毕竟绑定部门提供的样品就是最好的范例。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 一键生成按钮</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Rig_Generate</span><span class="params">(self)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">############################################## </span></span><br><span class="line">    <span class="comment">##########     检查物体是否存在    ############ </span></span><br><span class="line">    <span class="comment">############################################## </span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> self.Rig_Obj_Check():</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 开启还原按钮</span></span><br><span class="line">    self.Rig_Back_Btn.setEnabled(<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">############################################## </span></span><br><span class="line">    <span class="comment">#############      获取变量     ############### </span></span><br><span class="line">    <span class="comment">############################################## </span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取数值</span></span><br><span class="line">    Main_JNT_Num = int(self.Main_JNT_Num.text()) <span class="keyword">if</span> self.Main_JNT_Num.text() != <span class="string">""</span> <span class="keyword">else</span> <span class="number">20</span></span><br><span class="line">    IK_JNT_Num = int(self.IK_JNT_Num.text()) <span class="keyword">if</span> self.IK_JNT_Num.text() != <span class="string">""</span> <span class="keyword">else</span> <span class="number">20</span></span><br><span class="line">    Curve_Span_Num = int(self.Curve_Span_Num.text()) <span class="keyword">if</span> self.Curve_Span_Num.text() != <span class="string">""</span> <span class="keyword">else</span> <span class="number">20</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取命名</span></span><br><span class="line">    Geo_Name_Text = self.Geo_Name_Text.text() <span class="keyword">if</span> self.Geo_Name_Text.text() != <span class="string">""</span> <span class="keyword">else</span> <span class="string">"TengMan"</span></span><br><span class="line">    Main_JNT_Name_Text = self.Main_JNT_Name_Text.text() <span class="keyword">if</span> self.Main_JNT_Name_Text.text() != <span class="string">""</span> <span class="keyword">else</span> <span class="string">"gan_joint"</span></span><br><span class="line">    IK_JNT_Name_Text = self.IK_JNT_Name_Text.text() <span class="keyword">if</span> self.IK_JNT_Name_Text.text() != <span class="string">""</span> <span class="keyword">else</span> <span class="string">"ganJoint"</span></span><br><span class="line">    Curve_Name_Text = self.Curve_Name_Text.text() <span class="keyword">if</span> self.Curve_Name_Text.text() != <span class="string">""</span> <span class="keyword">else</span> <span class="string">"gan"</span></span><br><span class="line">    IK_CTRL_Name_Text = self.IK_CTRL_Name_Text.text() <span class="keyword">if</span> self.IK_CTRL_Name_Text.text() != <span class="string">""</span> <span class="keyword">else</span> <span class="string">"gan_ctrl"</span></span><br><span class="line">    Start_Ctrl_Text = self.Start_Ctrl_Text.text() <span class="keyword">if</span> self.Start_Ctrl_Text.text() != <span class="string">""</span> <span class="keyword">else</span> <span class="string">"main2"</span></span><br><span class="line">    End_IK_Text = self.End_IK_Text.text() <span class="keyword">if</span> self.End_IK_Text.text() != <span class="string">""</span> <span class="keyword">else</span> <span class="string">"main"</span></span><br><span class="line">    Character_Ctrl_Text = self.Character_Ctrl_Text.text() <span class="keyword">if</span> self.Character_Ctrl_Text.text() != <span class="string">""</span> <span class="keyword">else</span> <span class="string">"Character"</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取按钮颜色</span></span><br><span class="line">    styleSheet = self.IK_CTRL_ColorBtn.styleSheet().split(<span class="string">"("</span>)[<span class="number">1</span>].split(<span class="string">","</span>)</span><br><span class="line">    r = float(styleSheet[<span class="number">0</span>])/<span class="number">255</span></span><br><span class="line">    g = float(styleSheet[<span class="number">1</span>])/<span class="number">255</span></span><br><span class="line">    b = float(styleSheet[<span class="number">2</span>].split(<span class="string">")"</span>)[<span class="number">0</span>])/<span class="number">255</span></span><br><span class="line">    IK_CTRL_ColorBtn = (r,g,b)</span><br><span class="line"></span><br><span class="line">    styleSheet = self.Start_Ctrl_ColorBtn.styleSheet().split(<span class="string">"("</span>)[<span class="number">1</span>].split(<span class="string">","</span>)</span><br><span class="line">    r = float(styleSheet[<span class="number">0</span>])/<span class="number">255</span></span><br><span class="line">    g = float(styleSheet[<span class="number">1</span>])/<span class="number">255</span></span><br><span class="line">    b = float(styleSheet[<span class="number">2</span>].split(<span class="string">")"</span>)[<span class="number">0</span>])/<span class="number">255</span></span><br><span class="line">    Start_Ctrl_ColorBtn = (r,g,b)</span><br><span class="line"></span><br><span class="line">    styleSheet = self.End_IK_ColorBtn.styleSheet().split(<span class="string">"("</span>)[<span class="number">1</span>].split(<span class="string">","</span>)</span><br><span class="line">    r = float(styleSheet[<span class="number">0</span>])/<span class="number">255</span></span><br><span class="line">    g = float(styleSheet[<span class="number">1</span>])/<span class="number">255</span></span><br><span class="line">    b = float(styleSheet[<span class="number">2</span>].split(<span class="string">")"</span>)[<span class="number">0</span>])/<span class="number">255</span></span><br><span class="line">    End_IK_ColorBtn = (r,g,b)</span><br><span class="line"></span><br><span class="line">    styleSheet = self.Character_Ctrl_ColorBtn.styleSheet().split(<span class="string">"("</span>)[<span class="number">1</span>].split(<span class="string">","</span>)</span><br><span class="line">    r = float(styleSheet[<span class="number">0</span>])/<span class="number">255</span></span><br><span class="line">    g = float(styleSheet[<span class="number">1</span>])/<span class="number">255</span></span><br><span class="line">    b = float(styleSheet[<span class="number">2</span>].split(<span class="string">")"</span>)[<span class="number">0</span>])/<span class="number">255</span></span><br><span class="line">    Character_Ctrl_ColorBtn = (r,g,b)</span><br><span class="line"></span><br><span class="line">    <span class="comment">############################################## </span></span><br><span class="line">    <span class="comment">###############      绑定      ############### </span></span><br><span class="line">    <span class="comment">############################################## </span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取起始节点和结束节点坐标</span></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    cmds.select(self.Start_JNT)</span><br><span class="line">    Start_JNT_Coordinate = cmds.xform(q=<span class="keyword">True</span>,a=<span class="keyword">True</span>,ws=<span class="keyword">True</span>,piv=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">    cmds.select(self.End_JNT)</span><br><span class="line">    </span><br><span class="line">    End_JNT_Coordinate = cmds.xform(q=<span class="keyword">True</span>,a=<span class="keyword">True</span>,ws=<span class="keyword">True</span>,piv=<span class="keyword">True</span>)</span><br><span class="line">    cmds.select(cl=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    <span class="comment"># 批量生成主关节</span></span><br><span class="line">    Xdistance = End_JNT_Coordinate[<span class="number">0</span>] - Start_JNT_Coordinate[<span class="number">0</span>]</span><br><span class="line">    Ydistance = End_JNT_Coordinate[<span class="number">1</span>] - Start_JNT_Coordinate[<span class="number">1</span>]</span><br><span class="line">    Zdistance = End_JNT_Coordinate[<span class="number">2</span>] - Start_JNT_Coordinate[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 主控制器</span></span><br><span class="line">    cmds.circle( nr=(Xdistance, Ydistance, Zdistance), c=(End_JNT_Coordinate[<span class="number">0</span>], End_JNT_Coordinate[<span class="number">1</span>], End_JNT_Coordinate[<span class="number">2</span>]),n=End_IK_Text,r=<span class="number">1</span>)</span><br><span class="line">    Main_Ctrl = cmds.ls(sl=<span class="keyword">True</span>)[<span class="number">0</span>]</span><br><span class="line">    cmds.setAttr(Main_Ctrl + <span class="string">".overrideEnabled"</span>,<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> mel.eval(<span class="string">"getApplicationVersionAsFloat;"</span>)&gt;=<span class="number">2017</span>:</span><br><span class="line">        cmds.setAttr(Main_Ctrl + <span class="string">".overrideRGBColors"</span>,<span class="number">1</span>)</span><br><span class="line">        cmds.setAttr(Main_Ctrl + <span class="string">".overrideColorRGB"</span>,End_IK_ColorBtn[<span class="number">0</span>],End_IK_ColorBtn[<span class="number">1</span>],End_IK_ColorBtn[<span class="number">2</span>])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        cmds.setAttr( Main_Ctrl +<span class="string">".overrideRGBColors"</span>,<span class="number">0</span>)</span><br><span class="line">        cmds.setAttr( Main_Ctrl +<span class="string">".overrideColor"</span>,self.End_IK_ColorSlider.value())</span><br><span class="line">        </span><br><span class="line">    </span><br><span class="line">    cmds.setAttr(Main_Ctrl+<span class="string">".visibility"</span>,lock=<span class="keyword">True</span>,keyable=<span class="keyword">False</span>,channelBox=<span class="keyword">False</span>)</span><br><span class="line">    cmds.setAttr(Main_Ctrl+<span class="string">".sx"</span>,lock=<span class="keyword">True</span>,keyable=<span class="keyword">False</span>,channelBox=<span class="keyword">False</span>)</span><br><span class="line">    cmds.setAttr(Main_Ctrl+<span class="string">".sy"</span>,lock=<span class="keyword">True</span>,keyable=<span class="keyword">False</span>,channelBox=<span class="keyword">False</span>)</span><br><span class="line">    cmds.setAttr(Main_Ctrl+<span class="string">".sz"</span>,lock=<span class="keyword">True</span>,keyable=<span class="keyword">False</span>,channelBox=<span class="keyword">False</span>)</span><br><span class="line">    cmds.addAttr(ln=<span class="string">"show_mod"</span>,at=<span class="string">"double"</span>,min=<span class="number">0</span>,max=<span class="number">1</span>,dv=<span class="number">1</span>)</span><br><span class="line">    cmds.setAttr(Main_Ctrl+<span class="string">".show_mod"</span>,edit=<span class="keyword">True</span>,keyable=<span class="keyword">True</span>)</span><br><span class="line">    cmds.addAttr(ln=<span class="string">"grow"</span>,at=<span class="string">"double"</span>,min=<span class="number">0</span>,max=<span class="number">10</span>,dv=<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> Main_JNT <span class="keyword">in</span> range(Main_JNT_Num):</span><br><span class="line">        x = Xdistance * Main_JNT / (Main_JNT_Num<span class="number">-1</span>) + Start_JNT_Coordinate[<span class="number">0</span>]</span><br><span class="line">        y = Ydistance * Main_JNT / (Main_JNT_Num<span class="number">-1</span>) + Start_JNT_Coordinate[<span class="number">1</span>]</span><br><span class="line">        z = Zdistance * Main_JNT / (Main_JNT_Num<span class="number">-1</span>) + Start_JNT_Coordinate[<span class="number">2</span>]</span><br><span class="line">        JNT = cmds.joint( p=(x, y, z), n = Main_JNT_Name_Text + str(Main_JNT+<span class="number">1</span>))</span><br><span class="line">        cmds.setAttr( JNT + <span class="string">".tx"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( JNT + <span class="string">".ty"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( JNT + <span class="string">".tz"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( JNT + <span class="string">".rx"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( JNT + <span class="string">".ry"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( JNT + <span class="string">".rz"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( JNT + <span class="string">".sx"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( JNT + <span class="string">".sy"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( JNT + <span class="string">".sz"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( JNT + <span class="string">".visibility"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span>  )</span><br><span class="line">        cmds.expression( s=JNT + <span class="string">".sx = "</span>+ Main_Ctrl +<span class="string">".grow/10/"</span>+str(Main_JNT+<span class="number">1</span>) )</span><br><span class="line">        cmds.expression( s=JNT + <span class="string">".sy = "</span>+ Main_Ctrl +<span class="string">".grow/10/"</span>+str(Main_JNT+<span class="number">1</span>) )</span><br><span class="line">        cmds.expression( s=JNT + <span class="string">".sz = "</span>+ Main_Ctrl +<span class="string">".grow/10/"</span>+str(Main_JNT+<span class="number">1</span>) )</span><br><span class="line">        <span class="keyword">if</span> Main_JNT == <span class="number">0</span>:</span><br><span class="line">            Start_Main_JNT = cmds.ls(sl=<span class="keyword">True</span>)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 生成IK控制器</span></span><br><span class="line">    End_Main_JNT = cmds.ls(sl=<span class="keyword">True</span>)</span><br><span class="line">    cmds.select(Start_Main_JNT)</span><br><span class="line">    cmds.select(End_Main_JNT,tgl=<span class="keyword">True</span>)</span><br><span class="line">    ikList = cmds.ikHandle(sol=<span class="string">"ikSplineSolver"</span> )</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 生成控制器</span></span><br><span class="line">    cmds.select(cl=<span class="keyword">True</span>)</span><br><span class="line">    CtrlList = []</span><br><span class="line">    <span class="keyword">for</span> IK_JNT <span class="keyword">in</span> range(IK_JNT_Num):</span><br><span class="line">        x = Xdistance * IK_JNT / (IK_JNT_Num<span class="number">-1</span>) + Start_JNT_Coordinate[<span class="number">0</span>]</span><br><span class="line">        y = Ydistance * IK_JNT / (IK_JNT_Num<span class="number">-1</span>) + Start_JNT_Coordinate[<span class="number">1</span>]</span><br><span class="line">        z = Zdistance * IK_JNT / (IK_JNT_Num<span class="number">-1</span>) + Start_JNT_Coordinate[<span class="number">2</span>]</span><br><span class="line">        cmds.joint( p=(x, y, z), n = IK_JNT_Name_Text + str(IK_JNT+<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">        Curent_JNT = cmds.ls(sl=<span class="keyword">True</span>)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">        IK_JNT_Coordinate = cmds.xform(q=<span class="keyword">True</span>,ws=<span class="keyword">True</span>,t=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">        cmds.circle( nr=(Xdistance, Ydistance, Zdistance), c=(IK_JNT_Coordinate[<span class="number">0</span>], IK_JNT_Coordinate[<span class="number">1</span>], IK_JNT_Coordinate[<span class="number">2</span>]),n=IK_CTRL_Name_Text+str(IK_JNT+<span class="number">1</span>),r=<span class="number">0.4</span>)</span><br><span class="line"></span><br><span class="line">        IK_Ctrl = cmds.ls(sl=<span class="keyword">True</span>)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">        cmds.setAttr( IK_Ctrl +<span class="string">".overrideEnabled"</span>,<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> mel.eval(<span class="string">"getApplicationVersionAsFloat;"</span>)&gt;=<span class="number">2017</span>:</span><br><span class="line">            cmds.setAttr( IK_Ctrl +<span class="string">".overrideRGBColors"</span>,<span class="number">1</span>)</span><br><span class="line">            cmds.setAttr( IK_Ctrl +<span class="string">".overrideColorRGB"</span>,IK_CTRL_ColorBtn[<span class="number">0</span>],IK_CTRL_ColorBtn[<span class="number">1</span>],IK_CTRL_ColorBtn[<span class="number">2</span>])</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            cmds.setAttr( IK_Ctrl +<span class="string">".overrideRGBColors"</span>,<span class="number">0</span>)</span><br><span class="line">            cmds.setAttr( IK_Ctrl +<span class="string">".overrideColor"</span>,self.IK_CTRL_ColorSlider.value())</span><br><span class="line"></span><br><span class="line">        cmds.CenterPivot()</span><br><span class="line">        <span class="comment"># 冻结变换</span></span><br><span class="line">        cmds.makeIdentity( apply=<span class="keyword">True</span>, t=<span class="number">1</span>, r=<span class="number">1</span>, s=<span class="number">1</span>, n=<span class="number">2</span> )</span><br><span class="line"></span><br><span class="line">        CtrlList.append(cmds.ls(sl=<span class="keyword">True</span>)[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">        cmds.parentConstraint( CtrlList[IK_JNT] , Curent_JNT )</span><br><span class="line"></span><br><span class="line">        cmds.select(Curent_JNT)</span><br><span class="line">        cmds.setAttr( Curent_JNT + <span class="string">".tx"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( Curent_JNT + <span class="string">".ty"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( Curent_JNT + <span class="string">".tz"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( Curent_JNT + <span class="string">".rx"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( Curent_JNT + <span class="string">".ry"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( Curent_JNT + <span class="string">".rz"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( Curent_JNT + <span class="string">".sx"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( Curent_JNT + <span class="string">".sy"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( Curent_JNT + <span class="string">".sz"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line">        cmds.setAttr( Curent_JNT + <span class="string">".visibility"</span>, k=<span class="keyword">False</span>,cb=<span class="keyword">True</span> )</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> IK_JNT == <span class="number">0</span>:</span><br><span class="line">            Start_IK_JNT = cmds.ls(sl=<span class="keyword">True</span>)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 将IK关节蒙皮到曲线上</span></span><br><span class="line">    cmds.select(ikList[<span class="number">2</span>])</span><br><span class="line">    cmds.rebuildCurve( rt=<span class="number">0</span>, s=Curve_Span_Num )</span><br><span class="line">    cmds.select(Start_IK_JNT,hi=<span class="keyword">True</span>)</span><br><span class="line">    cmds.select(ikList[<span class="number">2</span>],tgl=<span class="keyword">True</span>)</span><br><span class="line">    <span class="comment"># 绑定设置</span></span><br><span class="line">    cmds.optionVar(iv=(<span class="string">'bindTo'</span>,<span class="number">2</span>))</span><br><span class="line">    cmds.optionVar(iv=(<span class="string">'skinMethod'</span>,<span class="number">1</span>))</span><br><span class="line">    cmds.optionVar(iv=(<span class="string">'multipleBindPosesOpt'</span>,<span class="number">1</span>))</span><br><span class="line">    cmds.optionVar(iv=(<span class="string">'bindMethod'</span>,<span class="number">1</span>))</span><br><span class="line">    cmds.optionVar(iv=(<span class="string">'removeUnusedInfluences'</span>,<span class="number">0</span>))</span><br><span class="line">    cmds.optionVar(iv=(<span class="string">'colorizeSkeleton'</span>,<span class="number">0</span>))</span><br><span class="line">    cmds.optionVar(iv=(<span class="string">'maxInfl'</span>,<span class="number">3</span>))</span><br><span class="line">    cmds.optionVar(iv=(<span class="string">'normalizeWeights'</span>,<span class="number">2</span>))</span><br><span class="line">    cmds.optionVar(iv=(<span class="string">'obeyMaxInfl'</span>,<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">    cmds.SmoothBindSkin()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 绑定主物体</span></span><br><span class="line">    cmds.select(Start_Main_JNT,hi=<span class="keyword">True</span>)</span><br><span class="line">    cmds.select(self.Rig_Obj,tgl=<span class="keyword">True</span>)</span><br><span class="line">    cmds.SmoothBindSkin()</span><br><span class="line"></span><br><span class="line">    <span class="comment">############################################## </span></span><br><span class="line">    <span class="comment">#############      管理层级     ############### </span></span><br><span class="line">    <span class="comment">##############################################</span></span><br><span class="line">    <span class="comment"># 删除参考</span></span><br><span class="line">    <span class="keyword">if</span> self.Delete_CheckBox.isChecked():</span><br><span class="line">        cmds.delete(self.Start_JNT)</span><br><span class="line">        cmds.delete(self.End_JNT)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 模型打组</span></span><br><span class="line">    cmds.select(self.Rig_Obj)</span><br><span class="line">    Geo_Grp = cmds.group(n=Geo_Name_Text+<span class="string">"_geo"</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 控制器打组</span></span><br><span class="line">    CtrlList = list(reversed(CtrlList))</span><br><span class="line">    Grp = <span class="string">""</span></span><br><span class="line">    <span class="keyword">for</span> Ctrl <span class="keyword">in</span> CtrlList:</span><br><span class="line">        cmds.select(Ctrl)</span><br><span class="line">        cmds.group(n=Ctrl+<span class="string">"_C"</span>)</span><br><span class="line">        IKFKC_Grp = cmds.group(n=Ctrl+<span class="string">"_IKFKC"</span>)</span><br><span class="line">        <span class="keyword">if</span> Grp != <span class="string">""</span>:</span><br><span class="line">            cmds.parent( Grp, IKFKC_Grp )</span><br><span class="line">        cmds.select(IKFKC_Grp)</span><br><span class="line">        Grp = cmds.group(n=Ctrl+<span class="string">"_G"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># MotionSystem 打组</span></span><br><span class="line">    cmds.select(Start_IK_JNT)</span><br><span class="line">    temp = cmds.group(n=Start_IK_JNT+<span class="string">"_G"</span>)</span><br><span class="line">    cmds.setAttr(temp+<span class="string">".visibility"</span>,<span class="number">0</span>)</span><br><span class="line">    cmds.setAttr(temp+<span class="string">".visibility"</span>,lock=<span class="keyword">True</span>)</span><br><span class="line">    cmds.setAttr( temp + <span class="string">".tx"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( temp + <span class="string">".ty"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( temp + <span class="string">".tz"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( temp + <span class="string">".rx"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( temp + <span class="string">".ry"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( temp + <span class="string">".rz"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( temp + <span class="string">".sx"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( temp + <span class="string">".sy"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( temp + <span class="string">".sz"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.select(Grp,tgl=<span class="keyword">True</span>)</span><br><span class="line">    MotionSystem_Grp = cmds.group(n=<span class="string">"MotionSystem"</span>)</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># DeformationSystem 打组</span></span><br><span class="line">    cmds.select(Start_Main_JNT)</span><br><span class="line">    Start_Main_JNT_Grp = cmds.group(n=Start_Main_JNT+<span class="string">"_G"</span>)</span><br><span class="line">    cmds.setAttr( Start_Main_JNT_Grp+<span class="string">".visibility"</span>,<span class="number">0</span>)</span><br><span class="line">    cmds.setAttr( Start_Main_JNT_Grp+<span class="string">".visibility"</span>,lock=<span class="keyword">True</span>)</span><br><span class="line">    cmds.setAttr( Start_Main_JNT_Grp + <span class="string">".tx"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( Start_Main_JNT_Grp + <span class="string">".ty"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( Start_Main_JNT_Grp + <span class="string">".tz"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( Start_Main_JNT_Grp + <span class="string">".rx"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( Start_Main_JNT_Grp + <span class="string">".ry"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( Start_Main_JNT_Grp + <span class="string">".rz"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( Start_Main_JNT_Grp + <span class="string">".sx"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( Start_Main_JNT_Grp + <span class="string">".sy"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( Start_Main_JNT_Grp + <span class="string">".sz"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    DeformationSystem_Grp = cmds.group(n=<span class="string">"DeformationSystem"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 主控制器打组</span></span><br><span class="line">    cmds.circle( nr=(Xdistance, Ydistance, Zdistance), c=(Start_JNT_Coordinate[<span class="number">0</span>], Start_JNT_Coordinate[<span class="number">1</span>], Start_JNT_Coordinate[<span class="number">2</span>]),n=Start_Ctrl_Text,r=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    Main2_Ctrl = cmds.ls(sl=<span class="keyword">True</span>)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    cmds.setAttr(Main2_Ctrl + <span class="string">".overrideEnabled"</span>,<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">if</span> mel.eval(<span class="string">"getApplicationVersionAsFloat;"</span>)&gt;=<span class="number">2017</span>:</span><br><span class="line">        cmds.setAttr(Main2_Ctrl + <span class="string">".overrideRGBColors"</span>,<span class="number">1</span>)</span><br><span class="line">        cmds.setAttr(Main2_Ctrl + <span class="string">".overrideColorRGB"</span>,Start_Ctrl_ColorBtn[<span class="number">0</span>],Start_Ctrl_ColorBtn[<span class="number">1</span>],Start_Ctrl_ColorBtn[<span class="number">2</span>])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        cmds.setAttr( Main2_Ctrl +<span class="string">".overrideRGBColors"</span>,<span class="number">0</span>)</span><br><span class="line">        cmds.setAttr( Main2_Ctrl +<span class="string">".overrideColor"</span>,self.Start_Ctrl_ColorSlider.value())</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    cmds.setAttr(Main2_Ctrl+<span class="string">".visibility"</span>,lock=<span class="keyword">True</span>,keyable=<span class="keyword">False</span>,channelBox=<span class="keyword">False</span>)</span><br><span class="line">    cmds.setAttr(Main2_Ctrl+<span class="string">".sx"</span>,lock=<span class="keyword">True</span>,keyable=<span class="keyword">False</span>,channelBox=<span class="keyword">False</span>)</span><br><span class="line">    cmds.setAttr(Main2_Ctrl+<span class="string">".sy"</span>,lock=<span class="keyword">True</span>,keyable=<span class="keyword">False</span>,channelBox=<span class="keyword">False</span>)</span><br><span class="line">    cmds.setAttr(Main2_Ctrl+<span class="string">".sz"</span>,lock=<span class="keyword">True</span>,keyable=<span class="keyword">False</span>,channelBox=<span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">    cmds.select(DeformationSystem_Grp)</span><br><span class="line">    cmds.select(MotionSystem_Grp,tgl=<span class="keyword">True</span>)</span><br><span class="line">    cmds.select(Main2_Ctrl,tgl=<span class="keyword">True</span>)</span><br><span class="line">    cmds.parent()</span><br><span class="line"></span><br><span class="line">    cmds.pickWalk( direction=<span class="string">'up'</span> )</span><br><span class="line">    Main2_Ctrl = cmds.ls(sl=<span class="keyword">True</span>)[<span class="number">0</span>]</span><br><span class="line">    Main2_Ctrl_C = cmds.group(n=Main2_Ctrl+<span class="string">"_C"</span>)</span><br><span class="line">    Main2_Ctrl_G = cmds.group(n=Main2_Ctrl+<span class="string">"_G"</span>)</span><br><span class="line">    Main2_Ctrl = cmds.ls(sl=<span class="keyword">True</span>)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    cmds.setAttr(Main_Ctrl+<span class="string">".grow"</span>,edit=<span class="keyword">True</span>,keyable=<span class="keyword">True</span>)</span><br><span class="line">    cmds.connectAttr(Main_Ctrl+<span class="string">".show_mod"</span>,Geo_Grp+<span class="string">".visibility"</span>)</span><br><span class="line">    cmds.parent(Main2_Ctrl,Main_Ctrl)</span><br><span class="line">    cmds.pickWalk( direction=<span class="string">'up'</span> )</span><br><span class="line">    cmds.group(n=Main_Ctrl+<span class="string">"_C"</span>)</span><br><span class="line">    cmds.group(n=Main_Ctrl+<span class="string">"_G"</span>)</span><br><span class="line"></span><br><span class="line">    Main_Ctrl_G = cmds.ls(sl=<span class="keyword">True</span>)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    cmds.curve(d=<span class="number">1</span>, p=[(<span class="number">-1</span>, <span class="number">0</span>,<span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>,<span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>,<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>,<span class="number">-1</span>)], k=[<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>] ,n=Character_Ctrl_Text)</span><br><span class="line"></span><br><span class="line">    Character = cmds.ls(sl=<span class="keyword">True</span>)[<span class="number">0</span>]</span><br><span class="line">    cmds.setAttr(Character + <span class="string">".overrideEnabled"</span>,<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> mel.eval(<span class="string">"getApplicationVersionAsFloat;"</span>)&gt;=<span class="number">2017</span>:</span><br><span class="line">        cmds.setAttr(Character + <span class="string">".overrideRGBColors"</span>,<span class="number">1</span>)</span><br><span class="line">        cmds.setAttr(Character + <span class="string">".overrideColorRGB"</span>,Character_Ctrl_ColorBtn[<span class="number">0</span>],Character_Ctrl_ColorBtn[<span class="number">1</span>],Character_Ctrl_ColorBtn[<span class="number">2</span>])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        cmds.setAttr( Character +<span class="string">".overrideRGBColors"</span>,<span class="number">0</span>)</span><br><span class="line">        cmds.setAttr( Character +<span class="string">".overrideColor"</span>,self.Character_Ctrl_ColorSlider.value())</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    cmds.setAttr(Character+<span class="string">".visibility"</span>,lock=<span class="keyword">True</span>,keyable=<span class="keyword">False</span>,channelBox=<span class="keyword">False</span>)</span><br><span class="line">    cmds.xform(a=<span class="keyword">True</span>,ws=<span class="keyword">True</span>,t=(End_JNT_Coordinate[<span class="number">0</span>], End_JNT_Coordinate[<span class="number">1</span>], End_JNT_Coordinate[<span class="number">2</span>]))</span><br><span class="line">    cmds.parent(Main_Ctrl_G,Character)</span><br><span class="line">    cmds.pickWalk( direction=<span class="string">'up'</span> )</span><br><span class="line">    cmds.group(n=Character+<span class="string">"_C"</span>)</span><br><span class="line">    cmds.group(n=Character+<span class="string">"_G"</span>)</span><br><span class="line">    Grp = cmds.group(n=Geo_Name_Text+<span class="string">"_rig"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置 other_G 中的属性</span></span><br><span class="line">    cmds.setAttr(ikList[<span class="number">2</span>]+<span class="string">".visibility"</span>,<span class="number">0</span>)</span><br><span class="line">    cmds.setAttr(ikList[<span class="number">2</span>]+<span class="string">".visibility"</span>,lock=<span class="keyword">True</span>,keyable=<span class="keyword">False</span>,channelBox=<span class="keyword">False</span>)</span><br><span class="line">    cmds.setAttr(ikList[<span class="number">0</span>]+<span class="string">".visibility"</span>,<span class="number">0</span>)</span><br><span class="line">    cmds.setAttr(ikList[<span class="number">0</span>]+<span class="string">".visibility"</span>,lock=<span class="keyword">True</span>)</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".tx"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".ty"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".tz"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".rx"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".ry"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".rz"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".sx"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".sy"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".sz"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".poleVectorX"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".poleVectorY"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".poleVectorZ"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".offset"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".roll"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".twist"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    cmds.setAttr( ikList[<span class="number">0</span>] + <span class="string">".ikBlend"</span>, lock=<span class="keyword">True</span> )</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 重命名曲线</span></span><br><span class="line">    cmds.rename(ikList[<span class="number">2</span>],Curve_Name_Text)</span><br><span class="line">    <span class="comment"># other_G 打组</span></span><br><span class="line">    cmds.select(ikList[<span class="number">0</span>])</span><br><span class="line">    cmds.select(Curve_Name_Text,tgl=<span class="keyword">True</span>)</span><br><span class="line">    cmds.group(n=<span class="string">"IK_G"</span>)</span><br><span class="line">    cmds.group(n=<span class="string">"other_G"</span>)</span><br><span class="line">    cmds.pickWalk( direction=<span class="string">'up'</span> )</span><br><span class="line">    cmds.select(Grp,tgl=<span class="keyword">True</span>)</span><br><span class="line">    cmds.parent()</span><br><span class="line">    Other_Grp = cmds.pickWalk( direction=<span class="string">'up'</span> )</span><br><span class="line"></span><br><span class="line">    cmds.select(Geo_Grp)</span><br><span class="line">    self.Main_Grp = cmds.group(n=Geo_Name_Text+<span class="string">"_all"</span>)</span><br><span class="line">    cmds.select(Other_Grp)</span><br><span class="line">    cmds.select(self.Main_Grp,tgl=<span class="keyword">True</span>)</span><br><span class="line">    cmds.parent()</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>&emsp;&emsp;这个藤蔓生长工具可谓上煞费苦心，其实实现功能并不苦难，但是我想要在基础功能的基础上，搭建出属于自己的UI形式，不仅可以导入导出插件的所有设置，还可以切换不同的窗口风格，这些虽然不是公司要求我去弄的，但是却是我在开发过程中的一道坎，可能开到ADV实现的效果，自己不甘心甘拜下风吧。<br>&emsp;&emsp;所以这个开发，耗费的时间几乎有一个星期了，但是最后能够开发出来，我还是非常开怀的。<br>&emsp;&emsp;也是因为这个插件的启发，我才有了后面UI2CG软件开发的想法，后面一定会写一篇文章详细说说这个自动完成基础代码的软件的。</p>
+</blockquote>
+
+      
+    </div>
+
+    
+  </div>
+
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/posts/dc7fc7b9.html">Maya Python - 藤蔓生长快速绑定工具</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 智伤帝 的个人博客">智伤帝</a></p>
+        <p><span>发布时间:</span>2018年12月03日 - 09时45分</p>
+        <p><span>最后更新:</span>2019年11月07日 - 21时28分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/posts/dc7fc7b9.html" title="Maya Python - 藤蔓生长快速绑定工具">https://blog.l0v0.com/posts/dc7fc7b9.html</a>
+            <span class="copy-path" data-clipboard-text="原文: https://blog.l0v0.com/posts/dc7fc7b9.html　　作者: 智伤帝" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <!-- <script src="/js/clipboard.min.js"></script> -->
+            <!-- <script> var clipboard = new Clipboard('.copy-path');</script> -->
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+
+        
+
+     
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            if(dataid=="alipay")
+            $(".shang_payimg").css("border-color","#4094c7");
+            else
+            $(".shang_payimg").css("border-color","#22aa3b");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+
+
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/posts/c5dbea3.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Python - CHR_Encrypter CHR文件加密器
+        
+      </div>
+    </a>
+  
+  
+    <a href="/posts/ce6b2154.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Maya Python - ALembic导入导出助手</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#奠定我插件UI开发基石"><span class="toc-number">1.</span> <span class="toc-text">奠定我插件UI开发基石</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UI界面开发"><span class="toc-number">1.2.</span> <span class="toc-text">UI界面开发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UI功能开发"><span class="toc-number">1.3.</span> <span class="toc-text">UI功能开发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Dockable-Window"><span class="toc-number">1.3.1.</span> <span class="toc-text">Dockable Window</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Json-加载保存重置功能"><span class="toc-number">1.3.2.</span> <span class="toc-text">Json 加载保存重置功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#颜色按钮处理"><span class="toc-number">1.3.3.</span> <span class="toc-text">颜色按钮处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#藤蔓生长制作"><span class="toc-number">1.3.4.</span> <span class="toc-text">藤蔓生长制作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">1.4.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
+</div>
+<style>
+    .left-col .switch-btn {
+        display: none;
+    }
+    .left-col .switch-area {
+        display: none;
+    }
+</style>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+            $(".switch-btn, .switch-area").fadeOut(300);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+            $(".switch-btn, .switch-area").fadeIn(500);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+        $(".switch-btn, .switch-area").show();
+    }
+</script>
+
+    <style>
+        .toc {
+            white-space: nowrap;
+            overflow-x: hidden;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            $(".toc li a").mouseover(function() {
+                var title = $(this).attr('href');
+                $(this).attr("title", title);
+            });
+        })
+    </script>
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+        <!-- <section id="comments">
+<link rel="stylesheet" href="/css/gitment.min.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  id: 'Maya Python - 藤蔓生长快速绑定工具', // 可选。默认为 location.href
+  owner: 'FXTD-odyssey',
+  repo: 'FXTD-odyssey.github.io',
+  oauth: {
+    client_id: '355e44f722e24963b9dd',
+    client_secret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+  },
+})
+gitment.render('comments')
+</script>
+</section> -->
+
+
+
+<section id="comments">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.2.2/gitalk.min.css" rel="stylesheet">
+  <div class="gitalk" style="width:90%;margin:auto;">
+    <div id="gitalk-container"></div>
+    <script type="text/javascript">
+      require(["https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.2.2/gitalk.min.js","https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.10.0/js/md5.min.js"], function (Gitalk,md5) {
+
+        const gitalk = new Gitalk({
+          clientID: '355e44f722e24963b9dd',
+          clientSecret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+          repo: 'FXTD-odyssey.github.io',
+          owner: 'FXTD-odyssey',
+          admin: ['FXTD-odyssey'],
+          id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+
+      });
+    </script>
+  </div>
+</section>
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a  href="/posts/c5dbea3.html" title="上一篇: Python - CHR_Encrypter CHR文件加密器">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a  href="/posts/ce6b2154.html" title="下一篇: Maya Python - ALembic导入导出助手">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/posts/4c52085.html">Hexo博客优化之路（十） - 置顶文章 | 代码注释颜色区分</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/intro.html">【置顶】 智伤帝 | 博客全面指引</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/8bb6468c.html">Maya Arnold 渲染设置崩溃</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/efd57a69.html">Autodesk Genuine Service 破解无效解决方案</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/216efd3e.html">校招之路</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c8c0ddca.html">一灯问卷小程序 开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/21ad06c1.html">【回忆录】 - 我的大三</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/63f190cc.html">【回忆录】 - 我的大二</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5871be65.html">【回忆录】 - 我的大一</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/40745d4d.html">【回忆录】 - 我的高中</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4d164b82.html">VScode - MayaPy插件开发总结</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/9915f9db.html">学习笔记 Unreal 官方 - Water Pack Overview</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/99ca25ca.html">学习笔记 水材质制作 Unlocking the Unreal Engine Material Editor</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/11d100be.html">学习笔记 Udemy - Unlocking the Unreal Engine Material Editor</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c476f94c.html">学习笔记 Pluralsight - Unreal Engine 4 Materials Fundamentals</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d58573f8.html">学习笔记 Packt Publishing - Unreal Engine 4 - The Complete Beginner's Course</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/54f0044c.html">学习笔记 Lynda - Unreal Essential Training</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b5d3f6ab.html">BlendShape 中间值获取</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/a1569efd.html">Maya Python 视锥可视工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c45f3e57.html">node.js 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f449d28f.html">node.js 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/284524f6.html">Vue 坑爹记录</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f6cd0ecb.html">Maya Python RBF工具开发研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c38bc3c2.html">Navicat连接远程数据库</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/372dc2f3.html">Vue 学习之路（十）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b21fe737.html">Vue 学习之路（九）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c8d2c668.html">Vue 学习之路（八）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/3fb9ee2b.html">Vue 学习之路（七）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/edb999b4.html">Vue 学习之路（六）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/88b7d26d.html">Vue 学习之路（五）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/e729172a.html">Vue 学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50040e4f.html">Vue 学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1d1aad1d.html">Vue 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2d0c41c5.html">Vue 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4e9ee1dc.html">观看笔记 - Maya 100 招 - 第四十一招到第五十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/410ea085.html">观看笔记 - Maya 100 招 - 第三十一招到第四十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/9ab1cd0e.html">观看笔记 - Maya 100 招 - 第二十一招到第三十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d81d7e23.html">Shader学习之路(六)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/41123651.html">Shader学习之路(五)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/47b9612c.html">Shader学习之路(四)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/671aaad8.html">Shader学习之路(三)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2a04098a.html">Shader学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1a12e552.html">Shader学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/df0a441f.html">观看笔记 - Maya 100 招 - 第十一招到第二十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/23e3cff.html">观看笔记 - Maya 100 招 - 第一招到第十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/77c88c0d.html">Hexo博客优化之路（九） - 服务器配置 | 博客部署</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ccad2d76.html">PHP Laravel框架试水</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b1b98494.html">Unity - 场景漫游课程设计</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/712b664b.html">Python - Python Qt 开发教程(7)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6830570a.html">Python - Python Qt 开发教程(6)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/431d04c9.html">Python - Python Qt 开发教程(5)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5fce3fcb.html">Maya C++ 多核性能测试</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5a063588.html">Python - Python Qt 开发教程(4)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2e0af969.html">Python - Python Qt 开发教程 扩展说明</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1547a34f.html">Python - Python Qt 开发教程(3)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c5c920e.html">Python - Python Qt 开发教程(2)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2c06616b.html">Python - Python Qt 开发教程(1)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f0a58164.html">Maya C++ MEL语句 性能测试 & 插件开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/bb58a66.html">【总结】-2019年3月、4月回顾-5月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/404240a4.html">Maya Python Publish 检查功能开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6f4e3164.html">【总结】 2019年2月回顾 | 3月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/237316ce.html">Maya Python - Publish工具开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/de2ca4c2.html">React - React 两日游有感</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d8bf85b3.html">观看笔记 - Pluralsight React:The Big Picture</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/642ecb99.html">【总结】 2019年1月回顾 | 2月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f6caaeeb.html">Maya Python - 镜头路线管理器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/332f70b.html">Maya Ziva 设置参考</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f62b6398.html">OpenMaya - VertexConstraint插件开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/41495e54.html">Maya Python - 外包检查工具开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50d67130.html">Maya Python - TSM镜像工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4c4a3e97.html">【总结】 2018年12月回顾 | 1月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/e3d81e44.html">Maya Ziva 初步探索</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c5dbea3.html">Python - CHR_Encrypter CHR文件加密器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/dc7fc7b9.html">Maya Python - 藤蔓生长快速绑定工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ce6b2154.html">Maya Python - ALembic导入导出助手</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/568b8654.html">【总结】 2018年11月回顾 | 12月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/57d6cbdb.html">华强方特 实习 第一周</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7c31db18.html">python - PLB downloader 开发完成</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4323d1ae.html">【总结】 2018年10月回顾 | 11月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ccdac3f3.html">Python - 用 PyQt 写 Pluralsight 下载器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ef451c1b.html">观看笔记 - PyQt &  Qt Designer 三套教程</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5b9053f9.html">Python - 用 PyQt 写爬虫界面</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7d4ea2e3.html">Python爬虫 -  抓取 青年之声 数据</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/19cb914e.html">Maya Python  - 自动生成序号插件</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/8150782b.html">Houdini - 计算模型体积 过滤问题模型</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/68d818a2.html">观看笔记 - Creating an Animated Paper Folding Effect in Maya</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5c26d29c.html">观看笔记 - Python For Maya Artist Friendly Programming</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/13d1de85.html">观看笔记 - Pluralsight - Python for Maya Fundamentals</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/fe733535.html">【总结】 2018年9月回顾 | 10月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/59506.html">Hexo博客优化之路（八） - Gitment换成Gittalk | SEO优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/17676.html">数字媒体技术专业网站 - 搭建感想</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/53349.html">VScode - 实现Maya-python代码快速提示</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50174.html">观看笔记 - Pluralsight - Houdini VEX Fundamentals</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/3087.html">VisualStudioCode 编辑器安利</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/21898.html">Houdini VDB 将CAD图纸转成实体模型</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/15486.html">观看笔记 - Pluralsight - Houdini SOP Solver</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/57520.html">Three.js - EditorContrl 添加区域限制</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/33613.html">浅谈优越感</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/988.html">MEL - 选点成盒插件</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/52737.html"> MEL - 面片自动匹配插件（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/19450.html">MEL - 面片自动匹配插件（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/35846.html">Three.js -通过JQuery处理脚本异步加载</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24831.html">Three.js -动态加载相关的js</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/59091.html">Three.js - postprocessing 后期处理</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4257.html">至2018级数字媒体技术新生</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/56108.html">Hexo博客优化之路（七）- 代码块进阶优化&分类优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1905.html">MEL 随机大小插件</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50883.html">Hexo博客优化之路(六) - 本地搜索优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/51575.html">Hexo博客优化之路（五）- 代码块优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50589.html">Three.js - 用最小面数生成立体的物体</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/39119.html">Hexo博客优化之路（四）- fancybox 图片跳转问题</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/59323.html">数据结构大作业回顾</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/37850.html">Hexo博客优化之路（三）- 正则表达式 清除markdown中的HTML标签</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/35734.html">Hexo博客优化之路（二）- 前端添加图片水印方案</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/20763.html">Hexo博客优化之路（一）- 博客瘦身方法</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/60230.html">Houdini-学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/12961.html">Three.js - 学习之路（五）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/61471.html">Three.js - 学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/34183.html">Houdini-学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/40670.html">Three.js - 学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/37543.html">Three.js - 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/33144.html">Three.js - 房产信息线上浏览Demo</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/733.html">Three.js - 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24239.html">Three.js-学习之路（零）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/35326.html">Houdini-学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6532.html">Houdini-学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6507.html">bootstrap 学习感悟</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6250.html">渔村苏维埃政府旧址-数字博物馆</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24028.html">PyMel 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/30435.html">Photogrammetry-学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/33086.html">Photogrammetry 学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/63727.html">Hexo个人博客搭建遇到的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/36167.html">Photogrammetry 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24208.html">Houdini-学习之路(零)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7485.html">Photogrammetry 学习之路（一）</a></li></ul>
+    
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+
+    <script>
+        $(".post-list").addClass("toc-article");
+        // $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#toc, .switch-btn, .switch-area").toggle();
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+                $(".switch-btn, .switch-area").fadeToggle(300);
+            }
+        })
+    </script>
+
+
+
+
+    <script>
+        
+    </script>
+
+
+  <script>
+  if($(".highlight").length > 0) {//判断代码块是否存在
+    $(".highlight").each(function(index){//遍历代码块
+      let btnDiv  = $('<div></div>');
+      $(this).prepend(btnDiv);
+
+      let scope = this;
+      btnDiv.css('position','absolute');
+
+      $(window).load(function() {//确保其他东西加载完成才执行
+        btnDiv.css('top',$(scope).position().top + 12);
+        btnDiv.css('right','2em');
+      });
+
+      $(window).resize(function () {//当浏览器大小变化时
+          setTimeout(function(){
+            btnDiv.css('top',$(scope).position().top + 12);
+            btnDiv.css('right','2em');
+          },100);
+      });
+
+      //用于复制代码按钮
+      $(scope).find('.code').addClass("code"+index);
+
+      //复制按钮
+      let copyBtn=$("<button type='button' class='btn btn-primary' id='copyBtn" + index + "'data-clipboard-action='copy' data-clipboard-target='.code"+index+"'>复制</button>");
+      $(btnDiv).prepend(copyBtn);
+      
+
+      //识别Vex
+      if($(this).attr('data-lang') == 'vex'){
+
+        let VEXBtn=$("<button type='button' class='btn btn-primary' id='VEXBtn" + index + "'>VEX原生样式</button>");
+        $(btnDiv).prepend(VEXBtn);
+
+        let VEXBtnCheck = false;
+        let scope = this;
+
+        $(scope).find('.built_in').removeClass('built_in').addClass("VEX_built_in");
+        $(scope).find('.string').removeClass('string').addClass("VEX_string");
+        $(scope).find('.operator').removeClass('operator').addClass("VEX_operator");
+        $(scope).find('.number').removeClass('number').addClass("VEX_number");
+        $(scope).find('.command').removeClass('command').addClass("VEX_command");
+        $(scope).find('.comment').removeClass('comment').addClass("VEX_comment");
+        $(scope).find('.id').removeClass('id').addClass("VEX_id");
+
+        $('#VEXBtn'+ index).click(function(){
+          if(VEXBtnCheck){
+            $(this).text('VEX原生样式');
+            VEXBtnCheck = false;
+            $(scope).find('.built_in').removeClass('built_in').addClass("VEX_built_in");
+            $(scope).find('.string').removeClass('string').addClass("VEX_string");
+            $(scope).find('.operator').removeClass('operator').addClass("VEX_operator");
+            $(scope).find('.number').removeClass('number').addClass("VEX_number");
+            $(scope).find('.command').removeClass('command').addClass("VEX_command");
+            $(scope).find('.comment').removeClass('comment').addClass("VEX_comment");
+            $(scope).find('.id').removeClass('id').addClass("VEX_id");
+          }else{
+            $(this).text('自定义样式');
+            VEXBtnCheck = true;
+            $(scope).find('.VEX_built_in').removeClass('VEX_built_in').addClass("built_in");
+            $(scope).find('.VEX_string').removeClass('VEX_string').addClass("string");
+            $(scope).find('.VEX_operator').removeClass('VEX_operator').addClass("operator");
+            $(scope).find('.VEX_number').removeClass('VEX_number').addClass("number");
+            $(scope).find('.VEX_command').removeClass('VEX_command').addClass("command");
+            $(scope).find('.VEX_comment').removeClass('VEX_comment').addClass("comment");
+            $(scope).find('.VEX_id').removeClass('VEX_id').addClass("id");
+          }
+
+        });
+      }
+
+      //识别MEL
+      if($(this).attr('data-lang') == 'mel'){
+        let melBtn=$("<button type='button' class='btn btn-primary' id='melBtn" + index + "'>MEL原生样式</button>");
+        $(btnDiv).prepend(melBtn);
+
+        let melBtnCheck = false;
+        let scope = this;
+
+        $(scope).find('.keyword').removeClass('keyword').addClass("mel_keyword");
+        $(scope).find('.string').removeClass('string').addClass("mel_string");
+        $(scope).find('.number').removeClass('number').addClass("mel_number");
+    
+        $(scope).find('.command').removeClass('command').addClass("mel_command");
+        $(scope).find('.operator').removeClass('operator').addClass("mel_operator");
+
+        $('#melBtn'+ index).click(function(){
+          if(melBtnCheck){
+            $(this).text('MEL原生样式');
+            melBtnCheck = false;
+            $(scope).find('.keyword').removeClass('keyword').addClass("mel_keyword");
+            $(scope).find('.string').removeClass('string').addClass("mel_string");
+            $(scope).find('.number').removeClass('number').addClass("mel_number");
+        
+            $(scope).find('.command').removeClass('command').addClass("mel_command");
+            $(scope).find('.operator').removeClass('operator').addClass("mel_operator");
+          }else{
+            $(this).text('自定义样式');
+            melBtnCheck = true;
+            $(scope).find('.mel_keyword').removeClass('mel_keyword').addClass("keyword");
+            $(scope).find('.mel_string').removeClass('mel_string').addClass("string");
+            $(scope).find('.mel_number').removeClass('mel_number').addClass("number");
+            $(scope).find('.mel_command').removeClass('mel_command').addClass("command");
+            $(scope).find('.mel_operator').removeClass('mel_operator').addClass("operator");
+          }
+        });
+      }
+    })
+  }
+  </script>
+
+  <script>
+  
+  function codeAutoResize(){
+    
+    if($(".highlight").length > 0) {//判断代码块是否存在
+        $(".highlight").each(function(index){//遍历代码块
+          let codeWdith;
+          let parentWidth = $(this).css('width');//获取代码块的宽度
+          let childWidth = $(this).children('table').css('width');//获取代码的宽度
+          if(parseInt(parentWidth) < parseInt(childWidth) ){//转成整数比较宽度大小
+            codeWdith = childWidth;
+          }else{
+            codeWdith = parentWidth;
+          }
+          $(this).children('style').remove();//清理style标签
+          $(this).addClass("resize"+ index);//添加class名
+          $(this).append("<style>.highlight.resize"+ index +"::before{width:" + codeWdith + "}</style>");
+        }); 
+      } 
+  }
+  
+  setInterval(function(){
+    codeAutoResize();//初始化
+  },500);
+  
+
+  $(window).resize(function(){
+    codeAutoResize();//改变尺寸的时候执行
+  });
+  </script></div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2019 智伤帝
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo &nbsp;&nbsp;</a><a href="https://github.com/maochunguang" target="_blank">Blog</a> by 智伤帝
+            </div>
+        </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 1;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'xxxxx', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "//hm.baidu.com/hm.js?xxxxxx";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+<div class="scroll" id="scroll">
+    <a href="javascript:;"><i class="fa fa-arrow-up"></i></a>
+    <!-- <a href="#comments"><i class="fa fa-comments-o"></i></a> -->
+    <a href="javascript:;"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    var $top = $('.fa-arrow-up');
+    var $bottom = $('.fa-arrow-down');
+
+    $top.on('click', function () {
+
+      $('body').velocity('scroll');
+    });
+    $bottom.on('click', function () {
+
+      $('#footer').velocity('scroll');
+    });
+
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+  </div>
+  
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+    </script>
+    
+</body>
+</html>
