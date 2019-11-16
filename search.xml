@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[VScode - 全面使用攻略（三）]]></title>
     <url>%2Fposts%2F7cc09d5d.html</url>
-    <content type="text"><![CDATA[VSCode 使用骚操作 前言 &emsp;&emsp;开篇的时候挖了一个坑 &emsp;&emsp;这里的操作是怎么在 VScode 实现的呢？ 我在这里解惑&emsp;&emsp;其实复制行可以在不选择任何代码的时候 ctrl+c ，这样会复制一整行。&emsp;&emsp;然后就疯狂敲 ctrl + v 就可以了， 在不选择的情况下，这样粘贴是直接粘贴到下一行。&emsp;&emsp;然后按住鼠标中键可以拖拽选择文本，选中末尾的数字。&emsp;&emsp;然后使用我上次介绍的 Insert Number 插件， ctrl + alt + n 就可以插入递增的数字。 交互式演练场 &emsp;&emsp;在开篇的时候也挖了一个坑&emsp;&emsp;我有提到 其实 交互式演练场（Interactive Playground） 其实已经包含了很多 VScode 的骚操作 ctrl+alt+上下键 多重鼠标添加 alt+上下键 移动行 alt+shift+上下键 复制行 ctrl+d 可以选择当前光标下的单词 类似双击效果 ctrl+shift+L 可以找到当前选中类似的单词 ctrl+shift+k 可以删除一行，不过我一般是在不选择字符情况下用 ctrl+x 来删除（离左手近） alt+shift+f 可以自动排布文档（formating） F2 重命名变量 VScode 的 骚操作代码注释 ctrl+/ 可以切换代码注释 ctrl+k ctrl+c 可以继续注释代码 ctrl+k ctrl+u 可以取消注释代码 鼠标中键拖拽 鼠标中键实现多行拖拽（比 ctrl+alt+上下键 更好用） ScreenCast 模式 ScreenCast 模式可以让VScode回显所有的操作指令以及鼠标点击红色标记 用户代码片段 snippet 用户可以插入自定义的代码片段，提高编程的效率。 搜索 ctrl + f 可以打开搜索框 ctrl + h 可以打开替换框 普通的匹配模式进行替换 大小写匹配 全字匹配 正则表达式 完全基于 JavaScript 的正则表达式可以通过 $数字 来实现匹配的获取和替换 注：(“apple.*)” 括号的部分将会获取到替换标记 \$1、\$2 这些变量中，根据括号的数量赋值。. 代表任意字符* 代表匹配0个或者多个“apple.*” 表示匹配 “apple任意字符” 这个模式通过括号则可以进一步把匹配到的内容获取出来进行扩充。 总结 &emsp;&emsp;熟练掌握这些技巧可以大大提高 代码编写 的效率&emsp;&emsp;特别是正则表达式，你可以通过它插入多行代码。&emsp;&emsp;不过正则也不是万能的，之前遇到个需求就是匹配到的数字需要进行数学计算。 仓库&emsp;&emsp;貌似正则就无法处理这种复杂的情况，这个时候就需要自己写代码来处理了， python 和 js 都原生支持正则表达式匹配处理。 &emsp;&emsp;以上是我个人使用 VScode 一年多来的经验汇总，如果大家还有什么骚操作愿意分享可以留言给我^_^]]></content>
+    <content type="text"><![CDATA[VSCode 使用骚操作 前言 &emsp;&emsp;开篇的时候挖了一个坑 &emsp;&emsp;这里的操作是怎么在 VScode 实现的呢？ 我在这里解惑&emsp;&emsp;其实复制行可以在不选择任何代码的时候 ctrl+c ，这样会复制一整行。&emsp;&emsp;然后就疯狂敲 ctrl + v 就可以了， 在不选择的情况下，这样粘贴是直接粘贴到下一行。&emsp;&emsp;然后按住鼠标中键可以拖拽选择文本，选中末尾的数字。&emsp;&emsp;然后使用我上次介绍的 Insert Number 插件， ctrl + alt + n 就可以插入递增的数字。 交互式演练场 &emsp;&emsp;在开篇的时候也挖了一个坑&emsp;&emsp;我有提到 其实 交互式演练场（Interactive Playground） 其实已经包含了很多 VScode 的骚操作 ctrl+alt+上下键 多重鼠标添加 alt+上下键 移动行 alt+shift+上下键 复制行 ctrl+d 可以选择当前光标下的单词 类似双击效果 ctrl+shift+L 可以找到当前选中类似的单词 ctrl+shift+k 可以删除一行，不过我一般是在不选择字符情况下用 ctrl+x 来删除（离左手近） alt+shift+f 可以自动排布文档（formating） F2 重命名变量 VScode 的 骚操作代码注释 ctrl+/ 可以切换代码注释 ctrl+k ctrl+c 可以继续注释代码 ctrl+k ctrl+u 可以取消注释代码 自动保存 开启了自动保存之后，我写代码再也不用担心断电、崩溃等问题导致写的内容没有了。再加上 localhistory 双重保险，无论什么情况，代码都与你同在。 鼠标中键拖拽 鼠标中键实现多行拖拽（比 ctrl+alt+上下键 更好用） ScreenCast 模式 ScreenCast 模式可以让VScode回显所有的操作指令以及鼠标点击红色标记 用户代码片段 snippet 用户可以插入自定义的代码片段，提高编程的效率。 搜索 ctrl + f 可以打开搜索框 ctrl + h 可以打开替换框 普通的匹配模式进行替换 大小写匹配 全字匹配 正则表达式 完全基于 JavaScript 的正则表达式可以通过 $数字 来实现匹配的获取和替换 注：(“apple.*)” 括号的部分将会获取到替换标记 \$1、\$2 这些变量中，根据括号的数量赋值。. 代表任意字符* 代表匹配0个或者多个“apple.*” 表示匹配 “apple任意字符” 这个模式通过括号则可以进一步把匹配到的内容获取出来进行扩充。 禅模式 （Zen Mode） 开启之后屏幕所有的区域就只剩下代码区域，让你脱离一切干扰。让我想起了 一加7pro 的禅定模式， 一键单身(:з」∠)这个模式太过佛系简洁，我个人用不惯 总结 &emsp;&emsp;熟练掌握这些技巧可以大大提高 代码编写 的效率&emsp;&emsp;特别是正则表达式，你可以通过它插入多行代码。&emsp;&emsp;不过正则也不是万能的，之前遇到个需求就是匹配到的数字需要进行数学计算。 仓库&emsp;&emsp;貌似正则就无法处理这种复杂的情况，这个时候就需要自己写代码来处理了， python 和 js 都原生支持正则表达式匹配处理。 &emsp;&emsp;以上是我个人使用 VScode 一年多来的经验汇总，如果大家还有什么骚操作愿意分享可以留言给我^_^]]></content>
       <categories>
         <category>VScode</category>
       </categories>
@@ -27,7 +27,7 @@
   <entry>
     <title><![CDATA[VScode - 全面使用攻略（一）]]></title>
     <url>%2Fposts%2F1947fed4.html</url>
-    <content type="text"><![CDATA[VScode 入门介绍 前言 &emsp;&emsp;其实一年多前就写了一篇文章专门来安利 VScode 链接&emsp;&emsp;那个时候还说 VScode 是个小众编辑器，其实得益于前端开发刚猛的势头，这个编辑器也越来越流行了。&emsp;&emsp;结合了最近一年多的使用经验积累,我打算将自己使用 VScode 的经验总结归纳一下。&emsp;&emsp;希望大家受用 |ू･ω･` ) &emsp;&emsp;B站也有别人录下推荐的视频(偏PHP后端方向的) av56583362 什么是 VScode &emsp;&emsp;VScode 全称为 Visual Studio Code ,是微软公司开发的文本编辑器，由于名字过长，下面统统简称为 VScode。 百度百科 为什么推荐 VScode &emsp;&emsp;其实这个问题已经不需要我回答，网上也有大量推荐 比如 Visual Studio Code（VS code）你们都在用吗？或许你们需要看一下这篇博文 为什么我选择使用 VS Code进行前端开发? &emsp;&emsp;他们给出的理由都很充分，有些东西也不需要我多加赘述。 &emsp;&emsp;不过作为写给小白的教程，有些东西我还是需要明确一下。&emsp;&emsp;在编程开发工具中，常用的代码编写工具有以下两种分类: 集成开发环境(Integrated Development Environment) 脚本编辑器(Text Editor) &emsp;&emsp;可能会有人对这两个名词很陌生,不过只要指出一些编程开发的工具相信大家就明白了。 集成开发环境(Integrated Development Environment) Visual Studio Android Studio Eclipse Xcode Netbeans JetBrains 全家桶 PyCharm WebStorm Intellij IDEA … 脚本编辑器(Text Editor) VisaulStudioCode Atom Sublime NotePad ++ Vim Emacs HBuilder &emsp;&emsp;关于这两者的区别可以参照我初学编程的时候翻译的教程 av15609748&emsp;&emsp;因为当时初学所以翻译质量不太好，请见谅(:з」∠) &emsp;&emsp;在 3m50s 的地方 Simon 指出了 IDE 和 脚本编辑器 的区别。&emsp;&emsp;脚本编辑器其实就是纯文本编辑工具，它只是让代码更好地显示，但是涉及到一些专门的测试环境就需要使用 IDE 这种复杂的开发环境。&emsp;&emsp;用通俗的话来讲就是 文本编辑器 是 导弹， 而 集成开发环境 是 核弹。&emsp;&emsp;那更加强大的集成开发环境理应是最佳选择，那我们为什么还会选择导弹呢？&emsp;&emsp;其实主要是因为杀鸡焉用牛刀的原理。&emsp;&emsp;集成开发环境通常集成过多的东西导致很臃肿，然而普通程序员又有多少人会用到全部的工具呢？&emsp;&emsp;因此文件体积更小，启动速度更快的脚本编辑器越来越受到程序员们的追捧。 &emsp;&emsp;我们可以参照 VisualStudio 的大小 和 VisaulStudioCode 的文件大小比较就可以知道。&emsp;&emsp;VisualStudio如果将所有语言的开发包都安装上需要几十个G&emsp;&emsp;而VScode的安装包大小只有不到 100M &emsp;&emsp;由于集成开发环境的庞大臃肿，很多集成开发环境都是有自己的针对领域的，比如说 JetBrains 的全家桶IDE&emsp;&emsp;每一个软件都针对特定的开发环境需求进行优化，比如说 PyCharm 是针对 Python 而 Intellij IDEA 是针对 Java 的&emsp;&emsp;而在这方面脚本编辑器因为其轻量化的特点通常还可以支持多种语言的编辑。 &emsp;&emsp;但是话说回来，即便是杀鸡焉用牛刀，随着开发越来越复杂，导弹的威力很可能并不能满足我们的开发需求的。&emsp;&emsp;因此随着时代的发展 Atom 和 Sublime 这种带插件扩展的编辑器相继出现，而其他编辑器你也紧跟其后。&emsp;&emsp;我们可以通过编辑器的插件获取类似 IDE 的各种功能体验，而且插件相当于扩展模块，我们可以很轻松地开启和关闭无关的功能，也满足轻量化的需求。&emsp;&emsp;如今 VScode 的插件的强大已经完全不输于专业IDE，比如Google的新技术Flutter 就钦定了 VScode 和 Android Studio 两个开发平台。&emsp;&emsp;通过插件扩展的 VScode 开发 Flutter App 的体验几乎不输于 Android Studio 这种专业 IDE 。 &emsp;&emsp;当然由于这种高度定制化的插件功能扩展，如何搭配这些插件加快开发效率就得花很多时间去研究，不像 IDE 那样一整套功能提供好了。 &emsp;&emsp;这里我总结一下 IDE 我不喜欢点： 按钮太多，功能太复杂，让人劝退，对新手不友好 针对特定开发环境，无法兼容不同语言，不灵活 插件较少，一些自定义开发需求难以满足 启动缓慢，占用系统资源多 &emsp;&emsp;纵然 IDE 有些不便的地方，我们也没必要全盘否定它，毕竟使用环境是不一样的。&emsp;&emsp;IDE适合大型开发，特别是需要编译运行还要依赖各种环境的 C++ 或者 Java ，IDE的配套环境真的可以省去很多麻烦，调试使用 IDE 的工具也很省心。&emsp;&emsp;脚本编辑器更加适合敏捷开发，比如 js python 这类的脚本语言。&emsp;&emsp;而且现在很多IDE也支持插件开发进行功能扩展，并不是脚本编辑器特有的功能了。&emsp;&emsp;以上就是我个人对 IDE 和 脚本编辑器 的看法，个人还是偏好 脚本编辑器 多一点 &emsp;&emsp;另外必须强调 无论是 IDE 还是 脚本编辑器 都只是编程工具，编程最重要的是写程序的人，因此没有必要争自己使用的工具来秀优越感，适合自己才是最好的。 &emsp;&emsp;最后在众多脚本编辑器中 为什么 就选了 VScode呢？&emsp;&emsp;其实几年前还是 Sublime 和 atom 称霸天下的时候。&emsp;&emsp;不过后来 VScode 的插件生态建立起来之后，实现了弯道超车。&emsp;&emsp;由于 atom 我没用过，Sublime 我也只是用了很短一段时间，所以我自己也不好做出评价。&emsp;&emsp;我总结一下目前对VScode积极的认识： 微软爸爸的财大气粗做后盾，维护很积极 图形化图标，交互比较友好 集成 Git 和 Cmd 以及 Debug 工具，我以前用 Sublime 的时候这些东西都没有内置 安装插件有图形化界面，可以不敲命令行，对新手很舒服 插件超级丰富，社区极度活跃，有问题基本都可以在 Github Issue 以及 Stack Overflow 上查到答案 &emsp;&emsp;最重要一点是我自己也算是半个前端工程师，以前一直用 学校 教的 Dreamweaver ，自从接触了 Sublime 之后就爱不释手，后来另一个学前端的同学给我推荐了VScode真的就成了我编程开发的主力工具，大多数的开发都可以通过插件扩展实现在 VScode 上开发。&emsp;&emsp;我印象最深刻的就是 VRML 语言，当时学校要求我们学习这个被淘汰的语言，而且还要用 VRML Pad 这种不知道是多少年前的开发工具，颜色高亮各种不清晰，操作各种不顺手。&emsp;&emsp;最后还是通过 VScode 的插件来完美解决这些的问题。 VScode 安装 &emsp;&emsp;安装VScode 特别是简单，去百度搜索 VScode 点开第一个微软的官方链接，点击下载即可。 &emsp;&emsp;双击安装包 点击 安装，基本上点击下一步就可以了，几个要点可以重点说一下 我接受协议 必须勾选的 路径可以自定义，不过一般默认就可以了 添加到资源管理器上下文目录 这个操作可以添加右键 Code 打开当前目录，非常方便。 将 Code 注册为受支持的文件类型的编辑器 这个操作会让 VScode 支持的代码文件全部编程变成 VScode 默认打开，文件图标也会随之更改，很好辨认。 &emsp;&emsp;安装完成的界面如下图 VScode 使用 &emsp;&emsp;通过上面的步骤，我们已经顺利进入了软件的启动界面。 &emsp;&emsp;然而看到的全部是英文，可能有些人会觉得很难受，有没有办法转换成中文界面呢？&emsp;&emsp;当然是可以的，我们只需要安装一个中文补丁就没问题了。 &emsp;&emsp;那就可以好好讲解一下 VScode 的界面的情况了 VScode 新手讲解 注：经过更新之后，新版本UI有点不同，请见谅。 &emsp;&emsp;在欢迎使用的界面上，新手需要注意红色框的区域&emsp;&emsp;特别是下划线的部分的 入门视频 和 提示与技巧 都是官方提供的说明讲解。&emsp;&emsp;当然里面都是英文的，有点遗憾。 &emsp;&emsp;另外右边的 界面概览 可以清晰支出 VScode 各个区域的说明 &emsp;&emsp;交互式演练场 英文叫做 Interactive Playground 也是非常好的体验文档。&emsp;&emsp;只可惜同样没有汉化。&emsp;&emsp;关于交互式演练场的操作我将留到 VScode 的骚操作进行讲解。 文件资源管理器 &emsp;&emsp;默认情况下 文件资源管理器 是空的，可以打开一个文件夹作为工作区。&emsp;&emsp;点击 打开文件夹 或者 拖拽文件夹进来都可以实现。 &emsp;&emsp;通过工作区可以管理当前文件夹里面的内容。&emsp;&emsp;工作区上方的四个按钮可以帮助你创建文件和文件夹。&emsp;&emsp;对文件右键还有跟多的删除命令等等，也可以通过拖拽改变文件的位置。 跨文件搜索 &emsp;&emsp;通过跨文件搜索可以搜索当前工作区下的所有文件的内容。 &emsp;&emsp;通过这里找到的信息直接跳转到相应文件的相关行。 源代码管理 &emsp;&emsp;原代码管理提供了简单的 git 处理&emsp;&emsp;基础的功能诸如 push pull commit 都封装好了&emsp;&emsp;只需要点击按钮即可使用 启动和测试 &emsp;&emsp;启动和测试集成了 Debug 的模块&emsp;&emsp;和浏览器的 Debug 模块基本相同。&emsp;&emsp;这里可以通过 node.js 进行脚本测试 &emsp;&emsp;点击 F5 就可以启动 Debug 模式。&emsp;&emsp;遇到设置红色的断点，代码执行就会暂停。 总结 &emsp;&emsp;VScode的生态真的越来越强，各种语言开发的支持都很全面了。&emsp;&emsp;当然还是如上文说的，一般还是前端用它比较多，萝卜青菜各有所爱。&emsp;&emsp;上面最后一张gif图稍微显示了一些 VScode 的便捷操作，关于这些骚操作以及插件运用我留到后面两篇文章进行介绍 VScode 插件推荐 VSCode 使用骚操作]]></content>
+    <content type="text"><![CDATA[VScode 入门介绍 前言 &emsp;&emsp;其实一年多前就写了一篇文章专门来安利 VScode 链接&emsp;&emsp;那个时候还说 VScode 是个小众编辑器，其实得益于前端开发刚猛的势头，这个编辑器也越来越流行了。&emsp;&emsp;结合了最近一年多的使用经验积累,我打算将自己使用 VScode 的经验总结归纳一下。&emsp;&emsp;希望大家受用 |ू･ω･` ) &emsp;&emsp;B站也有别人录下推荐的视频(偏PHP后端方向的) av56583362 什么是 VScode &emsp;&emsp;VScode 全称为 Visual Studio Code ,是微软公司开发的文本编辑器，由于名字过长，下面统统简称为 VScode。 百度百科 为什么推荐 VScode &emsp;&emsp;其实这个问题已经不需要我回答，网上也有大量推荐 比如 Visual Studio Code（VS code）你们都在用吗？或许你们需要看一下这篇博文 为什么我选择使用 VS Code进行前端开发? &emsp;&emsp;他们给出的理由都很充分，有些东西也不需要我多加赘述。 &emsp;&emsp;不过作为写给小白的教程，有些东西我还是需要明确一下。&emsp;&emsp;在编程开发工具中，常用的代码编写工具有以下两种分类: 集成开发环境(Integrated Development Environment) 脚本编辑器(Text Editor) &emsp;&emsp;可能会有人对这两个名词很陌生,不过只要指出一些编程开发的工具相信大家就明白了。 集成开发环境(Integrated Development Environment) Visual Studio Android Studio Eclipse Xcode Netbeans JetBrains 全家桶 PyCharm WebStorm Intellij IDEA … 脚本编辑器(Text Editor) VisaulStudioCode Atom Sublime NotePad ++ Vim Emacs HBuilder &emsp;&emsp;关于这两者的区别可以参照我初学编程的时候翻译的教程 av15609748&emsp;&emsp;因为当时初学所以翻译质量不太好，请见谅(:з」∠) &emsp;&emsp;在 3m50s 的地方 Simon 指出了 IDE 和 脚本编辑器 的区别。&emsp;&emsp;脚本编辑器其实就是纯文本编辑工具，它只是让代码更好地显示，但是涉及到一些专门的测试环境就需要使用 IDE 这种复杂的开发环境。&emsp;&emsp;用通俗的话来讲就是 文本编辑器 是 导弹， 而 集成开发环境 是 核弹。&emsp;&emsp;那更加强大的集成开发环境理应是最佳选择，那我们为什么还会选择导弹呢？&emsp;&emsp;其实主要是因为杀鸡焉用牛刀的原理。&emsp;&emsp;集成开发环境通常集成过多的东西导致很臃肿，然而普通程序员又有多少人会用到全部的工具呢？&emsp;&emsp;因此文件体积更小，启动速度更快的脚本编辑器越来越受到程序员们的追捧。 &emsp;&emsp;我们可以参照 VisualStudio 的大小 和 VisaulStudioCode 的文件大小比较就可以知道。&emsp;&emsp;VisualStudio如果将所有语言的开发包都安装上需要几十个G&emsp;&emsp;而VScode的安装包大小只有不到 100M &emsp;&emsp;由于集成开发环境的庞大臃肿，很多集成开发环境都是有自己的针对领域的，比如说 JetBrains 的全家桶IDE&emsp;&emsp;每一个软件都针对特定的开发环境需求进行优化，比如说 PyCharm 是针对 Python 而 Intellij IDEA 是针对 Java 的&emsp;&emsp;而在这方面脚本编辑器因为其轻量化的特点通常还可以支持多种语言的编辑。 &emsp;&emsp;但是话说回来，即便是杀鸡焉用牛刀，随着开发越来越复杂，导弹的威力很可能并不能满足我们的开发需求的。&emsp;&emsp;因此随着时代的发展 Atom 和 Sublime 这种带插件扩展的编辑器相继出现，而其他编辑器你也紧跟其后。&emsp;&emsp;我们可以通过编辑器的插件获取类似 IDE 的各种功能体验，而且插件相当于扩展模块，我们可以很轻松地开启和关闭无关的功能，也满足轻量化的需求。&emsp;&emsp;如今 VScode 的插件的强大已经完全不输于专业IDE，比如Google的新技术Flutter 就钦定了 VScode 和 Android Studio 两个开发平台。&emsp;&emsp;通过插件扩展的 VScode 开发 Flutter App 的体验几乎不输于 Android Studio 这种专业 IDE 。 &emsp;&emsp;当然由于这种高度定制化的插件功能扩展，如何搭配这些插件加快开发效率就得花很多时间去研究，不像 IDE 那样一整套功能提供好了。 &emsp;&emsp;这里我总结一下 IDE 我不喜欢点： 按钮太多，功能太复杂，让人劝退，对新手不友好 针对特定开发环境，无法兼容不同语言，不灵活 插件较少，一些自定义开发需求难以满足 启动缓慢，占用系统资源多 &emsp;&emsp;纵然 IDE 有些不便的地方，我们也没必要全盘否定它，毕竟使用环境是不一样的。&emsp;&emsp;IDE适合大型开发，特别是需要编译运行还要依赖各种环境的 C++ 或者 Java ，IDE的配套环境真的可以省去很多麻烦，调试使用 IDE 的工具也很省心。&emsp;&emsp;脚本编辑器更加适合敏捷开发，比如 js python 这类的脚本语言。&emsp;&emsp;而且现在很多IDE也支持插件开发进行功能扩展，并不是脚本编辑器特有的功能了。&emsp;&emsp;以上就是我个人对 IDE 和 脚本编辑器 的看法，个人还是偏好 脚本编辑器 多一点 &emsp;&emsp;另外必须强调 无论是 IDE 还是 脚本编辑器 都只是编程工具，编程最重要的是写程序的人，因此没有必要争自己使用的工具来秀优越感，适合自己才是最好的。 &emsp;&emsp;最后在众多脚本编辑器中 为什么 就选了 VScode呢？&emsp;&emsp;其实几年前还是 Sublime 和 atom 称霸天下的时候。&emsp;&emsp;不过后来 VScode 的插件生态建立起来之后，实现了弯道超车。&emsp;&emsp;由于 atom 我没用过，Sublime 我也只是用了很短一段时间，所以我自己也不好做出评价。&emsp;&emsp;我总结一下目前对VScode积极的认识： 微软爸爸的财大气粗做后盾，维护很积极 图形化图标，交互比较友好 集成 Git 和 Cmd 以及 Debug 工具，我以前用 Sublime 的时候这些东西都没有内置 安装插件有图形化界面，可以不敲命令行，对新手很舒服 插件超级丰富，社区极度活跃，有问题基本都可以在 Github Issue 以及 Stack Overflow 上查到答案 &emsp;&emsp;最重要一点是我自己也算是半个前端工程师，以前一直用 学校 教的 Dreamweaver ，自从接触了 Sublime 之后就爱不释手，后来另一个学前端的同学给我推荐了VScode真的就成了我编程开发的主力工具，大多数的开发都可以通过插件扩展实现在 VScode 上开发。&emsp;&emsp;我印象最深刻的就是 VRML 语言，当时学校要求我们学习这个被淘汰的语言，而且还要用 VRML Pad 这种不知道是多少年前的开发工具，颜色高亮各种不清晰，操作各种不顺手。&emsp;&emsp;最后还是通过 VScode 的插件来完美解决这些的问题。 VScode 安装 &emsp;&emsp;安装VScode 特别是简单，去百度搜索 VScode 点开第一个微软的官方链接，点击下载即可。 &emsp;&emsp;双击安装包 点击 安装，基本上点击下一步就可以了，几个要点可以重点说一下 我接受协议 必须勾选的 路径可以自定义，不过一般默认就可以了 添加到资源管理器上下文目录 这个操作可以添加右键 Code 打开当前目录，非常方便。 将 Code 注册为受支持的文件类型的编辑器 这个操作会让 VScode 支持的代码文件全部编程变成 VScode 默认打开，文件图标也会随之更改，很好辨认。 &emsp;&emsp;安装完成的界面如下图 VScode 使用 &emsp;&emsp;通过上面的步骤，我们已经顺利进入了软件的启动界面。 &emsp;&emsp;然而看到的全部是英文，可能有些人会觉得很难受，有没有办法转换成中文界面呢？&emsp;&emsp;当然是可以的，我们只需要安装一个中文补丁就没问题了。 &emsp;&emsp;那就可以好好讲解一下 VScode 的界面的情况了 VScode 新手讲解 注：经过更新之后，新版本UI有点不同，请见谅。 &emsp;&emsp;在欢迎使用的界面上，新手需要注意红色框的区域&emsp;&emsp;特别是下划线的部分的 入门视频 和 提示与技巧 都是官方提供的说明讲解。&emsp;&emsp;当然里面都是英文的，有点遗憾。 &emsp;&emsp;另外右边的 界面概览 可以清晰支出 VScode 各个区域的说明 &emsp;&emsp;交互式演练场 英文叫做 Interactive Playground 也是非常好的体验文档。&emsp;&emsp;只可惜同样没有汉化。&emsp;&emsp;关于交互式演练场的操作我将留到 VScode 的骚操作进行讲解。 文件资源管理器 &emsp;&emsp;默认情况下 文件资源管理器 是空的，可以打开一个文件夹作为工作区。&emsp;&emsp;点击 打开文件夹 或者 拖拽文件夹进来都可以实现。 &emsp;&emsp;通过工作区可以管理当前文件夹里面的内容。&emsp;&emsp;工作区上方的四个按钮可以帮助你创建文件和文件夹。&emsp;&emsp;对文件右键还有跟多的删除命令等等，也可以通过拖拽改变文件的位置。 跨文件搜索 &emsp;&emsp;通过跨文件搜索可以搜索当前工作区下的所有文件的内容。 &emsp;&emsp;通过这里找到的信息直接跳转到相应文件的相关行。 源代码管理 &emsp;&emsp;原代码管理提供了简单的 git 处理&emsp;&emsp;基础的功能诸如 push pull commit 都封装好了&emsp;&emsp;只需要点击按钮即可使用 启动和测试 &emsp;&emsp;启动和测试集成了 Debug 的模块&emsp;&emsp;和浏览器的 Debug 模块基本相同。&emsp;&emsp;这里可以通过 node.js 进行脚本测试 &emsp;&emsp;点击 F5 就可以启动 Debug 模式。&emsp;&emsp;遇到设置红色的断点，代码执行就会暂停。 终端集成 &emsp;&emsp;通过快捷键 ctrl+` 可以呼叫出来&emsp;&emsp;默认是 windows 的 cmd 窗口，也可以切换 &emsp;&emsp;也可以切换成其他的终端启动 总结 &emsp;&emsp;VScode的生态真的越来越强，各种语言开发的支持都很全面了。&emsp;&emsp;当然还是如上文说的，一般还是前端用它比较多，萝卜青菜各有所爱。&emsp;&emsp;上面最后一张gif图稍微显示了一些 VScode 的便捷操作，关于这些骚操作以及插件运用我留到后面两篇文章进行介绍 VScode 插件推荐 VSCode 使用骚操作]]></content>
       <categories>
         <category>VScode</category>
       </categories>
@@ -83,8 +83,8 @@
       </categories>
       <tags>
         <tag>Maya</tag>
-        <tag>Autodesk</tag>
         <tag>Arnold</tag>
+        <tag>Autodesk</tag>
       </tags>
   </entry>
   <entry>
@@ -304,9 +304,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -318,9 +318,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -714,8 +714,8 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -730,8 +730,8 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -746,8 +746,8 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -778,8 +778,8 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -794,8 +794,8 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -810,8 +810,8 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -826,8 +826,8 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -842,8 +842,8 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -935,8 +935,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -949,8 +949,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -1083,8 +1083,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
       </tags>
   </entry>
   <entry>
@@ -1139,6 +1139,7 @@
       <categories>
         <category>工作</category>
         <category>总结</category>
+        <category>华强方特</category>
       </categories>
       <tags>
         <tag>人生</tag>
@@ -1154,8 +1155,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
       </tags>
   </entry>
   <entry>
@@ -1180,8 +1181,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
       </tags>
   </entry>
   <entry>
@@ -1193,8 +1194,8 @@
         <category>Maya</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Qt Designer</tag>
       </tags>
   </entry>
@@ -1206,8 +1207,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
       </tags>
   </entry>
   <entry>
@@ -1219,8 +1220,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>前端</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
