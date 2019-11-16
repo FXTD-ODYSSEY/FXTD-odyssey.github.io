@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[VScode - 全面使用攻略（三）]]></title>
     <url>%2Fposts%2F7cc09d5d.html</url>
-    <content type="text"><![CDATA[VSCode 使用骚操作 前言 &emsp;&emsp;开篇的时候挖了一个坑 &emsp;&emsp;这里的操作是怎么在 VScode 实现的呢？ 我现在这里解惑&emsp;&emsp;其实复制行可以在不选择任何代码的时候 ctrl+c ，这样会复制一整行。&emsp;&emsp;然后就疯狂敲 ctrl + v 就可以了， 在不选择的情况下，这样粘贴是直接粘贴到下一行。&emsp;&emsp;然后按住鼠标中键可以拖拽选择文本，选中末尾的数字。&emsp;&emsp;然后使用我上次介绍的 Insert Number 插件， ctrl + alt + n 就可以插入递增的数字。 交互式演练场 &emsp;&emsp;在开篇的时候也挖了一个坑&emsp;&emsp;我有提到 其实 交互式演练场（Interactive Playground） 其实已经包含了很多 VScode 的骚操作 ctrl+alt+上下键 多重鼠标添加 alt+上下键 移动行 alt+shift+上下键 复制行 ctrl+d 可以选择当前光标下的单词 类似双击效果 ctrl+shift+L 可以找到当前选中类似的单词 ctrl+shift+k 可以删除一行，不过我一般是不选择字符用 ctrl+x 来删除（离右手近） alt+shift+f 可以自动排布文档（formating） F2 重命名变量 VScode 的 骚操作代码注释 ctrl+/ 可以切换代码注释 ctrl+k ctrl+c 可以继续注释代码 ctrl+k ctrl+u 可以取消注释代码 鼠标中键拖拽 鼠标中键实现多行拖拽（比 ctrl+alt+上下键 更好用） ScreenCast 模式 ScreenCast 模式可以让VScode回显所有的操作指令以及鼠标点击红色标记 用户代码片段 snippet 用户可以插入自定义的代码片段，提高编程的效率。 搜索 ctrl + f 可以打开搜索框 ctrl + h 可以打开替换框 普通的匹配模式进行替换 大小写匹配 全字匹配 正则表达式 完全基于 JavaScript 的正则表达式可以通过 $数字 来实现匹配的获取和替换 注：(“apple.)” 括号的部分将会获取到替换标记 $1、$2 这些变量中，根据括号的数量赋值。. 代表任意字符\ 代表匹配0个或者多个“apple.*” 表示匹配 “apple任意字符” 这个模式通过括号则可以进一步把匹配到的内容获取出来进行扩充。 总结 &emsp;&emsp;熟练掌握这些技巧可以大大提高 代码编写 的效率&emsp;&emsp;特别是正则表达式，你可以通过它插入多行代码。&emsp;&emsp;不过正则也不是万能的，之前遇到个需求就是匹配到的数字需要进行数学计算。 仓库&emsp;&emsp;貌似正则就无法处理这种复杂的情况，这个时候就需要自己写代码来处理了， python 和 js 都原生支持正则表达式匹配处理。 &emsp;&emsp;以上是我个人使用 VScode 一年多来的经验汇总，如果大家还有什么骚操作愿意分享可以留言给我^_^]]></content>
+    <content type="text"><![CDATA[VSCode 使用骚操作 前言 &emsp;&emsp;开篇的时候挖了一个坑 &emsp;&emsp;这里的操作是怎么在 VScode 实现的呢？ 我在这里解惑&emsp;&emsp;其实复制行可以在不选择任何代码的时候 ctrl+c ，这样会复制一整行。&emsp;&emsp;然后就疯狂敲 ctrl + v 就可以了， 在不选择的情况下，这样粘贴是直接粘贴到下一行。&emsp;&emsp;然后按住鼠标中键可以拖拽选择文本，选中末尾的数字。&emsp;&emsp;然后使用我上次介绍的 Insert Number 插件， ctrl + alt + n 就可以插入递增的数字。 交互式演练场 &emsp;&emsp;在开篇的时候也挖了一个坑&emsp;&emsp;我有提到 其实 交互式演练场（Interactive Playground） 其实已经包含了很多 VScode 的骚操作 ctrl+alt+上下键 多重鼠标添加 alt+上下键 移动行 alt+shift+上下键 复制行 ctrl+d 可以选择当前光标下的单词 类似双击效果 ctrl+shift+L 可以找到当前选中类似的单词 ctrl+shift+k 可以删除一行，不过我一般是在不选择字符情况下用 ctrl+x 来删除（离左手近） alt+shift+f 可以自动排布文档（formating） F2 重命名变量 VScode 的 骚操作代码注释 ctrl+/ 可以切换代码注释 ctrl+k ctrl+c 可以继续注释代码 ctrl+k ctrl+u 可以取消注释代码 鼠标中键拖拽 鼠标中键实现多行拖拽（比 ctrl+alt+上下键 更好用） ScreenCast 模式 ScreenCast 模式可以让VScode回显所有的操作指令以及鼠标点击红色标记 用户代码片段 snippet 用户可以插入自定义的代码片段，提高编程的效率。 搜索 ctrl + f 可以打开搜索框 ctrl + h 可以打开替换框 普通的匹配模式进行替换 大小写匹配 全字匹配 正则表达式 完全基于 JavaScript 的正则表达式可以通过 $数字 来实现匹配的获取和替换 注：(“apple.*)” 括号的部分将会获取到替换标记 \$1、\$2 这些变量中，根据括号的数量赋值。. 代表任意字符* 代表匹配0个或者多个“apple.*” 表示匹配 “apple任意字符” 这个模式通过括号则可以进一步把匹配到的内容获取出来进行扩充。 总结 &emsp;&emsp;熟练掌握这些技巧可以大大提高 代码编写 的效率&emsp;&emsp;特别是正则表达式，你可以通过它插入多行代码。&emsp;&emsp;不过正则也不是万能的，之前遇到个需求就是匹配到的数字需要进行数学计算。 仓库&emsp;&emsp;貌似正则就无法处理这种复杂的情况，这个时候就需要自己写代码来处理了， python 和 js 都原生支持正则表达式匹配处理。 &emsp;&emsp;以上是我个人使用 VScode 一年多来的经验汇总，如果大家还有什么骚操作愿意分享可以留言给我^_^]]></content>
       <categories>
         <category>VScode</category>
       </categories>
@@ -83,8 +83,8 @@
       </categories>
       <tags>
         <tag>Maya</tag>
-        <tag>Arnold</tag>
         <tag>Autodesk</tag>
+        <tag>Arnold</tag>
       </tags>
   </entry>
   <entry>
@@ -304,9 +304,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -318,9 +318,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -935,8 +935,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>React</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -949,8 +949,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>React</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1877,9 +1877,9 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
+        <tag>学习笔记</tag>
         <tag>标记</tag>
         <tag>遮罩</tag>
-        <tag>学习笔记</tag>
       </tags>
   </entry>
   <entry>
@@ -1944,8 +1944,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>学习笔记</tag>
         <tag>前期基本流程</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
 </search>
