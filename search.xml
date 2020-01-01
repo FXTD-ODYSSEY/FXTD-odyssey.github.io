@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Maya 代码管理]]></title>
+    <url>%2Fposts%2F842747c9.html</url>
+    <content type="text"><![CDATA[配置服务器samba共享 | Git 仓库&amp;钩子配置 前言 &emsp;&emsp;最近动画组频繁出现服务器连接失败导致动画师无法使用工具的情况。&emsp;&emsp;我咨询了导师之后得到了相当让人沮丧的答案，服务器因为安全原因限制了人数登陆限制。&emsp;&emsp;直接导致使用的人多的话就无法连接的问题。 &emsp;&emsp;我最初觉得搞服务器不太可行，否则导师也不用这么窘迫。&emsp;&emsp;于是想着利用 工蜂 git 来同步制作人员本地的代码仓库的。 &emsp;&emsp;后来在找一个后端大佬聊天，了解内部Python的代码管理的时候。&emsp;&emsp;提到内部有 devcloud 开发机可以使用的。&emsp;&emsp;入职的时候我有看到，每个员工都可以申请一台个人的开发机，但是当时看到只有技术族可以申请，我直接无视了。 &emsp;&emsp;后来经过后端大佬的提醒，我尝试了一下，没想到我设计族也可以申请到服务器，真的让我惊诧。&emsp;&emsp;于是我就有了新的想法，通过开发机的个人服务器来给动画组搭建一个全新的服务器。 服务器配置 &emsp;&emsp;幸好之前为了弄网站后台，配置服务器可以通过 宝塔 面板实现可视化处理 O(∩_∩)O哈哈~&emsp;&emsp;瞬间就简单了很多，服务器和腾讯云的服务器相差无几，就是不可以在外网连接而已。&emsp;&emsp;还是常规操作，先去到宝塔面板的主页安装宝塔面板。&emsp;&emsp;然后在宝塔面板上初始化服务器的环境。&emsp;&emsp;下面就可以可视化操作服务器了 &emsp;&emsp;接下来就需要实现服务器的文件共享到 windows 上了&emsp;&emsp;网上搜索了一下，果然是使用 samba ，这个东西我之前在华强有弄过。&emsp;&emsp;但是毕竟不是自己搭建的，因此还是得借助网上文章的帮忙。 &emsp;&emsp;中间过程也看了一些不靠谱的文章，最后还是借助这篇文章搭建好了我想要的 samba 链接 samba共享搭建安装 samba 服务1yum -y install samba samba-client 启动和重启 samba 服务1234# 启动服务systemctl start smb nmb# 重启服务systemctl restart smb nmb &emsp;&emsp;后面修改配置的时候需要重启 samba 服务 开放 139 445 端口 创建 linux 用户 | 配置 samba 访问用户密码1234# 创建 linux 用户useradd -s /sbin/nologin morefun# 配置 samba 用户密码smbpasswd -a morefun 创建共享的文件夹并开放权限 修改 smb.conf 配置 &emsp;&emsp;主要在配置文件的末尾添加共享文件夹的路径和权限即可 1234567891011[Tools] # 共享文件目录描述 comment = Shared Directories # 共享文件目录 path = /data/smb/Tools/ # 是否允许guest访问 public = yes # 是否浏览权限 browseable = yes # 是否可写权限 writable = yes windows 上连接服务器 &emsp;&emsp;在windows上文件资源管理器上输入 \\ip地址 即可访问samba共享文件了&emsp;&emsp;访问之后会弹出用户名和密码输入框&emsp;&emsp;可以通过运行 cmd 命令来跳过输入步骤。 1NET USE &lt;\\IP地址&gt; &lt;密码&gt; /USER:&lt;账号&gt; Git 仓库配置 &emsp;&emsp;其实我个人也只是会git常用的命令，复杂操作其实也不懂。 服务器端初始化 git 仓库 &emsp;&emsp;首先要明确 仓库初始化有两种模式 12git initgit --bare init &emsp;&emsp;没有 bare 就是普通的代码仓库，会在创建目录下常见 .git 目录&emsp;&emsp;添加 bare 命令之后会发现 .git 目录下的内容会直接创建到当前目录下。 &emsp;&emsp;添加 bare 命令之后是无法通过文件夹看到仓库的内容的。&emsp;&emsp;这种仓库可以定义为远程仓库，类似于数据中心的概念。 &emsp;&emsp;可以通过 git init 创建一个本地的仓库&emsp;&emsp;然后通过 git remote add 的方式将服务器的远程仓库路径连接上 &emsp;&emsp;其实 remote add 的操作是在 .git/config 文件下添加了新的远程路径配置 &emsp;&emsp;这样本地的 init 仓库就可以类似 github 的操作将代码 同步到 远程的 bare init 仓库上 &emsp;&emsp;我之前都不知道，看到github上可以预览到文件，一直以为 github 上是 git init 的仓库&emsp;&emsp;因此我一直尝试将一个仓库的代码push到另一个仓库上，却始终不成功(:з」∠)&emsp;&emsp;还需要在另一个仓库上对push的文件进行操作处理才行，特别麻烦。&emsp;&emsp;后来看到 Stack Overflow 提到，原来 github 的仓库都是 bare 仓库，才明白我的操作是不对的。&emsp;&emsp;bare init 就不会有问题。 git 钩子配置 &emsp;&emsp;网上大多数的钩子其实都是配置到服务器端的 hooks 文件下的 post-receive 文件下。&emsp;&emsp;这样只要 git push 完成服务端的代码同步之后就会触发 post-receive 钩子的shell代码。&emsp;&emsp;不过因为我这里的一些特殊原因，我还是将钩子配到了客户端的 pre-push 上了。 &emsp;&emsp;钩子里面的代码最初还以为要自己写复制的。&emsp;&emsp;网上查了一下，其实可以通过 checkout 简单实现. 123456# 指定我的代码检出目录DIR= &lt;指定输出路径&gt;# 清理路径上的无关文件git --work-tree=$&#123;DIR&#125; clean -fd# 直接强制检出git --work-tree=$&#123;DIR&#125; checkout --force &emsp;&emsp;通过上面的代码可以将仓库当前分支显示的代码直接复制到制定的目录上，完成代码的发布工作。 总结 &emsp;&emsp;再次温习了一下服务器的使用方法，以及Git的一些内部使用逻辑和方法。&emsp;&emsp;感觉还是多去练习才明白这个东西内部的逻辑结构。]]></content>
+      <categories>
+        <category>Git</category>
+        <category>Maya</category>
+        <category>CG Programming</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Maya</tag>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Maya轮廓挤出研究]]></title>
+    <url>%2Fposts%2Fddafb500.html</url>
+    <content type="text"><![CDATA[借助 PaintEffect 功能绘制物体轮廓 前言 &emsp;&emsp;最近这段时间，场景模型那边给我提需求&emsp;&emsp;希望我可以开发一个工具来简化 Max 工具挤出的问题。&emsp;&emsp;最初这是什么情况我也不太了解。 &emsp;&emsp;于是我去到工位上了解才明白，原来是需要基础场景模型的轮廓。&emsp;&emsp;由于项目是横版格斗类型，用引擎制作背景的轮廓比较消耗资源。&emsp;&emsp;传统制作外轮廓的方案是复制一个新的模型放大，但是这回导致面数翻倍。&emsp;&emsp;而这里恰巧是横版格斗，背景的视角不会有太大的运动，因此人工制作特定视角的轮廓模型是可行的。 &emsp;&emsp;因此制作人员只是想要简化Max在poly模式下挤出会有多余边面产生的问题。&emsp;&emsp;不过考虑到整一个轮廓的效果，我在想Maya貌似有工具是可以直接生产的，未必就需要手工制作轮廓。 &emsp;&emsp;后来翻了一下，找到 Toon 材质里面的确有制作轮廓的 PaintEffect 效果 PaintEffect研究 &emsp;&emsp;通过 Toon 下的 轮廓生成真的非常省心，不用考虑如何根据当前视角获取物体轮廓的问题了。 &emsp;&emsp;只可惜生成的模型是一管道的效果，而制作那边所希望的是面片就够了。 &emsp;&emsp;于是我进行了进一步的研究，如何将 PaintEffect 的效果转换为面片。 &emsp;&emsp;经过我自己简单的研究，我发现可以通过 PaintEffect 转曲线获取到模型的轮廓曲线。&emsp;&emsp;进而通过扩张曲线放样可以生成出想要的面片模型。 轮廓生成 代码探究 &emsp;&emsp;首先需要生成 PaintEffect 的轮廓模型的代码。&emsp;&emsp;这一步可以参照脚本编辑器的代码回显。 1assignNewPfxToon; &emsp;&emsp;执行这个命令有个缺点就是无法返回 PaintEffect 生成的轮廓节点，虽然执行会选中这个节点，可以通过 ls -sl 进一步获取，但是还是想更加优雅一点&emsp;&emsp;通过 whatIs 命令可以查看一下内置脚本的代码 12whatIs assignNewPfxToon;// Result: Mel procedure found in: C:/Program Files/Autodesk/Maya2018/scripts/paintEffects/assignNewPfxToon.mel // &emsp;&emsp;打开上面路径的脚本 1234global proc assignNewPfxToon()&#123; assignPfxToon "" 0;&#125; &emsp;&emsp;套娃警告!还是需要查询一下 assignPfxToon 代码 12whatIs assignPfxToon;// Result: Mel procedure found in: C:/Program Files/Autodesk/Maya2018/scripts/paintEffects/assignPfxToon.mel // &emsp;&emsp;继续打开脚本查看源码&emsp;&emsp;我看到里面的代码相当的复杂，判断的情况也比较多，于是放弃再进一步抽丝剥茧了。&emsp;&emsp;还是用 ls -sl 好了 &emsp;&emsp;获取到轮廓模型之后，后面需要将 paintEffects 转换为 曲线。 &emsp;&emsp;这一步操作就非常不友好了，既没有返回曲线也没有选择到曲线，我就没办法获取到转换的曲线了。&emsp;&emsp;于是还是的找到转换曲线的命令去翻一下 mel 里面的代码 1234doPaintEffectsToCurve( 0);// Result: 1 // whatIs doPaintEffectsToCurve;// Result: Mel procedure found in: C:/Program Files/Autodesk/Maya2018/scripts/paintEffects/doPaintEffectsToCurve.mel // &emsp;&emsp;可以看到执行代码 执行了 doPaintEffectsToCurve 函数&emsp;&emsp;于是去找 doPaintEffectsToCurve 的mel源码 1234567891011global proc int doPaintEffectsToCurve( int $hideStrokes )&#123; int $vertColorMode = 0; int $quadOutput = 0; int $polyLimit = 100000; int $doHistory = `constructionHistory -q -tgl`; int $status = doPaintEffectsToGeom( $doHistory, $vertColorMode, $quadOutput, $hideStrokes, $polyLimit, 2); return $status;&#125; &emsp;&emsp;再次套娃警告！！ 12whatIs doPaintEffectsToGeom;// Result: Mel procedure found in: C:/Program Files/Autodesk/Maya2018/scripts/paintEffects/doPaintEffectsToGeom.mel // &emsp;&emsp;再次翻源码，这里的代码可就复杂多了。&emsp;&emsp;但是这次没法省事，如果不高清楚这里的曲线生成方式，就没办法获取生成的曲线。&emsp;&emsp;我只好捋一捋这里生成逻辑，将无关的部分屏蔽掉。 &emsp;&emsp;很好下面一步就是查找一下 createPfxOutCurves 的源码 12whatIs createPfxOutCurves;// Result: Mel procedure found in: C:/Program Files/Autodesk/Maya2018/scripts/paintEffects/createPfxOutCurves.mel // &emsp;&emsp;核心打开抽出来之后其实一切都很清晰了。 &emsp;&emsp; pfxToon 节点会输出 outMainCurves 属性，里面存储了当前轮廓下的曲线形态。&emsp;&emsp;将这个属性连接到 nurbscurve 节点的 create 属性上就可以生成轮廓曲线了。&emsp;&emsp;于是我将这个操作抽离出一个函数 12345678910111213def generateProfileCurve(profile_node): count = profile_node.outMainCurveCount.get() crv_list = [] for i in range(count): attr = profile_node.outMainCurves[i] if pm.connectionInfo(attr,isSource=1): continue crv = pm.createNode("nurbsCurve") pm.connectAttr(attr,"%s.create"%crv,f=1) # NOTE 断开连接 attr.disconnect(crv.create) crv_list.append(crv.getParent()) return crv_list &emsp;&emsp;如此一来总算是可以通过代码获取到生成的对应轮廓曲线，断开连接可以确保生成出当前摄像机轮廓的曲线效果，而不是实时生成。 扩大曲线 &emsp;&emsp;现在已经有了当前轮廓的曲线，怎么才能沿着曲线外围方向挤压出面片呢？&emsp;&emsp;当时首先想到的是使用曲面的挤压命令，然而挤压命令的朝向是固定方向的，无法控制沿着曲线表面的法线方向扩张。&emsp;&emsp;后来搞了好久都没有搞出来，只好用放样（loft）的来做面片了。 &emsp;&emsp;只需要再将轮廓曲线放大一下就可以有两条曲线通过放样生成面片。&emsp;&emsp;然而如何生成扩大的曲线也难倒我了。 &emsp;&emsp;我最初的想法是将模型沿着法线方向扩大，生成新的轮廓，然后再缩小回去。&emsp;&emsp;这样就有了一一对应的轮廓曲线。 1234567891011121314151617181920212223import maya.api.OpenMaya as omdef inflateMesh(mesh,scale=1): sel_list = om.MSelectionList() sel_list.add(str(mesh)) DagPath,Obj = sel_list.getComponent(0) Mesh = om.MFnMesh(DagPath) MeshPoints = Mesh.getPoints(om.MSpace.kWorld) newMeshPoints = om.MFloatPointArray() for i in range(len(MeshPoints)): MeshPointNormal = Mesh.getVertexNormal(i , om.MSpace.kWorld) x = MeshPoints[i].x + MeshPointNormal.x * scale y = MeshPoints[i].y + MeshPointNormal.y * scale z = MeshPoints[i].z + MeshPointNormal.z * scale newMeshPoint = om.MFloatPoint(x,y,z) newMeshPoints.append(newMeshPoint) Mesh.setPoints(newMeshPoints, om.MSpace.kWorld) &emsp;&emsp;上面的代码就可以实现模型沿着法线放大，但是经过我调试之后我发现不对。&emsp;&emsp;模型放到之后的轮廓数量可能和之前是不一样的，导致生成的曲线根本就对不上。 &emsp;&emsp;后来想到应该让曲线沿着法线方向扩大就好了。&emsp;&emsp;于是我通过法线上的 CV 点获取到 CV 点到曲线上的 法线值&emsp;&emsp;通过这个法线值可以利用扩大模型的方法来扩大曲线。&emsp;&emsp;然而我发现这样还是不对，CV获取到的法线运动有时候并不是我所预期的。 &emsp;&emsp;后来我仔细想了一下，法线可以通过 CV 点获取模型上的法线值&emsp;&emsp;这样扩大出来的效果应该是我所预期的法线了。 1234567891011121314151617181920212223242526272829303132333435import maya.api.OpenMaya as omdef inflateCurveOnMesh(crv,mesh,scale=1): newCrv = pm.duplicate(crv)[0] sel_list = om.MSelectionList() sel_list.add(str(crv)) sel_list.add(str(mesh)) sel_list.add(str(newCrv)) DagPath,_ = sel_list.getComponent(0) Curve = om.MFnNurbsCurve(DagPath) CurveCVs = Curve.cvPositions(om.MSpace.kWorld) newCurveCVs = om.MPointArray() DagPath,_ = sel_list.getComponent(1) Mesh = om.MFnMesh(DagPath) DagPath,_ = sel_list.getComponent(2) newCurve = om.MFnNurbsCurve(DagPath) for i in range(len(CurveCVs)): cv = CurveCVs[i] normal,_ = Mesh.getClosestNormal(cv) x = cv.x + normal.x * scale y = cv.y + normal.y * scale z = cv.z + normal.z * scale newCurveCV = om.MPoint(x,y,z) newCurveCVs.append(newCurveCV) newCurve.setCVPositions(newCurveCVs) return newCrv &emsp;&emsp;输入轮廓法线和模型就可以通过API生成一条扩大的曲线。 曲线放样 &emsp;&emsp;下面就需要调整曲面转换成poly的参数，确保生成面数少而简洁的模型效果。 &emsp;&emsp;代码转换如下 123456pm.nurbsToPolygonsPref(polyType = 1)pm.nurbsToPolygonsPref(format = 2)pm.nurbsToPolygonsPref(uType = 3)pm.nurbsToPolygonsPref(uNumber = 1)pm.nurbsToPolygonsPref(vType = 3)pm.nurbsToPolygonsPref(vNumber = 1) &emsp;&emsp;当时也是完全不知道有 nurbsToPolygonsPref 的命令&emsp;&emsp;因此我测试的时候完全没有发现这里设置参数的问题，结果上了制作的电脑之后，发现转换的模型效果不对。&emsp;&emsp;于是我才去研究 loft 窗口下的 polygon 转换是怎么实现的。 1234567891011// loft 窗口打开代码回显LoftOptions;loftToolScript 3;whatIs LoftOptions;// Result: Run Time Command // runTimeCommand -q -c LoftOptions;// Result: loftToolScript 3 // whatIs loftToolScript;// Result: Mel procedure found in: C:/Program Files/Autodesk/Maya2018/scripts/others/loftToolScript.mel // &emsp;&emsp;runTimeCommand 可以查到命令真实执行的代码是什么，其实就是第二行回显的代码&emsp;&emsp;下面可以去找 loftToolScript.mel 查看模型的代码是怎么实现的。 1234whatIs scriptToolScript;// Result: Mel procedure found in: C:/Program Files/Autodesk/Maya2018/scripts/others/scriptToolScript.mel // whatIs performLoft;// Result: Mel procedure found in: C:/Program Files/Autodesk/Maya2018/scripts/others/performLoft.mel // &emsp;&emsp;我发现 scriptToolScript 无法是执行了传进去的字符串，因此 performLoft 的代码才是重点。 &emsp;&emsp;由此我们可以逐渐找到生成 loft 选项框窗口的代码 loftOptions。 &emsp;&emsp;保持代码追踪最后会发现点击 polygon 窗口的时候回调用到 nurbsToPolyAddOptions 生成 NURBS 转 poly 的选项 1234whatIs nurbsToPolyAddOptions;// Result: Mel procedure found in: C:/Program Files/Autodesk/Maya2018/scripts/others/nurbsToPolyAddOptions.mel // whatIs nurbsToPolygonsPref;// Result: Command // &emsp;&emsp;在里面的代码中我又找到了 nurbsToPolygonsPref 的命令&emsp;&emsp;这个命令就是 Mel 内置用来设置 NURBS转Polygon 的参数命令了&emsp;&emsp;于是我就可以通过开头的代码来实现转换参数的调整。 代码总结 &emsp;&emsp;基本上上述的部分就是这个轮廓挤出的难点所在。&emsp;&emsp;代码可以参照 https://github.com/FXTD-ODYSSEY/MayaScript/blob/master/model/outline/test_outline.py&emsp;&emsp;另外我也写了个带GUI调整的代码 https://github.com/FXTD-ODYSSEY/MayaScript/blob/master/model/outline/outlineExtrude.py &emsp;&emsp;这个东西我测试了几天，结果制作那边其实压根就不需要自动生成的轮廓(:з」∠)&emsp;&emsp;他们需要解决的只是挤出不会产生多余边的问题而已。&emsp;&emsp;我发现这个问题只要 Max 里面改成 mesh 操作就是好的了。&emsp;&emsp;如果是在 poly 下操作挤出再合并点，顶点都无法像Maya一样合并到一起。 &emsp;&emsp;于是我咨询了认识的 3ds Max 大佬，大佬给我做了张图说明了这个问题]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>CG Programming</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Maya</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Maya 模块安装探讨]]></title>
     <url>%2Fposts%2Fe3ab7e13.html</url>
     <content type="text"><![CDATA[Maya 四种安装插件脚本的方法 前言 &emsp;&emsp;最近综合别人写的插件，弄了一个自己的小插件 ———— CommandLauncher&emsp;&emsp;为了实现更好的安装体验，特意对 Maya 安装插件的各种方法逐一进行探讨归纳和总结 &emsp;&emsp;再过去安装 Maya 脚本的体验大都比较难受，比如需要拷贝代码到 Maya脚本编辑器 然后执行代码&emsp;&emsp;这对于大多数没有编程经验的美术人员来说是个可怕的门槛。&emsp;&emsp;因此我这里探讨的安装方案都是基于 拖拽 一个 Mel 文件就可以实现插件的安装并运行的方案。&emsp;&emsp;并且可以实现永久安装，下次打开 插件 还在。 &emsp;&emsp;Maya安装插件有如下四种方法 （不过其实有三种方法的核心思想都是差不多的，只是Maya比较灵活，可以通过不同方式实现） 生成工具架图标 添加 Mod 文件调用插件 修改 env 文件调用插件 Autodesk ApplicationPlugins Maya 启动机制 &emsp;&emsp;过去我们写脚本运行会有一个问题，就是无法将运行的文件留存下来。&emsp;&emsp;我们运行代码可以打开一个窗口，可是不懂代码的人可不想去研究这些复杂的东西。&emsp;&emsp;因此我们可以借助 Maya 的一些机制，实现 Maya启动的时候 自动加载脚本。 &emsp;&emsp;首先就要介绍一下在 我的文档下面的 Maya 目录 &emsp;&emsp;这个目录是 Maya 存放用户设置的地方&emsp;&emsp;因此网上有一招万能解决 Maya 启动问题的方法，删除这个文件夹。&emsp;&emsp;一旦Maya启动不了都可以使用这个方法解决问题。&emsp;&emsp;删除这个文件夹之后，Maya再次启动就会重新生成这个文件夹并且生成默认的设置，回到一开始安装的状态。&emsp;&emsp;当然这样的话自己弄的工具架、热键、自定义设置等等的配置全部就没了。&emsp;&emsp;因此删除需谨慎，建议使用改名大法。 &emsp;&emsp;这个目录之下会有不同 Maya 版本数字的文件夹，取决于电脑安装了的 Maya 版本&emsp;&emsp;打开文件夹会有固定的目录层级结构]]></content>
@@ -191,8 +221,8 @@
       </categories>
       <tags>
         <tag>Maya</tag>
-        <tag>Autodesk</tag>
         <tag>Arnold</tag>
+        <tag>Autodesk</tag>
       </tags>
   </entry>
   <entry>
@@ -412,9 +442,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -426,9 +456,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1043,8 +1073,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -1057,8 +1087,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -2000,8 +2030,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>学习笔记</tag>
         <tag>拍照指南</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
   <entry>
@@ -2053,8 +2083,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>前期基本流程</tag>
         <tag>学习笔记</tag>
+        <tag>前期基本流程</tag>
       </tags>
   </entry>
 </search>
