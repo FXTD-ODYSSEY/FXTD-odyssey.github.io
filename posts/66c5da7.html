@@ -8,25 +8,20 @@
   
   
   
-  <title>Vue 学习之路（五） | 智伤帝的个人博客</title>
+  <title>Python pdb 调试模块研究 | 智伤帝的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Vue 源码分析 - 准备知识">
-<meta name="keywords" content="前端,JavaScript,Vue">
+  <meta name="description" content="Maya mpdb 插件开发 做的准备研究">
+<meta name="keywords" content="Maya,Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Vue 学习之路（五）">
-<meta property="og:url" content="https://blog.l0v0.com/posts/88b7d26d.html">
+<meta property="og:title" content="Python pdb 调试模块研究">
+<meta property="og:url" content="https://blog.l0v0.com/posts/66c5da7.html">
 <meta property="og:site_name" content="智伤帝的个人博客">
-<meta property="og:description" content="Vue 源码分析 - 准备知识">
+<meta property="og:description" content="Maya mpdb 插件开发 做的准备研究">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_5/01.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_5/02.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_5/03.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_5/04.png">
-<meta property="og:updated_time" content="2019-11-07T13:28:22.894Z">
+<meta property="og:updated_time" content="2020-01-05T13:21:56.603Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Vue 学习之路（五）">
-<meta name="twitter:description" content="Vue 源码分析 - 准备知识">
-<meta name="twitter:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_5/01.png">
+<meta name="twitter:title" content="Python pdb 调试模块研究">
+<meta name="twitter:description" content="Maya mpdb 插件开发 做的准备研究">
   
   
     <link rel="icon" href="/img/favicon.png">
@@ -669,7 +664,7 @@
         </header>
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-fontend/vue/5_Vue - 学习之路（五）" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Python/Python -pdb调式模块研究" class="article article-type-post" itemscope itemprop="blogPost">
   
   <div class="article-inner">
     
@@ -680,7 +675,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Vue 学习之路（五）
+      Python pdb 调试模块研究
     </h1>
   
 
@@ -689,19 +684,19 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/前端/">前端</a><a class="article-category-link" href="/categories/前端/Vue/">Vue</a><a class="article-category-link" href="/categories/前端/Vue/Vue学习之路/">Vue学习之路</a>
+    <a class="article-category-link" href="/categories/Maya/">Maya</a><a class="article-category-link" href="/categories/Maya/CG-Programming/">CG Programming</a><a class="article-category-link" href="/categories/Maya/CG-Programming/Python/">Python</a>
     </div>
 
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Maya/">Maya</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li></ul>
     </div>
 
         
           <div class="article-meta">
-            <a href="/posts/88b7d26d.html" class="article-date">
-      <time datetime="2019-06-30T08:28:49.000Z" itemprop="datePublished">2019-06-30</time>
+            <a href="/posts/66c5da7.html" class="article-date">
+      <time datetime="2020-01-05T04:05:52.000Z" itemprop="datePublished">2020-01-05</time>
 </a>
           </div>
         
@@ -712,339 +707,132 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h1 id="Vue-源码分析-准备知识"><a href="#Vue-源码分析-准备知识" class="headerlink" title="Vue 源码分析 - 准备知识"></a>Vue 源码分析 - 准备知识</h1><a id="more"></a>
-<script>
-function transitionShow(id){
-    $(id).next().show(1000,function(){
-        window.dispatchEvent(new Event('resize'));
-    });
-}
-$(function(){
-    // 去除代码块中的换行
-    $('.demo').each(function(){
-        text = $(this).html().replace(/<br>/gi,'')
-        $(this).html(text)
-    })
-    // 将HTML代码与文本之间切换
-    $('.switchToHtml').each(function () {
-        $(this).click(function () {
-            let element = $(this).next();
-            if (element.hasClass("converted")) {
-                element.html(element.text())
-                element.removeClass("converted")
-                $(this).text('切换为HTML文本')
-            } else {
-                text = element.html()
-                element.text(text)
-                let regex = new RegExp("(&lt;\/.*?&gt;)", "gi");
-                text = element.html().replace(regex, "$1<br>")
-                // let regex2 = new RegExp("(&lt;.*?&gt;).*?(&lt;?!(\/))", "gi");
-                // text = text.replace(regex2, "$1<br>$2")
-                element.html(text)
-                element.addClass("converted")
-                $(this).text('切换为HTML渲染')
-            }
-        })
-    })
-})
-</script> 
-
-
+        <h1 id="Maya-mpdb-插件开发-做的准备研究"><a href="#Maya-mpdb-插件开发-做的准备研究" class="headerlink" title="Maya mpdb 插件开发 做的准备研究"></a>Maya mpdb 插件开发 做的准备研究</h1><a id="more"></a>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
-<p>本文章结合<a href="https://www.bilibili.com/video/av27145287" target="_blank" rel="noopener">VUE核心技术-尚硅谷</a>的45-48集做的归纳总结。<br>&emsp;&emsp;教程的文档里面提到仿照github上的朋友实现的库进行讲解 <a href="https://github.com/DMQ/mvvm" target="_blank" rel="noopener">github</a><br>&emsp;&emsp;抛开视频教程的讲解，其实github上的readme文档已经有了很详细的说明。<br>&emsp;&emsp;视频教程提供了几个点</p>
+<p>&emsp;&emsp;最近录了一个关于 overlapper 插件的讲解视频。<br>&emsp;&emsp;使用 VSCode 调试 Python 代码的时候翻车了，而且使用外部软件调试会冻结 Python<br>&emsp;&emsp;导致 Maya 没有相应，交互非常不友好。<br>&emsp;&emsp;于是我就有了开发一个 Debug 插件的想法。<br>&emsp;&emsp;主要是要解决断点状态下Maya的GUI响应问题，这样可以很直观看到代码对 Maya 进行了哪些操作。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;最开始我是想要在 ptvsd 的模块上调用 API 开发 Debug 工具。<br>&emsp;&emsp;毕竟我自己做的 VScode 扩展就是基于这个原理，可是后来查了一番之后，发现 ptvsd 是基于 PyDev 的<br>&emsp;&emsp;API调用上我挖掘不太深，就是感觉太复杂了，很多杂七杂八的功能都不需要。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;而且我想要更加通用性的解决方案，利用代码来插入断点，进入断点之后开启一个 while 死循环来更新 UI 界面。<br>&emsp;&emsp;断点调试的时候就 break 掉死循环就好了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;再进一步研究之后，我发现 Python 自带的 pdb 模块就是实现这个功能的。<br>&emsp;&emsp;于是开始研究 pdb 模块有了今天这篇文章。 </p>
+</blockquote>
+<h2 id="PDB-模块使用"><a href="#PDB-模块使用" class="headerlink" title="PDB 模块使用"></a>PDB 模块使用</h2><blockquote>
+<p>&emsp;&emsp;PDB 全称是 Python Dubugger，是 python 的内置模块，可以实现命令行来对 python 代码 Debug<br>&emsp;&emsp;具体用法可以参考后端大佬的视频</p>
+</blockquote>
+<iframe class="center_frame" src="//player.bilibili.com/player.html?aid=24202796&cid=40573510&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
+<blockquote>
+<p>&emsp;&emsp;特点就是在代码里面输入 pdb 的代码，程序会捕获到插入的 pdb 调试断点然后进入断点调试模式。<br>&emsp;&emsp;缺点就是纯命令行工具，所有的信息显示都需要通过键盘输入来进行调试，真 DOS 时代无鼠标的操作。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;其实 Maya 的官方博客也有提到过 关于 Maya Python Debug 的方案，其中还说到了 利用 pdb 模块debug 的方法 <a href="https://around-the-corner.typepad.com/adn/2012/10/python-debugging-in-maya.html" target="_blank" rel="noopener">around-corner地址</a><br>&emsp;&emsp;不过官方并不推荐使用 pdb ，因为 Maya 的脚本编辑器无法进行命令行输入输出，因此input命令将会弹出一个输入窗口<br>&emsp;&emsp;这样的交互方式是在是太过不友好了，连官方都吐槽了。。。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;另外 maya 的官方文档也有提到 Python Debug 的方案 <a href="http://help.autodesk.com/view/MAYAUL/2018/ENU/?guid=GUID-8A96A8DB-FD6F-434F-A878-288DD84E99C7" target="_blank" rel="noopener">Maya 文档</a><br>&emsp;&emsp;如何使用 pdb 可以参照 python 的 <a href="https://docs.python.org/2.7/library/pdb.html" target="_blank" rel="noopener">官方文档</a><br>&emsp;&emsp;不过官方文档其实也没有什么代码，都是命令解释，所以也不太友好。</p>
+</blockquote>
+<hr>
+<iframe class="center_frame" width="560" height="315" src="https://www.youtube.com/embed/VQYbqsG-E1U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<blockquote>
+<p>&emsp;&emsp;youtube上也有视频专门讲解在 Maya 如何使用 pdb debug</p>
+</blockquote>
+<h2 id="pdb-源码探讨"><a href="#pdb-源码探讨" class="headerlink" title="pdb 源码探讨"></a>pdb 源码探讨</h2><h3 id="set-trace-源码挖掘"><a href="#set-trace-源码挖掘" class="headerlink" title="set_trace 源码挖掘"></a>set_trace 源码挖掘</h3><blockquote>
+<p>&emsp;&emsp;在 pdb 调试中，大多数时候就是在要设置断点的行数前插入一行 pdb 的代码 <code>pdb.set_trace()</code><br>&emsp;&emsp;那么这一句代码在背后做了什么呢？<br>&emsp;&emsp;我们可以去到 Python 的Lib目录下找到 pdb.py 文件<br>&emsp;&emsp;Maya 的 Python 内置代码封装到了 bin 目录的 python27.zip 压缩包当中<br>&emsp;&emsp;github上也可以查找到源码（代码是Python3的） <a href="https://github.com/python/cpython/blob/master/Lib/pdb.py" target="_blank" rel="noopener">https://github.com/python/cpython/blob/master/Lib/pdb.py</a></p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;在代码当中搜索 set_trace 可以找到下面这个函数</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_trace</span><span class="params">()</span>:</span></span><br><span class="line">    Pdb().set_trace(sys._getframe().f_back)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;Pdb 类里面是找不到 set_trace 函数的<br>&emsp;&emsp;而通过集成关系可以找到Pdb类是继承于 bdb模块的 Bdb 基类<br>&emsp;&emsp;因此我们可以去到 bdb.py 查找 set_trace 的代码 | <a href="https://github.com/python/cpython/blob/master/Lib/bdb.py" target="_blank" rel="noopener">https://github.com/python/cpython/blob/master/Lib/bdb.py</a></p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_trace</span><span class="params">(self, frame=None)</span>:</span></span><br><span class="line">    <span class="string">"""Start debugging from `frame`.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    If frame is not specified, debugging starts from caller's frame.</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">if</span> frame <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">        frame = sys._getframe().f_back</span><br><span class="line">    self.reset()</span><br><span class="line">    <span class="keyword">while</span> frame:</span><br><span class="line">        frame.f_trace = self.trace_dispatch</span><br><span class="line">        self.botframe = frame</span><br><span class="line">        frame = frame.f_back</span><br><span class="line">    self.set_step()</span><br><span class="line">    sys.settrace(self.trace_dispatch)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;一顿操作猛如虎，一头雾水不清楚。 <em>(:з」∠)</em></p>
+</blockquote>
+<h3 id="frame-类型说明"><a href="#frame-类型说明" class="headerlink" title="frame 类型说明"></a>frame 类型说明</h3><blockquote>
+<p>&emsp;&emsp;首先需要理解参数输入的 frame 是什么<br>&emsp;&emsp;frame 其实 Python 内置的类，用来描述当前函数域相关的信息。<br>&emsp;&emsp;inspect 模块里面也有 currentFrame 函数获取当前代码域信息。<br>&emsp;&emsp;而上面的操作和 sys 模块的私有函数 _getframe 是一样的。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;关于 frame 的类型说明可以参考 <a href="https://docs.python.org/2.7/library/inspect.html#inspect.getframeinfo" target="_blank" rel="noopener">python inspect 模块的官方说明</a><br>&emsp;&emsp;国内还有大佬写了关于 Cpython 里面 frame object 底层的一些生成原理 <a href="https://blog.csdn.net/qq_31720329/article/details/86757892" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;可惜这个文章太过深奥，我就跳过了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;下面则是一些其他国内文章，内容通俗易懂，可惜缺乏深度↓↓↓</p>
 <ul>
-<li>数据代理</li>
-<li>模板解析</li>
-<li>数据绑定</li>
+<li><a href="https://www.jianshu.com/p/4d8a3c919500" target="_blank" rel="noopener">https://www.jianshu.com/p/4d8a3c919500</a></li>
+<li><a href="https://blog.csdn.net/zhuguiqin1/article/details/79290244" target="_blank" rel="noopener">https://blog.csdn.net/zhuguiqin1/article/details/79290244</a></li>
+<li><a href="https://blog.csdn.net/qq_29695701/article/details/94196732" target="_blank" rel="noopener">https://blog.csdn.net/qq_29695701/article/details/94196732</a></li>
 </ul>
 </blockquote>
 <blockquote>
-<p>&emsp;&emsp;Hexo 博客的 Markdown 是支持嵌套 <code>&lt;script&gt;&lt;/script&gt;</code> 标签来执行js代码的。<br>&emsp;&emsp;下面我直接使用 Markdown 来写 js 验证教程的输出结果。<br>&emsp;&emsp;不仅将运行结果打印到控制台上，也添加了网页的显示。</p>
+<p>&emsp;&emsp;后来在 stack overflow 找到一篇<a href="https://stackoverflow.com/questions/1140194/in-python-how-do-i-obtain-the-current-frame" target="_blank" rel="noopener">问题</a><br>&emsp;&emsp;通过文章回答的链接找到了一篇很好的 frame 运行的代码 <a href="http://farmdev.com/src/secrets/framehack/index.html" target="_blank" rel="noopener">链接</a></p>
 </blockquote>
-<h2 id="根据伪数组生成对应的真数组"><a href="#根据伪数组生成对应的真数组" class="headerlink" title="根据伪数组生成对应的真数组"></a>根据伪数组生成对应的真数组</h2><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_5/01.png" alt="数组判定"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">one</span><span class="params">()</span>:</span></span><br><span class="line">    two()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">two</span><span class="params">()</span>:</span></span><br><span class="line">    three()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">three</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> range(<span class="number">3</span>):</span><br><span class="line">        frame = sys._getframe(num)</span><br><span class="line">        show_frame(num, frame)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_frame</span><span class="params">(num, frame)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> frame</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"  frame     = sys._getframe(%s)"</span> % num</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"  function  = %s()"</span> % frame.f_code.co_name</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"  file/line = %s:%s"</span> % (frame.f_code.co_filename, frame.f_lineno)</span><br><span class="line"></span><br><span class="line">one()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output </span></span><br><span class="line"><span class="comment"># &lt;frame object at 0x606c50&gt;</span></span><br><span class="line"><span class="comment">#   frame     = sys._getframe(0)</span></span><br><span class="line"><span class="comment">#   function  = three()</span></span><br><span class="line"><span class="comment">#   file/line = stack.py:12</span></span><br><span class="line"><span class="comment"># &lt;frame object at 0x180be10&gt;</span></span><br><span class="line"><span class="comment">#   frame     = sys._getframe(1)</span></span><br><span class="line"><span class="comment">#   function  = two()</span></span><br><span class="line"><span class="comment">#   file/line = stack.py:7</span></span><br><span class="line"><span class="comment"># &lt;frame object at 0x608d30&gt;</span></span><br><span class="line"><span class="comment">#   frame     = sys._getframe(2)</span></span><br><span class="line"><span class="comment">#   function  = one()</span></span><br><span class="line"><span class="comment">#   file/line = stack.py:4</span></span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>&emsp;&emsp;当我们使用 <code>getElementsByTagName</code> 获取到元素数组，会发现这个并不是js的数组。<br>&emsp;&emsp;尽管它可以通过数组下标获取到对应的元素<br>&emsp;&emsp;数组的一些常规方法如 foreach 也无法识别</p>
+<p>&emsp;&emsp;通过 frame 可以很好查找到当前代码运行的信息，所以在 pdb 和 traceback 模块里面都是非常重要的组成元素</p>
 </blockquote>
-<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_5/02.png" alt="数组slice"></p>
-<blockquote>
-<p>&emsp;&emsp;在 es6 中可以使用 Array.from 来获取到真数组<br>&emsp;&emsp;在 es5 中可以借助 Array.slice() 不传参数获取到数组的浅拷贝<br>&emsp;&emsp;借助 slice.call 可以让非数组对象执行slice方法<br>&emsp;&emsp;在 es5 中可以使用 <code>Array.prototype.slice.call(lis)</code>来获取到真数组</p>
+<h3 id="sys-settrace-讲解"><a href="#sys-settrace-讲解" class="headerlink" title="sys.settrace 讲解"></a>sys.settrace 讲解</h3><blockquote>
+<p>&emsp;&emsp;了解了 frame 之后，我们可以继续测试后续的代码</p>
 </blockquote>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> lis = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'li'</span>) </span><br><span class="line"><span class="built_in">console</span>.log(lis <span class="keyword">instanceof</span> <span class="built_in">Array</span>)</span><br><span class="line"><span class="built_in">console</span>.log(lis[<span class="number">1</span>].innerHTML)</span><br><span class="line"><span class="built_in">console</span>.log(lis.forEach)</span><br><span class="line"><span class="keyword">const</span> lis2 = <span class="built_in">Array</span>.prototype.slice.call(lis);</span><br><span class="line"><span class="built_in">console</span>.log(lis2 <span class="keyword">instanceof</span> <span class="built_in">Array</span>);</span><br><span class="line"><span class="built_in">console</span>.log(lis2[<span class="number">1</span>].innerHTML);</span><br><span class="line"><span class="built_in">console</span>.log(lis2.forEach);</span><br></pre></td></tr></table></figure>
-<div class="demo" style="border-radius: 10px;border: 5px solid dimgray;padding: 5px"><br>    <strong id="demo_1" class="switchToHtml btn btn-primary" style="text-align: center;display: grid;margin:0px 5px;">切换为HTML文本</strong><br>    <div style="border-radius: 10px;border: 5px solid dimgray;margin: 5px;padding: 5px;background: white"><br>        <li>1</li><br>        <li>2</li><br>        <li>3</li><br>    </div><br>    <strong id="output_1" class="btn btn-primary" style="text-align: center;display: grid;margin:0px 5px;">点击执行js代码</strong><br>    <div style="border-radius: 10px;background:darkslategray;padding: 10px;margin: 5px;border: 5px solid dimgray;color: wheat"><br>    </div><br></div>
-
-<script>
-$(function(){
-    $('#output_1').next().hide()
-    $('#output_1').click(function(){
-        function outputData(output, data,display=false) {
-            if(display){
-                output.innerHTML = output.innerHTML + "<span style='color:#57a64a'>" + data + "</span>" + "<br>";
-                console.log(data);
-            }
-            else{
-                output.innerHTML = output.innerHTML + "<span style='color:coral'>" + data + "</span>" + " : " + "<span style='color:cyan'>" + eval(data) + "</span>" + "<br>";
-                console.log(eval(data));
-            }
-        }
-        const demo = document.getElementById('demo_1').nextElementSibling;
-        const lis = demo.getElementsByTagName('li');
-
-        const output = document.getElementById('output_1').nextElementSibling;
-        output.innerHTML = "";
-
-
-        outputData(output,"lis instanceof Array");
-        outputData(output,"lis[1].innerHTML");
-        outputData(output,"lis.forEach");
-
-        const lis2 = Array.prototype.slice.call(lis)
-
-        outputData(output,"-------------------------------------",display=true);
-        outputData(output,"执行 Array.prototype.slice.call(lis) 获取到真数组",display=true);
-        outputData(output,"lis2 instanceof Array");
-        outputData(output,"lis2[1].innerHTML");
-        outputData(output,"lis2.forEach");
-
-        transitionShow("#output_1");
-    })
-});
-</script>
-
-
-<h2 id="node-nodeType-得到节点类型"><a href="#node-nodeType-得到节点类型" class="headerlink" title="node.nodeType: 得到节点类型"></a>node.nodeType: 得到节点类型</h2><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_5/03.png" alt="nodeType"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_step</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="string">"""Stop after one line of code."""</span></span><br><span class="line">    <span class="comment"># NOTE Issue #13183: pdb skips frames after hitting a breakpoint and running</span></span><br><span class="line">    <span class="comment"># NOTE step commands.</span></span><br><span class="line">    <span class="comment"># NOTE Restore the trace function in the caller (that may not have been set</span></span><br><span class="line">    <span class="comment"># NOTE for performance reasons) when returning from the current frame.</span></span><br><span class="line">    <span class="keyword">if</span> self.frame_returning:</span><br><span class="line">        caller_frame = self.frame_returning.f_back</span><br><span class="line">        <span class="keyword">if</span> caller_frame <span class="keyword">and</span> <span class="keyword">not</span> caller_frame.f_trace:</span><br><span class="line">            caller_frame.f_trace = self.trace_dispatch</span><br><span class="line">    self._set_stopinfo(<span class="keyword">None</span>, <span class="keyword">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_set_stopinfo</span><span class="params">(self, stopframe, returnframe, stoplineno=<span class="number">0</span>)</span>:</span></span><br><span class="line">    self.stopframe = stopframe</span><br><span class="line">    self.returnframe = returnframe</span><br><span class="line">    self.quitting = <span class="number">0</span></span><br><span class="line">    <span class="comment"># NOTE stoplineno &gt;= 0 means: stop at line &gt;= the stoplineno</span></span><br><span class="line">    <span class="comment"># NOTE stoplineno -1 means: don't stop at all</span></span><br><span class="line">    self.stoplineno = stoplineno</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reset</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="keyword">import</span> linecache</span><br><span class="line">    linecache.checkcache()</span><br><span class="line">    self.botframe = <span class="keyword">None</span></span><br><span class="line">    self._set_stopinfo(<span class="keyword">None</span>, <span class="keyword">None</span>)</span><br><span class="line">    self.lineno = <span class="keyword">None</span></span><br><span class="line">    self.stack = []</span><br><span class="line">    self.curindex = <span class="number">0</span></span><br><span class="line">    self.curframe = <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_trace</span><span class="params">(self, frame=None)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> frame <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">        frame = sys._getframe().f_back</span><br><span class="line">    self.reset() <span class="comment"># NOTE 重置定义一些变量 我将代码父对象的代码都整合到一起 如上面的 reset 函数所示</span></span><br><span class="line">    <span class="comment"># 遍历找到最底层 frame | 并且设置 f_trace 函数到 trace_dispatch 上</span></span><br><span class="line">    <span class="keyword">while</span> frame:</span><br><span class="line">        frame.f_trace = self.trace_dispatch</span><br><span class="line">        self.botframe = frame</span><br><span class="line">        frame = frame.f_back</span><br><span class="line">    <span class="comment"># NOTE 不清楚作用作用 | 注释掉完全不影响程序运行，大概需要 return 触发才可行</span></span><br><span class="line">    self.set_step()</span><br><span class="line">    sys.settrace(self.trace_dispatch)</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>&emsp;&emsp;不同类型的节点 nodeType 值是不一样的</p>
+<p>&emsp;&emsp;上面我将 set_trace 调用掉的一些函数也贴出来了。<br>&emsp;&emsp;我发现最核心的代码其实最后一行 <code>sys.settrace(self.trace_dispatch)</code><br>&emsp;&emsp;只有这样在才能触发 断点输入 否则 pdb 不起作用了。</p>
 </blockquote>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> elementNode = <span class="built_in">document</span>.getElementById(<span class="string">'test'</span>)</span><br><span class="line"><span class="keyword">const</span> attrNode = elementNode.getAttributeNode(<span class="string">'id'</span>)</span><br><span class="line"><span class="keyword">const</span> textNode = elementNode.firstChild</span><br><span class="line"><span class="built_in">console</span>.log(elementNode.nodeType)</span><br><span class="line"><span class="built_in">console</span>.log(attrNode.nodeType)</span><br><span class="line"><span class="built_in">console</span>.log(textNode.nodeType)</span><br></pre></td></tr></table></figure>
-<div class="demo" style="border-radius: 10px;border: 5px solid dimgray;padding: 5px"><br>    <strong id="demo_2" class="switchToHtml btn btn-primary" style="text-align: center;display: grid;margin:0px 5px;">切换为HTML文本</strong><br>    <div style="border-radius: 10px;border: 5px solid dimgray;margin: 5px;padding: 5px;background: white"><br>        <div id="test">blog.l0v0.com</div><br>    </div><br>    <strong id="output_2" class="btn btn-primary" style="text-align: center;display: grid;margin:0px 5px;">点击执行js代码</strong><br>    <div style="border-radius: 10px;background:darkslategray;padding: 10px;margin: 5px;border: 5px solid dimgray;color: wheat"><br>    </div><br></div>
-
-<script>
-$(function(){
-    $('#output_2').next().hide()
-    $("#output_2").click(function(){
-        function outputData(output, data,display=false) {
-            if(display){
-                output.innerHTML = output.innerHTML + "<span style='color:#57a64a'>" + data + "</span>" + "<br>";
-                console.log(data);
-            }
-            else{
-                output.innerHTML = output.innerHTML + "<span style='color:coral'>" + data + "</span>" + " : " + "<span style='color:cyan'>" + eval(data) + "</span>" + "<br>";
-                console.log(eval(data));
-            }
-        }
-
-        const output = document.getElementById('output_2').nextElementSibling;
-        output.innerHTML = "";
-
-        const elementNode = document.getElementById('test');
-        const attrNode = elementNode.getAttributeNode('id');
-        const textNode = elementNode.firstChild
-
-        outputData(output,"elementNode");
-        outputData(output,"elementNode.nodeType");
-        outputData(output,"attrNode");
-        outputData(output,"attrNode.nodeType");
-        outputData(output,"textNode");
-        outputData(output,"textNode.nodeType");
-        transitionShow("#output_2");
-    })
-});
-</script>
-
-
-
-<h2 id="给对象添加属性"><a href="#给对象添加属性" class="headerlink" title="给对象添加属性"></a>给对象添加属性</h2><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_5/04.png" alt="defineProperty"></p>
+<hr>
 <blockquote>
-<p>defineProperty 的属性含义<br>属性描述符：</p>
+<p>&emsp;&emsp;其实我也不太清楚 <code>sys.settrace</code> 函数是怎么运作的<br>&emsp;&emsp;刚好又在 Stack Overflow 上找到了一些参考 <a href="https://stackoverflow.com/questions/1692866/what-cool-hacks-can-be-done-using-sys-settrace" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;根据这个参考可以知道这个函数是一个全局钩子，每个函数调用都会触发到这个函数。<br>&emsp;&emsp;因此通过这个操作可以实现一些 python 黑科技操作。<br>&emsp;&emsp;当然正如回答说的，如果不是为 Debug 的话，使用这个函数会让其他开代码的人非常难受，而且会导致性能下降。<br>&emsp;&emsp;所以我看 pdb 也是看得难受至极了。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">trace_func</span><span class="params">(frame,event,arg)</span>:</span></span><br><span class="line">    <span class="comment"># NOTE 获取局部变量 a 并修改变量</span></span><br><span class="line">    value = frame.f_locals[<span class="string">"a"</span>]</span><br><span class="line">    <span class="keyword">if</span> value % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">        value += <span class="number">1</span></span><br><span class="line">        frame.f_locals[<span class="string">"a"</span>] = value</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(a)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> a</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    sys.settrace(trace_func)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">5</span>):</span><br><span class="line">        f(i)</span><br><span class="line"></span><br><span class="line"><span class="comment"># NOTE 输出 ↓↓↓</span></span><br><span class="line"><span class="comment"># NOTE 1</span></span><br><span class="line"><span class="comment"># NOTE 1</span></span><br><span class="line"><span class="comment"># NOTE 3</span></span><br><span class="line"><span class="comment"># NOTE 3</span></span><br><span class="line"><span class="comment"># NOTE 5</span></span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>数据描述符：</p>
+<p>&emsp;&emsp;frame 对象里面的 f_trace 属性就相当于 局部钩子函数 <a href="https://grokbase.com/t/python/pypy-dev/133nvqma2x/frame-f-trace-role" target="_blank" rel="noopener">链接</a></p>
+</blockquote>
+<h3 id="trace-dispatch-分析"><a href="#trace-dispatch-分析" class="headerlink" title="trace_dispatch 分析"></a>trace_dispatch 分析</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">trace_dispatch</span><span class="params">(self, frame, event, arg)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"trace_dispatch"</span>,frame,event,arg</span><br><span class="line">    <span class="keyword">if</span> self.quitting:</span><br><span class="line">        <span class="keyword">return</span> <span class="comment"># None</span></span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">'line'</span>:</span><br><span class="line">        <span class="keyword">return</span> self.dispatch_line(frame)</span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">'call'</span>:</span><br><span class="line">        <span class="keyword">return</span> self.dispatch_call(frame, arg)</span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">'return'</span>:</span><br><span class="line">        <span class="keyword">return</span> self.dispatch_return(frame, arg)</span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">'exception'</span>:</span><br><span class="line">        <span class="keyword">return</span> self.dispatch_exception(frame, arg)</span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">'c_call'</span>:</span><br><span class="line">        <span class="keyword">return</span> self.trace_dispatch</span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">'c_exception'</span>:</span><br><span class="line">        <span class="keyword">return</span> self.trace_dispatch</span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">'c_return'</span>:</span><br><span class="line">        <span class="keyword">return</span> self.trace_dispatch</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'bdb.Bdb.dispatch: unknown debugging event:'</span>, repr(event)</span><br><span class="line">    <span class="keyword">return</span> self.trace_dispatch</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;设置了 sys.settrace 之后，无论在 pyhton 进行任何代码操作都会触发钩子，这就为断点调试做好了准备。<br>&emsp;&emsp;可以看到钩子函数会默认传入当前触发 frame 和 事件。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;为了更好看清楚这个钩子所做的事情，可以继承 Pdb 对象 然后打印出内部的参数。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pdb <span class="keyword">import</span> Pdb</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestPdb</span><span class="params">(Pdb,object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">trace_dispatch</span><span class="params">(self, frame, event, arg)</span>:</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">"trace_dispatch"</span>,frame,event,arg</span><br><span class="line">        <span class="keyword">return</span> super(TestPdb,self).trace_dispatch(frame, event, arg)</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">combine</span><span class="params">(s1,s2)</span>:</span>      <span class="comment"># define subroutine combine, which... </span></span><br><span class="line">        s3 = s1 + s2 + s1    <span class="comment"># sandwiches s2 between copies of s1, ... </span></span><br><span class="line">        s3 = <span class="string">'"'</span> + s3 +<span class="string">'"'</span>   <span class="comment"># encloses it in double quotes,... </span></span><br><span class="line">        <span class="keyword">return</span> s3            <span class="comment"># and returns it. </span></span><br><span class="line">    a = <span class="string">"aaa"</span></span><br><span class="line">    b = <span class="string">"bbb"</span></span><br><span class="line">    TestPdb().set_trace() </span><br><span class="line">    final = combine(a,b) </span><br><span class="line">    <span class="keyword">print</span> final</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">F:\repo\Pdb_test&gt;<span class="string">"C:/Program Files/Autodesk/Maya2017/bin/mayapy.exe"</span> f:/repo/Pdb_test/frame_test.py</span><br><span class="line">trace_dispatch &lt;frame object at 0x00000222AF1DE048&gt; line None</span><br><span class="line">&gt; f:\repo\pdb_test\frame_test.py(16)&lt;module&gt;()</span><br><span class="line">-&gt; final = combine(a,b)</span><br><span class="line">(Pdb) s</span><br><span class="line">trace_dispatch &lt;frame object at 0x00000222AF243908&gt; call None</span><br><span class="line">--Call--</span><br><span class="line">&gt; f:\repo\pdb_test\frame_test.py(9)combine()</span><br><span class="line">-&gt; def combine(s1,s2):      <span class="comment"># define subroutine combine, which...</span></span><br><span class="line">(Pdb) n</span><br><span class="line">trace_dispatch &lt;frame object at 0x00000222AF243908&gt; line None</span><br><span class="line">&gt; f:\repo\pdb_test\frame_test.py(10)combine()</span><br><span class="line">-&gt; s3 = s1 + s2 + s1    <span class="comment"># sandwiches s2 between copies of s1, ...</span></span><br><span class="line">(Pdb) n</span><br><span class="line">trace_dispatch &lt;frame object at 0x00000222AF243908&gt; line None</span><br><span class="line">&gt; f:\repo\pdb_test\frame_test.py(11)combine()</span><br><span class="line">-&gt; s3 = <span class="string">'"'</span> + s3 +<span class="string">'"'</span>   <span class="comment"># encloses it in double quotes,...</span></span><br><span class="line">(Pdb) n</span><br><span class="line">trace_dispatch &lt;frame object at 0x00000222AF243908&gt; line None</span><br><span class="line">&gt; f:\repo\pdb_test\frame_test.py(12)combine()</span><br><span class="line">-&gt; <span class="built_in">return</span> s3            <span class="comment"># and returns it.</span></span><br><span class="line">(Pdb) n</span><br><span class="line">trace_dispatch &lt;frame object at 0x00000222AF243908&gt; <span class="built_in">return</span> <span class="string">"aaabbbaaa"</span></span><br><span class="line">--Return--</span><br><span class="line">&gt; f:\repo\pdb_test\frame_test.py(12)combine()-&gt;<span class="string">'"aaabbbaaa"'</span></span><br><span class="line">-&gt; <span class="built_in">return</span> s3            <span class="comment"># and returns it.</span></span><br><span class="line">(Pdb) l</span><br><span class="line">  7     <span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">  8</span><br><span class="line">  9         def combine(s1,s2):      <span class="comment"># define subroutine combine, which...</span></span><br><span class="line"> 10             s3 = s1 + s2 + s1    <span class="comment"># sandwiches s2 between copies of s1, ...</span></span><br><span class="line"> 11             s3 = <span class="string">'"'</span> + s3 +<span class="string">'"'</span>   <span class="comment"># encloses it in double quotes,...</span></span><br><span class="line"> 12  -&gt;         <span class="built_in">return</span> s3            <span class="comment"># and returns it.</span></span><br><span class="line"> 13         a = <span class="string">"aaa"</span></span><br><span class="line"> 14         b = <span class="string">"bbb"</span></span><br><span class="line"> 15         TestPdb().set_trace()</span><br><span class="line"> 16         final = combine(a,b)</span><br><span class="line"> 17         <span class="built_in">print</span> final</span><br><span class="line">(Pdb) n</span><br><span class="line">trace_dispatch &lt;frame object at 0x00000222AF1DE048&gt; line None</span><br><span class="line">&gt; f:\repo\pdb_test\frame_test.py(17)&lt;module&gt;()</span><br><span class="line">-&gt; <span class="built_in">print</span> final</span><br><span class="line">(Pdb) c</span><br><span class="line"><span class="string">"aaabbbaaa"</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;从上面的调试信息可以看到 </p>
 <ul>
-<li>configurable：是否可以重新定义</li>
-<li>enumerable：是否可以枚举</li>
-<li>value：初始值</li>
-<li>writable：是否可以修改属性值</li>
+<li>代码运行的 event 是 line </li>
+<li>函数触发的 event 是 call </li>
+<li>函数返回的 event 是 return | 并且将返回值 到 arg 上</li>
+<li>函数报错的 event 是 exception | 同理可以推断</li>
 </ul>
 </blockquote>
 <blockquote>
-<p>访问描述符：</p>
-<ul>
-<li>get：回调函数，根据其它相关的属性动态计算得到当前属性值</li>
-<li>set：回调函数，监视当前属性值的变化，更新其它相关的属性值</li>
-</ul>
+<p>附注: 测试的时候 super 代码忘记前面添加 return 导致无法 step 进调试函数内部</p>
 </blockquote>
+<h3 id="cmd模块"><a href="#cmd模块" class="headerlink" title="cmd模块"></a>cmd模块</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dispatch_line</span><span class="params">(self, frame)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> self.stop_here(frame) <span class="keyword">or</span> self.break_here(frame):</span><br><span class="line">        self.user_line(frame)</span><br><span class="line">        <span class="keyword">if</span> self.quitting: <span class="keyword">raise</span> BdbQuit</span><br><span class="line">    <span class="keyword">return</span> self.trace_dispatch</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">user_line</span><span class="params">(self, frame)</span>:</span></span><br><span class="line">    <span class="string">"""This function is called when we stop or break at this line."""</span></span><br><span class="line">    <span class="keyword">if</span> self._wait_for_mainpyfile:</span><br><span class="line">        <span class="keyword">if</span> (self.mainpyfile != self.canonic(frame.f_code.co_filename)</span><br><span class="line">            <span class="keyword">or</span> frame.f_lineno&lt;= <span class="number">0</span>):</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        self._wait_for_mainpyfile = <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> self.bp_commands(frame):</span><br><span class="line">        self.interaction(frame, <span class="keyword">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">interaction</span><span class="params">(self, frame, traceback)</span>:</span></span><br><span class="line">    self.setup(frame, traceback)</span><br><span class="line">    self.print_stack_entry(self.stack[self.curindex])</span><br><span class="line">    self.cmdloop()</span><br><span class="line">    self.forget()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;那么可以知道一般情况下运行代码会执行 dispatch_line 会调用 user_line<br>&emsp;&emsp;而其中经过我的测试，触发输入调试的代码是 interaction 里面的 cmdloop</p>
 </blockquote>
 <blockquote>
-<p>&emsp;&emsp;通过设定 enumerable true 可以实现 <code>for .. in keys()</code> 的效果</p>
-</blockquote>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">    firstName: <span class="string">'A'</span>,</span><br><span class="line">    lastName: <span class="string">'B'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">'fullName'</span>, &#123;</span><br><span class="line">    <span class="comment">// 当读取对象此属性值时自动调用, 将函数返回的值作为属性值, this为obj</span></span><br><span class="line">    get () &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.firstName + <span class="string">"-"</span> + <span class="keyword">this</span>.lastName;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 当修改了对象的当前属性值时自动调用, 监视当前属性值的变化, 修改相关的属性, this为obj</span></span><br><span class="line">    set (value) &#123;</span><br><span class="line">      <span class="keyword">const</span> names = value.split(<span class="string">'-'</span>);</span><br><span class="line">      <span class="keyword">this</span>.firstName = names[<span class="number">0</span>];</span><br><span class="line">      <span class="keyword">this</span>.lastName = names[<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(obj.fullName); <span class="comment">// A-B</span></span><br><span class="line">obj.firstName = <span class="string">'C'</span>;</span><br><span class="line">obj.lastName = <span class="string">'D'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(obj.fullName); <span class="comment">// C-D</span></span><br><span class="line">obj.fullName = <span class="string">'E-F'</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.firstName); <span class="comment">// E</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.lastName); <span class="comment">// F</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 不可以使用两次 defineProperty </span></span><br><span class="line">  <span class="comment">/*Object.defineProperty(obj, 'fullName', &#123;</span></span><br><span class="line"><span class="comment">    configurable: true,</span></span><br><span class="line"><span class="comment">    enumerable: true,</span></span><br><span class="line"><span class="comment">    value: 'G-H',</span></span><br><span class="line"><span class="comment">    writable: true</span></span><br><span class="line"><span class="comment">  &#125;)*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Object.keys(obj): 得到对象自身可枚举属性组成的数组</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">'fullName2'</span>, &#123;</span><br><span class="line">    configurable: <span class="literal">false</span>, <span class="comment">//是否可以重新define</span></span><br><span class="line">    enumerable: <span class="literal">true</span>, <span class="comment">// 是否可以枚举(for..in / keys())</span></span><br><span class="line">    value: <span class="string">'A-B'</span>, <span class="comment">// 指定初始值</span></span><br><span class="line">    writable: <span class="literal">false</span> <span class="comment">// value是否可以修改</span></span><br><span class="line">  &#125;)</span><br><span class="line"><span class="built_in">console</span>.log(obj.fullName2)  <span class="comment">// A-B</span></span><br><span class="line">obj.fullName2 = <span class="string">'E-F'</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.fullName2) <span class="comment">// A-B</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">const</span> names = <span class="built_in">Object</span>.keys(obj)</span><br><span class="line"><span class="built_in">console</span>.log(names)</span><br><span class="line"></span><br><span class="line"><span class="comment">// obj.hasOwnProperty(prop): 判断prop是否是obj自身的属性</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.hasOwnProperty(<span class="string">'fullName'</span>))  <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.hasOwnProperty(<span class="string">'toString'</span>))  <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
-<div class="demo" style="border-radius: 10px;border: 5px solid dimgray;padding: 5px"><br>    <strong id="output_3" class="btn btn-primary" style="text-align: center;display: grid;margin:0px 5px;">点击执行js代码</strong><br>    <div style="border-radius: 10px;background:darkslategray;padding: 10px;margin: 5px;border: 5px solid dimgray;color: wheat"><br>    </div><br></div>
-
-<script>
-$(function(){
-    $('#output_3').next().hide()
-    $('#output_3').click(function(){
-        function outputData(output, data,display=false) {
-            if(display){
-                output.innerHTML = output.innerHTML + "<span style='color:#57a64a'>" + data + "</span>" + "<br>";
-                console.log(data);
-            }
-            else{
-                output.innerHTML = output.innerHTML + "<span style='color:coral'>" + data + "</span>" + " : " + "<span style='color:cyan'>" + eval(data) + "</span>" + "<br>";
-                console.log(eval(data));
-            }
-        }
-
-        let output = document.getElementById('output_3').nextElementSibling;
-        output.innerHTML = "";
-
-        const obj = {
-            firstName: 'A',
-            lastName: 'B'
-        }
-
-        Object.defineProperty(obj, 'fullName', {
-            get () {
-                return this.firstName + "-" + this.lastName;
-            },
-            set (value) {
-                const names = value.split('-');
-                this.firstName = names[0];
-                this.lastName = names[1];
-            }
-        })
-
-        outputData(output,"obj.firstName");
-        outputData(output,"obj.lastName");
-        outputData(output,"obj.fullName");
-
-        obj.firstName = 'C';
-        obj.lastName = 'D';
-        outputData(output,"-------------------------------------",display=true);
-        outputData(output,"修改 firstName 和 lastName 的值",display=true);
-        outputData(output,"obj.firstName");
-        outputData(output,"obj.lastName");
-        outputData(output,"obj.fullName");
-
-        obj.fullName = 'E-F';
-        outputData(output,"-------------------------------------",display=true);
-        outputData(output,"修改 fullName 的值",display=true);
-        outputData(output,"obj.fullName");
-        outputData(output,"obj.firstName");
-        outputData(output,"obj.lastName");
-
-        Object.defineProperty(obj, 'fullName2', {
-            configurable: false, //是否可以重新define
-            enumerable: true, // 是否可以枚举(for..in / keys())
-            value: 'A-B', // 指定初始值
-            writable: false // value是否可以修改
-        })
-
-        outputData(output,"-------------------------------------",display=true);
-        outputData(output,"obj.fullName2");
-        obj.fullName2 = 'E-F'
-        outputData(output,"obj.fullName2 = 'E-F' 无法修改值",display=true);
-        outputData(output,"obj.fullName2");
-
-        const names = Object.keys(obj)
-        outputData(output,"-------------------------------------",display=true);
-        outputData(output,"通过 Object.keys(obj) 可以枚举数据",display=true);
-        outputData(output,"names");
-
-        outputData(output,"-------------------------------------",display=true);
-        outputData(output,"hasOwnProperty 判断是否含有相关的函数",display=true);
-        outputData(output,"obj.hasOwnProperty('fullName')");
-        outputData(output,"obj.hasOwnProperty('toString')");
-
-        transitionShow("#output_3");
-    });
-})
-</script>
-
-<blockquote>
-<p>&emsp;&emsp; defineProperty 属性直到 es5 才支持，因此 IE8 及以下的浏览器都不支持 defineProperty 属性<br>&emsp;&emsp;因此 Vue 也不支持 IE8 及以下的浏览器</p>
-</blockquote>
-<h2 id="DocumentFragment-文档碎片-高效批量更新多个节点"><a href="#DocumentFragment-文档碎片-高效批量更新多个节点" class="headerlink" title="DocumentFragment: 文档碎片(高效批量更新多个节点)"></a>DocumentFragment: 文档碎片(高效批量更新多个节点)</h2><blockquote>
-<p>&emsp;&emsp;document: 对应显示的页面, 包含n个element  一旦更新document内部的某个元素界面更新<br>&emsp;&emsp;documentFragment: 内存中保存n个element的容器对象(不与界面关联), 如果更新framgnet中的某个element, 界面不变。<br>&emsp;&emsp;使用documentFragment只需更新一次界面，执行效率更加高效！！！</p>
+<p>&emsp;&emsp;这个 cmdloop 可就是大有来头了，这个和 pdb 模块简称的 Cmd 对象有莫大的关系<br>&emsp;&emsp;Cmd 对象来自内置 cmd 库，用于快速构建命令行工具的库。<br>&emsp;&emsp;使用方法可以参考别人研究的 <a href="https://www.cnblogs.com/r00tuser/p/7515136.html" target="_blank" rel="noopener">文章</a><br>&emsp;&emsp;pdb的输入调用操作是完全基于 cmd 库的标准做的，也难怪我也开始找到一些 help 函数之类的信息却完全找不到调用的地方。<br>&emsp;&emsp;因为这个调用逻辑封装在 Cmd 对象里面了。</p>
 </blockquote>
 <blockquote>
-<p>操作步骤：</p>
-<ol>
-<li>创建fragment</li>
-<li>取出ul中所有子节点取出保存到fragment</li>
-<li>更新fragment中所有li的文本</li>
-<li>将fragment插入ul</li>
-</ol>
+<p>&emsp;&emsp;因此对应的操作函数其实都在 do_next do_list 这些函数上了。<br>&emsp;&emsp;那么将 cmdloop 替换成函数能否实现 settrace 状态下直接触发想要的调试效果呢？<br>&emsp;&emsp;答案是否定的，直接替换会报错，看了一下上面文章对 Cmd 的运用范例可以知道。<br>&emsp;&emsp;cmd 内部也有相应的执行前和执行后的钩子，pdb模块对执行前做了相应的处理，如果去掉就无法执行了。</p>
 </blockquote>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> ul = <span class="built_in">document</span>.getElementById(<span class="string">'fragment_test'</span>)</span><br><span class="line"><span class="comment">// 1. 创建fragment</span></span><br><span class="line"><span class="keyword">const</span> fragment = <span class="built_in">document</span>.createDocumentFragment()</span><br><span class="line"><span class="comment">// 2. 取出ul中所有子节点取出保存到fragment</span></span><br><span class="line"><span class="keyword">let</span> child</span><br><span class="line"><span class="comment">// 注意：这里不是判断语句 ！！！ child 获取 ul 下的标签元素，然后判断child是否为真</span></span><br><span class="line"><span class="keyword">while</span>(child=ul.firstChild) &#123; </span><br><span class="line">    fragment.appendChild(child)  <span class="comment">// 先将child从ul中移除, 添加为fragment子节点</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 更新fragment中所有li的文本</span></span><br><span class="line"><span class="built_in">Array</span>.prototype.slice.call(fragment.childNodes).forEach(<span class="function"><span class="params">node</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (node.nodeType===<span class="number">1</span>) &#123; <span class="comment">// 判断元素节点 &lt;li&gt;</span></span><br><span class="line">        node.textContent = <span class="string">'l0v0.com'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 4. 将fragment插入ul</span></span><br><span class="line">ul.appendChild(fragment)</span><br></pre></td></tr></table></figure>
-<div class="demo" style="border-radius: 10px;border: 5px solid dimgray;padding: 5px"><br>    <strong id="demo_4" class="switchToHtml btn btn-primary" style="text-align: center;display: grid;margin:0px 5px;">切换为HTML文本</strong><br>    <div style="border-radius: 10px;border: 5px solid dimgray;margin: 5px;padding: 5px;background: white"><br>        <ul id="fragment_test"><br>            <li><a href="http://www.l0v0.com" target="_blank" rel="noopener">www.l0v0.com</a></li><br>            <li><a href="http://www.l0v0.com" target="_blank" rel="noopener">www.l0v0.com</a></li><br>            <li><a href="http://www.l0v0.com" target="_blank" rel="noopener">www.l0v0.com</a></li><br>        </ul><br>    </div><br>    <strong id="output_4" class="btn btn-primary" style="text-align: center;display: grid;margin:0px 5px;">点击执行js代码</strong><br></div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pdb <span class="keyword">import</span> Pdb</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestPdb</span><span class="params">(Pdb,object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">interaction</span><span class="params">(self, frame, traceback)</span>:</span></span><br><span class="line">        self.setup(frame, traceback)</span><br><span class="line">        self.print_stack_entry(self.stack[self.curindex])</span><br><span class="line">        <span class="comment"># self.cmdloop()</span></span><br><span class="line">        arg = <span class="string">'c'</span></span><br><span class="line">        self.precmd(arg)</span><br><span class="line">        self.onecmd(arg)</span><br><span class="line"></span><br><span class="line">        self.forget()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">combine</span><span class="params">(s1,s2)</span>:</span>      <span class="comment"># define subroutine combine, which... </span></span><br><span class="line">        s3 = s1 + s2 + s1    <span class="comment"># sandwiches s2 between copies of s1, ... </span></span><br><span class="line">        s3 = <span class="string">'"'</span> + s3 +<span class="string">'"'</span>   <span class="comment"># encloses it in double quotes,... </span></span><br><span class="line">        <span class="keyword">return</span> s3            <span class="comment"># and returns it. </span></span><br><span class="line">    a = <span class="string">"aaa"</span></span><br><span class="line">    b = <span class="string">"bbb"</span></span><br><span class="line">    TestPdb().set_trace() </span><br><span class="line">    final = combine(a,b) </span><br><span class="line">    <span class="keyword">print</span> final</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;只要执行上面的代码就可以无条件跳过所有的断点了。<br>&emsp;&emsp;当然，如果将 c 改为 l 罗列断点的话就会陷入死循环了 <em>(:з」∠)</em></p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>&emsp;&emsp;以上就是这次 pdb 研究的情况了，其实还有很多pdb相关的东西没有深入探讨<br>&emsp;&emsp;这次研究的目的是为了移除 pdb 模块的输入等待方式，打算在 Maya 中引入 UI 相应实现动态 Debug 的效果。（mpdb 插件）<br>&emsp;&emsp;目前我已经得到了最核心的输入相应代码，因此见好就收了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;个人觉得 pdb 模块写得非常不友好，注释不太够，太多乱七八糟的参数不明所以，网上讲解的文章也非常少。<br>&emsp;&emsp;还好自己总算是经过重重险阻找到了解决方案。</p>
+</blockquote>
 
-<script>
-$(function(){
-    let clickCheck = false;
-    $('#output_4').click(function(){
-        // Note 如果是文本显示模式 切换为渲染模式
-        let element = $('#output_4').prev()
-        if (element.hasClass("converted")) {
-            $('#demo_4').trigger('click')
-        }
-        function outputData(output, data,display=false) {
-            if(display){
-                output.innerHTML = output.innerHTML + "<span style='color:#57a64a'>" + data + "</span>" + "<br>";
-                console.log(data);
-            }
-            else{
-                output.innerHTML = output.innerHTML + "<span style='color:coral'>" + data + "</span>" + " : " + "<span style='color:cyan'>" + eval(data) + "</span>" + "<br>";
-                console.log(eval(data));
-            }
-        }
-        const demo = document.getElementById('demo_4').nextElementSibling;
-        const lis = demo.getElementsByTagName('li');
-
-
-        const ul = document.getElementById('fragment_test')
-        // 1. 创建fragment
-        const fragment = document.createDocumentFragment()
-        // 2. 取出ul中所有子节点取出保存到fragment
-        let child
-        while(child=ul.firstChild) { // 一个节点只能有一个父亲
-            fragment.appendChild(child)  // 先将child从ul中移除, 添加为fragment子节点
-        }
-
-        clickCheck = !clickCheck;
-        // 3. 更新fragment中所有li的文本
-        Array.prototype.slice.call(fragment.childNodes).forEach(node => {
-            if (node.nodeType===1) { // 元素节点 <li>
-                if(clickCheck)
-                    node.innerHTML = '<a href="https://blog.l0v0.com">blog.l0v0.com</a>';
-                else
-                    node.innerHTML = '<a href="https://www.l0v0.com">www.l0v0.com</a>';
-            }
-        })
-
-        // 4. 将fragment插入ul
-        ul.appendChild(fragment)
-    })
-});
-</script>
-
-<!-- 
-<script>
-    var ImgArray = [];
-    $('button').each(function(){
-        if($(this).attr("id") == "processImg_btn"){
-            ImgArray.push($(this).parent().next());
-            $(this).parent().next().hide();
-            $(this).css('width','100%');
-            $(this).click(function(){
-                // Note 触发 resize 事件
-                window.dispatchEvent(new Event('resize'));
-                $(this).parent().next().slideToggle(1000);
-            });
-        }
-    });
-
-</script> 
--->
       
     </div>
 
@@ -1054,13 +842,13 @@ $(function(){
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/posts/88b7d26d.html">Vue 学习之路（五）</a></p>
+        <p><span>本文标题:</span><a href="/posts/66c5da7.html">Python pdb 调试模块研究</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 智伤帝 的个人博客">智伤帝</a></p>
-        <p><span>发布时间:</span>2019年06月30日 - 16时28分</p>
-        <p><span>最后更新:</span>2019年11月07日 - 21时28分</p>
+        <p><span>发布时间:</span>2020年01月05日 - 12时05分</p>
+        <p><span>最后更新:</span>2020年01月05日 - 21时21分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/posts/88b7d26d.html" title="Vue 学习之路（五）">https://blog.l0v0.com/posts/88b7d26d.html</a>
-            <span class="copy-path" data-clipboard-text="原文: https://blog.l0v0.com/posts/88b7d26d.html　　作者: 智伤帝" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/posts/66c5da7.html" title="Python pdb 调试模块研究">https://blog.l0v0.com/posts/66c5da7.html</a>
+            <span class="copy-path" data-clipboard-text="原文: https://blog.l0v0.com/posts/66c5da7.html　　作者: 智伤帝" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <!-- <script src="/js/clipboard.min.js"></script> -->
             <!-- <script> var clipboard = new Clipboard('.copy-path');</script> -->
         </p>
@@ -1129,18 +917,9 @@ $(function(){
 
 <nav id="article-nav">
   
-    <a href="/posts/edb999b4.html" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          Vue 学习之路（六）
-        
-      </div>
-    </a>
   
-  
-    <a href="/posts/e729172a.html" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Vue 学习之路（四）</div>
+    <a href="/posts/83897e45.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Overlapper 动画插件研究</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -1151,7 +930,7 @@ $(function(){
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Vue-源码分析-准备知识"><span class="toc-number">1.</span> <span class="toc-text">Vue 源码分析 - 准备知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#根据伪数组生成对应的真数组"><span class="toc-number">1.2.</span> <span class="toc-text">根据伪数组生成对应的真数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#node-nodeType-得到节点类型"><span class="toc-number">1.3.</span> <span class="toc-text">node.nodeType: 得到节点类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#给对象添加属性"><span class="toc-number">1.4.</span> <span class="toc-text">给对象添加属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DocumentFragment-文档碎片-高效批量更新多个节点"><span class="toc-number">1.5.</span> <span class="toc-text">DocumentFragment: 文档碎片(高效批量更新多个节点)</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Maya-mpdb-插件开发-做的准备研究"><span class="toc-number">1.</span> <span class="toc-text">Maya mpdb 插件开发 做的准备研究</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PDB-模块使用"><span class="toc-number">1.2.</span> <span class="toc-text">PDB 模块使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pdb-源码探讨"><span class="toc-number">1.3.</span> <span class="toc-text">pdb 源码探讨</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#set-trace-源码挖掘"><span class="toc-number">1.3.1.</span> <span class="toc-text">set_trace 源码挖掘</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#frame-类型说明"><span class="toc-number">1.3.2.</span> <span class="toc-text">frame 类型说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sys-settrace-讲解"><span class="toc-number">1.3.3.</span> <span class="toc-text">sys.settrace 讲解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#trace-dispatch-分析"><span class="toc-number">1.3.4.</span> <span class="toc-text">trace_dispatch 分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cmd模块"><span class="toc-number">1.3.5.</span> <span class="toc-text">cmd模块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">1.4.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
 </div>
 <style>
     .left-col .switch-btn {
@@ -1227,7 +1006,7 @@ $(function(){
 <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script>
 var gitment = new Gitment({
-  id: 'Vue 学习之路（五）', // 可选。默认为 location.href
+  id: 'Python pdb 调试模块研究', // 可选。默认为 location.href
   owner: 'FXTD-odyssey',
   repo: 'FXTD-odyssey.github.io',
   oauth: {
@@ -1270,13 +1049,11 @@ gitment.render('comments')
 
     <div class="scroll" id="post-nav-button">
         
-            <a  href="/posts/edb999b4.html" title="上一篇: Vue 学习之路（六）">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a  href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a  href="/posts/e729172a.html" title="下一篇: Vue 学习之路（四）">
+            <a  href="/posts/83897e45.html" title="下一篇: Overlapper 动画插件研究">
                 <i class="fa fa-angle-right"></i>
             </a>
         
