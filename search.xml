@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[VScode - Setting Sync 配置同步之坑]]></title>
+    <url>%2Fposts%2F614e755e.html</url>
+    <content type="text"><![CDATA[这个坑是我自己的锅，和VScode插件无关 前言 &emsp;&emsp;最近公司电脑的 VScode 一直出现一些奇怪的插件更新报错&emsp;&emsp;比如最常见的 C# 和 intellicode 插件，经常下载什么代码包结果无法下载的，我自己也是一头雾水 &emsp;&emsp;直到最近，我打算通过 setting Sync 插件同步一下线上的插件信息，方便我同步到其他电脑上&emsp;&emsp;结果却发现遇到坑了。 问题情况 &emsp;&emsp;由于太久没有同步配置了，而且我希望弄一个新的 gist 来同步当前的插件配置&emsp;&emsp;因此我打开了插件的配置面板，想要将 gist 的数据切换掉 &emsp;&emsp;但是万万没想到，更新的时候翻车了。 &emsp;&emsp;网上查了一番，没有找到报错的原因&emsp;&emsp;从控制台的报错上看貌似是 ssl 证书相关的错误，但是具体不清楚。 &emsp;&emsp;我接着查命令看到有重置的功能，大概是有什么垃圾信息导致错误吧。&emsp;&emsp;手一抖，将数据重置了。 &emsp;&emsp;结果坑爹才刚刚开始。&emsp;&emsp;我在点击一次 update 功能会打开登陆界面的面板 &emsp;&emsp;看到熟悉的 login with github , 我就放心了 &emsp;&emsp;结果我被坑爹了，画面一直白屏打不开。 &emsp;&emsp;这种问题只能自己去搜索一下了，还转么找到 github 的仓库翻 issue&emsp;&emsp;作者提到 3.2.5 版本已经修复了 ssl 无法登陆的问题。&emsp;&emsp;于是我想难道是高版本又出 BUG 了，于是又专门切换到 3.2.5 版本，依旧没有解决问题(:з」∠)。 &emsp;&emsp;而且重置的时候还把之前github上配置好的 token 权限给弄没了&emsp;&emsp;我只好又重新去处理申请新的token 解决方案 &emsp;&emsp;我弄了新的 gist id 然后又弄了 新的 token 验证&emsp;&emsp;还是上传不成功，真的让我很是火大。&emsp;&emsp;考虑到是 ssl 的问题，可能和代理设置有关，我想能否通过 proxifier 工具来实现挂载&emsp;&emsp;结果开启了软件仍然无法解决问题。 &emsp;&emsp;直到最后，我搜索了如何设置 Vscode 代理才发现，原来我已经设置了代理，而且阴沟里翻船了。 &emsp;&emsp;看到自己的设置真的是气不打一处来，浪费我大半天的时间只因为当时配置的时候多加了一个 s&emsp;&emsp;http代理用不了 https 协议&emsp;&emsp;我将设置改了之后，一切都好了，真的是气死我了。]]></content>
+      <categories>
+        <category>VScode</category>
+      </categories>
+      <tags>
+        <tag>VScode</tag>
+        <tag>编辑器</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Maya 轴心移动研究]]></title>
     <url>%2Fposts%2F4120b797.html</url>
     <content type="text"><![CDATA[Maya 可以K帧的轴心设置 前言 &emsp;&emsp;最近翻 RJ 的博客，找到了一个可以K帧轴心的绑定设置 链接&emsp;&emsp;恰巧动画组有人也有相关的轴心K帧的需求，于是我就在 RJ 的基础上进行了进一步研究。 &emsp;&emsp;这篇文章是 2019 年末的研究成果了，因为各种原因拖到了现在才开始写博客做记录。&emsp;&emsp;最近临近春节，年会等事情比较多，暴饮暴食，结果也胖了不少(:з」∠)&emsp;&emsp;说会正题，这次尝试了 Script Job 来实现自动执行代码效果，也算是花了不少心思了。 问题分析 &emsp;&emsp;几个星期前动画人员做动画，遇到了个挪动轴心点K帧的问题。&emsp;&emsp;通过挪动轴心点来实现不同轴心的旋转定义，如此旋转效果才比较合理。 &emsp;&emsp;比如说角色用剑砸到地上，这个时候剑的轴心在手上&emsp;&emsp;砸到地上之后，希望剑来反向控制角色，这个时候轴心应该是剑接触的地面上。 解决方案 - 轴心点控制 &emsp;&emsp;最简单的方法就是控制 transform 节点的 rotatePivot 属性&emsp;&emsp;RJ大佬就是比较经典的绑定制作方案，其实也可以更加简化操作。 &emsp;&emsp;这样连接 Locator 就可以控制到物体的轴心点位置了。 &emsp;&emsp;但是这种搭建方法会有一些问题 &emsp;&emsp;没错，这种方案的轴心点一旦移动旋转了之后，再次移动会给模型带来位置的偏移。&emsp;&emsp;于是下一步的解决方案就是重点解决这个问题。 解决方案 - 事件钩子调用 &emsp;&emsp;首先可以看到，如果是正常的 pivot 模式下是可以任意移动而不会造成模型偏移的。 &emsp;&emsp;因此要实现这个方案需要研究这种 pivot 模式下是如何让模型不产生偏移的。&emsp;&emsp;最初我打算使用 绑定的方式 来实现这种效果，但是始终解决不了问题。&emsp;&emsp;后来我发现 transform 节点下有 rotatePivotTranslate 属性&emsp;&emsp;当我移动轴心点的时候，模型偏移的数值会自动计算赋值到这个属性上。 &emsp;&emsp;因此只要算出这个数值然后赋值到这个属性上就可以了。&emsp;&emsp;然而我折腾了好久，发现如果不通过节点来计算的话，就必须要移动过程中更新这个属性，需要用到 scirptJob&emsp;&emsp;但是这样其实和直接移动轴心操作是没有区别的(:з」∠) &emsp;&emsp;于是最初我是采用了 scirptJob 的生成方案&emsp;&emsp;但是 scirptJob 有一个缺点就是不能保存下来，还需要使用 scriptNode 实现打开加载功能，同时还要避免生成过多的垃圾 scriptNode 节点。&emsp;&emsp;因此整一个实现方法还是有些许复杂，不比开发一个节点简单多少 OpenMaya 事件钩子调用github 代码链接 &emsp;&emsp; scriptJob 解决方案有一些问题，因此代码上面注释掉了。&emsp;&emsp; scirptJob 是有 attributeChange 事件可以捕获物体的移动然后执行相应的脚本&emsp;&emsp;但是这个更新是当物体移动停止之后才开始执行的，没有办法实现类似于节点的操作，一边移动一边更新&emsp;&emsp;因此后面我将代码升级成了 OpenMaya MMessage 的方案。 &emsp;&emsp;调用 OpenMaya.MNodeMessage.addAttributeChangedCallback 函数可以实现节点动态改变动态更新效果。&emsp;&emsp;具体的实现方法参考了autodesk论坛的回答 链接 1234567891011121314def pivotEvent(sel,loc,msg, m_plug, otherMplug, clientData): # msg kIncomingDirection = 2048 # msg kAttributeSet = 8 # 2048 + 8 = 2056 if msg == 2056: if not pm.objExists(sel) or not pm.objExists(loc): return node,attr = m_plug.name().split(".") if str(loc) == node and "translate" in attr and pm.objExists(loc): pm.xform(sel, piv=pm.xform(loc,q=1,ws=1,t=1), ws=1)# 此处省略代码 ...idx = om.MNodeMessage.addAttributeChangedCallback(_node, partial(pivotEvent,sel,loc)) &emsp;&emsp;代码层面上 sel 和 loc 都是我额外传入的参数&emsp;&emsp; msg 后面的参数是这个函数回调传入的参数。 &emsp;&emsp;msg 是类型数字 这里回调涉及到所有的情况，因此需要通过 msg 来过滤属性变化的情况。&emsp;&emsp;后续就是判断传入的参数是否存在，如果存在的话更新 sel 变量的 旋转轴心&emsp;&emsp;相当于一个物体的移动，无时无刻都在同步另一个物体轴心点位置。 scirptJob 删除钩子 &emsp;&emsp;传入的回调事件如果不删除的话会一直循环执行的，如果不及时删除可能会严重影响Maya的性能，甚至导致Maya崩溃。&emsp;&emsp;因此这里通过 scriptJob runOnce 的方案来解决掉 OpenMaya 当中的事件 12345# 此处省略代码 ...idx = om.MNodeMessage.addAttributeChangedCallback(_node, partial(pivotEvent,sel,loc))deleteEvent = lambda:om.MMessage.removeCallback(idx)pm.scriptJob( ro=1,nd= [str(loc),deleteEvent], protected=True)pm.scriptJob( ro=1,e= ["SceneOpened",deleteEvent], protected=True) &emsp;&emsp;因此两个 scirptJob 会分别在 节点删除以及打开新场景的时候删除事件。 ScriptNode 重置效果 &emsp;&emsp;无论是 scriptJob 还是 MMessage 事件都是无法保存到文件里面的&emsp;&emsp;因此需要在打开文件的时候重新创建事件，确保脚本运行正常。&emsp;&emsp;而这里可以通过 ScriptNode 来实现。 &emsp;&emsp;scriptNode 命令提供了几种监听状态来实现 0 Execute on demand. 1 Execute on file load or on node deletion. 2 Execute on file load or on node deletion when not in batch mode. 3 Internal 4 Execute on software render 5 Execute on software frame render 6 Execute on scene configuration 7 Execute on time changed &emsp;&emsp;文档里面有说明，而且命令运行完之后会生成一个 scriptNode 节点 &emsp;&emsp;为了保证文件的干净，这里使用 UUID 来生成全局唯一标识符&emsp;&emsp;通过这个标识符命名 scriptNode 就可以让这个 ScriptNode 几乎在所有的 Maya 场景中是唯一的，&emsp;&emsp;也就可以光明正大删除 ScriptNode 而不会造成误删的情况。（注：最初我是想用序号的方式的，想想就难办） 1234567891011121314151617181920212223242526272829303132from textwrap import dedentimport uuidUUID = str(uuid.uuid4()).replace("-","_")node = 'pivotFollow_%s' % UUIDscript = dedent("""import pymel.core as pmfrom functools import partialdef pivotEvent(sel,loc,msg, m_plug, otherMplug, clientData): if msg == 2056: if not pm.objExists(sel) or not pm.objExists(loc): return node,attr = m_plug.name().split(".") if str(loc) == node and "translate" in attr and pm.objExists(loc): pm.xform(sel, piv=pm.xform(loc,q=1,ws=1,t=1), ws=1)# 判断相关节点是否已经被删除了if pm.objExists("&#123;sel&#125;") and pm.objExists("&#123;loc&#125;"): sel_list = om.MSelectionList() sel_list.add("&#123;loc&#125;") _node = sel_list.getDependNode(0) idx = om.MNodeMessage.addAttributeChangedCallback(_node, partial(pivotEvent,"&#123;sel&#125;","&#123;loc&#125;")) deleteEvent = lambda: om.MMessage.removeCallback(idx) pm.scriptJob( ro=1,nd= ["&#123;loc&#125;",deleteEvent], protected=True) pm.scriptJob( ro=1,e= ["SceneOpened",deleteEvent], protected=True)# 如果已经被删除了则删除自身elif pm.objExists("&#123;node&#125;"): pm.delete("&#123;node&#125;")""".format(sel=sel,loc=loc,node=node))pm.scriptNode( st=1, bs=script, n=node, stp='python') &emsp;&emsp;虽然这样设置可以完美实现移动轴心的效果&emsp;&emsp;但是却会丢失物体原先的位置，K帧可能会导致物体无法归位，还是有很严重的隐患(:з」∠) &emsp;&emsp;这是鱼和熊掌不可兼得，两个方案都各有各自的问题。&emsp;&emsp;相比于隐藏在暗处的方案二，我更加推崇简单的方案一。&emsp;&emsp;毕竟方案二很可能会导致前面的动画毁于一旦的，方案一的问题至少还是肉眼可见的。 总结 &emsp;&emsp;这次又进一步尝试了 Maya 的事件系统，感觉用起来还是有点危险的。&emsp;&emsp;测试 OpenMaya 的时候就忘记了过滤 msg 在输出，结果造成了永动机，被迫强制关闭 Maya 。 &emsp;&emsp;回想起最初接触 scriptJob 还是在 2年前，那个时候看教程，通过 scriptjob 实现 IKFK 自动切换的黑科技&emsp;&emsp;简直是印象深刻，如今发现 Maya API 里面的事件系统更加全面，能实现的 黑科技 可谓是数不胜数呀。]]></content>
@@ -10,8 +22,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -24,8 +36,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -38,8 +50,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -53,8 +65,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Git</tag>
       </tags>
   </entry>
@@ -68,8 +80,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -96,8 +108,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -121,8 +133,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -150,8 +162,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -440,8 +452,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>BlendShape</tag>
       </tags>
   </entry>
@@ -457,8 +469,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -470,9 +482,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -484,9 +496,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -516,8 +528,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -880,9 +892,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -896,9 +908,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -912,9 +924,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -944,9 +956,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -960,9 +972,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -976,9 +988,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -992,9 +1004,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -1008,9 +1020,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -1057,8 +1069,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1087,8 +1099,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1101,8 +1113,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>React</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1115,8 +1127,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>React</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1145,8 +1157,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1161,8 +1173,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1178,8 +1190,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1194,8 +1206,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1210,8 +1222,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1249,8 +1261,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
       </tags>
   </entry>
   <entry>
@@ -1265,8 +1277,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1280,8 +1292,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1321,8 +1333,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
       </tags>
   </entry>
   <entry>
@@ -1347,8 +1359,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
       </tags>
   </entry>
   <entry>
@@ -1360,8 +1372,8 @@
         <category>Maya</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
         <tag>Qt Designer</tag>
       </tags>
   </entry>
@@ -1373,8 +1385,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>PyQt</tag>
         <tag>Python</tag>
+        <tag>PyQt</tag>
       </tags>
   </entry>
   <entry>
@@ -1400,8 +1412,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1440,8 +1452,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -1454,8 +1466,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2058,8 +2070,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>拍照指南</tag>
         <tag>学习笔记</tag>
+        <tag>拍照指南</tag>
       </tags>
   </entry>
   <entry>
@@ -2085,8 +2097,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>学习笔记</tag>
         <tag>后期基本流程</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
   <entry>

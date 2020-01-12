@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://blog.l0v0.com/"/>
-  <updated>2020-01-12T14:33:08.822Z</updated>
+  <updated>2020-01-12T15:02:13.674Z</updated>
   <id>https://blog.l0v0.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>VScode - Setting Sync 配置同步之坑</title>
+    <link href="https://blog.l0v0.com/posts/614e755e.html"/>
+    <id>https://blog.l0v0.com/posts/614e755e.html</id>
+    <published>2020-01-12T14:36:34.000Z</published>
+    <updated>2020-01-12T15:02:13.674Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="这个坑是我自己的锅，和VScode插件无关"><a href="#这个坑是我自己的锅，和VScode插件无关" class="headerlink" title="这个坑是我自己的锅，和VScode插件无关"></a>这个坑是我自己的锅，和VScode插件无关</h1><a id="more"></a><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote><p>&emsp;&emsp;最近公司电脑的 VScode 一直出现一些奇怪的插件更新报错<br>&emsp;&emsp;比如最常见的 C# 和 intellicode 插件，经常下载什么代码包结果无法下载的，我自己也是一头雾水</p></blockquote><blockquote><p>&emsp;&emsp;直到最近，我打算通过 setting Sync 插件同步一下线上的插件信息，方便我同步到其他电脑上<br>&emsp;&emsp;结果却发现遇到坑了。</p></blockquote><h2 id="问题情况"><a href="#问题情况" class="headerlink" title="问题情况"></a>问题情况</h2><blockquote><p>&emsp;&emsp;由于太久没有同步配置了，而且我希望弄一个新的 gist 来同步当前的插件配置<br>&emsp;&emsp;因此我打开了插件的配置面板，想要将 gist 的数据切换掉</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/log/Vscode_SettingSync/01.png" alt="alt"></p><blockquote><p>&emsp;&emsp;但是万万没想到，更新的时候翻车了。</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/log/Vscode_SettingSync/02.png" alt="alt"></p><blockquote><p>&emsp;&emsp;网上查了一番，没有找到报错的原因<br>&emsp;&emsp;从控制台的报错上看貌似是 ssl 证书相关的错误，但是具体不清楚。</p></blockquote><hr><blockquote><p>&emsp;&emsp;我接着查命令看到有重置的功能，大概是有什么垃圾信息导致错误吧。<br>&emsp;&emsp;手一抖，将数据重置了。</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/log/Vscode_SettingSync/03.png" alt="alt"></p><blockquote><p>&emsp;&emsp;结果坑爹才刚刚开始。<br>&emsp;&emsp;我在点击一次 update 功能会打开登陆界面的面板</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/log/Vscode_SettingSync/04.png" alt="alt"></p><blockquote><p>&emsp;&emsp;看到熟悉的 login with github , 我就放心了</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/log/Vscode_SettingSync/05.png" alt="alt"></p><blockquote><p>&emsp;&emsp;结果我被坑爹了，画面一直白屏打不开。</p></blockquote><hr><blockquote><p>&emsp;&emsp;这种问题只能自己去搜索一下了，还转么找到 github 的仓库翻 <a href="https://github.com/shanalikhan/code-settings-sync/issues/802" target="_blank" rel="noopener">issue</a><br>&emsp;&emsp;作者提到 3.2.5 版本已经修复了 ssl 无法登陆的问题。<br>&emsp;&emsp;于是我想难道是高版本又出 BUG 了，于是又专门切换到 3.2.5 版本，依旧没有解决问题<em>(:з」∠)</em>。</p></blockquote><blockquote><p>&emsp;&emsp;而且重置的时候还把之前github上配置好的 token 权限给弄没了<br>&emsp;&emsp;我只好又重新去处理申请新的token</p></blockquote><h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><blockquote><p>&emsp;&emsp;我弄了新的 gist id 然后又弄了 新的 token 验证<br>&emsp;&emsp;还是上传不成功，真的让我很是火大。<br>&emsp;&emsp;考虑到是 ssl 的问题，可能和代理设置有关，我想能否通过 proxifier 工具来实现挂载<br>&emsp;&emsp;结果开启了软件仍然无法解决问题。</p></blockquote><blockquote><p>&emsp;&emsp;直到最后，我搜索了如何设置 Vscode 代理才发现，原来我已经设置了代理，而且阴沟里翻船了。</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/log/Vscode_SettingSync/06.png" alt="alt"></p><blockquote><p>&emsp;&emsp;看到自己的设置真的是气不打一处来，浪费我大半天的时间只因为当时配置的时候多加了一个 s<br>&emsp;&emsp;http代理用不了 https 协议<br>&emsp;&emsp;我将设置改了之后，一切都好了，真的是气死我了。</p></blockquote>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;这个坑是我自己的锅，和VScode插件无关&quot;&gt;&lt;a href=&quot;#这个坑是我自己的锅，和VScode插件无关&quot; class=&quot;headerlink&quot; title=&quot;这个坑是我自己的锅，和VScode插件无关&quot;&gt;&lt;/a&gt;这个坑是我自己的锅，和VScode插件无关&lt;/h1&gt;
+    
+    </summary>
+    
+      <category term="VScode" scheme="https://blog.l0v0.com/categories/VScode/"/>
+    
+    
+      <category term="VScode" scheme="https://blog.l0v0.com/tags/VScode/"/>
+    
+      <category term="编辑器" scheme="https://blog.l0v0.com/tags/%E7%BC%96%E8%BE%91%E5%99%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>Maya 轴心移动研究</title>
@@ -38,9 +62,9 @@
       <category term="Python" scheme="https://blog.l0v0.com/categories/Maya/CG-Programming/Python/"/>
     
     
-      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
-    
       <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
+    
+      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
     
   </entry>
   
@@ -66,9 +90,9 @@
       <category term="Python" scheme="https://blog.l0v0.com/categories/Maya/CG-Programming/Python/"/>
     
     
-      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
-    
       <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
+    
+      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
     
   </entry>
   
@@ -94,9 +118,9 @@
       <category term="Python" scheme="https://blog.l0v0.com/categories/Maya/CG-Programming/Python/"/>
     
     
-      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
-    
       <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
+    
+      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
     
   </entry>
   
@@ -124,9 +148,9 @@
       <category term="Python" scheme="https://blog.l0v0.com/categories/Git/Maya/CG-Programming/Python/"/>
     
     
-      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
-    
       <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
+    
+      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
     
       <category term="Git" scheme="https://blog.l0v0.com/tags/Git/"/>
     
@@ -154,9 +178,9 @@
       <category term="Python" scheme="https://blog.l0v0.com/categories/Maya/CG-Programming/Python/"/>
     
     
-      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
-    
       <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
+    
+      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
     
   </entry>
   
@@ -210,9 +234,9 @@
       <category term="Python" scheme="https://blog.l0v0.com/categories/Maya/CG-Programming/Python/"/>
     
     
-      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
-    
       <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
+    
+      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
     
   </entry>
   
@@ -260,9 +284,9 @@
       <category term="Python" scheme="https://blog.l0v0.com/categories/Maya/CG-Programming/Python/"/>
     
     
-      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
-    
       <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
+    
+      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
     
   </entry>
   
@@ -318,9 +342,9 @@
       <category term="Rigging" scheme="https://blog.l0v0.com/categories/Maya/CG-Programming/Python/Rigging/"/>
     
     
-      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
-    
       <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
+    
+      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
     
       <category term="Rigging" scheme="https://blog.l0v0.com/tags/Rigging/"/>
     
@@ -519,30 +543,6 @@
       <category term="Autodesk" scheme="https://blog.l0v0.com/tags/Autodesk/"/>
     
       <category term="Arnold" scheme="https://blog.l0v0.com/tags/Arnold/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Autodesk Genuine Service 破解无效解决方案</title>
-    <link href="https://blog.l0v0.com/posts/efd57a69.html"/>
-    <id>https://blog.l0v0.com/posts/efd57a69.html</id>
-    <published>2019-10-28T15:38:10.000Z</published>
-    <updated>2019-11-07T13:28:22.845Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="万恶自动桌-流氓许可证检测器"><a href="#万恶自动桌-流氓许可证检测器" class="headerlink" title="万恶自动桌 | 流氓许可证检测器"></a>万恶自动桌 | 流氓许可证检测器</h1><a id="more"></a><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote><p>&emsp;&emsp;今天在电脑里使用Maya的时候，突然直接弹出自动桌的线上验证。<br>&emsp;&emsp;然后验证出我的Maya序列号无效，要求我重新进行输入验证操作。<br>&emsp;&emsp;我以为只是以前的小问题，重新输入一遍破解序列就可以解决问题了。<br>&emsp;&emsp;然而我还是图样图森破。</p></blockquote><blockquote><p>&emsp;&emsp;当我重新输入序列号之后，Maya无法正常启动了！！~<br>&emsp;&emsp;可惜我已经解决了问题，没办法复原之前的效果。</p></blockquote><blockquote><p>&emsp;&emsp;一开始还不清楚是什么情况。<br>&emsp;&emsp;我其他 Maya 版本也尝试了，估计是我已经过了试用期的使用时间。<br>&emsp;&emsp;然后 Maya 验证就发现我输入的序列号是有问题的，直接将我的 Maya 锁定了。</p></blockquote><h2 id="尝试解决"><a href="#尝试解决" class="headerlink" title="尝试解决"></a>尝试解决</h2><blockquote><p>&emsp;&emsp;遇到这种倒霉的问题，没有什么好想法，于是就尝试全部Maya卸载重装吧。<br>&emsp;&emsp;然后就在那里等待这个操作好长一段时间。<br>&emsp;&emsp;卸载的时候法线卸载工具里面有一个 Autodesk Genuine Service 的软件。<br>&emsp;&emsp;我也尝试将它卸载了，结果发现无法正常卸载 ！！ </p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/log/genuine_service/01.jpg" alt="alt"></p><blockquote><p>&emsp;&emsp;只要点卸载就是这个界面，点击这个界面会弹出网页，告诉我电脑含有非法软件。<br>&emsp;&emsp;然后这个窗口就会自动关闭，然后卸载操作就没了。</p></blockquote><blockquote><p>&emsp;&emsp;后来没办法，打算先重装看看情况怎样？<br>&emsp;&emsp;结果等了好长一段时间重装了之后，发现无法点击输入序列号的按钮，一点击就会退出界面。<br>&emsp;&emsp;于是还是得想办法。</p></blockquote><h2 id="微软的卸载工具"><a href="#微软的卸载工具" class="headerlink" title="微软的卸载工具"></a>微软的卸载工具</h2><blockquote><p>&emsp;&emsp;鉴于这个软件无法正常卸载了，所以需要额外的工具进行卸载。<br>&emsp;&emsp;后面我在网上自动桌的官网上找到了完全清理的<a href="https://knowledge.autodesk.com/customer-service/download-install/remove-products/clean-uninstall" target="_blank" rel="noopener">文章</a><br>&emsp;&emsp;又通过文章找到了 微软官方 提供的<a href="https://support.microsoft.com/en-us/help/17588/windows-fix-problems-that-block-programs-being-installed-or-removed" target="_blank" rel="noopener">卸载工具</a></p></blockquote><blockquote><p>&emsp;&emsp;通过这个工具，我成功卸载了软件，至少是把注册表相关的信息清理了。<br>&emsp;&emsp;后面用 腾讯的电脑管家 清理只需要将安装目录的文件删除即可。</p></blockquote><blockquote><p>&emsp;&emsp;然而当我兴高采烈地想打开Maya运行时。<br>&emsp;&emsp;却发现打开 Output Window 之后就闪退了，也不知道原因是什么。</p></blockquote><h2 id="最终解决"><a href="#最终解决" class="headerlink" title="最终解决"></a>最终解决</h2><blockquote><p>&emsp;&emsp;后面还是看自动桌官方的文章清理 C 盘相关的目录</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/log/genuine_service/02.png" alt="alt"></p><blockquote><p>&emsp;&emsp;清除了 FLEXnet 目录之后，就可以了，甚至 Maya 重新获取到了试用30天的机会。</p></blockquote>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;万恶自动桌-流氓许可证检测器&quot;&gt;&lt;a href=&quot;#万恶自动桌-流氓许可证检测器&quot; class=&quot;headerlink&quot; title=&quot;万恶自动桌 | 流氓许可证检测器&quot;&gt;&lt;/a&gt;万恶自动桌 | 流氓许可证检测器&lt;/h1&gt;
-    
-    </summary>
-    
-      <category term="Maya" scheme="https://blog.l0v0.com/categories/Maya/"/>
-    
-    
-      <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
-    
-      <category term="Autodesk" scheme="https://blog.l0v0.com/tags/Autodesk/"/>
     
   </entry>
   
