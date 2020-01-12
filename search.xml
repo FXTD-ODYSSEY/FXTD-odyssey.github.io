@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Maya 轴心移动研究]]></title>
+    <url>%2Fposts%2F4120b797.html</url>
+    <content type="text"><![CDATA[Maya 可以K帧的轴心设置 前言 &emsp;&emsp;最近翻 RJ 的博客，找到了一个可以K帧轴心的绑定设置 链接&emsp;&emsp;恰巧动画组有人也有相关的轴心K帧的需求，于是我就在 RJ 的基础上进行了进一步研究。 &emsp;&emsp;这篇文章是 2019 年末的研究成果了，因为各种原因拖到了现在才开始写博客做记录。&emsp;&emsp;最近临近春节，年会等事情比较多，暴饮暴食，结果也胖了不少(:з」∠)&emsp;&emsp;说会正题，这次尝试了 Script Job 来实现自动执行代码效果，也算是花了不少心思了。 问题分析 &emsp;&emsp;几个星期前动画人员做动画，遇到了个挪动轴心点K帧的问题。&emsp;&emsp;通过挪动轴心点来实现不同轴心的旋转定义，如此旋转效果才比较合理。 &emsp;&emsp;比如说角色用剑砸到地上，这个时候剑的轴心在手上&emsp;&emsp;砸到地上之后，希望剑来反向控制角色，这个时候轴心应该是剑接触的地面上。 解决方案 - 轴心点控制 &emsp;&emsp;最简单的方法就是控制 transform 节点的 rotatePivot 属性&emsp;&emsp;RJ大佬就是比较经典的绑定制作方案，其实也可以更加简化操作。 &emsp;&emsp;这样连接 Locator 就可以控制到物体的轴心点位置了。 &emsp;&emsp;但是这种搭建方法会有一些问题 &emsp;&emsp;没错，这种方案的轴心点一旦移动旋转了之后，再次移动会给模型带来位置的偏移。&emsp;&emsp;于是下一步的解决方案就是重点解决这个问题。 解决方案 - 事件钩子调用 &emsp;&emsp;首先可以看到，如果是正常的 pivot 模式下是可以任意移动而不会造成模型偏移的。 &emsp;&emsp;因此要实现这个方案需要研究这种 pivot 模式下是如何让模型不产生偏移的。&emsp;&emsp;最初我打算使用 绑定的方式 来实现这种效果，但是始终解决不了问题。&emsp;&emsp;后来我发现 transform 节点下有 rotatePivotTranslate 属性&emsp;&emsp;当我移动轴心点的时候，模型偏移的数值会自动计算赋值到这个属性上。 &emsp;&emsp;因此只要算出这个数值然后赋值到这个属性上就可以了。&emsp;&emsp;然而我折腾了好久，发现如果不通过节点来计算的话，就必须要移动过程中更新这个属性，需要用到 scirptJob&emsp;&emsp;但是这样其实和直接移动轴心操作是没有区别的(:з」∠) &emsp;&emsp;于是最初我是采用了 scirptJob 的生成方案&emsp;&emsp;但是 scirptJob 有一个缺点就是不能保存下来，还需要使用 scriptNode 实现打开加载功能，同时还要避免生成过多的垃圾 scriptNode 节点。&emsp;&emsp;因此整一个实现方法还是有些许复杂，不比开发一个节点简单多少 OpenMaya 事件钩子调用github 代码链接 &emsp;&emsp; scriptJob 解决方案有一些问题，因此代码上面注释掉了。&emsp;&emsp; scirptJob 是有 attributeChange 事件可以捕获物体的移动然后执行相应的脚本&emsp;&emsp;但是这个更新是当物体移动停止之后才开始执行的，没有办法实现类似于节点的操作，一边移动一边更新&emsp;&emsp;因此后面我将代码升级成了 OpenMaya MMessage 的方案。 &emsp;&emsp;调用 OpenMaya.MNodeMessage.addAttributeChangedCallback 函数可以实现节点动态改变动态更新效果。&emsp;&emsp;具体的实现方法参考了autodesk论坛的回答 链接 1234567891011121314def pivotEvent(sel,loc,msg, m_plug, otherMplug, clientData): # msg kIncomingDirection = 2048 # msg kAttributeSet = 8 # 2048 + 8 = 2056 if msg == 2056: if not pm.objExists(sel) or not pm.objExists(loc): return node,attr = m_plug.name().split(".") if str(loc) == node and "translate" in attr and pm.objExists(loc): pm.xform(sel, piv=pm.xform(loc,q=1,ws=1,t=1), ws=1)# 此处省略代码 ...idx = om.MNodeMessage.addAttributeChangedCallback(_node, partial(pivotEvent,sel,loc)) &emsp;&emsp;代码层面上 sel 和 loc 都是我额外传入的参数&emsp;&emsp; msg 后面的参数是这个函数回调传入的参数。 &emsp;&emsp;msg 是类型数字 这里回调涉及到所有的情况，因此需要通过 msg 来过滤属性变化的情况。&emsp;&emsp;后续就是判断传入的参数是否存在，如果存在的话更新 sel 变量的 旋转轴心&emsp;&emsp;相当于一个物体的移动，无时无刻都在同步另一个物体轴心点位置。 scirptJob 删除钩子 &emsp;&emsp;传入的回调事件如果不删除的话会一直循环执行的，如果不及时删除可能会严重影响Maya的性能，甚至导致Maya崩溃。&emsp;&emsp;因此这里通过 scriptJob runOnce 的方案来解决掉 OpenMaya 当中的事件 12345# 此处省略代码 ...idx = om.MNodeMessage.addAttributeChangedCallback(_node, partial(pivotEvent,sel,loc))deleteEvent = lambda:om.MMessage.removeCallback(idx)pm.scriptJob( ro=1,nd= [str(loc),deleteEvent], protected=True)pm.scriptJob( ro=1,e= ["SceneOpened",deleteEvent], protected=True) &emsp;&emsp;因此两个 scirptJob 会分别在 节点删除以及打开新场景的时候删除事件。 ScriptNode 重置效果 &emsp;&emsp;无论是 scriptJob 还是 MMessage 事件都是无法保存到文件里面的&emsp;&emsp;因此需要在打开文件的时候重新创建事件，确保脚本运行正常。&emsp;&emsp;而这里可以通过 ScriptNode 来实现。 &emsp;&emsp;scriptNode 命令提供了几种监听状态来实现 0 Execute on demand. 1 Execute on file load or on node deletion. 2 Execute on file load or on node deletion when not in batch mode. 3 Internal 4 Execute on software render 5 Execute on software frame render 6 Execute on scene configuration 7 Execute on time changed &emsp;&emsp;文档里面有说明，而且命令运行完之后会生成一个 scriptNode 节点 &emsp;&emsp;为了保证文件的干净，这里使用 UUID 来生成全局唯一标识符&emsp;&emsp;通过这个标识符命名 scriptNode 就可以让这个 ScriptNode 几乎在所有的 Maya 场景中是唯一的，&emsp;&emsp;也就可以光明正大删除 ScriptNode 而不会造成误删的情况。（注：最初我是想用序号的方式的，想想就难办） 1234567891011121314151617181920212223242526272829303132from textwrap import dedentimport uuidUUID = str(uuid.uuid4()).replace("-","_")node = 'pivotFollow_%s' % UUIDscript = dedent("""import pymel.core as pmfrom functools import partialdef pivotEvent(sel,loc,msg, m_plug, otherMplug, clientData): if msg == 2056: if not pm.objExists(sel) or not pm.objExists(loc): return node,attr = m_plug.name().split(".") if str(loc) == node and "translate" in attr and pm.objExists(loc): pm.xform(sel, piv=pm.xform(loc,q=1,ws=1,t=1), ws=1)# 判断相关节点是否已经被删除了if pm.objExists("&#123;sel&#125;") and pm.objExists("&#123;loc&#125;"): sel_list = om.MSelectionList() sel_list.add("&#123;loc&#125;") _node = sel_list.getDependNode(0) idx = om.MNodeMessage.addAttributeChangedCallback(_node, partial(pivotEvent,"&#123;sel&#125;","&#123;loc&#125;")) deleteEvent = lambda: om.MMessage.removeCallback(idx) pm.scriptJob( ro=1,nd= ["&#123;loc&#125;",deleteEvent], protected=True) pm.scriptJob( ro=1,e= ["SceneOpened",deleteEvent], protected=True)# 如果已经被删除了则删除自身elif pm.objExists("&#123;node&#125;"): pm.delete("&#123;node&#125;")""".format(sel=sel,loc=loc,node=node))pm.scriptNode( st=1, bs=script, n=node, stp='python') &emsp;&emsp;虽然这样设置可以完美实现移动轴心的效果&emsp;&emsp;但是却会丢失物体原先的位置，K帧可能会导致物体无法归位，还是有很严重的隐患(:з」∠) &emsp;&emsp;这是鱼和熊掌不可兼得，两个方案都各有各自的问题。&emsp;&emsp;相比于隐藏在暗处的方案二，我更加推崇简单的方案一。&emsp;&emsp;毕竟方案二很可能会导致前面的动画毁于一旦的，方案一的问题至少还是肉眼可见的。 总结 &emsp;&emsp;这次又进一步尝试了 Maya 的事件系统，感觉用起来还是有点危险的。&emsp;&emsp;测试 OpenMaya 的时候就忘记了过滤 msg 在输出，结果造成了永动机，被迫强制关闭 Maya 。 &emsp;&emsp;回想起最初接触 scriptJob 还是在 2年前，那个时候看教程，通过 scriptjob 实现 IKFK 自动切换的黑科技&emsp;&emsp;简直是印象深刻，如今发现 Maya API 里面的事件系统更加全面，能实现的 黑科技 可谓是数不胜数呀。]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>CG Programming</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Maya</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Python pdb 调试模块研究]]></title>
     <url>%2Fposts%2F66c5da7.html</url>
     <content type="text"><![CDATA[Maya mpdb 插件开发 做的准备研究 前言 &emsp;&emsp;最近录了一个关于 overlapper 插件的讲解视频。&emsp;&emsp;使用 VSCode 调试 Python 代码的时候翻车了，而且使用外部软件调试会冻结 Python&emsp;&emsp;导致 Maya 没有相应，交互非常不友好。&emsp;&emsp;于是我就有了开发一个 Debug 插件的想法。&emsp;&emsp;主要是要解决断点状态下Maya的GUI响应问题，这样可以很直观看到代码对 Maya 进行了哪些操作。 &emsp;&emsp;最开始我是想要在 ptvsd 的模块上调用 API 开发 Debug 工具。&emsp;&emsp;毕竟我自己做的 VScode 扩展就是基于这个原理，可是后来查了一番之后，发现 ptvsd 是基于 PyDev 的&emsp;&emsp;API调用上我挖掘不太深，就是感觉太复杂了，很多杂七杂八的功能都不需要。 &emsp;&emsp;而且我想要更加通用性的解决方案，利用代码来插入断点，进入断点之后开启一个 while 死循环来更新 UI 界面。&emsp;&emsp;断点调试的时候就 break 掉死循环就好了。 &emsp;&emsp;再进一步研究之后，我发现 Python 自带的 pdb 模块就是实现这个功能的。&emsp;&emsp;于是开始研究 pdb 模块有了今天这篇文章。 PDB 模块使用 &emsp;&emsp;PDB 全称是 Python Dubugger，是 python 的内置模块，可以实现命令行来对 python 代码 Debug&emsp;&emsp;具体用法可以参考后端大佬的视频 &emsp;&emsp;特点就是在代码里面输入 pdb 的代码，程序会捕获到插入的 pdb 调试断点然后进入断点调试模式。&emsp;&emsp;缺点就是纯命令行工具，所有的信息显示都需要通过键盘输入来进行调试，真 DOS 时代无鼠标的操作。 &emsp;&emsp;其实 Maya 的官方博客也有提到过 关于 Maya Python Debug 的方案，其中还说到了 利用 pdb 模块debug 的方法 around-corner地址&emsp;&emsp;不过官方并不推荐使用 pdb ，因为 Maya 的脚本编辑器无法进行命令行输入输出，因此input命令将会弹出一个输入窗口&emsp;&emsp;这样的交互方式是在是太过不友好了，连官方都吐槽了。。。 &emsp;&emsp;另外 maya 的官方文档也有提到 Python Debug 的方案 Maya 文档&emsp;&emsp;如何使用 pdb 可以参照 python 的 官方文档&emsp;&emsp;不过官方文档其实也没有什么代码，都是命令解释，所以也不太友好。 &emsp;&emsp;youtube上也有视频专门讲解在 Maya 如何使用 pdb debug pdb 源码探讨set_trace 源码挖掘 &emsp;&emsp;在 pdb 调试中，大多数时候就是在要设置断点的行数前插入一行 pdb 的代码 pdb.set_trace()&emsp;&emsp;那么这一句代码在背后做了什么呢？&emsp;&emsp;我们可以去到 Python 的Lib目录下找到 pdb.py 文件&emsp;&emsp;Maya 的 Python 内置代码封装到了 bin 目录的 python27.zip 压缩包当中&emsp;&emsp;github上也可以查找到源码（代码是Python3的） https://github.com/python/cpython/blob/master/Lib/pdb.py &emsp;&emsp;在代码当中搜索 set_trace 可以找到下面这个函数 12def set_trace(): Pdb().set_trace(sys._getframe().f_back) &emsp;&emsp;Pdb 类里面是找不到 set_trace 函数的&emsp;&emsp;而通过集成关系可以找到Pdb类是继承于 bdb模块的 Bdb 基类&emsp;&emsp;因此我们可以去到 bdb.py 查找 set_trace 的代码 | https://github.com/python/cpython/blob/master/Lib/bdb.py 1234567891011121314def set_trace(self, frame=None): """Start debugging from `frame`. If frame is not specified, debugging starts from caller's frame. """ if frame is None: frame = sys._getframe().f_back self.reset() while frame: frame.f_trace = self.trace_dispatch self.botframe = frame frame = frame.f_back self.set_step() sys.settrace(self.trace_dispatch) &emsp;&emsp;一顿操作猛如虎，一头雾水不清楚。 (:з」∠) frame 类型说明 &emsp;&emsp;首先需要理解参数输入的 frame 是什么&emsp;&emsp;frame 其实 Python 内置的类，用来描述当前函数域相关的信息。&emsp;&emsp;inspect 模块里面也有 currentFrame 函数获取当前代码域信息。&emsp;&emsp;而上面的操作和 sys 模块的私有函数 _getframe 是一样的。 &emsp;&emsp;关于 frame 的类型说明可以参考 python inspect 模块的官方说明&emsp;&emsp;国内还有大佬写了关于 Cpython 里面 frame object 底层的一些生成原理 链接&emsp;&emsp;可惜这个文章太过深奥，我就跳过了。 &emsp;&emsp;下面则是一些其他国内文章，内容通俗易懂，可惜缺乏深度↓↓↓ https://www.jianshu.com/p/4d8a3c919500 https://blog.csdn.net/zhuguiqin1/article/details/79290244 https://blog.csdn.net/qq_29695701/article/details/94196732 &emsp;&emsp;后来在 stack overflow 找到一篇问题&emsp;&emsp;通过文章回答的链接找到了一篇很好的 frame 运行的代码 链接 12345678910111213141516171819202122232425262728293031323334import sysdef one(): two()def two(): three()def three(): for num in range(3): frame = sys._getframe(num) show_frame(num, frame)def show_frame(num, frame): print frame print " frame = sys._getframe(%s)" % num print " function = %s()" % frame.f_code.co_name print " file/line = %s:%s" % (frame.f_code.co_filename, frame.f_lineno)one()# Output # &lt;frame object at 0x606c50&gt;# frame = sys._getframe(0)# function = three()# file/line = stack.py:12# &lt;frame object at 0x180be10&gt;# frame = sys._getframe(1)# function = two()# file/line = stack.py:7# &lt;frame object at 0x608d30&gt;# frame = sys._getframe(2)# function = one()# file/line = stack.py:4 &emsp;&emsp;通过 frame 可以很好查找到当前代码运行的信息，所以在 pdb 和 traceback 模块里面都是非常重要的组成元素 sys.settrace 讲解 &emsp;&emsp;了解了 frame 之后，我们可以继续测试后续的代码 123456789101112131415161718192021222324252627282930313233343536373839404142def set_step(self): """Stop after one line of code.""" # NOTE Issue #13183: pdb skips frames after hitting a breakpoint and running # NOTE step commands. # NOTE Restore the trace function in the caller (that may not have been set # NOTE for performance reasons) when returning from the current frame. if self.frame_returning: caller_frame = self.frame_returning.f_back if caller_frame and not caller_frame.f_trace: caller_frame.f_trace = self.trace_dispatch self._set_stopinfo(None, None)def _set_stopinfo(self, stopframe, returnframe, stoplineno=0): self.stopframe = stopframe self.returnframe = returnframe self.quitting = 0 # NOTE stoplineno &gt;= 0 means: stop at line &gt;= the stoplineno # NOTE stoplineno -1 means: don't stop at all self.stoplineno = stoplinenodef reset(self): import linecache linecache.checkcache() self.botframe = None self._set_stopinfo(None, None) self.lineno = None self.stack = [] self.curindex = 0 self.curframe = Nonedef set_trace(self, frame=None): if frame is None: frame = sys._getframe().f_back self.reset() # NOTE 重置定义一些变量 我将代码父对象的代码都整合到一起 如上面的 reset 函数所示 # 遍历找到最底层 frame | 并且设置 f_trace 函数到 trace_dispatch 上 while frame: frame.f_trace = self.trace_dispatch self.botframe = frame frame = frame.f_back # NOTE 不清楚作用作用 | 注释掉完全不影响程序运行，大概需要 return 触发才可行 self.set_step() sys.settrace(self.trace_dispatch) &emsp;&emsp;上面我将 set_trace 调用掉的一些函数也贴出来了。&emsp;&emsp;我发现最核心的代码其实最后一行 sys.settrace(self.trace_dispatch)&emsp;&emsp;只有这样在才能触发 断点输入 否则 pdb 不起作用了。 &emsp;&emsp;其实我也不太清楚 sys.settrace 函数是怎么运作的&emsp;&emsp;刚好又在 Stack Overflow 上找到了一些参考 链接&emsp;&emsp;根据这个参考可以知道这个函数是一个全局钩子，每个函数调用都会触发到这个函数。&emsp;&emsp;因此通过这个操作可以实现一些 python 黑科技操作。&emsp;&emsp;当然正如回答说的，如果不是为 Debug 的话，使用这个函数会让其他开代码的人非常难受，而且会导致性能下降。&emsp;&emsp;所以我看 pdb 也是看得难受至极了。 1234567891011121314151617181920212223import sysdef trace_func(frame,event,arg): # NOTE 获取局部变量 a 并修改变量 value = frame.f_locals["a"] if value % 2 == 0: value += 1 frame.f_locals["a"] = valuedef f(a): print aif __name__ == "__main__": sys.settrace(trace_func) for i in range(0,5): f(i)# NOTE 输出 ↓↓↓# NOTE 1# NOTE 1# NOTE 3# NOTE 3# NOTE 5 &emsp;&emsp;frame 对象里面的 f_trace 属性就相当于 局部钩子函数 链接 trace_dispatch 分析123456789101112131415161718192021def trace_dispatch(self, frame, event, arg): print "trace_dispatch",frame,event,arg if self.quitting: return # None if event == 'line': return self.dispatch_line(frame) if event == 'call': return self.dispatch_call(frame, arg) if event == 'return': return self.dispatch_return(frame, arg) if event == 'exception': return self.dispatch_exception(frame, arg) if event == 'c_call': return self.trace_dispatch if event == 'c_exception': return self.trace_dispatch if event == 'c_return': return self.trace_dispatch print 'bdb.Bdb.dispatch: unknown debugging event:', repr(event) return self.trace_dispatch &emsp;&emsp;设置了 sys.settrace 之后，无论在 pyhton 进行任何代码操作都会触发钩子，这就为断点调试做好了准备。&emsp;&emsp;可以看到钩子函数会默认传入当前触发 frame 和 事件。 &emsp;&emsp;为了更好看清楚这个钩子所做的事情，可以继承 Pdb 对象 然后打印出内部的参数。 12345678910111213141516from pdb import Pdbclass TestPdb(Pdb,object): def trace_dispatch(self, frame, event, arg): print "trace_dispatch",frame,event,arg return super(TestPdb,self).trace_dispatch(frame, event, arg)if __name__ == "__main__": def combine(s1,s2): # define subroutine combine, which... s3 = s1 + s2 + s1 # sandwiches s2 between copies of s1, ... s3 = '"' + s3 +'"' # encloses it in double quotes,... return s3 # and returns it. a = "aaa" b = "bbb" TestPdb().set_trace() final = combine(a,b) print final 1234567891011121314151617181920212223242526272829303132333435363738394041424344F:\repo\Pdb_test&gt;"C:/Program Files/Autodesk/Maya2017/bin/mayapy.exe" f:/repo/Pdb_test/frame_test.pytrace_dispatch &lt;frame object at 0x00000222AF1DE048&gt; line None&gt; f:\repo\pdb_test\frame_test.py(16)&lt;module&gt;()-&gt; final = combine(a,b)(Pdb) strace_dispatch &lt;frame object at 0x00000222AF243908&gt; call None--Call--&gt; f:\repo\pdb_test\frame_test.py(9)combine()-&gt; def combine(s1,s2): # define subroutine combine, which...(Pdb) ntrace_dispatch &lt;frame object at 0x00000222AF243908&gt; line None&gt; f:\repo\pdb_test\frame_test.py(10)combine()-&gt; s3 = s1 + s2 + s1 # sandwiches s2 between copies of s1, ...(Pdb) ntrace_dispatch &lt;frame object at 0x00000222AF243908&gt; line None&gt; f:\repo\pdb_test\frame_test.py(11)combine()-&gt; s3 = '"' + s3 +'"' # encloses it in double quotes,...(Pdb) ntrace_dispatch &lt;frame object at 0x00000222AF243908&gt; line None&gt; f:\repo\pdb_test\frame_test.py(12)combine()-&gt; return s3 # and returns it.(Pdb) ntrace_dispatch &lt;frame object at 0x00000222AF243908&gt; return "aaabbbaaa"--Return--&gt; f:\repo\pdb_test\frame_test.py(12)combine()-&gt;'"aaabbbaaa"'-&gt; return s3 # and returns it.(Pdb) l 7 if __name__ == "__main__": 8 9 def combine(s1,s2): # define subroutine combine, which... 10 s3 = s1 + s2 + s1 # sandwiches s2 between copies of s1, ... 11 s3 = '"' + s3 +'"' # encloses it in double quotes,... 12 -&gt; return s3 # and returns it. 13 a = "aaa" 14 b = "bbb" 15 TestPdb().set_trace() 16 final = combine(a,b) 17 print final(Pdb) ntrace_dispatch &lt;frame object at 0x00000222AF1DE048&gt; line None&gt; f:\repo\pdb_test\frame_test.py(17)&lt;module&gt;()-&gt; print final(Pdb) c"aaabbbaaa" &emsp;&emsp;从上面的调试信息可以看到 代码运行的 event 是 line 函数触发的 event 是 call 函数返回的 event 是 return | 并且将返回值 到 arg 上 函数报错的 event 是 exception | 同理可以推断 附注: 测试的时候 super 代码忘记前面添加 return 导致无法 step 进调试函数内部 cmd模块12345678910111213141516171819202122def dispatch_line(self, frame): if self.stop_here(frame) or self.break_here(frame): self.user_line(frame) if self.quitting: raise BdbQuit return self.trace_dispatchdef user_line(self, frame): """This function is called when we stop or break at this line.""" if self._wait_for_mainpyfile: if (self.mainpyfile != self.canonic(frame.f_code.co_filename) or frame.f_lineno&lt;= 0): return self._wait_for_mainpyfile = 0 if self.bp_commands(frame): self.interaction(frame, None)def interaction(self, frame, traceback): self.setup(frame, traceback) self.print_stack_entry(self.stack[self.curindex]) self.cmdloop() self.forget() &emsp;&emsp;那么可以知道一般情况下运行代码会执行 dispatch_line 会调用 user_line&emsp;&emsp;而其中经过我的测试，触发输入调试的代码是 interaction 里面的 cmdloop &emsp;&emsp;这个 cmdloop 可就是大有来头了，这个和 pdb 模块简称的 Cmd 对象有莫大的关系&emsp;&emsp;Cmd 对象来自内置 cmd 库，用于快速构建命令行工具的库。&emsp;&emsp;使用方法可以参考别人研究的 文章&emsp;&emsp;pdb的输入调用操作是完全基于 cmd 库的标准做的，也难怪我也开始找到一些 help 函数之类的信息却完全找不到调用的地方。&emsp;&emsp;因为这个调用逻辑封装在 Cmd 对象里面了。 &emsp;&emsp;因此对应的操作函数其实都在 do_next do_list 这些函数上了。&emsp;&emsp;那么将 cmdloop 替换成函数能否实现 settrace 状态下直接触发想要的调试效果呢？&emsp;&emsp;答案是否定的，直接替换会报错，看了一下上面文章对 Cmd 的运用范例可以知道。&emsp;&emsp;cmd 内部也有相应的执行前和执行后的钩子，pdb模块对执行前做了相应的处理，如果去掉就无法执行了。 1234567891011121314151617181920212223from pdb import Pdbclass TestPdb(Pdb,object): def interaction(self, frame, traceback): self.setup(frame, traceback) self.print_stack_entry(self.stack[self.curindex]) # self.cmdloop() arg = 'c' self.precmd(arg) self.onecmd(arg) self.forget()if __name__ == "__main__": def combine(s1,s2): # define subroutine combine, which... s3 = s1 + s2 + s1 # sandwiches s2 between copies of s1, ... s3 = '"' + s3 +'"' # encloses it in double quotes,... return s3 # and returns it. a = "aaa" b = "bbb" TestPdb().set_trace() final = combine(a,b) print final &emsp;&emsp;只要执行上面的代码就可以无条件跳过所有的断点了。&emsp;&emsp;当然，如果将 c 改为 l 罗列断点的话就会陷入死循环了 (:з」∠) 总结 &emsp;&emsp;以上就是这次 pdb 研究的情况了，其实还有很多pdb相关的东西没有深入探讨&emsp;&emsp;这次研究的目的是为了移除 pdb 模块的输入等待方式，打算在 Maya 中引入 UI 相应实现动态 Debug 的效果。（mpdb 插件）&emsp;&emsp;目前我已经得到了最核心的输入相应代码，因此见好就收了。 &emsp;&emsp;个人觉得 pdb 模块写得非常不友好，注释不太够，太多乱七八糟的参数不明所以，网上讲解的文章也非常少。&emsp;&emsp;还好自己总算是经过重重险阻找到了解决方案。]]></content>
@@ -10,22 +24,22 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
     <title><![CDATA[Overlapper 动画插件研究]]></title>
     <url>%2Fposts%2F83897e45.html</url>
-    <content type="text"><![CDATA[Maya 飘带动画工具 前言 &emsp;&emsp;最近劲爆羊工具盒免费了，因此我怀着高兴的心情去挖掘里面众多工具的功能。&emsp;&emsp;动画师那边刚好需要一个披风动态模拟关键帧的功能，而工具盒里面内置了 动画飘带工具 刚好解决了需求。 链接&emsp;&emsp;这个飘带工具原本需要花费一丢丢的钱的，但是可爱的羊神完全免费了。 &emsp;&emsp;使用了一段时间之后，发现工具的性能有很严重的问题。&emsp;&emsp;一个短小精悍的20-30帧动画都需要处理个几分钟甚至十几分钟。&emsp;&emsp;我翻开源码看了下，原来是个mel脚本，于是就开始着手工具的优化 当前测试 | 动画演示 &emsp;&emsp;制作了一个简单的控制器动画，可以理解为 手臂的 FK 控制器。&emsp;&emsp;就是个简单的举高高动作。 &emsp;&emsp;上面是我将插件最后一步烘焙到控制器的操作去掉。&emsp;&emsp;然后打开debug模式生成中间 locator 效果。&emsp;&emsp;可以看到插件会根据选择的控制器生成层级骨骼，然后再生成辅助的locator将骨架变成柔软过渡的效果。&emsp;&emsp;最后我代码去掉的部分就是骨架动画约束到控制器上然后 烘焙关键帧。 原理分析生成层级骨架 &emsp;&emsp;根据选择的控制器顺序，生成骨架，并且将骨架的朝向调整好. &emsp;&emsp;然后复制最后一个关节。&emsp;&emsp;然后执行 move -r -ls -wd 2 0 0 ; 命令，再整理骨骼的朝向。&emsp;&emsp;这样骨骼就会沿着上一根骨骼的旋转方向的 X 轴进行偏移。&emsp;&emsp;最初我不太理解为什么是拿上一根骨骼的X轴方向偏移。 &emsp;&emsp;执行代码应该沿着红色轴方向移动才是。&emsp;&emsp;结果却出乎意料了。 &emsp;&emsp;原来当我选中 X 通道的时候看到的移动方向才知道原来是继承上一根骨骼的方向。&emsp;&emsp;这样运动就可以确保骨架偏移在正确的朝向上。 约束骨架 | 烘焙关键帧 &emsp;&emsp;将选择控制器约束骨架，并且将约束关系转成关键帧关系 &emsp;&emsp;层级关系如下图 生成辅助 locator &emsp;&emsp;下面进入 for 循环遍历生成运动效果 &emsp;&emsp;生成 offset locator ，位置偏移取决于 scale 属性&emsp;&emsp;生成 IK locator ，位置和控制器保持一致 &emsp;&emsp;后续让控制器保持偏移对locator进行父子约束并将运动烘焙为关键帧。&emsp;&emsp;然后生成一个 wind locator 到 offset_loc 上 关键帧处理 &emsp;&emsp;这里抽出其中一个 offset locator 进行讲解 &emsp;&emsp;上面烘焙玩的关键帧如上图&emsp;&emsp;后续需要对旋转的关键帧进行欧拉过滤 &emsp;&emsp;然后根据 softness 属性对关键帧曲线进行偏移，这里往右偏移了 3 帧。（注意 IK locator 不处理旋转） &emsp;&emsp;然后将偏移之后的初始帧选上，继而将这一帧挪动回初始位置上。 &emsp;&emsp;下面是处理后的动画演示↓↓↓ （注意 IK 的旋转没有处理完全根随控制器旋转角度的） 生成骨架 locator &emsp;&emsp;在骨架层级下生成相关的 locator&emsp;&emsp;由于这里没有关键帧偏移的关系，这些locator会和之前的locator产生3帧的时间差 约束处理 &emsp;&emsp;将 wind locator 和 second locator 添加父子约束，当前两者的位置是完全重合的。&emsp;&emsp;然后将 second locator 添加 目标约束 到 aim_grp 上 ，确保层级里面的 first locator 指向 second locator &emsp;&emsp;透过层级关系可以看到因为 offset locator 可以控制到 first locator 的朝向&emsp;&emsp;后续就是将 second locator 约束 first locator 的 x 旋转轴&emsp;&emsp;然后将 first locator 约束到 result locator 上 &emsp;&emsp;最后输出的 result locator 大概就是指向 second locator 效果的运动&emsp;&emsp;然后将 result locator 的运动烘焙成关键帧 out locator 超神操作 &emsp;&emsp;好了现在要将 result locator 的保持偏移约束到 新生成在原点的 out locator 上 &emsp;&emsp;相信大家看到这里一定会很困惑，我擦这是什么鬼操作，能生成出柔软的关键帧吗？！&emsp;&emsp;我当时也完全不理解。&emsp;&emsp;直到我将最后一行超神代码输进去之后明白其中的奥妙。 &emsp;&emsp;将 out locator 约束到之前的骨骼层级上。 &emsp;&emsp;震惊了吧，这行代码怎么就可以让效果这么好。&emsp;&emsp;其实我上面演示的大部分效果都是错误的，因为我忘记了这个操作是在循环里面。&emsp;&emsp;因此最后一行的操作会影响到后面每次循环生成 locator 的位置的&emsp;&emsp;虽然是错误的结果，但是我自己摸索也是这么摸石头过河过来了(:з」∠) 视频录制总结教训 &emsp;&emsp;一开始挖掘插件的效率极低，因为不知道mel代码的执行效果，只能注释运行、注释运行重复来查看效果。&emsp;&emsp;后面看懂了一部分之后就开始讲mel语句转换成 python 加深理解，结果还产生了非常多的 BUG 浪费时间。&emsp;&emsp;后来才发现原来工具有 Debug 模式，可以保留生成过程中的中间节点。&emsp;&emsp;研究这些中间节点的作用才逐渐明白这一个工具的运行原理。 &emsp;&emsp;结果搞这个小插件花了 两天时间，实在不值得(:з」∠)]]></content>
+    <content type="text"><![CDATA[Maya 飘带动画工具 前言 &emsp;&emsp;最近劲爆羊工具盒免费了，因此我怀着高兴的心情去挖掘里面众多工具的功能。&emsp;&emsp;动画师那边刚好需要一个披风动态模拟关键帧的功能，而工具盒里面内置了 动画飘带工具 刚好解决了需求。 链接&emsp;&emsp;这个飘带工具原本需要花费一丢丢的钱的，但是可爱的羊神完全免费了。 &emsp;&emsp;使用了一段时间之后，发现工具的性能有很严重的问题。&emsp;&emsp;一个短小精悍的20-30帧动画都需要处理个几分钟甚至十几分钟。&emsp;&emsp;我翻开源码看了下，原来是个mel脚本，于是就开始着手工具的优化 当前测试 | 动画演示 &emsp;&emsp;制作了一个简单的控制器动画，可以理解为 手臂的 FK 控制器。&emsp;&emsp;就是个简单的举高高动作。 &emsp;&emsp;上面是我将插件最后一步烘焙到控制器的操作去掉。&emsp;&emsp;然后打开debug模式生成中间 locator 效果。&emsp;&emsp;可以看到插件会根据选择的控制器生成层级骨骼，然后再生成辅助的locator将骨架变成柔软过渡的效果。&emsp;&emsp;最后我代码去掉的部分就是骨架动画约束到控制器上然后 烘焙关键帧。 原理分析生成层级骨架 &emsp;&emsp;根据选择的控制器顺序，生成骨架，并且将骨架的朝向调整好. &emsp;&emsp;然后复制最后一个关节。&emsp;&emsp;然后执行 move -r -ls -wd 2 0 0 ; 命令，再整理骨骼的朝向。&emsp;&emsp;这样骨骼就会沿着上一根骨骼的旋转方向的 X 轴进行偏移。&emsp;&emsp;最初我不太理解为什么是拿上一根骨骼的X轴方向偏移。 &emsp;&emsp;执行代码应该沿着红色轴方向移动才是。&emsp;&emsp;结果却出乎意料了。 &emsp;&emsp;原来当我选中 X 通道的时候看到的移动方向才知道原来是继承上一根骨骼的方向。&emsp;&emsp;这样运动就可以确保骨架偏移在正确的朝向上。 约束骨架 | 烘焙关键帧 &emsp;&emsp;将选择控制器约束骨架，并且将约束关系转成关键帧关系 &emsp;&emsp;层级关系如下图 生成辅助 locator &emsp;&emsp;下面进入 for 循环遍历生成运动效果 &emsp;&emsp;生成 offset locator ，位置偏移取决于 scale 属性&emsp;&emsp;生成 IK locator ，位置和控制器保持一致 &emsp;&emsp;后续让控制器保持偏移对locator进行父子约束并将运动烘焙为关键帧。&emsp;&emsp;然后生成一个 wind locator 到 offset_loc 上 关键帧处理 &emsp;&emsp;这里抽出其中一个 offset locator 进行讲解 &emsp;&emsp;上面烘焙玩的关键帧如上图&emsp;&emsp;后续需要对旋转的关键帧进行欧拉过滤 &emsp;&emsp;然后根据 softness 属性对关键帧曲线进行偏移，这里往右偏移了 3 帧。（注意 IK locator 不处理旋转） &emsp;&emsp;然后将偏移之后的初始帧选上，继而将这一帧挪动回初始位置上。 &emsp;&emsp;下面是处理后的动画演示↓↓↓ （注意 IK 的旋转没有处理完全根随控制器旋转角度的） 生成骨架 locator &emsp;&emsp;在骨架层级下生成相关的 locator&emsp;&emsp;由于这里没有关键帧偏移的关系，这些locator会和之前的locator产生3帧的时间差 约束处理 &emsp;&emsp;将 wind locator 和 second locator 添加父子约束，当前两者的位置是完全重合的。&emsp;&emsp;然后将 second locator 添加 目标约束 到 aim_grp 上 ，确保层级里面的 first locator 指向 second locator &emsp;&emsp;透过层级关系可以看到因为 offset locator 可以控制到 first locator 的朝向&emsp;&emsp;后续就是将 second locator 约束 first locator 的 x 旋转轴&emsp;&emsp;然后将 first locator 约束到 result locator 上 &emsp;&emsp;最后输出的 result locator 大概就是指向 second locator 效果的运动&emsp;&emsp;然后将 result locator 的运动烘焙成关键帧 out locator 超神操作 &emsp;&emsp;好了现在要将 result locator 的保持偏移约束到 新生成在原点的 out locator 上 &emsp;&emsp;相信大家看到这里一定会很困惑，我擦这是什么鬼操作，能生成出柔软的关键帧吗？！&emsp;&emsp;我当时也完全不理解。&emsp;&emsp;直到我将最后一行超神代码输进去之后明白其中的奥妙。 &emsp;&emsp;将 out locator 约束到之前的骨骼层级上。 &emsp;&emsp;震惊了吧，这行代码怎么就可以让效果这么好。&emsp;&emsp;其实我上面演示的大部分效果都是错误的，因为我忘记了这个操作是在循环里面。&emsp;&emsp;因此最后一行的操作会影响到后面每次循环生成 locator 的位置的&emsp;&emsp;虽然是错误的结果，但是我自己摸索也是这么摸石头过河过来了(:з」∠) 视频录制 总结教训 &emsp;&emsp;一开始挖掘插件的效率极低，因为不知道mel代码的执行效果，只能注释运行、注释运行重复来查看效果。&emsp;&emsp;后面看懂了一部分之后就开始讲mel语句转换成 python 加深理解，结果还产生了非常多的 BUG 浪费时间。&emsp;&emsp;后来才发现原来工具有 Debug 模式，可以保留生成过程中的中间节点。&emsp;&emsp;研究这些中间节点的作用才逐渐明白这一个工具的运行原理。 &emsp;&emsp;结果搞这个小插件花了 两天时间，实在不值得(:з」∠) 后续 &emsp;&emsp;录制视频的过程中发现了 VScode Debug 其实并不太友好，于是我打算开发一个 Maya Python Debugger 来解决这个问题。&emsp;&emsp;因此这篇文章暂时拖更了，等 Debugger 开发好之后再进一步剖析。]]></content>
       <categories>
         <category>Maya</category>
         <category>CG Programming</category>
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -39,8 +53,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Git</tag>
       </tags>
   </entry>
@@ -54,8 +68,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -82,8 +96,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -107,8 +121,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -136,8 +150,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -426,8 +440,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>BlendShape</tag>
       </tags>
   </entry>
@@ -443,8 +457,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -502,8 +516,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -866,9 +880,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -882,9 +896,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -898,9 +912,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -930,9 +944,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -946,9 +960,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -962,9 +976,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -978,9 +992,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -994,9 +1008,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -1043,8 +1057,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1073,8 +1087,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1131,8 +1145,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1147,8 +1161,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1164,8 +1178,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1180,8 +1194,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1196,8 +1210,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1235,8 +1249,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1251,8 +1265,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1266,8 +1280,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1307,8 +1321,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1333,8 +1347,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1346,8 +1360,8 @@
         <category>Maya</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
         <tag>Qt Designer</tag>
       </tags>
   </entry>
@@ -1359,8 +1373,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1386,8 +1400,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1426,8 +1440,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -1440,8 +1454,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2044,8 +2058,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>学习笔记</tag>
         <tag>拍照指南</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
   <entry>
@@ -2097,8 +2111,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>前期基本流程</tag>
         <tag>学习笔记</tag>
+        <tag>前期基本流程</tag>
       </tags>
   </entry>
 </search>
