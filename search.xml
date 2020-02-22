@@ -1,6 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[私有云搭建]]></title>
+    <url>%2Fposts%2F3c1dd960.html</url>
+    <content type="text"><![CDATA[私有云 - 开启个人网盘的时代 前言 &emsp;&emsp;最近因为疫情导致远程工作的问题，导致共享目录smb无法远程使用。&emsp;&emsp;因此交换文件非常不方便，最初的确可以通过宝塔面板的文件操作界进行文件共享，但是这样就把服务器裸奔给了其他人。&emsp;&emsp;有没有方法实现个人云盘共享文件呢？&emsp;&emsp;于是经过一番搜索之后，还是找到比较让我满意的方案。 可道云 &emsp;&emsp;可道云算是国内比较不错的私有云构建开源方案了，系统架构是基于 PHP＋Jquery&emsp;&emsp;完全模拟云上操作系统的概念，支持WPS文档打开，还有应用桌面，通过前端模仿了windows的界面。&emsp;&emsp;交互上来说非常友好。&emsp;&emsp;当然也可以类似百度网盘一样设置共享链接来共享文件，特别棒。&emsp;&emsp;缺点就是没有 WebDav 服务，作为个人云盘可以，但是如果作为一些第三方使用的存储媒介就差了点意思。 安装官网参考 &emsp;&emsp;首先在宝塔界面上创建一个网站，宝塔会在指定目录下构建好 php 环境和服务器访问配置文件。&emsp;&emsp;然后去到可道云的官网下载安装包压缩包，解压到宝塔界面指定的目录，然后将权限设置为所有人都可以访问就可以了，宝塔一定要在该目录下允许 php 代码执行。&emsp;&emsp;这个云上空间会将文件保存到自身的data目录下，甚至不需要数据库的支持。 123456# 下载wget http://static.kodcloud.com/update/download/kodexplorer4.40.zip# 解压unzip kodexplorer4.40.zip# 开权限chmod -Rf 777 ./* NextCloud &emsp;&emsp;NextCloud是全球知名的私有云构建开源方案了，和可道云一样采用了 PHP 框架。&emsp;&emsp;另一个有名的是 OwnCloud 听说是同一个作者，只是 OwnCloud 被原作者卖出去了。&emsp;&emsp;NextCloud 对于国人不太友善但是功能比较全面，同样支持网盘类的分享还支持 WebDav ，使用开源软件进行同步的时候都非常方便。&emsp;&emsp;比如说密码专用的 Keepass2Android 和 开源笔记 Joplin 都支持将文件通过 NextCloud 进行同步。&emsp;&emsp;构建方法和可道云大同小异，并且还有更加完善的手机和桌面客户端 安装官网参考 &emsp;&emsp;安装方法几乎和 可道云 没有区别只是多了一个数据库接入，也可以选择使用sqlite自动配置。&emsp;&emsp;第一种方法也是压缩包安装，第二种方法就是通过一个 php 脚本下载压缩包到本地安装(下载速度有点堪忧，不建议使用)&emsp;&emsp;安装完成简单在浏览器上配置即可使用。 WedDav &emsp;&emsp;WebDav默认访问路径就是 remote.php/WebDav/文件目录&emsp;&emsp;通过这个目录即可访问存放在 NextCloud 的文件，可以用管理员账户多设置几个权限账户来分别管理不同的 Apps&emsp;&emsp;避免密码泄露，私有云完全被别人利用了。&emsp;&emsp;另外补充一下 Joplin 云端同步需要安装 NextCloud 的插件，安装方法也是很简单，下载解压到指定目录即可。 公司内网构建私有云踩坑 &emsp;&emsp;内网构建私有云遇到了天坑。&emsp;&emsp;公司的内网推荐使用公司的特制的 tLinux 2.2 版本，&emsp;&emsp;结果配置完成之后发现 PHP 无法执行，执行报错提到一些公共库找不到路径，但是这些公共类似 Windows dll 是个系统都有的。 &emsp;&emsp;经过各种踩坑也无法解决，而且很多库更新也因为无法链接外网进行更新。&emsp;&emsp;尝试下载其他版本的 PHP 却又报错，找不到下载链接。&emsp;&emsp;最后无奈只好选择重装宝塔面板，经过我的一波折腾，总算是成功重装宝塔界面重新配置了下载源下载了其他版本的 PHP&emsp;&emsp;然而运行起来的报错还是没有变。&emsp;&emsp;网上搜索的方法是需要安装特定的包就可以了，但是我安装用的阿里云地址却是无法访问，后来装成 网易的也无法访问。&emsp;&emsp;最后在再折腾腾讯自己的Linux镜像源，后来查看共享镜像源，和服务器找不到路径的地址进行对比。&emsp;&emsp;发现服务器莫名其妙访问了 2.2 版本的目录，但是Linux 最低版本也得从 4.4 开始的。&emsp;&emsp;发现这个惊天秘密之后，于是去到源地址记录的文件查找，发现这个地址记录的 2.2 是个变量，读取的是则是当前系统的版本。&emsp;&emsp;然而内网的 Linux 不是标准的 Centos7 而是 2.2 版本，于是我手动修改了地址信息，总算是可以下载包解决问题了(:з」∠) &emsp;&emsp;解决了 Php 无法启动的问题，后续搭建私有云的操作也算是顺畅无阻了，只是内网构建私有云真的没啥用，内网也是有内部网盘的，也可以基于企业微信存文件(:з」∠) 总结 &emsp;&emsp;搭建了私有云之后，我再也不需要付费的App搞各种乱七八糟的同步了。&emsp;&emsp;全部可以使用开源方案实现免费同步(当然服务器本身是要钱的，但是掌握了技术之后就不需要交那么多了)&emsp;&emsp;开源免费，就是宝贝~]]></content>
+      <categories>
+        <category>后端</category>
+      </categories>
+      <tags>
+        <tag>可道云</tag>
+        <tag>NextCloud</tag>
+        <tag>宝塔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Maya 法线解锁进阶]]></title>
+    <url>%2Fposts%2F513460b.html</url>
+    <content type="text"><![CDATA[更好地解决 Maya 法线锁定问题 前言 &emsp;&emsp;几个月之前，我曾经写了一篇文章，针对蛋疼的 Maya 法线解锁问题。&emsp;&emsp;主要起因是 FBX 可能没有导出平滑组，导致Maya解锁法线会丢失法线数据。 &emsp;&emsp;当时的解决方案可以自动找到软边，然后进行平滑边操作，但是如果模型包含一些特殊修改的法线的话就不奏效了。&emsp;&emsp;为了解决这个问题，我又进行了多方面的努力。 Maya脚本 &emsp;&emsp;将代码拷贝到 Maya 运行即可获得一个解锁法线页面 平滑查找 &emsp;&emsp;这次的解锁法线会自动计算当前模型边是否否和平滑法线的角度，针对边法线的情况发成了两种情况 点平滑 边平滑 &emsp;&emsp;点平滑就是完全 average 平均化的顶点，这种顶点的法线就是完全重合并且取的是这点四个面的法线平均值。&emsp;&emsp;而边平滑的情况则是这个边上的两个点的法线分别是这条边相邻的两个面的法线平均值。&emsp;&emsp;通过上述的两种情况判断，就可以找到所有的平滑边和点。&emsp;&emsp;不符合上述的两种情况就是特殊调整边或者硬边，这里不需要做区分，因为硬边也不会被锁定，所以执行软化边也没问题。&emsp;&emsp;而且特殊锁定的顶点解锁之后其实就是读取了 OpenMaya 的 isSmooth 方法，如果方法返货 false 就自动是硬边了。&emsp;&emsp;因此特殊调整过的就不属于软边的范畴。 &emsp;&emsp;通过上面的方法就可以相对完美解决 3dsMax 软件导入模型到 Maya 之后丢失法线修改信息的问题。&emsp;&emsp;只可惜上述的方法求平均值比较存在较大的误差，因此需要添加一个阈值来锁定判断的范围，这个阈值范围就比较玄学了。&emsp;&emsp;基本原理其实和上一篇文章相差不大，另外就是多了调用 OpenMaya 的 setFaceVertexNormals 方法来批量修改模型法线而已，区别并不是很大。]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>CG Programming</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Maya</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Windows 效率提升指南]]></title>
+    <url>%2Fposts%2Ffcc8e205.html</url>
+    <content type="text"><![CDATA[超实用软件推荐 前言 &emsp;&emsp;目前主力用 windows 平台，因此推荐 windows 平台的软件为主。&emsp;&emsp;之前找到一篇文章介绍的工具，这个真的非常受用 少数派 &emsp;&emsp;下面推荐的大部分软件都是这篇文章里面介绍到的。&emsp;&emsp;大家也可以参考一下少数派文章里面的介绍，我这里着重介绍一些我常用的点 &emsp;&emsp;当然这些效率软件有一定的学习成本，属于熟能生巧，工多手熟的范畴，也不一定适合所有人，大家可以按需安装使用。&emsp;&emsp;这一期文章原本是去年（2019年） 11月份就想开写的，最后还是折腾了3个月，完全将这些软件都用熟悉了之后再写。&emsp;&emsp;目前提到的这些工具就是我这三个月主推并一直在使用的工具，我会重点分享自己对这些工具使用感悟。 &emsp;&emsp;这些辅助软件有个缺点就是缺少一个管理软件，如果可以将所有的功能都打包到一起也是挺好的。&emsp;&emsp;安装起来的话就需要大家一个一个去找来下载。 &emsp;&emsp;另外这些辅助插件的确会一定程度的拖慢了电脑的开机速度，而且会导致一大堆后台图标留在电脑下方&emsp;&emsp;使用之前需要自行斟酌。 腾讯桌面管理腾讯桌面管理 官网地址 &emsp;&emsp;可能腾讯系的产品都是有原罪的，只要听到是腾讯出品，必定减分(:з」∠)&emsp;&emsp;但是这次的桌面管理软件属实弄得很好，而且对于全家桶ptsd患者来说还有独立版本安装的福音。&emsp;&emsp;这么良心的产品，希望大家不要带着偏见去用~ (少数派也有相关的推荐文章) &emsp;&emsp;使用也非常简单，只需要安装，就会自动拯救你乱糟糟的桌面。&emsp;&emsp;而且还可以将文件夹目录映射到桌面的格子上，非常方便。 &emsp;&emsp;这个就是经过整理的桌面，配合下面的 listary 启动器，找东西方便太多了。 listarylistary 官网地址 &emsp;&emsp;listary本质上是一个程序启动器，配合腾讯的桌面整理，找东西如有神助。&emsp;&emsp;当然网上也有 Wox 启动器 配合 history 来实现 listary 的效果，我目前还没有体验过，不过我觉得 listary 一个软件相较之下更加简单。 快速搜索 &emsp;&emsp;listary 使用也非常简单，按两下 Ctrl 键即可唤起输入框。&emsp;&emsp;在输入框上输入相应的关键字就可以进行文件搜索，会优先搜索快捷方式桌面相关的目录，而且搜索速度非常快。 &emsp;&emsp;配合上面的桌面整理工具，我可以将软件启动的快捷方式放到快速启动的格子里面，然后通过 listary 来快速打开我想要打开的软件。&emsp;&emsp; 快速执行命令 &emsp;&emsp;Listary 提供了 4 种不同关键字命令，而且完全可以自定义命令，非常高效。 &emsp;&emsp;比如搜索关键字，可以通过 gg 搜索关键字 直接打开网页进行 Google 搜索&emsp;&emsp;也可以加入一些 shell 命令来调用系统批处理操作。 文件夹下快速索引 &emsp;&emsp;过去在一个庞杂的文件加下，我们只能通过 windows 提供的首字母进行跳转。&emsp;&emsp;使用 listary 之后就可以直接输入来在当前目录下进行搜索，而且一些意想不到的地方也支持搜索。 收藏夹支持 &emsp;&emsp;在文件浏览器中的空白区域双击或者单机中键可以打开 listary 菜单&emsp;&emsp;你可以将一些文件路径收藏到 listary 里面，在这里打开。 DittoDitto 官网地址 &emsp;&emsp;其实少数派的文章已经说得很详细了。&emsp;&emsp;不仅仅支持文字、还支持图片数据记录，内置 搜索 也可以用 listary 来搜索记录 &emsp;&emsp;只是内置的唤起快捷键按起来不太方便，我不太喜欢，改为 Ctrl + Shift + d QtTabbarQtTabbar 官网地址 少数派文章推荐 &emsp;&emsp;最开始我也是使用 clover 了，后来用勒 QtTabbar 之后，还是跳不过真香定律。&emsp;&emsp;经过clover还原了浏览器的体验，但是功能上还是差了点。&emsp;&emsp;最重要的是可以配合下面要介绍的手势切换文件夹标签，之前亲测 clover 无法切换，非常不便。 &emsp;&emsp;详细的使用介绍 少数派的文章介绍已经非常详细。&emsp;&emsp;另外还有一个很不错的地方就是添加文件预览功能，非常方便。 &emsp;&emsp;基于 IE 浏览器实现的，因此有时候工具不正常的时候可以打开 windows 的 IE 来重置原样。 &emsp;&emsp;win10 启动 QtTabbar 可以去到 查看&gt;选项 的下拉菜单开启。 &emsp;&emsp;另外 QtTabbar 也提供相对简单的批量重命名操作。 常用操作 &emsp;&emsp;下面就说说常用的一些快捷操作，前面打 * 号是我很常用很方便的 常用快捷键 * Ctrl + N 新建标签 * Ctrl + Shift + C 复制选中的文件路径 * Ctrl + Shift + Z 打开上一个关闭的标签 Ctrl + Shift + T 新建一个 txt 文档 Shift + F2 重命名当前文件夹 对文件夹 按住 Ctrl 双击左键 - 打开一个新标签并显示 按住 Shift 双击左键 - 打开一个新标签不显示 按住 Alt 双击左键 - 打开文件夹属性 对地址栏上的路径 按住 Ctrl 左键 - 打开一个全新的窗口 * 按住 Shift 左键 - 打开一个新标签并显示 对文件夹关闭按钮 左键 - 关闭当前标签 按住 Ctrl 左键 - 关闭其他标签除了当前 按住 Shift 左键 - 关闭整个窗口 （我用下面的手势操作关闭窗口比较多） 对标签拖拽 * 将文件拖拽到标签上可以移动文件，按住 Ctrl 拖拽可以复制文件 * 将标签拖拽出来可以新建一个全新的窗口 WGesturesWGestures 官网地址 &emsp;&emsp;非常棒的免费手势软件，windows平台专用，用上就爱上了。&emsp;&emsp;安装完成之后，软件会有很详细的使用说明，配合上面的工具使用就非常省心。 &emsp;&emsp;虽然轨迹支持 中键 和 X键，但是因为各种不方便，我就禁用了。&emsp;&emsp;摩擦边和触发角也不太习惯，而且还很容易误触，因此也及禁用掉了。&emsp;&emsp;因此日常操作我就是使用这个软件进行右键滑动~ 快捷键说明 &emsp;&emsp;虽然上面的截图有按键说明，还是总结一份文字版本的在下面 ▲ 上滚轮 ◐●◑ 鼠标按键 ▼ 下滚轮 ↖↑↗ ←※→ 鼠标方向操作 ↙↓↘ 常用操作 &emsp;&emsp;鉴于这里提供的手势操作实在是太多了，提我非常常用的手势 日常操作 ◑↓→ Ctrl + w - 关闭 ◑↓← Alt + F4 - 退出 ◑↗ - 最大化/回复 ◑↙ - 最小化 ◑↘ - 切换到桌面 ◑↑→↑→ - 窗口置顶 ◑→↓→↓ - 目录下打开cmd窗口 浏览器操作 | QtTabbar 大部分适用 ◑←↑ Home 去到顶部 ◑←↓ End 去到低部 ◑▲ Ctrl + Shift + Tab 上一个标签 ◑▼ Ctrl + Tab 下一个标签 ◑↑← Ctrl + Shift + Tab 上一个标签 ◑↑→ Ctrl + Tab 下一个标签 ◑→↓ Ctrl + T 新标签 | 文件浏览器 Ctrl + N 适配 ◑→ Alt + Right 前进 ◑← Alt + Left 后退 QuickerQuicker 官网地址 Quicker 少数派文章 &emsp;&emsp;quicker 非常良心，软件有功能属于付费版本，但是价格非常便宜。&emsp;&emsp;而且提供免费同步服务，简直白送。 常用操作 截图 OCR 杀进程 朗读文本 &emsp;&emsp;因为上面的工具已经提供了大部分日常的应用，因此我使用 quicker 的频率不是很高&emsp;&emsp;不过实际上， quicker 提供用户自己制作功能，整个生态比起上面的工具都要好得多&emsp;&emsp;也可以通过 quicker 给软件指定定制化的操作，只是目前我个人用得还比较少。 &emsp;&emsp;由于 Maya 调试脚本经常需要关闭重启，quicker的杀进程就非常非常好用，quicker 可以获取到程序 id 只需要执行 shell 命令杀进程就可以了。&emsp;&emsp;当然 WGesture 也提供了强制关停程序的操作，只是手势在 Maya 中使用非常不方便， quicker 提供了另一种舒服的方式。 snipastesnipaste 官网地址 少数派文章 &emsp;&emsp;snipaste 可以说是 windows 平台上最棒的截图工具了&emsp;&emsp;以前弄截图不是借助 微信 QQ 就是 借用浏览器的功能。&emsp;&emsp;snipaste 借助 Qt 框架实现全平台 多层截图 - 方便制作说明 &emsp;&emsp;有时候软件的某些操作在不同的窗口上&emsp;&emsp;很难通过一张截图说明打开步骤&emsp;&emsp;这个时候可以借助 snipaste 的 F3 贴图功能&emsp;&emsp;这个功能可以将之前的截图以悬浮图片的形式展示，就可以将多张贴图放到一起，然后再截一张图说明。&emsp;&emsp;步骤不多的情况下，再也不需要用 word 文档制作多图步骤了。 取颜色 &emsp;&emsp;无论是网页开发还是如今的工具人，都需要获取某些地方的色块&emsp;&emsp;snipaste 就提供了全局取色的功能。&emsp;&emsp;F1 键进入截图只有，截图会有提示，点击 c 键可以复制当前坐标下的像素。&emsp;&emsp;按 Tab 键可以切换不同颜色码。 ScreenToGifScreenToGif 官网地址 &emsp;&emsp;ScreenToGif 是个 github 上的开源项目 github网址&emsp;&emsp;作为工具人，经常需要介绍工具的使用，使用动图就可以简单扼要讲解清楚。&emsp;&emsp;过去我都是使用 gifcam 来制作动图的，但是录制 Maya 的时候偶尔会绿屏，而且录制时间不能太长，而且录制出来的动图文件还贼大，试过几十M都有。&emsp;&emsp;自从用上了 ScreenToGif 感觉动图制作再也不是瓶颈。 capslock+capslock 官网地址 &emsp;&emsp;这是我最初认识到 autoHotKey 脚本编写的工具，后面我独自研究才发现了新大陆，原来 autoHotKey 这么强大。&emsp;&emsp;而这个工具实现了花式玩坏无用的大写按键。 &emsp;&emsp;只可惜插件提供的很多功能都和上面的插件重复了，因此我日常使用的情况不会很多。&emsp;&emsp;当然通过大写键将右手边的按键转移到左手是非常棒的思路。 &emsp;&emsp;另外它也提供了 listary 的启动框，还可以借助 IE 引擎，实现快速调用 js。&emsp;&emsp;比如 语言轰炸机 或者 简单的算术 1&quot;test\n&quot;.repeat(10) &emsp;&emsp;输入上面的 JavaScript 代码，然后按 Capslock + Tab 就可以执行了 &emsp;&emsp;可惜会用上存在一些遗憾&emsp;&emsp;最后我决定自己动手，丰衣足食，于是就在原作者的基础上进行了一些修改 github仓库 keycastowkeycastow 官网地址 &emsp;&emsp;这款软件用来显示键盘的输入指令，对于教学之类的讲解非常有帮助。&emsp;&emsp;虽然完全基于windows平台，但是特别小巧，使用方便，而且开源，可以直接查看是否含有恶意代码。&emsp;&emsp;只可惜作者没有将源码编译一个发行版本出来，可以自己编译一个安全的版本，或者下载被人做好的 地址 最后 &emsp;&emsp;这篇文章也算是长时间拖更没有发布了，后续还会考虑发布一个安卓高效率的文章，敬请期待。 福利放送福利放送]]></content>
+      <categories>
+        <category>总结</category>
+        <category>效率</category>
+      </categories>
+      <tags>
+        <tag>Windows</tag>
+        <tag>效率</tag>
+        <tag>软件</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Maya Qt 多线程提升交互体验]]></title>
+    <url>%2Fposts%2Faa6ded84.html</url>
+    <content type="text"><![CDATA[多线程保持 UI 响应 前言 &emsp;&emsp;最近开发 mpdb 插件，研究多线程加载插件 UI ，避免 Maya 主界面卡死的问题。&emsp;&emsp;最初测试的时候，不知道是哪里操作不对，我对比测试发现多线程操作和不使用多线程的体验是一样的。 &emsp;&emsp;后来插件顺利发布之后，我打算还是再重新研究一下，看看能否抢救一下。&emsp;&emsp;结果这一次的测试就有了很大的收获。 多线程的意义 &emsp;&emsp;其实 Python 本身是存在 GIL 全局锁，因此性能瓶颈一直是 Python 的坑。&emsp;&emsp;当然GIL锁死了多核调用，面对 CPU 密集型的任务时会显得力不从心。&emsp;&emsp;Maya 也因为自身框架设计问题，很多调用都是非 threadsafe 的，只有一些特殊的计算节点可以完美调用多核来提高性能 具体参照文章&emsp;&emsp;虽然多核调度很麻烦，但是多线程调度则是 Python 的强项，这种特别时候。 &emsp;&emsp;以下是我个人目前的看法，有错之处欢迎大家指正。&emsp;&emsp;Python 可以调用不同的线程使任务并行响应，其实本质上的算力并没有提高，还是只有一个核的运算。&emsp;&emsp;只是多任务交替执行，由于计算机的运算速度够快，给我们的感觉任务是同时执行的。&emsp;&emsp;但是交互体验上则会有巨大的提升。 Python 多线程 Demo &emsp;&emsp;不逼逼，上代码~ 12345678910import timecurr = time.time()while True: elapsed = abs(time.time() - curr) # NOTE 每隔 0.5s 打印输出时间 if elapsed%0.5 &lt; 0.001: print elapsed if elapsed &gt; 3: breakprint "done" &emsp;&emsp;如果直接在 Maya 里面运行上面的代码。&emsp;&emsp;由于 while 死循环的设置， Maya 将会直接卡死 3s 钟并且输出对应的时间。 12345678910111213141516171819202122import sysimport timeimport threadingdef processFunc(runCallback=None): curr = time.time() while True: elapsed = abs(time.time() - curr) if elapsed%0.5 &lt; 0.001: if runCallback: runCallback(elapsed) if elapsed &gt; 3: breakdef porcessPyThread(blocking=False): thread = threading.Thread(target=processFunc,kwargs=&#123;"runCallback":lambda t: sys.stdout.write("PyThread: %s \n" % t)&#125;) thread.start() if blocking: thread.join()porcessPyThread()print "done" &emsp;&emsp;如果将代码改为多线程调用，那么多线程的部分可以看做是异步调用代码&emsp;&emsp;执行上面的代码可以看到 done 会先被执行，和 JavaScript 的异步有异曲同工之妙（可能就是一样的） &emsp;&emsp;因此问题也类似，虽然多线程不会阻塞到主线程，但是如果想获取到多线程返回的数据，就需要等待线程执行完毕了。&emsp;&emsp;因此 python thread 提供了 join 方法，可以让主线程等待其他线程执行完毕获取到数据。 代码参考 &emsp;&emsp;多线程不适合加入 CPU 密集型的操作，会影响到主线程调用。&emsp;&emsp;如果我们调整 while 循环的打印输出条件， print 打印会更急密集，达到一定程度之后会卡到主线程的。 Qt 多线程 &emsp;&emsp;除了 Python 本身实现多线程调度之外，也可以利用 Qt 的多线程来实现UI响应。&emsp;&emsp;而且关于 Qt GUI 相关的部分，网上更加推荐使用 Qt 的模块来做。 &emsp;&emsp;不过我查过，Qt 和 Python 多线程的底层 在windows下 都是调用了 Win32 相关的模块实现的。&emsp;&emsp;除了 Qt 提供了更多函数，对 Qt 组件更加友好之外，其实两者也没有太大的区别。 文件参考 &emsp;&emsp;上面这个脚本就是我测试 Maya 和 Qt 多线程的两个脚本，其实运行体验差不多的。 12345678910111213141516171819202122232425262728293031323334353637import sysimport timeimport threadingfrom PySide2 import QtCorefrom PySide2 import QtWidgetsdef processFunc(runCallback=None): curr = time.time() while True: elapsed = abs(time.time() - curr) if elapsed%0.5 &lt; 0.001: if runCallback: runCallback(elapsed) if elapsed &gt; 3: break class Worker(QtCore.QRunnable): def run(self): ''' Initialise the runner function with passed args, kwargs. ''' processFunc(lambda t: sys.stdout.write("QtThread: %s \n" % t))def processQtThread(blocking=False): thread = QtCore.QThreadPool() thread.start(Worker()) if blocking: thread.waitForDone() return threadif __name__ == "__main__": # NOTE 避免垃圾回收 thread = processQtThread() print "done" &emsp;&emsp;当然 Qt 也麻烦一点，需要避免 Python 对自身的垃圾回收，否则 thread 的执行将不太正常。 多线程提升交互体验 &emsp;&emsp;下面就回归到正题，通过上面 demo 可以看到。&emsp;&emsp;我们可以在 Maya 里面执行一些其他的操作，同时还保持 Maya 主界面的响应。&emsp;&emsp;我在想 UI 创建的过程是否也可以这样，插件界面在后台生成，生成好了之后再返回到Maya的主界面上执行显示操作。&emsp;&emsp;这样就可以不卡主 Maya 的同时生成出插件界面。 &emsp;&emsp;想法是很美好，但是实验过后，现实很骨感。 12345678910111213141516171819202122232425262728293031323334353637383940import sys, timefrom PyQt5 import QtGui from PyQt5 import QtCore from PyQt5 import QtWidgetsapp = QtWidgets.QApplication(sys.argv)class widget(QtWidgets.QWidget): signal = QtCore.pyqtSignal(str) def __init__(self, parent=None): QtWidgets.QWidget.__init__(self) # self.button = QtWidgets.QPushButton(u"clicked",self) def appinit(self): thread = worker(self) thread.start() def testfunc(self): print "clicked"class worker(QtCore.QThread): def __init__(self,widget): QtCore.QThread.__init__(self, parent=app) self.widget = widget def run(self): print "in thread" # NOTE 在另一个线程中创建 UI self.widget.button = QtWidgets.QPushButton(u"clicked",self.widget) self.widget.button.setText("hello") self.widget.button.clicked.connect(self.widget.testfunc)def main(): w = widget() w.show() w.appinit() sys.exit(app.exec_())if __name__ == "__main__": main() &emsp;&emsp;这段代码需要在 Maya 外执行，我是使用 anaconda2 测试的。&emsp;&emsp;在 Maya 里面切换成 PySide2 执行的话，会发现没有报错，但是另一个线程创建 按钮 并没有依附到显示的窗口上。&emsp;&emsp;当我在Maya外部执行的时候，命令行会出现这个警告。 QObject::setParent: Cannot set parent, new parent is in a different thread &emsp;&emsp;经过网上的搜索， Stack Overflow 的回答非常到位 链接&emsp;&emsp;Qt 的 Gui 创建在 __init__ 函数执行的时候会依附到当前的线程上，如果当前的线程不是主线程，那么这个 UI 就无法集中管理了。&emsp;&emsp;尽管 Qt 的 QObject 提供了 moveToThread 方法，但是并不是所有的操作都是 threadsafe ，特别是 Maya 这种古老框架 对多线程支持不太友好。&emsp;&emsp;因此 Gui 创建必须在主线程上，但是一些 Gui 更新、初始化的操作可以放到其他线程执行。 &emsp;&emsp;因此 mpdb 插件基于这样的考量，将大部分 __init__ 函数执行的代码抽到 initialize 函数中去，通过多线程完成 UI 的初始化。&emsp;&emsp;这样的确就解决了 Maya 卡死 2-3s 的问题。 遇到的一些问题 &emsp;&emsp;mpdb 模块修改成多线程之后还是有坑的。 &emsp;&emsp;比如 Maya 的 cmds 模块所有命令 q 标签都出错了，需要改为 query 标签才不会报错，我是在 Maya2017 的版本测试的，原因不明。 &emsp;&emsp;另外就是 partial 函数在多线程模式下不受支持，替代方案需要 Qt 的 Signal 来解决，的确会繁琐一点。 链接 &emsp;&emsp;最后就是如何让 UI 初始化完成之后再生成 UI。&emsp;&emsp;因为不可以使用 waitForDone 或者 join 方法来让主线程等待，这样就失去多线程的意义了。&emsp;&emsp;原本想着非常棘手，好在 Maya 已经提供了 UI 生成的 队列机制。&emsp;&emsp;在线程的函数里面，完成初始化代码之后加入 cmds.evalDeferred 来生成 UI 就可以实现在 Maya 的主线程上实现 UI 的展示了。 总结 &emsp;&emsp;这次多线程的探索又有新的收获，进一步学习了 Qt 框架的一些知识，挺好的。]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>CG Programming</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Maya</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Maya插件 - mpdb - Maya Python Debugger]]></title>
+    <url>%2Fposts%2F13258e66.html</url>
+    <content type="text"><![CDATA[基于 pdb 模块开发的 Maya Python 调试器 前言 &emsp;&emsp;最近武汉肺炎全国闹，我春节窝在家里没有什么事情要做&emsp;&emsp;于是就进一步将之前要开发出来的插件做好。 &emsp;&emsp;之前月初的时候，研究一些动画的插件，当时调试代码使用了 VScode 插件 mayapy 来设断点调试。&emsp;&emsp;然而 mayapy 的调试有一些不太友好的点。&emsp;&emsp;比如调试的时候会导致 Maya 完全无法操作，只能观察脚本编辑器查看运行的状况。&emsp;&emsp;具体的一些细节可以参照 av82191243 视频&emsp;&emsp;而且调试的时候也遇到了一些奇奇怪怪的 Bug&emsp;&emsp;于是为了让我可以更加舒服的调试代码，我打算开发一个 Maya native debugger 解决我的问题。 准备 &emsp;&emsp;我计划要开发一个基于 Qt 的调试器，包含断掉调试的图标以及面板。&emsp;&emsp;当然调试这种操作其实没必要自己全部手写，其实 python 就内置了非常强大的库来调试代码&emsp;&emsp;这个库就是官方提供的 pdb 模块&emsp;&emsp;通过这个库已经可以实现流行调试器的大多数功能，而且完全基于命令行，非常适合无键盘的服务器使用。 &emsp;&emsp;pdb 模块也可以在 Maya 当中使用，但是用起来会非常不方便。&emsp;&emsp;pdb 模块会在断点模式下使用 raw_input 方法获取用户输入，由于 Maya 的脚本编辑器无法实现命令行的功能&emsp;&emsp;因此脚本编辑器在这种情况下会弹出输入框来获取用户输入。&emsp;&emsp;但是这种交互方式依然无法解决 Debug 的时候 Maya 被冻结的情况。 &emsp;&emsp;于是我将 raw_input 等待输入的过程修改为 while 死循环，通过点击图标来打破 while 循环&emsp;&emsp;只要循环的过程保持 Maya 的响应就可以解决长久以来悬在头上的响应问题。&emsp;&emsp;因此我特意翻看了 pdb 模块的源码，研究里面的底层逻辑， 可以参照文章 使用方法 &emsp;&emsp;具体使用方法可以参照 github 上的文档。 中文文档 原理分析 &emsp;&emsp;回溯到我最初的想法，其实 VScode 的 Debug 功能已经实现大部分我需要的了，关键是 Maya 的 UI 失去响应。&emsp;&emsp;而这个失去响应的情况其实和 死循环 差不多，因此我可以模拟一个 while True 死循环，然后想办法让 Maya 在死循环中保持响应。 1234567891011121314151617181920212223242526# 注意此代码在 Maya 2017 下执行会崩溃！ 下文有说明！~import timeimport mayatry: from PySide2 import QtCoreexcept: from PySide import QtCoredef main(): curr = time.time() while True: # NOTE 超时跳出循环 elapsed = abs(curr - time.time()) if elapsed &gt; 3: break print elapsed # NOTE Maya2018 需要加入 Qt 事件响应 UI QtCore.QCoreApplication.processEvents() # NOTE cmds.refresh() 实现视窗响应 | 无法让所有 UI 响应 maya.utils.processIdleEvents()if __name__ == "__main__": main() 代码文件路径 &emsp;&emsp;最初我是想通过 cmds.refresh 命令来保持界面刷新的&emsp;&emsp;然而这个方法只会刷新到 Viewport 界面，如果我想要打开大纲列表、曲线编辑器，这些操作统统都有各种问题。&emsp;&emsp;也不是不响应，只是很多状态没有及时同步反馈，比如选择物体 大纲类表没有同步反馈等等的瑕疵。&emsp;&emsp;于是为了让 UI 响应，我想起了之前有遇到的问题， 链接参考 &emsp;&emsp;有时候代码想要让 Maya 的某些 UI 打开了之后再进一步执行，但是如果只是调用 mel 命令是无法立刻获取到相关的 UI 信息。&emsp;&emsp;原因是 mel 命令只是将 UI 构建的事件放入到了 eventLoop 里面， Maya 会确保在 idle 状态（即没有任何其他操作）下再去执行这些事件。&emsp;&emsp;代码执行的过程中就不会触发到这些事件，这样操作可以避免某些操作导致 Maya 崩溃。&emsp;&emsp;这就解释了 evalDeferred 命令存在的意义，在删除 UI 的一些操作需要使用 evalDeferred ，将UI删除事件添加到 idle 状态下执行。&emsp;&emsp;我之前就有遇到过这样的崩溃循环 链接&emsp;&emsp;最后还是参考了 ADV 的代码拯救了我 (哎！都是坑，当时没人指导只能自己摸索了(:з」∠) | 整个周末两天都在Maya的崩溃循环下度过，印象太深刻了) &emsp;&emsp;参考了网上文章之后，就知道可以通过 maya.utils.processIdleEvents() 来强制让 Maya 执行 idle 事件。&emsp;&emsp;文章也提到可以通过 evalDeferred -list 获取当前 idle 事件列表， processIdleEvents 是根据这个列表顺序执行的。 &emsp;&emsp;当我将这个代码放到 Maya 2017 的 while 循环之后，的确解决了 UI 响应问题，但是一旦跳出循环， Maya2017 就立即崩溃！！！&emsp;&emsp;我测试 Maya 2018 就不会有崩溃问题，但是仅仅这样 Qt 很多组件依然没有响应，还和 Maya 2017 的情况不太一样(:з」∠)&emsp;&emsp;后来在Google 论坛的邮件列表里面查到了重要的信息&emsp;&emsp;Justin 大神推荐使用 QtCore.QApplication.processEvents() 来保持 UI 响应。&emsp;&emsp;我试了试，虽然没有解决 Maya 2017 崩溃的问题，不过的确可以实现 Maya 2018 的自由操作。 Maya 2017 执行崩溃分析 &emsp;&emsp;其实当时执行就已经发现了代码运行的一些异常情况，我是持续打印时间的，但是我发现 Maya2017 打印的时间在某个时候会出现重复归零打印。&emsp;&emsp;打断 while 循环就立刻崩溃了。&emsp;&emsp;于是我将时间打印改为 cmds.evalDeferred(list=1) 这一句，然后打印列表就真相大白了。&emsp;&emsp;可以看到 idle事件列表里面一直包含了 当前脚本编辑器运行的代码， processIdleEvents 执行之后再次运行代码，这样会不断变成永动机式运行。&emsp;&emsp;于是重复运行一次之后，跳出循环 Maya 立刻崩溃了(:з」∠)&emsp;&emsp;大概执行按钮触发的代码也用到了 evalDeferred 命令导致永动机吧~ &emsp;&emsp;当时很真就觉得这个问题几乎无解，在网上折腾了好久。&emsp;&emsp;我也不记得怎么就想到了用 shelf 工具架来测试这段代码的，反正我就这么试了。&emsp;&emsp;结果震惊的情况发生了，将上面的代码用 工具架 执行居然没有崩溃！&emsp;&emsp;至少 Maya 还是有办法让代码正确执行的。&emsp;&emsp;于是我就很好奇 脚本编辑器 的执行按钮背后到底执行了什么指令。 追踪 Script Editor 执行代码 &emsp;&emsp;这里依然是使用 whatIs 的 mel 命令追踪大法 具体的最终过程可以参考之前轮廓生成文章 文档链接&emsp;&emsp;这个追踪大法在 大神的博客学来的 链接&emsp;&emsp;注意 whatIs 命令只支持 mel 语言，当然官方也提供了 Python OpenMaya API 的实现方法，可以在 devkit 里面找到，只不过需要加载插件来实现 &emsp;&emsp;我们可以打开 Echo All Commands 通过命令回显追踪。点击 脚本编辑器 图标 12ScriptEditor;if (`scriptedPanel -q -exists scriptEditorPanel1`) &#123; scriptedPanel -e -tor scriptEditorPanel1; showWindow scriptEditorPanel1Window; selectCurrentExecuterControl; &#125;else &#123; CommandWindow; &#125;; &emsp;&emsp;回显 ScriptEditor; 另外下面还有一大坨，这明显是一个 runTimeCommand&emsp;&emsp;这些 Maya 默认的 runTimeCommand 可以在 Maya2017\scripts\startup 目录的 defaultRunTimeCommand.mel 里面查询到 12345runTimeCommand -default true -annotation (uiRes("m_defaultRunTimeCommands.kScriptEditorAnnot")) -category ("Menu items.Common.Windows.General Editors") -command ("if (`scriptedPanel -q -exists scriptEditorPanel1`) &#123; scriptedPanel -e -tor scriptEditorPanel1; showWindow scriptEditorPanel1Window; selectCurrentExecuterControl; &#125;else &#123; CommandWindow; &#125;") ScriptEditor; &emsp;&emsp;当然上面这么找太麻烦，也可以通过 RuntimeCommand 的 mel 命令（这个命令也是 mel 特供 python 不支持） 文档链接 12runTimeCommand -q -command ScriptEditor;// Result: if (`scriptedPanel -q -exists scriptEditorPanel1`) &#123; scriptedPanel -e -tor scriptEditorPanel1; showWindow scriptEditorPanel1Window; selectCurrentExecuterControl; &#125;else &#123; CommandWindow; &#125; // &emsp;&emsp;绕了一圈，其实这行代码一开始就回显了(:з」∠)&emsp;&emsp;代码格式化之后如下显示 12345 if (`scriptedPanel -q -exists scriptEditorPanel1`) &#123; scriptedPanel -e -tor scriptEditorPanel1; showWindow scriptEditorPanel1Window; selectCurrentExecuterControl; &#125; &emsp;&emsp;到这里可以脚本编辑器 通过 scriptedPanel 的 scriptEditorPanel 类型生成出来的。&emsp;&emsp;具体 mel 命令含义可以参考这些命令的文档 特别是 scriptedPanel 命令 官方文档&emsp;&emsp;通过文档的使用例子可以知道，通过这个命令可以定义一种类型的面板， Maya 可以根据里面的回调函数自动调用。 &emsp;&emsp;根据这个线索 我在 Maya 的官方 mel 文件中可以搜索 scriptEditorPanel 关键字（我是用 VScode 进行文件搜索的）&emsp;&emsp;可以找到 scriptEditorPanel.mel 文件&emsp;&emsp;里面包含了 scriptEditorPanel 所有生成相关的回调 mel 函数&emsp;&emsp;其中 global proc addScriptEditorPanel 函数就是脚本编辑器整个界面生成的 mel 函数了&emsp;&emsp;细微到 menu 和 上面的 iconButton 都是 mel 命令生成的。&emsp;&emsp;代码比较长我就不全部弄过来了，只将主要的按钮功能截取出来。 123456789101112iconTextButton -width $iconSize -height $iconSize -annotation (uiRes("m_scriptEditorPanel.kExecuteAll")) -image "executeAll.png" -command "handleScriptEditorAction \"executeAll\"" executeAllButton;iconTextButton -width $iconSize -height $iconSize -annotation (uiRes("m_scriptEditorPanel.kExecute")) -image "execute.png" -command "handleScriptEditorAction \"execute\"" executeButton; &emsp;&emsp;command 标记上接入了 handleScriptEditorAction 函数了&emsp;&emsp;从这个函数里面可以找到 execute 状态执行的代码 1234567891011121314// NOTE switch 函数调用case "execute": &#123; string $filename = getCurrentExecuterFilename(); if (size($filename) &gt; 0) &#123; delegateCommandToFocusedExecuterWindow "-e -executeAll" 1; &#125; else &#123; delegateCommandToFocusedExecuterWindow "-e -execute" 1; &#125; &#125; break;case "executeAll": delegateCommandToFocusedExecuterWindow "-e -executeAll" 1; break; &emsp;&emsp; delegateCommandToFocusedExecuterWindow 函数又可以去追查 1234567891011121314151617global proc delegateCommandToFocusedExecuterWindow( string $cmd, int $deferred) //// Delegates a command to the last focused executer control.// Parameter deferred means use evalDeferred instead of eval, this is important to avoid// instability because the MEL scanner is not reentrant.&#123; global string $gLastFocusedCommandExecuter; if ($gLastFocusedCommandExecuter != "") &#123; string $evalCmd = "cmdScrollFieldExecuter " + $cmd + " " + $gLastFocusedCommandExecuter; if ($deferred == 1) &#123; evalDeferred($evalCmd); &#125; else &#123; eval($evalCmd); &#125; &#125;&#125; &emsp;&emsp;这个函数会找到当前关注的代码编辑标签，通过 cmdScrollFieldExecuter mel 命令调用 -execute 指令执行。 官方文档&emsp;&emsp;其实到这里和我最初的预估还是有出入的，我还以为这里使用 evalDeferred 命令执行，没想到还有这种组件 mel 语句可以执行代码 &emsp;&emsp;追查到这里基本就解开了Maya2017崩溃的重要谜团，主要是 cmdScrollFieldExecuter 的 excute 命令执行有底层的问题，这个问题大概在 Maya2018 已经修复了。&emsp;&emsp;于是我可以复制保留 addScriptEditorPanel 里面的大部分代码，修改一下 执行按钮调用的函数就可以实现对 Maya 脚本编辑器的模型修改。&emsp;&emsp;当然还需要给 scriptEditorPanel 类型的调用时间做函数修改。 github测试文件 &emsp;&emsp;这个文件就是当时测试修改按钮的尝试&emsp;&emsp;当然这个测试其实有瑕疵的， executer = mel.eval(&quot;$temp = $gLastFocusedCommandExecuter&quot;) 这里获取的不一定是当前看到的脚本 executer&emsp;&emsp;不过大体的思路就是这样，修改了 scriptedPanelType 之后再次点开 脚本编辑器 调用的就是自己写的 python 函数了 UI 界面搭建 &emsp;&emsp;UI界面搭建，还是需要从图标开始入手。&emsp;&emsp;我个人还是比较喜欢还原 VScode 的 Debug 图标，于是就去前端图标大全 阿里系的 iconfont 里面找调试图标。&emsp;&emsp;虽然没有调试图标合集，不过我还是找到了所需要的各个调试图标。&emsp;&emsp;当时考虑到图片的清晰度问题，还是下载了 SVG 图标，结果给自己挖坑了(:з」∠)&emsp;&emsp;SVG不带颜色的，后来我还要用 Qt 给 SVG 图标上色，不过弄好了的确更加灵活 &emsp;&emsp;老规矩还是用 designer 来搭建组件 &emsp;&emsp;这里通过qrc文件加载图标，qrc文件需要转为 python 模块进行 import 就可以加载了。&emsp;&emsp;由于是用 SVG 图标， rc 文件还是比较小的。 &emsp;&emsp;开发的过程中，为了区分 设定图标 和 调试图标的区别，特别做了一个 debug_icon 容器通过 disable 做出区分&emsp;&emsp;每一个图标的大小也做了 30*30 的限定。 图标上色 &emsp;&emsp;主要参考 Stack Overflow 里面给 png 上色的方法 链接&emsp;&emsp;获取图标的 pixmap 继而获取到 pixel 来 循环修改颜色 1234567891011121314151617181920212223def setButtonColor(self,button,color=QtGui.QColor("red"),size=25): """setButtonColor set SVG Icon Color # NOTE https://stackoverflow.com/questions/53107173/change-color-png-image-qpushbutton Parameters ---------- button : QPushButton Icon Button color : QColor, optional set the Icon color, by default QtGui.QColor("red") size : int, optional icon size, by default 25 """ icon = button.icon() pixmap = icon.pixmap(size) image = pixmap.toImage() pcolor = image.pixelColor(size,size) for x in range(image.width()): for y in range(image.height()): pcolor = image.pixelColor(x, y) if pcolor.alpha() &gt; 0: color.setAlpha(pcolor.alpha()) image.setPixelColor(x, y, color) button.setIcon(QtGui.QIcon(QtGui.QPixmap.fromImage(image))) workspaceControl Toolbar 接入 &emsp;&emsp;默认情况下生成的 workspaceControl 是以标签的形式嵌入到 Maya 的 Layout 里面的&emsp;&emsp;我希望可以制作一个类似 HelpLine CommandLine 这些组件一样有 workspaceControl Toolbar 的效果&emsp;&emsp;虽然也可以通过 Qt 自己实现这个效果，但是这就太过复杂了。 &emsp;&emsp;最初我是想通过 mel 语言的 toolbar 来实现的 官方文档&emsp;&emsp;但是测试了一下示例代码，结果完全不是我想要的，只能嵌入到 Maya 特定的区域，限制很大。 &emsp;&emsp;于是我就去研究 HelpLine 这些组件是怎么通过 mel 命令生成出来的。 12toggleUIComponentVisibility "Help Line"; updatePrefsMenu;helpLineVisibilityStateChange(`workspaceControl -q -visible HelpLine`, ""); &emsp;&emsp;关键的 mel 语句就是这两行，并且第二行还透露了很重要的信息 HelpLine 就是 workspaceControl 的名称&emsp;&emsp;关于这个切换显示 mel 函数也可以用上面的方法去追踪，不过我查完之后没有什么收获，还是对 workspaceControl 的操作而已&emsp;&emsp;于是我就以 HelpLine 作为切入点进行搜索，可以找到 initHelpLine.mel 脚本&emsp;&emsp;这个脚本就包含了创建 Maya Help Line 组件所有需要的代码&emsp;&emsp;其中有一个关键的代码 getUIComponentToolBar 可以获取到 workspaceControl 的 ToolBar&emsp;&emsp;但是往代码里面查，没有收获，因为 Toolbar 已经提前创建好了， get 函数只是从数组里面获取出来而已。 &emsp;&emsp;辗转周折之后，最后 initMainWindow.mel 里面找到了 createUIComponentToolBar 函数&emsp;&emsp;继续追踪生成代码，还是让我好失望。 123456789101112131415161718192021222324global proc string createUIComponentToolBar(string $name, string $label, string $uiScript, string $area, int $tabbed)&#123; global string $gUIComponentToolBarArray[]; global int $kNameIndex; global int $kControlIndex; // create toolbar string $controlNameArray[] = stringToStringArray($name, " /"); string $controlName = stringArrayToString($controlNameArray, ""); string $createCmd = ("workspaceControl -uiScript \"") + $uiScript + ("\" -loadImmediately true -label \"") + $label + ("\" -dockToMainWindow ") + $area + " " + $tabbed + " " + $controlName; string $toolbar = `eval($createCmd)`; // add entry to array int $count = size($gUIComponentToolBarArray); $gUIComponentToolBarArray[$count + $kNameIndex] = $name; $gUIComponentToolBarArray[$count + $kControlIndex] = $toolbar; return $toolbar;&#125; &emsp;&emsp;其实这个生成就是利用 workspaceControl 实现的，我就纳闷了，为什么 HelpLine 实现的是 ToolBar 形式的 UI&emsp;&emsp;我自己搞的 workspaceControl 就是标签嵌入式的呢？ &emsp;&emsp;于是我将当前的 HelpLine 通过 deleteUI 删除掉，然后自己用 python 代码生成 workspaceControl 命名为 HelpLine&emsp;&emsp;霎时间真相大白了， Maya 的 workspaceControl 还会根据名字不同生成不同的 UI 组件。 123cmds.deleteUI("HelpLine")cmds.workspaceControl("HelpLine",r=1)cmds.workspaceControl("HelpLine2",r=1) &emsp;&emsp;大家可以自个人感受一下 HelpLine 和 HelpLine2 两个 UI 窗口的嵌入 Maya 之后的区别。附注:写文章的时候去测试，发现名称大小写也不受影响，也可以通过大小写的差异来获取的 UIComponentToolBar &emsp;&emsp;但是问题来了，不可能将 Maya 一个ToolBar组件给牺牲了，然后嵌入自己的插件。&emsp;&emsp;但是如果不删除 HelpLine 组件的话，生成就会报错，遇到了这样的矛盾问题。 &emsp;&emsp;后来使用 mayaToQT 将 Maya 的组件转成 Qt 的组件之后，获取组件的 objectName&emsp;&emsp;发现组件的 objectName 其实是和 Maya 的UI名称保持一致的。于是我做了下面的代码测试。 1234567from maya import cmdsfrom PySide2 import QtWidgetsbtn = QtWidgets.QPushButton("myTestButton")btn.setObjectName("myTestButton")btn.clicked.connect(lambda:cmds.deleteUI("myTestButton"))btn.show() &emsp;&emsp;上面这段代码生成了一个 Maya 按钮，并且点击按钮会删除一个名为 “myTestButton” 的 Maya UI&emsp;&emsp;虽然我前面没有任何调用 Maya Cmds 的操作，但是我仍然可以通过点击按钮来将自己删除掉&emsp;&emsp;通过这个原理，我就可以用很 tricky 的方式解决 HelpLine 名称冲突的问题。 123456789101112131415161718192021222324252627def createUIComponentToolBar(ControlName="CustomToolBar"): """createUIComponentToolBar create a Maya Component Tool Bar Widget :param ControlName: str, defaults to "CustomToolBar" :type ControlName: str, optional """ help_line = mayaToQT("HelpLine") help_line.setObjectName("_HelpLine") cmds.workspaceControl("HelpLine", label=ControlName, loadImmediately= 1, initialHeight=20, heightProperty="fixed", ) UIComponentToolBar = mayaToQT("HelpLine") UIComponentToolBar.setObjectName(ControlName) help_line.setObjectName("HelpLine") layout = UIComponentToolBar.layout() # NOTE add spacing layout.setContentsMargins(10,0,0,0) return UIComponentToolBar &emsp;&emsp;通过 setObjectName 可以给 Maya UI 改名&emsp;&emsp;我可以暂时将 HelpLine 的名称改掉，生成出新的 HelpLine 壳也改名，然后将原本的 HelpLine 改回去，就实现无缝获取 ToolBar 的操作了。 调试功能接入 &emsp;&emsp;解决了上面 Maya2017 执行崩溃的问题和界面搭建问题之后，我们终于可以回到正题从设置调试图标接入调试功能开始了&emsp;&emsp;其实我开发的时候并不是按着这样的思路弄下去，不过不妨碍我总结的时候重新整理一下不同模块的内容。 &emsp;&emsp;断点调试的基本原理可以参考 Python pdb 调试模块研究&emsp;&emsp;通过代码最终，我最后找到 cmdloop 函数是导致 等待输入的罪魁祸首&emsp;&emsp;我可以将 cmdloop 里面的核心代码提取出来，然后将 input 命令改为 while 死循环&emsp;&emsp;这样就可以通过花式打断循环来返回 pdb 调试用的命令，我也省心许多，不用一一实现各个调试功能了。 1234567891011121314151617181920212223242526272829303132333435363738394041def breakpoint(self,MPDB,frame): while True: if self.debug_continue_state : self.debug_continue_state = False return "c" elif self.debug_step_over_state : self.debug_step_over_state = False return "n" elif self.debug_step_into_state : self.debug_step_into_state = False return "s" elif self.debug_step_out_state : self.debug_step_out_state = False return "u;;n" elif self.debug_cancel_state : self.debug_cancel_state = False return "q" elif self.debug_cancel_run_state : self.debug_cancel_run_state = False import mpdb mpdb.quitting = True return "disable;;c" elif self.debug_pdb_state : self.debug_pdb_state = False text,ok = QtWidgets.QInputDialog.getText(self,self.pdb_title,self.pdb_msg) if ok and text: return text # NOTE Keep Maya alive QtCore.QCoreApplication.processEvents() maya.utils.processIdleEvents() &emsp;&emsp;给 ToolBar 添加一个 breakpoint 死循环函数&emsp;&emsp;只要点击按钮图标就修改一个状态，返回对应的 pdb 命令就可以实现调试了。&emsp;&emsp;后续就是将 toolbar 引入到 魔改的 MPDB 类里面去调用获取返回的指令实现 点击图标执行对应的调试动作。 调试面板 &emsp;&emsp;仅仅只是实现按钮效果还是不够的，我觉得还得还原 VScode 的调试体验才行。&emsp;&emsp;需要将代码显示出来，并且告诉大家目前调试的行数。&emsp;&emsp;于是我又研究怎么编写一个 CodeEditor 来显示代码。 CodeEditor 编写 &emsp;&emsp;这里要感谢 logcatMaya 插件&emsp;&emsp;里面提到的 cmdReporterHighlighter.py 我也是完全照搬嵌入到我的 CodeEditor 代码里面去了&emsp;&emsp;不过由于这个代码高亮需要读取所有的 melInfo 函数，运行会有一点卡顿。(后续通过多线程解决了卡顿) &emsp;&emsp;另外，这里对我最大的难点就是在对应的行可以给出对应反馈效果。&emsp;&emsp;原本是打算将 cmdScrollFieldExecuter 直接拿来用的，但是考虑到还要进行断点行的的显示，还是手动实现比较靠谱一点。&emsp;&emsp;于是再次借助 Stack Overflow 参考了网上实现的 CodeEditor 方案 &emsp;&emsp;至于对 paintLine 函数 主要通过 Qt 的 paintEvent 来实现自定义绘制&emsp;&emsp;完全参考上面链接里面对左侧行数显示的实现方案，上面的代码实现左侧行高亮当前显示行数。&emsp;&emsp;我也可以根据这个高亮 QPlainTextEdit 里面的一行，基本上依葫芦画瓢而已。 &emsp;&emsp;当时 QPlainTextEdit 里面需要将 painter 设置到 viewport 上才可以绘制。&emsp;&emsp;但是绘制了之后，如果点到其他行，之前绘制的效果会留有奇奇怪怪的残留问题，于是又折腾了好久。&emsp;&emsp;最后我发现 要加上一行 update 代码才可以 self.viewport().update() &emsp;&emsp;默认的字体设置，空格只有半个字符的宽度，于是还需要我修改一个 monospace 的字体来解决问题，网上咨询之后，推荐使用 VScode 也采用的字体 Courier New&emsp;&emsp;采用了新字体之后行数的像素高度还需要 +1 微调 否则点击显示的行数会不一致。 信息面板 &emsp;&emsp;信息面板的 TableView 功能还是相当复杂的&emsp;&emsp;当时在 Stack Overflow 上找到很不错的示例代码，就在它上面进行了魔改 链接&emsp;&emsp;正则过滤的功能上面已经弄得差不多了，我主要是将 ui 文件里面的组件替换&emsp;&emsp;并且添加了可以修改变量数据的功能 &emsp;&emsp;修改变量数据的方法也是参考 pdb 的单行代码执行的方式&emsp;&emsp;核心方式就是 exec code in globals(),locals() ，这个操作将 globals 和 locals 域修改&emsp;&emsp;全局域和局部域就是一个字典，记录了当前域下所有的变量数据，修改字典等同于对变量进行赋值操作。 i18n &emsp;&emsp;i18n 就是 internationalization ，具体可以参照 百度百科&emsp;&emsp;大致就是指代国际化多国语言。 &emsp;&emsp;Qt 其实是配套有 Linguist 语言家来做翻译文本的操作，实现 i18n 非常方便了。&emsp;&emsp;我们在使用 pyside2-uic 编译出 python 的时候，其实就已经使用了 Qt i18n 的功能。&emsp;&emsp;所有和文本相关的操作都会挪动 retranslateUi 函数当中，并且上都使用 QtWidgets.QApplication.translate 来获取文本。 &emsp;&emsp;QtWidgets.QApplication.translate 最少接受两个参数，第一个参数用来分组、第二个参数就是默认文本。&emsp;&emsp;所有的文本设定好之后，可以使用 pylupdate5.exe 来读取 py 文件编译出 ts 文件 （pylupdate5.exe 是 Python PyQt5 库自带的）&emsp;&emsp;ts文件是 Qt 的翻译标记文件，里面的内容也是 xml ，记录了 QtWidgets.QApplication.translate 在 python 文件的位置，以及翻译的数据情况。&emsp;&emsp;所以这里的 ts 并不是 Typescript 文件，默认 VScode 会根据后缀识别成 Typescript 的。 &emsp;&emsp;我们可以通过 Qt Linguist 来打开 ts 文件，这个也是 PyQt5 库自带的。 可以使用 anaconda 的版本，自带 PyQt5 。 &emsp;&emsp;翻译完成之后可以使用 Linguist 发布文件，会自动根据 ts 文件生成一个同名的 qm 文件&emsp;&emsp;qm文件是不可编辑的文件了，Qt可以读取 qm 文件的数据，让 QtWidgets.QApplication.translate 返回当前选择的语言版本的文本。 &emsp;&emsp;具体的使用方法可以参考 Stack Overflow 的使用 Demo 链接&emsp;&emsp;我也是参照着 eyllanesc 的方法，自己依葫芦画瓢实现的。&emsp;&emsp;核心方法也是将 setText 之类的函数全部提取成一个单独的函数，当语言切换的时候，让 changeEvent 调用 retranslateUi 函数。 事件扩展处理 eventFilter &emsp;&emsp;说来感慨，eventFilter 我最初认识这个函数是在弄 Qt 系列教程的时候。&emsp;&emsp;现在看来这个 事件过滤器 真乃 Qt 的神器，他可以安装任意的组件上，可以接受不同类型事件的回调。&emsp;&emsp;真的是嵌入信号槽的绝佳函数！~ &emsp;&emsp;后来在 Stack Overflow 上看到一种更加简洁的用法（忘记保留链接了）。&emsp;&emsp;直接使用 QObject 类来调用 eventFilter 1234567891011121314151617181920class MiddleClickSignal(QtCore.QObject): """addExecuteShortcut 监听鼠标中键事件 """ middleClicked = QtCore.Signal() def __init__(self,parent): super(MiddleClickSignal,self).__init__() # NOTE 确保自己不会被垃圾回收掉 self.setParent(parent) parent.installEventFilter(self) def eventFilter(self,reciever,event): if event.type() == QtCore.QEvent.Type.MouseButtonPress: if event.button() == QtCore.Qt.MidButton: self.middleClicked.emit() return True return False# NOTE 使用例子Setting_signal = MiddleClickSignal(self.debug_setting)Setting_signal.middleClicked.connect(partial(self.setPdb,True)) &emsp;&emsp;这样就可以制作一个鼠标中键触发器的功能，而且这种写法既简洁扩展性还很强。&emsp;&emsp;不过 eventFilter 要响应组件内所有的事件，会有一定的运算浪费。&emsp;&emsp;但我觉得 GUI 从来都不是 CPU 密集型的操作，快速响应 实现功能 才是 GUI 编程的核心，浪费一些算力是值得的。 遇到的问题 &emsp;&emsp;其实在开发的过程中遇到了不少的坑，有些是解决了有些到目前还悬而未决，在这里给大家分享一下。&emsp;&emsp;有不少的坑我已经在上面有所提及，这里就不在复述。&emsp;&emsp;另外下面标题前带 * 号是目前仍然没有解决方案的，因此我可能不去实现或者用了其他方案替代了的。 toolbar 嵌入问题 &emsp;&emsp;由于 toolbar 是通过我自己的特殊手段生成的，有时候关闭了 Maya 之后，Maya 会记录了 UI 的位置。&emsp;&emsp;下次打开 Maya 的时候还给我创建出来了，但是创建出来是空壳。&emsp;&emsp;因此我需要先判断一下 workspaceControl 这个 UI 的名称是否存在，存在需要先关闭再嵌入。 &emsp;&emsp;另外原本是想要一步到位生成 workspaceControl 的时候同时嵌入到右侧的&emsp;&emsp;但是这样会导致 toolbar 整体拉高各种问题，而且怎么调整高度都不奏效。&emsp;&emsp;后来只好使用 workspaceControl -r 标记将嵌入窗口拉出来显示，接入 调试工具 然后再嵌入到 Maya 里面才稍微解决了问题。 调试面板 修改变量 &emsp;&emsp;调试面板上的数据是根据 Qt MVC 基于 QTableView 实现的&emsp;&emsp;这样有个好处就是甚至可以通过 createEditor 函数来管理点击修改生成 gui&emsp;&emsp;当时明显 QTableView 操作的工作量要比 QTableWidget 大很多。 &emsp;&emsp;在修改上，也参考了 pdb 单行修改变量的方法去做的。&emsp;&emsp;为了方便条用函数，还专门写了一个 modify 信号槽了给外部调用修改域。 &emsp;&emsp;最后比较坑爹的是正则过滤导致执行的修改变量错乱。&emsp;&emsp;最后的解决方案是获取当前修改 Table 左侧 Header 的行数才能正确处理 代码执行同步域 | 隐藏 pdb 调试中途跳出产生的报错 &emsp;&emsp;由于执行按钮的功能被我改写了，执行的时候获取的是执行函数的域而不是 Maya 脚本编辑器的域&emsp;&emsp;这会导致一些变量信息打印会报错提示变量不存在的问题。 &emsp;&emsp;后来折腾了好久之后，决定采用 maya.utils.executeInMainThreadWithResult 函数来解决问题。&emsp;&emsp;当然也可以用 evalDeferred 之类的方法来获取到 全局域 但是这会导致之前永动机报错问题。&emsp;&emsp;后来也想到可以利用 mel 调用 python 来执行 python 代码 获取 全局域。 但是这样没法准确抓取到报错的信息， python 代码报错反馈确实 mel 执行出错了。&emsp;&emsp;所以最后发现 maya.utils.executeInMainThreadWithResult 函数可以完美解决域的问题。&emsp;&emsp;而且用这个函数执行代码，如果中途退出 pdb 调试会报错 BdbQuit 来中断代码执行，最后错误也会返回到这个函数上。&emsp;&emsp;我可以通过异常处理来掩盖掉错误提示，如果是 exec 执行的话，报错在 pdb 内部，异常处理会让 pdb 调试继续下去的(:з」∠) &emsp;&emsp;虽然这个方案很好，但是测试的时候还是出问题了。&emsp;&emsp;使用 maya.utils.executeInMainThreadWithResult 进入调试之后， MainThread 已经被这个执行占用等待结果了。&emsp;&emsp;如果在这个情况下再次用脚本编辑器执行代码，会导致Maya直接卡死无响应。 &emsp;&emsp;最后折腾了一大圈，我放弃了 maya.utils.executeInMainThreadWithResult 这个函数，虽然完美模拟了 脚本编辑器运行的函数域。&emsp;&emsp;最后再次参考了 Stack Overflow 上的回答（链接）将 globals() 作为参数传递进来，另外给 mpdb 模块添加 f_locals 和 f_globals 变量来同步函数域。&emsp;&emsp;使用按钮执行调用的是 mel 的 python ，这个 python 语句也是全局域的，因此可以调用 执行函数的时候将 全局域的 globas() 当做参数传递到函数内。&emsp;&emsp;函数内通过 update 同步到 globals() 上。&emsp;&emsp;感觉这种做法有点蠢，不知道大家有没有更好的方案。&emsp;&emsp;目前的确表面上解决找不到变量的问题。 &emsp;&emsp;最后如何隐藏掉 BdbQuit 报错呢？&emsp;&emsp;我发现代码是在 bdb.py 文件的 68 行报错。&emsp;&emsp;使用 decorator 来忽略掉异常会导致代码继续执行。&emsp;&emsp;后来又是查了 Stack Overflow 之后（链接） 可以通过 sys.exit 来中断执行 &emsp;&emsp;上面的确实现了终止运行又隐藏代码报错了，但是我在使用 Ctrl + E 快键键执行调试的时候。&emsp;&emsp;点击终止按钮给我强行退出了 Maya_(:з」∠)_&emsp;&emsp;这个问题我也是摸不着头脑。后来是看 调试面板上 多了个 SystemExit 的异常&emsp;&emsp;只要在 快键键执行的函数上加上 这个异常处理 就不会导致 Maya 强制退出了。 1234567891011121314151617181920212223class AddExecuteShortcut(QtCore.QObject): """AddExecuteShortcut 监听键盘输入事件 """ def __init__(self,editor): super(AddExecuteShortcut,self).__init__() editor.installEventFilter(self) def eventFilter(self,reciever,event): if event.type() == QtCore.QEvent.Type.ShortcutOverride: key = event.key() KeySequence = QtGui.QKeySequence(key+int(event.modifiers())) if KeySequence == QtGui.QKeySequence("Ctrl+E"): # NOTE Ctrl + E 执行代码 from exceptions import SystemExit try: scriptEditorExecute(f_globals=globals(),clear=False) except SystemExit: pass import mpdb mpdb.quitting = False return True return False * 调试红框提示 &emsp;&emsp;进入调试模式的时候需要用比较显眼的方式告诉用户。&emsp;&emsp;我最初其实想给 Maya 包裹一个红框来做提示用的。&emsp;&emsp;后来遇到了一些无法解决的问题作罢了。&emsp;&emsp;现在的方案其实只是给 Maya 嵌入 QSS #MayaWindow{background:red} 这样修改了主窗口的背景颜色为红色。 &emsp;&emsp;Maya2017很难看到效果，在 Maya2018 下切换工作区就看得很明显了。&emsp;&emsp;这个方案其实有个小瑕疵的，时间滚动条的背景颜色受到了这个设置的影响，背景颜色变灰色了，不再是暗黑色了。&emsp;&emsp;这个小瑕疵也是其中一个未解之谜，倒是不影响使用。 &emsp;&emsp;这里还是得重点说说红框的问题，我搞了好久最后给放弃了，这个问题也属实奇怪得很，希望有人能帮忙解惑~ &emsp;&emsp;给程序套上红框，其实我也在 Stack Overflow 上找到了解决方案 添加 Overlay 组件覆盖 绘制红色边界 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859# coding:utf-8from PySide2 import QtGuifrom PySide2 import QtWidgetsfrom PySide2 import QtCoreclass OverLay(QtWidgets.QWidget): BorderColor = QtGui.QColor(255, 0, 0, 255) BackgroundColor = QtGui.QColor(0, 255, 0, 125) def __init__(self, parent): super(OverLay,self).__init__() self.setAttribute(QtCore.Qt.WA_NoSystemBackground) self.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents) self.setWindowFlags(QtCore.Qt.WindowTransparentForInput | QtCore.Qt.FramelessWindowHint) self.setFocusPolicy( QtCore.Qt.NoFocus ) self.hide() # self.setEnabled(False) # self.setAutoFillBackground(True) # self.setWindowFlags(QtCore.Qt.FramelessWindowHint) self.setParent(parent) parent.installEventFilter(self) def paintEvent(self, event): # NOTE https://stackoverflow.com/questions/51687692/how-to-paint-roundedrect-border-outline-the-same-width-all-around-in-pyqt-pysi painter = QtGui.QPainter(self) painter.setRenderHint(QtGui.QPainter.Antialiasing) rectPath = QtGui.QPainterPath() height = self.height() - 4 rect = QtCore.QRectF(2, 2, self.width()-4, height) # NOTE 绘制边界颜色 rectPath.addRoundedRect(rect, 15, 15) painter.setPen(QtGui.QPen(self.BorderColor, 2, QtCore.Qt.SolidLine,QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin)) painter.drawPath(rectPath) # # NOTE 绘制背景颜色 # painter.setBrush(self.BackgroundColor) # painter.drawRoundedRect(rect, 15, 15) def eventFilter(self, obj, event): if not obj.isWidgetType(): return False if self.isVisible(): self.setGeometry(obj.rect()) elif event.type() == QtCore.QEvent.Resize: self.setGeometry(obj.rect()) return Falseif __name__ == "__main__": button = QtWidgets.QPushButton("click") frame = OverLay(button) button.clicked.connect(lambda:frame.setVisible(not frame.isVisible())) button.show() &emsp;&emsp;上面的代码经过我的优化，使用更加方便一些。&emsp;&emsp;可以将代码直接在 Maya 上运行（当然也可以在外部运行 参考） &emsp;&emsp;可以看到 OverLay 类可以覆盖在按钮上但是完全不影响到 按钮的点击触发。&emsp;&emsp;只要去掉背景颜色的添加，只红框就是我想要的 Debug 提示效果了。 &emsp;&emsp;下面就需要获取 Maya 的组件然后添加 Overlay 组件测试效果了&emsp;&emsp;上文已经提到过 objectName 就对应 Maya UI 的名称了，如果可以将 Maya 所有的组件打印出来就清晰了。&emsp;&emsp;这里可以利用递归打印的方法来实现，我在 utils.py 里面有具体的代码来循环打印 Maya 所有的 UI 以及 objectName 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657from maya import OpenMayaUItry: from Qt import QtWidgets from Qt.QtCompat import wrapInstanceexcept: from PySide2 import QtWidgets from shiboken2 import wrapInstancedef mayaToQT(name,wrapType=QtWidgets.QWidget): """ Maya -&gt; QWidget :param str name: Maya name of an ui object :return: QWidget of parsed Maya name :rtype: QWidget """ ptr = OpenMayaUI.MQtUtil.findControl( name ) if ptr is None: ptr = OpenMayaUI.MQtUtil.findLayout( name ) if ptr is None: ptr = OpenMayaUI.MQtUtil.findMenuItem( name ) if ptr is not None: return wrapInstance( long( ptr ), wrapType )def mayaWindow(): """ Get Maya's main window. :rtype: QMainWindow """ window = OpenMayaUI.MQtUtil.mainWindow() window = wrapInstance(long(window), QtWidgets.QMainWindow) return windowdef traverseChildren(parent,indent="",log=True): """traverseChildren Traverse into the widget children | print the children hierarchy :param parent: traverse widget :type parent: QWidget :param indent: indentation space, defaults to "" :type indent: str, optional :param log: print the data, defaults to True :type log: bool, optional """ if log: print ("%s%s %s" % (indent,parent,parent.objectName())) if not hasattr(parent,"children"): return for child in parent.children(): traverseChildren(child,indent=indent+" ")if __name__ == "__main__": traverseChildren(mayaWindow()) &emsp;&emsp;使用上面的代码就可以将 Maya 所有的 Qt 组件按照树形结果打印出来&emsp;&emsp;打印结果可以参照这个 github 仓库上的 文件&emsp;&emsp;VScode 可以根据文件的缩进进行代码收缩，看起来舒服很多。&emsp;&emsp;从中可以看到 Maya 内部组件的信息以及 相关的 objectName &emsp;&emsp;开始我是直奔主题，直接让 MainWindow 接上 Overlay 类看看红框效果。（我将 Overlay 的绿色背景去掉了） 1234main_win = mayaWindow()frame = OverLay(main_win)frame.show()# frame.setParent(None) &emsp;&emsp;但是我发现我将 WA_TransparentForMouseEvents 之类的属性全部打上还是存在组件覆盖遮挡的问题。&emsp;&emsp;这让我很困惑，不知道到底是哪里导致遮挡产生。 &emsp;&emsp;后来我就根据 上面打印的 组件树 一个一个测试添加效果。&emsp;&emsp;结果发现 脚本编辑器 加上居然没有问题 12345# NOTE 脚本编辑器widget = mayaToQT("scriptEditorPanel1Window")frame = OverLay(widget)frame.show()# frame.setParent(None) &emsp;&emsp;这就让我很是头疼，完全没有头绪。&emsp;&emsp;后面逐一测试了 Maya 内各个主要的组件，还有 视窗窗口 和 主菜单栏 是会受到遮挡影响的。 1234widget = mayaToQT("MainPane")frame = OverLay(widget)frame.show()# frame.setParent(None) &emsp;&emsp;其他的组件都不存在遮挡问题，目前对我来说无解，所以暂时弃用了这个 Debug 提示方案。 多线程加速加载 &emsp;&emsp;插件加载需要 2 - 3s 的加载时间。&emsp;&emsp;在这个过程中 Maya 处于卡死状态，我希望通过多线程保持 Maya UI 的响应。&emsp;&emsp;一开始我是看了 Qt 多线程 和 python 多线程的对比。&emsp;&emsp;网上提到 Qt Gui 相关的多线程建议用 QThread 而 Python 运算相关的还是建议用 threading 模块。&emsp;&emsp;于是我就是通了 Python 内置 threading 库。 &emsp;&emsp;经过测试，我发现多线程的效果和不使用 threading 完全一样&emsp;&emsp;写文章的时候我重新求证了一下 Qt 多线程加速优化的可能性。 参考 &emsp;&emsp;经过了一轮研究之后，有很多收获，我写了一篇新的文章记录 - Maya Qt 多线程提升交互体验 总结 &emsp;&emsp;经过这个插件开发的锻炼，进一步加深了对 Qt 开发的理解。&emsp;&emsp;趁着这段时间有空，最近还要开发已经很久计划要做的 Maya 工具 CommandLauncher。&emsp;&emsp;并且还要将最近博客上欠下的文章补上。]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>CG Programming</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Maya</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[VScode - Setting Sync 配置同步之坑]]></title>
     <url>%2Fposts%2F614e755e.html</url>
     <content type="text"><![CDATA[这个坑是我自己的锅，和VScode插件无关 前言 &emsp;&emsp;最近公司电脑的 VScode 一直出现一些奇怪的插件更新报错&emsp;&emsp;比如最常见的 C# 和 intellicode 插件，经常下载什么代码包结果无法下载的，我自己也是一头雾水 &emsp;&emsp;直到最近，我打算通过 setting Sync 插件同步一下线上的插件信息，方便我同步到其他电脑上&emsp;&emsp;结果却发现遇到坑了。 问题情况 &emsp;&emsp;由于太久没有同步配置了，而且我希望弄一个新的 gist 来同步当前的插件配置&emsp;&emsp;因此我打开了插件的配置面板，想要将 gist 的数据切换掉 &emsp;&emsp;但是万万没想到，更新的时候翻车了。 &emsp;&emsp;网上查了一番，没有找到报错的原因&emsp;&emsp;从控制台的报错上看貌似是 ssl 证书相关的错误，但是具体不清楚。 &emsp;&emsp;我接着查命令看到有重置的功能，大概是有什么垃圾信息导致错误吧。&emsp;&emsp;手一抖，将数据重置了。 &emsp;&emsp;结果坑爹才刚刚开始。&emsp;&emsp;我在点击一次 update 功能会打开登陆界面的面板 &emsp;&emsp;看到熟悉的 login with github , 我就放心了 &emsp;&emsp;结果我被坑爹了，画面一直白屏打不开。 &emsp;&emsp;这种问题只能自己去搜索一下了，还转么找到 github 的仓库翻 issue&emsp;&emsp;作者提到 3.2.5 版本已经修复了 ssl 无法登陆的问题。&emsp;&emsp;于是我想难道是高版本又出 BUG 了，于是又专门切换到 3.2.5 版本，依旧没有解决问题(:з」∠)。 &emsp;&emsp;而且重置的时候还把之前github上配置好的 token 权限给弄没了&emsp;&emsp;我只好又重新去处理申请新的token 解决方案 &emsp;&emsp;我弄了新的 gist id 然后又弄了 新的 token 验证&emsp;&emsp;还是上传不成功，真的让我很是火大。&emsp;&emsp;考虑到是 ssl 的问题，可能和代理设置有关，我想能否通过 proxifier 工具来实现挂载&emsp;&emsp;结果开启了软件仍然无法解决问题。 &emsp;&emsp;直到最后，我搜索了如何设置 Vscode 代理才发现，原来我已经设置了代理，而且阴沟里翻船了。 &emsp;&emsp;看到自己的设置真的是气不打一处来，浪费我大半天的时间只因为当时配置的时候多加了一个 s&emsp;&emsp;http代理用不了 https 协议&emsp;&emsp;我将设置改了之后，一切都好了，真的是气死我了。]]></content>
@@ -22,8 +91,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -36,8 +105,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -50,8 +119,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -65,8 +134,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Git</tag>
       </tags>
   </entry>
@@ -80,8 +149,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -108,8 +177,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -133,8 +202,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -162,8 +231,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -452,8 +521,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>BlendShape</tag>
       </tags>
   </entry>
@@ -469,8 +538,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -482,9 +551,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -496,9 +565,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -528,8 +597,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -892,9 +961,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -908,9 +977,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -924,9 +993,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -934,7 +1003,7 @@
   <entry>
     <title><![CDATA[Maya C++ 多核性能测试]]></title>
     <url>%2Fposts%2F5fce3fcb.html</url>
-    <content type="text"><![CDATA[Maya 多核计算不大行 前言 &emsp;&emsp;在开发RBF节点的过程，我进行了性能测试。&emsp;&emsp;当RBF节点的使用数量达到100个以上之后，maya窗口的帧速率就已经掉到个位数。&emsp;&emsp;而这个还是没有添加任何额外绑定系统的情况。&emsp;&emsp;张峥前辈担心后续搭建出来的表情系统会过于臃肿，导致动画制作很麻烦。&emsp;&emsp;因此将性能优化提升到首位。&emsp;&emsp;于是我就尝试了使用 Maya 的 C++ 多核操作来提升运算效率。 原本的RBF节点运行效果 多核运算的RBF节点 &emsp;&emsp;最终实现的效果是令人失望的，CPU占用率上去了，然而整体的运行效率却更低了。 Maya C++ 多核方案 &emsp;&emsp;在官方文档中，maya的多核操作有很多种方法。 OpenMP Intel TBB Maya API &emsp;&emsp;OpenMP 使用起来惊人地简单，但是效率提升不明显，因此我并没有测试。 &emsp;&emsp;Intel TBB 我拿来测试了，但是效果不太理想。&emsp;&emsp;Intel TBB 没有python多线程的 join 方法，因此它实现的多线程是异步而无法同步的。&emsp;&emsp;这样的输出结果无法将多个运算结果的汇总到一起。&emsp;&emsp;尽管这种问题是可以用代码来弥补的，不过 Maya API其实已经封装好了。&emsp;&emsp;因此最后我采用了 Maya API 的线程池来实现功能。 &emsp;&emsp;关于如何使用 Maya API 的线程池，官方只给了命令相关的例子，没有变形器的例子，变形器使用 TBB 实现的。&emsp;&emsp;因此我在 github 上找到几个通过 maya 线程池实现多核功能的变形器源码。 https://github.com/ahmidou/MayaNodes https://github.com/skeelogy/maya-skNoiseDeformer Maya API 多核性能测试 &emsp;&emsp;多核运算最重要的步骤是对运算过程的切分。&emsp;&emsp;我看到maya给出的测试例子，包括网上实现的多核，都是对模型大量面数处理的时候使用的。&emsp;&emsp;也就是说有一个数量级很大的for循环，而for循环的结果是不需要同步处理的情况。&emsp;&emsp;不过放到 RBF 节点中，这种情况显然不太合适。&emsp;&emsp;RBF 是大量短小精悍的 for 共同运算的结果，因此我也不太清楚如何正确切分这个运算过程。 &emsp;&emsp;我最后是将RBF运算的一些双重for循环替换为 多核切分来提神效率。&emsp;&emsp;因此我的多核切分就会很琐碎，重点是开多线程处理也是有系统开销的。&emsp;&emsp;因此如果我把线程切分的非常碎的话，就会开非常多的线程，最后CPU占用率可以达到70%-80%。&emsp;&emsp;然而大量的CPU运算都浪费在线程的处理上了，反而拖慢了运算的效率，得不偿失。 &emsp;&emsp;所以最后的结果时Maya多核的CPU占用率上去了，但是运行效率还不如单核的理想(:зゝ∠)&emsp;&emsp;另外我找到的变形器中 MayaNodes 就是专门针对Maya多核性能测试而开发的。&emsp;&emsp;开发者给出的结论非常让人沮丧。 &emsp;&emsp;或许正是maya多核上的劣势才导致了 Ziva 这些模拟软件的运行卡顿吧。 附注 &emsp;&emsp;上面动图演示有极高的CPU占用率，是因为我将任务切分数调的很高。（我设置了100）&emsp;&emsp;有于开线程是有系统开销的，虽然这个过程是由TBB内部处理的，但是任务切分越多，开销肯定是越大的。&emsp;&emsp;因此maya的官方说明也提到，这个开销需要自己把握，拿捏尺度。&emsp;&emsp;我这里设置的任务切分数显然是过分了。 &emsp;&emsp;不过即便将任务切分调成2。&emsp;&emsp;CPU占用率不仅没上去，而且效率还是不如单线程的。&emsp;&emsp;因此github上的测试或许是对的，maya的多核运算本质还是单线程的，效率提不起来。]]></content>
+    <content type="text"><![CDATA[Maya 多核计算不大行 前言 &emsp;&emsp;在开发RBF节点的过程，我进行了性能测试。&emsp;&emsp;当RBF节点的使用数量达到100个以上之后，maya窗口的帧速率就已经掉到个位数。&emsp;&emsp;而这个还是没有添加任何额外绑定系统的情况。&emsp;&emsp;张峥前辈担心后续搭建出来的表情系统会过于臃肿，导致动画制作很麻烦。&emsp;&emsp;因此将性能优化提升到首位。&emsp;&emsp;于是我就尝试了使用 Maya 的 C++ 多核操作来提升运算效率。 原本的RBF节点运行效果 多核运算的RBF节点 &emsp;&emsp;最终实现的效果是令人失望的，CPU占用率上去了，然而整体的运行效率却更低了。 Maya C++ 多核方案 &emsp;&emsp;在官方文档中，maya的多核操作有很多种方法。 OpenMP Intel TBB Maya API &emsp;&emsp;OpenMP 使用起来惊人地简单，但是效率提升不明显，因此我并没有测试。 &emsp;&emsp;Intel TBB 我拿来测试了，但是效果不太理想。&emsp;&emsp;Intel TBB 没有python多线程的 join 方法，因此它实现的多线程是异步而无法同步的。&emsp;&emsp;这样的输出结果无法将多个运算结果的汇总到一起。&emsp;&emsp;尽管这种问题是可以用代码来弥补的，不过 Maya API其实已经封装好了。&emsp;&emsp;因此最后我采用了 Maya API 的线程池来实现功能。 &emsp;&emsp;关于如何使用 Maya API 的线程池，官方只给了命令相关的例子，没有变形器的例子，变形器使用 TBB 实现的。&emsp;&emsp;因此我在 github 上找到几个通过 maya 线程池实现多核功能的变形器源码。 https://github.com/ahmidou/MayaNodes https://github.com/skeelogy/maya-skNoiseDeformer Maya API 多核性能测试 &emsp;&emsp;多核运算最重要的步骤是对运算过程的切分。&emsp;&emsp;我看到maya给出的测试例子，包括网上实现的多核，都是对模型大量面数处理的时候使用的。&emsp;&emsp;也就是说有一个数量级很大的for循环，而for循环的结果是不需要同步处理的情况。&emsp;&emsp;不过放到 RBF 节点中，这种情况显然不太合适。&emsp;&emsp;RBF 是大量短小精悍的 for 共同运算的结果，因此我也不太清楚如何正确切分这个运算过程。 &emsp;&emsp;我最后是将RBF运算的一些双重for循环替换为 多核切分来提神效率。&emsp;&emsp;因此我的多核切分就会很琐碎，重点是开多线程处理也是有系统开销的。&emsp;&emsp;因此如果我把线程切分的非常碎的话，就会开非常多的线程，最后CPU占用率可以达到70%-80%。&emsp;&emsp;然而大量的CPU运算都浪费在线程的处理上了，反而拖慢了运算的效率，得不偿失。 &emsp;&emsp;所以最后的结果时Maya多核的CPU占用率上去了，但是运行效率还不如单核的理想(:зゝ∠)&emsp;&emsp;另外我找到的变形器中 MayaNodes 就是专门针对Maya多核性能测试而开发的。&emsp;&emsp;开发者给出的结论非常让人沮丧。 &emsp;&emsp;或许正是maya多核上的劣势才导致了 Ziva 这些模拟软件的运行卡顿吧。 附注 &emsp;&emsp;上面动图演示有极高的CPU占用率，是因为我将任务切分数调的很高。（我设置了100）&emsp;&emsp;由于开线程是有系统开销的，虽然这个过程是由TBB内部处理的，但是任务切分越多，开销肯定是越大的。&emsp;&emsp;因此maya的官方说明也提到，这个开销需要自己把握，拿捏尺度。&emsp;&emsp;我这里设置的任务切分数显然是过分了。 &emsp;&emsp;不过即便将任务切分调成2。&emsp;&emsp;CPU占用率不仅没上去，而且效率还是不如单线程的。&emsp;&emsp;因此github上的测试或许是对的，maya的多核运算本质还是单线程的，效率提不起来。]]></content>
       <categories>
         <category>Maya</category>
         <category>CG Programming</category>
@@ -956,9 +1025,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -972,9 +1041,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -988,9 +1057,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -1004,9 +1073,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -1020,9 +1089,9 @@
         <category>Python Qt 开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
       </tags>
@@ -1069,8 +1138,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1099,8 +1168,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1113,8 +1182,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -1127,8 +1196,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -1157,8 +1226,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1173,8 +1242,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1190,8 +1259,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1206,8 +1275,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1222,8 +1291,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1261,8 +1330,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1277,8 +1346,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1292,8 +1361,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1333,8 +1402,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1359,8 +1428,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1372,8 +1441,8 @@
         <category>Maya</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
         <tag>Qt Designer</tag>
       </tags>
   </entry>
@@ -1385,8 +1454,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>PyQt</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1412,8 +1481,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1452,8 +1521,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -1466,8 +1535,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
