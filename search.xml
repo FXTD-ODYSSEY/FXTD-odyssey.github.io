@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Maya 内置图标探索]]></title>
+    <url>%2Fposts%2F19ce97d6.html</url>
+    <content type="text"><![CDATA[内置图标封存在 dll 中 前言 &emsp;&emsp;最近研究 Maya 的工具架的图标，让我感到很困惑。&emsp;&emsp;Maya 工具架上的图标找不到文件路径，如果可以找到的话就可以替换图标实现对 Maya 内置图标的替换了 (～￣▽￣)～ &emsp;&emsp;工具架的图标选择是可以选择很多内置的图标的，但是这些图标来自何方呢？&emsp;&emsp;最初的想法是去到 Maya 相关目录去查找，首先是 我的文档 的个人设置路径，其次是 Maya 安装目录。&emsp;&emsp;然而并没有找到这些图标保存的路径。 目录寻找 &emsp;&emsp;倒是在 Maya 安装目录的 icons 目录下找到了很多插件相关的图标。&emsp;&emsp;也有启动页面的图片，修改 MayaStartupImage.png 这张图片就可以替换掉启动页面了 o(￣▽￣)ｄ&emsp;&emsp;但是我想要找的图片还是没有找到。 &emsp;&emsp;这种操作让我想起以前安装非官方 3ds Max 时候还有在启动页面嵌入广告的，大概也是那么简单(:з」∠) 代码寻找 &emsp;&emsp;既然目录寻找失败，也可以从 Maya 的代码机制进行寻找。&emsp;&emsp;看看图片是怎么通过代码加载出来的，毕竟 Maya 大部分的界面都是开源可编辑的。 &emsp;&emsp;在工具架面板上点击图标打开选择菜单弹出的是一段奇奇怪怪的代码 123formLayout -nd 100;// Result: |formLayout115 // &emsp;&emsp;根本没办法复现代码，于是只好去翻找 工具架编辑面板的 UI 一探究竟。&emsp;&emsp;依然是使用 Maya 的命令回显功能查看。 1234567/*dSBRMBMI*/python("import maya.app.general.shelfEditorWindow as myTempSEW\nmyTempSEW.doIt(selectedShelfButton='shelfButton4',selectedTabIndex=1)\ndel myTempSEW");import maya.app.general.shelfEditorWindow as myTempSEWmyTempSEW.doIt(selectedShelfButton='shelfButton4',selectedTabIndex=1)del myTempSEWglobal string $gShelfTopLevel; string $tmp=$gShelfTopLevel;// Result: Shelf|MainShelfLayout|formLayout13|ShelfLayout // if(! `exists shelfLabel_uiToMel` ) &#123;source "shelfLabel.mel";&#125;; &emsp;&emsp;可以看到主要的 mel 语句是一行 Python 的代码调用。&emsp;&emsp;于是我抽丝剥茧，可以通过下面这段 python 代码打开编辑窗口。 123import maya.app.general.shelfEditorWindow as myTempSEWmyTempSEW.doIt(selectedShelfButton='shelfButton4',selectedTabIndex=1)del myTempSEW &emsp;&emsp;可以看到这个包的目录是个 shelfEditorWindow.py 文件，可以手动 print myTempSEW一下查找到 路径。 123import maya.app.general.shelfEditorWindow as myTempSEWprint myTempSEW&lt;module 'maya.app.general.shelfEditorWindow' from 'C:\Program Files\Autodesk\Maya2017\Python\lib\site-packages\maya\app\general\shelfEditorWindow.py'&gt; &emsp;&emsp;直接在脚本里面搜索 icon 可以找到 itemIcon 函数，注释里面提到是改变图标的函数，就是它没错了。&emsp;&emsp;另外在第 360 行开始有 InternalIcon 内部图标的构建。&emsp;&emsp;于是我执行判断里面的代码 1234import maya.app.general.resourceBrowser as resourceBrowserresBrowser = resourceBrowser.resourceBrowser()path = resBrowser.run()del resBrowser &emsp;&emsp;上面的代码就可以打开图标替换的窗口了。&emsp;&emsp;感觉离目标越来越近了，于是继续追查 resourceBrowser 包&emsp;&emsp;这个包就在同级目录的 resourceBrowser.py 里面 &emsp;&emsp;下面的重点是 saveCopy 这个函数，就是像知道 另存为的功能是怎么实现的。&emsp;&emsp;于是看到最后的 95 行 1cmds.resourceManager(saveAs=(resName, path)) &emsp;&emsp;没想到居然会用到 cmds 命令的函数，失算了。&emsp;&emsp;于是去查 cmds 文档说明 &emsp;&emsp;万万没想到原理这些内置的图标居然是通过内置的 cmds 命令进行读取和输出的。 dll 查找 &emsp;&emsp;经过上面的一番搜索依然是没能达成目标，只知道可以通过 resourceManager cmds 命令来输出。&emsp;&emsp;于是我就网上查了一番，没想到还真的找到论坛上的提问 链接 &emsp;&emsp;链接中提到可以去到 Maya 的 bin 目录找到 MayaRes.dll 文件，然后用 dll 资源读取工具来读取 dll 的图标。&emsp;&emsp;然而我找了一圈也没有找到 MayaRes.dll 文件。&emsp;&emsp;看了回答的时间才豁然开朗，原来是 2008 年回复，那个时候 Maya 还没有使用 Qt 框架。&emsp;&emsp;因此调用机制大概是不太一样的。 &emsp;&emsp;但是藏在 dll 里面是个好思路，于是我用回答里面推荐的 restorer 软件一个一个 dll 打开查看。&emsp;&emsp;然而看了大部分的dll依然是一无所获。 搜索 resourceManager &emsp;&emsp;没了办法只能死马当活马医了，于是我用 VScode 打开 Maya 的安装目录，直接搜索 resourceManager 这个关键字。&emsp;&emsp;没想到居然还搜到了 bin 目录下的 commandList 文件，这个文件刚好记录的是 cmds 命令调用 对用的 dll 文件。&emsp;&emsp;而 resourceManager 指向的是 bin 目录下的 sharedUI.dll ， 然而我用之前的软件打开 dll 什么都没有。&emsp;&emsp;貌似是真相大白了，还需要其他更好的 dll 查看器。 dll查看 &emsp;&emsp;我用了好机款 dll 查看器，但是都已失败告终。&emsp;&emsp;只有 eXescope 软件是报错的， 貌似是 autodesk 有保护， eXescope 读取会提示 EAccessViolation 导致内存错误无法访问。&emsp;&emsp;另外 dll export viewer 可以看到 dll 内部包含的函数表，但是没有什么用。&emsp;&emsp;我也尝试用 python 去读取 dll ， 读取的 dll 没有报错，但是什么函数都没有(:з」∠) 123456import ctypestestlib = ctypes.CDLL(r"C:\Program Files\Autodesk\Maya2017\bin\SharedUI.dll")print dir(testlib)['_FuncPtr', '__class__', '__delattr__', '__dict__', '__doc__', '__format__', '__getattr__', '__getattribute__', '__getitem__', '__hash__', '__init__', '__module__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_func_flags_', '_func_restype_', '_handle', '_name'] 总结 &emsp;&emsp;最后研究一轮之后，还是以失败告终了(:з」∠)&emsp;&emsp;不过这个过程还是挺有趣的，就简单记录下来。]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>CG Programming</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Maya</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Maya插件 - CommandLauncher]]></title>
+    <url>%2Fposts%2F18de3838.html</url>
+    <content type="text"><![CDATA[CommandLauncher Maya 命令启动器 前言这个插件基于以下两款插件的启发进行开发 CommandSearch quicklauncher 代码结构完全是在 CommandSearch 的源码上进行的修改此外 Listary5.0 软件的使用逻辑也启发了我 &emsp;&emsp;最近在看 mGear 开源绑定框架的教程。(已经是去年2019年的事情了)&emsp;&emsp;偶然发现了大佬使用一个相当方便的 quickLauncher 工具快速启动脚本&emsp;&emsp;于是激发了我研究的兴趣。 &emsp;&emsp;后来，还是因为 mGear 提到的一些插件，于是去 Autodesk 官方的商店查找工具。&emsp;&emsp;在那里我找到了另一个UI做得非常棒的工具 CommandSearch &emsp;&emsp;最初是接触 3dsMax 和 Houdini 都相关的搜索框，而 Maya 的命令搜索功能非常落后。 &emsp;&emsp;于是我就萌生了进一步结合两个插件的功能进行开发，弄一个命令启动器。&emsp;&emsp;插件的使用方法参照 github 上的 readme 文档 插件分析CommandSearch &emsp;&emsp;不愧是 RJ 大师的作品， CommandSearch 整体以及 UI 多做得特别棒。&emsp;&emsp;特别是还原了 Maya 的菜单显示风格，还有复选框的和图标的功能都逐一还原。&emsp;&emsp;整一个思路都非常好，我特别喜欢。 &emsp;&emsp;可惜 这个插件搜索的结果需要鼠标点击，没有办法通过键盘来完成点击。&emsp;&emsp;并且只能搜索到 Maya 的菜单数据. quicklauncher &emsp;&emsp;相对而言 quickLauncher 就小巧很多。&emsp;&emsp;但是它利用 Qt 的 completer 来实现补全触发。&emsp;&emsp;而且真正做到随处弹出的效果，继承了Maya的 cmds 命令，可以快速调用。 &emsp;&emsp;可惜没有什么设计可言，UI非常简单。&emsp;&emsp;唤起需要手动设置快捷键调用代码才可以。 总结 &emsp;&emsp;最后我将是将两个插件的有点全部集合到一起，所以 命名为 CommandLauncher ，两者合并之意。&emsp;&emsp;开发的过程中也的确遇到了很多问题，主要的插件框架是在 CommandSearch 上面进行魔改的。&emsp;&emsp;毕竟 CommandSearch 开发得比较完善，当然要事先看懂代码也花费了很多很多的时间。&emsp;&emsp;但是都怪我的开发断开了，我在2019年开发了大部分功能之后因为要肝学校的实训作业，所以就停止了开发。&emsp;&emsp;后来又遇到了很多事情，比如说突然想开发 mpdb 模块出来，然后这个插件的临门一脚就一直还没有完成。&emsp;&emsp;原本我是想在过年的时间把手尾都收拾好的，结果还是又搞这搞那的，拖到了现在了(:з」∠) 遇到的问题使用 Tab 键作为启动快捷键 &emsp;&emsp;无论是 Houdini 还是 Maya 的节点编辑器都是使用 Tab键打开输入的。&emsp;&emsp;原本是想在 快捷键编辑器 里面设置 Tab 快捷键的。&emsp;&emsp;没想到 Tab 居然不支持作为快捷键。 &emsp;&emsp;后面我还是利用了 eventFilter 来帮我获取到键盘输入事件。&emsp;&emsp;通过抓取 Tab 键的点击来启动 命令启动器。&emsp;&emsp;但是在视窗里面 Tab 键使用来切换 Drag 拖拽选择的操作的，这样子我就和这个操作冲突了。&emsp;&emsp;不过 Drag 操作通常都是长按来使用的，于是我又加了一个计时器，如果点击时间少于 300 毫秒，就是启动器，否则就是长按。 任意位置弹出 | 点击其他地方隐藏 &emsp;&emsp;默认 CommandSearch 是固定在 Status Line 上面的。&emsp;&emsp;因此弹出操作我参考 quickLauncher 的弹出效果。&emsp;&emsp;show 的时候将组件 move 到鼠标的位置 &emsp;&emsp;点击其他地方就消失其实这个需求和我之前写的 Qt 教程想要的效果是一样的。&emsp;&emsp;还是利用 eventFilter ，如果点击了其他的地方就消失。 面板的键盘操作 &emsp;&emsp;具体细节我已经不太记得了，隔离3个多月。&emsp;&emsp;不过按键的功能都单独分开成一个函数了。&emsp;&emsp;按箭头可以实现在菜单上的滚动，解决了 CommandSearch 极大的短板。&emsp;&emsp;按箭头之后会获取当前处于 菜单 的序号数字，然后选中的 item 需要给出颜色变化予以提示。&emsp;&emsp;然后当下箭头移动到相应的位置之后还要自动滚动滚动条。 &emsp;&emsp;另外还添加了 alt+数字 进行快速跳转，以及 ctrl+数字 的快速触发组件。&emsp;&emsp;另外还有 ctlr + alt + 数字 跳到置顶图标上。&emsp;&emsp;ctrl + 数字键触发的想法是 根据 listary5.0 的新功能启发的。&emsp;&emsp;这个想法特别好，远在天边也可以快速启动我想要的功能。 &emsp;&emsp;整个流程其实很清晰，就是写起来有点繁琐。&emsp;&emsp;我的 pressKeyEvent 通过 if else 来判断 keySequence 其实不太好。&emsp;&emsp;把 if else 写得太长了。&emsp;&emsp;其实应该用字典来调用，代码就会清晰很多，不过是以前写好的功能了，自己也懒得去修改了。 工具架搜索支持 &emsp;&emsp;菜单搜索 CommandSearch 已经做好了&emsp;&emsp;Maya cmds 模块搜索也可以根据 quickLauncher 里面的写法依葫芦画瓢。&emsp;&emsp;最后唯独缺少了工具架的搜索功能。 &emsp;&emsp;一开始的想法也是按照 菜单 的获取方法一样。&emsp;&emsp;获取 Maya 的工具架 Qt 组件，然后逐一遍历。&emsp;&emsp;但是发现很多工具架上的 按钮都是空的。 &emsp;&emsp;经过一番折腾之后才发现（找 mel 源码查看），原来工具架上面的标签切换点击之后才读取相关的 mel 脚本生成图标。&emsp;&emsp;因此一打开 Maya 其实工具架都是空的，处理一开始看见的工具架之外。&emsp;&emsp;针对这个情况，我将 mel 的读取 工具架的源码抽出来，然后在获取的时候自动读取生成。&emsp;&emsp;读取完了之后再用 cmds 的命令获取图标、名称、点击事件。 cmds命令拆分 &emsp;&emsp;根据 quickLauncher 的方法，我发现不仅仅获取 cmds 模块的命令，还顺带将 Maya 的 runTimeCommand 以及一些插件引入的命令都索引进来了。&emsp;&emsp;分析了函数的类型之后，我发现 cmds 模块的原生命令都是 builtinFunctionType 的&emsp;&emsp;因此可以通过 types 模块引入 builtin 类型进行判断。&emsp;&emsp;当然即便是 builtin 也有一些 cmds 文档没有收录的命令，可能是一些测试命令。 &emsp;&emsp;根据上面的方法就成功将 cmds 的命令拆分成 cmds 和 command 两个过滤组。 搜索过滤 &emsp;&emsp;通过快捷键 ctlr + q w e r t 可以切换不同的过滤标签。&emsp;&emsp;实现搜索结果的过滤。&emsp;&emsp;其实主要过滤的是 item 里面的 category 类型。&emsp;&emsp;获取数据的时候已经实现分好类了，因此不匹配的类型隐藏过滤掉就可以了。 多线程启动 &emsp;&emsp;这一次的代码虽然有多线程的部分，但是启动时间耗费还是很巨大。&emsp;&emsp;主要是最耗费时间的部分没有办法放到多线程里面优化速度。 &emsp;&emsp;其中遇到很多坑，坑了我非常多的时间。&emsp;&emsp;多线程代码没有报错显示，其实我是知道有 traceback 库可以通过 try 来打印详细的报错信息。&emsp;&emsp;但是我自己死脑筋，就没有想到这个方案试一下，反而是注释代码来测试。&emsp;&emsp;由于这一次也接入了 i18n ，reload代码会有一堆报错，所以每次测试都需要重开 Maya ， 等了我不少的时间啊。&emsp;&emsp;而且花了很多时间之后，还对报错不明不白，不知道为啥引入某个模块报错了。&emsp;&emsp;后来是通过 traceback 之后才发现，原来按个模块是互相引入的，有些变量需要提前声明在 导入 才不会报错。&emsp;&emsp;后面也有遇到过报错没有插件生成，但是 Maya 脚本编辑器完全没有报错信息提示的。&emsp;&emsp;我又用了土办法，注释代码测试到底是那里出错了，后来偶然在 output window 上看到了报错的信息，才知道原来报错的位置去到了那里。&emsp;&emsp;知道错误的话修改总比无头苍蝇地测试要好很多了。 &emsp;&emsp;除了开了上面的坑，多线程主要优化是数据获取的时候可以保持Maya的响应。&emsp;&emsp;然而这次可能是数据比较多，即便用了多线程也还是会卡死 Maya 窗口(:з」∠)(也有可能是我的使用姿势不对)&emsp;&emsp;而且遇到了两个获取数据的坑 &emsp;&emsp;首先就是上面获取工具架的时候需要提前加载工具架才能获取，但是这个加载过程如果放到多线程执行的话就爆炸了。&emsp;&emsp;Maya直接就是运行不正常，还会生成一大堆的窗口，然后脚本编辑器会提示一大堆的错误。&emsp;&emsp;后来是把加载功能提出来，放到主线程加载了。 &emsp;&emsp;另一个问题就是多线程状态下无法通过递归方法来获取到菜单数据。&emsp;&emsp;明明菜单数据是最多的，但是递归方法在多线程下执行之后获取的数据为空，&emsp;&emsp;这个也不知道应该如何解决，于是只好把这个耗时较长的方法放到了主线程去获取了,因此这次多线程的提速并没有达到预期。&emsp;&emsp;写完文章之后还是非常好奇为啥获取的数据为空,于是又进一步研究 RJ 之前写的代码。&emsp;&emsp;后来发现原来 getMenu 里面有有一句 aboutToShow.emit 来触发显示的信号槽。&emsp;&emsp;这个显示操作显然是异步的，因此只要将这个语句搬到主线程里面提前执行就不会有数据为空的问题，而且多线程获取 Menu 数据之后。&emsp;&emsp;加载速度有了不少的提升，只是加载工具架和菜单就要花费5-6秒，后续多线程就有响应了，这个过程也大概只要1-2秒，之前不用多线程总共要10秒 总结 &emsp;&emsp;这个插件虽然拖了很久，不过因为后续有 mpdb 模块开发的经验铺路，因此 i18n 多线程之类的坑都少了很多。&emsp;&emsp;这次没有怎么截图，而是录了一个视频进行讲解。&emsp;&emsp;一直有录制 vlog 之类的想法，但是实在是太多东西要做了，自己的进度总是跟不上(:з」∠)]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>CG Programming</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Maya</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[安卓手机效率提升指南（二）]]></title>
     <url>%2Fposts%2F471f7aaa.html</url>
     <content type="text"><![CDATA[超实用手机 APP 推荐 前言 安卓手机效率提升指南（一）&emsp;&emsp;上一篇文章介绍了 谷歌商店 里面的一些便捷操作应用。&emsp;&emsp;其实也涵盖了日常最常用的 APP 了，基本上我日常调用 APP 都是通过上文提到的 三大 APP 。&emsp;&emsp;这篇文章则重点着墨在 酷安 - 搞机圣地里面出没的，名声不错的 APP 。&emsp;&emsp;其实我并不是资深搞机佬，也是最近兴致起来才开始研究，因此我拙劣的认识大家莫见怪。 &emsp;&emsp;下面提到的 APP 可以在 酷安应用市场 可以找到 酷安应用市场 太极 黑阈 轻启动 一个木涵 一触即发 太极 &emsp;&emsp;只要是搞机的人都知道，root了手机才算踏入 安卓 的搞机世界。&emsp;&emsp;但是随着各大厂商对于手机的各种保护，root手机的成本越来越高了，轻则无法升级手机系统，重则丢了手机的保修。&emsp;&emsp;而且 root 手机有风险，不仅仅会丢失数据，操作不当还有可能让手机变砖，而且 root 了之后还会被各大银行检测封锁。&emsp;&emsp;虽说上述种种困难，搞机达人都有办法可以应付的，但是大部分人就没有那么多时间来折腾，而且还要冒着各种风险，实在是难受。 &emsp;&emsp;而太极框架的出现，实现了不 root 手机也可以使用 xposed 框架的效果，达到了给应用开发增强性功能的效果。&emsp;&emsp;几乎不会被厂商检测也没有 root 手机的各种风险，实在是我等懒人的福音！~ ↓↓↓注意↓↓↓使用太极需要重装 APP ，需要提前备份 APP 的数据，安装之后 app 无法正常刚更新。并且重装了 微信 之后，在其他 APP 上用不了微信登录，也无法正常分享到微信 ， 需要将其他APP也用太极安装才可以。想要杜绝上面的问题需要解锁 BootLoader ，安装 magisk 开启 太极阳 的大门。 (相当于要 root 手机) 安装 APP 流程 &emsp;&emsp;这里以 微信 安装到太极举例。 &emsp;&emsp;在太极里面选择添加应用。 &emsp;&emsp;然后勾选微信，点击创建。 &emsp;&emsp;太极会创建一个新的微信安装包，然后需要卸载现有的微信，安装太极提供的安装包即可。 &emsp;&emsp;这里拿了网易云音乐来举例，微信的情况也是一样的。&emsp;&emsp;卸载微信之前，可以将手机所有的聊天记录备份到电脑端的微信上。&emsp;&emsp;后续在新装的微信上恢复聊天记录即可，基本不影响到聊天数据。&emsp;&emsp;当然如果担心出问题，还可以用一些备份软件备份一下，一加就有官方的 一加搬家 app 可以备份手机的数据。 &emsp;&emsp;做完上面的流程，就可以根据太极提供的 xposed 模块安装使用了。&emsp;&emsp;我使用太极主要在微信的功能增强上，因此下面介绍到的 xposed 模块都和微信有关。&emsp;&emsp;每次安装完新的模块启用之后，需要强制停止微信重开才有效果。&emsp;&emsp;另外这些 xposed 模块必须在太极安装了微信之后再安装才有效，否则需要重装。 微X助手 &emsp;&emsp;微信辅助功能的绝对神器。&emsp;&emsp;含有非常多微信增强的功能。 消息防撤回 自动抢红包(听说会封号，我就不开启了) 自动电脑端登录 各种批量操作 微信斗图 &emsp;&emsp;长按表情代开按钮可以打开表情搜索面板，输入关键字也可以弹出类似 QQ 的参考表情。 微信网页多页面 &emsp;&emsp;这个功能真的是太棒了，以前看公众号、或者微信打开的网页，有收到别人有消息给我。&emsp;&emsp;以前不懂只能先回复消息，然后找回刚才的链接，后来是将相关的页面弄成浮窗解决。&emsp;&emsp;现在开启这个模块就可以解决问题了。 微信学英语 &emsp;&emsp;微信所有的聊天信息自带翻译功能。&emsp;&emsp;实属学习外语的神器。 &emsp;&emsp;翻译用的源可以自行设置，默认可以白嫖谷歌翻译，但是有时候不稳定。&emsp;&emsp;也可以申请 腾讯 或者 百度 的 API 进行翻译。 黑阈 &emsp;&emsp;黑阈这款软件可以实现在 不 root 状态下对后台常驻的应用进行管理。&emsp;&emsp;使用黑阈可以自定定时杀死某些后台运行的程序，减少耗电量。&emsp;&emsp;缺点就是杀死后台之后就无法收到程序的推送，肯定是各有利弊的。 &emsp;&emsp;使用 黑阈 还是不简单，如果不 root 的话，还需要谷歌的 adb 软件来运行 app 内部的 shell 脚本方可正常使用。 adb下载地址&emsp;&emsp;可以参考这篇百度经验的操作 链接 轻启动 &emsp;&emsp;很多人推荐如果 root 了手机使用 大圣净化，如果不 root 手机就使用 轻启动。&emsp;&emsp;大圣净化听闻要付费使用，我没有用过，毕竟手机没有 root 。&emsp;&emsp;轻启动有付费和免费版本，我觉得免费的已经够用了。 &emsp;&emsp;自动点击 APP 启动时候的广告跳过。&emsp;&emsp;甚至连 youtube 的视频广告也可以自动点跳过。&emsp;&emsp;平日里后台运行，几乎没有任何存在感，应用跳过广告的时候则会提醒我，非常好用。 一个木涵 &emsp;&emsp;这是一个功能全面的工具箱，名声不错。&emsp;&emsp;最近新增了一个打包网页为 APP 的功能，挺不错的。&emsp;&emsp;只是功能挺杂的，我日常使用比较少。 一触即发 &emsp;&emsp;这是一个超强的自动化软件。&emsp;&emsp;感觉内核可能参考了 安卓自动化神器 auto.js&emsp;&emsp;不过里面的链接方式则是类似层级式的，和 automate 的节点式还不一样。&emsp;&emsp;毕竟是国人开发，而且目前还不是很完善，但是未来绝对可期。&emsp;&emsp;官方有提供脚本，可以通过屏幕识色点击来自动玩支付宝的拍小鸡游戏。&emsp;&emsp;不过我也不参与支付宝这些杂七杂八的东西里面(:з」∠) &emsp;&emsp;一触即发的自动化比起 FV悬浮球 的自动化功能要完善复杂很多。&emsp;&emsp;而且一触即发支持代码转译。&emsp;&emsp;但是由于复杂，我反而不太喜欢这种层级式的操作，操作起来很累(:з」∠)&emsp;&emsp;不过由社区有大佬开发了自动刷脚本，可以顺利让我完成很多任务。 总结 &emsp;&emsp;以上就是我两篇关于安卓超好用APP推荐。&emsp;&emsp;还有一些工具APP以及自己很常用的 APP 没有提到。&emsp;&emsp;比如图片扫描使用全能扫描王， OCR图片识别使用 白描。&emsp;&emsp;主要还是分享自己使用手机的一些心得和推荐。&emsp;&emsp;另外我的手机虽然是一加的，但是还没有认真搞过机，root 过权限。&emsp;&emsp;可能等5G成熟换新手机，旧手机转备用的时候再来折腾吧。]]></content>
@@ -36,6 +64,7 @@
         <category>Maya</category>
         <category>CG Programming</category>
         <category>Python</category>
+        <category>Maya疑难杂症</category>
       </categories>
       <tags>
         <tag>Python</tag>
@@ -50,6 +79,7 @@
         <category>Maya</category>
         <category>CG Programming</category>
         <category>Python</category>
+        <category>Maya疑难杂症</category>
       </categories>
       <tags>
         <tag>Python</tag>
@@ -73,7 +103,7 @@
   <entry>
     <title><![CDATA[Maya 语言切换]]></title>
     <url>%2Fposts%2F6f5d3bd5.html</url>
-    <content type="text"><![CDATA[Maya 切换语言的两种方法 | 系统管理员权限获取 前言 &emsp;&emsp;美术制作人员通常英文水平都不太好，因此不大希望使用软件的英文版本。&emsp;&emsp;但是出于对 Maya 技术支持的考虑，还是使用英文版较为稳定，而且维护起来更加可靠&emsp;&emsp;由于 Python2 对于 Unicode 字符处理的不友好，使用中文很容易导致一些意料之外的问题。 &emsp;&emsp;另外关于 Maya 切换语言的版本其实网上都有相关的文章讲解，这里我总结到一起而已。 方案一 添加环境变量参考链接 &emsp;&emsp;打开 windows 的环境变量编辑器，然后添加 MATA_UI_LANGUAGE 变量&emsp;&emsp;变量可以设置为 en_US (英文版) | zh_CN (中文版) 方案二 修改 Maya 安装目录 l10n 文件夹下的语言名称参考链接 &emsp;&emsp;去到 Maya 的安装目录，可以找到 resources 文件夹&emsp;&emsp;打开 resources\l10n 的目录，就可以知道两种语言的文件夹，将文件夹名称 zh_CN 修改为 en_US 就可以切换为英文版。 两个方案区别 &emsp;&emsp;其实两者实现的效果是一致的，只是如果在系统的环境变量上设置了之后，会影响到所有的 Maya 版本。&emsp;&emsp;如果只是修改文件夹名称则只对安装的 maya 起到修改效果。 &emsp;&emsp;理论上是可以在 Maya.env 文件上添加 MATA_UI_LANGUAGE=en_US 来切换语言，但是我测试并不起作用。&emsp;&emsp;官方文档 官方文档提到 Maya.env 设置语言变量是不起作用的，必须设置系统环境变量。 代码自动切换方案分析 &emsp;&emsp;个人不推荐通过代码修改 windows 下的环境变量，一方面需要管理员权限，而且后续的操作可能会对环境变量造成污染。&emsp;&emsp;系统的环境变量就是个坑，尽量只用来配合 cmd 命令行调用程序，不要将配置放到里面去，否则出错都不知道坑在哪里！~ &emsp;&emsp;当然修改文件夹名字通常不需要系统管理员权限，但是如果 Maya 安装在 默认的 C 盘目录，那恐怕也逃不过这个操作。&emsp;&emsp;其实代码操作非常简单，修改目录名称只需要用到 os.rename 即可，最大的难点就是需要先获取到系统管理员。 系统管理员权限获取 &emsp;&emsp;下面讨论的是围绕 windows 平台，美术制作人员基本不考虑使用其他平台。 通过 runas 手动获取管理员权限 &emsp;&emsp;windows 下可以通过 runas 命令来获取管理员权限，但是这样会有 UAC 弹窗告诉用户。&emsp;&emsp;如果用户是系统管理员会提示是否给程序运行的权限，如果用户不是管理员还会弹出账号密码的输入框。&emsp;&emsp;不过大多数时候有 UAC 窗口也是个好事，至少告诉用户这个操作需要系统权限，用户不爽就不给权限不操作而已。 &emsp;&emsp;其实获取系统权限的方法也是参考网上提供的方案 CSDN&emsp;&emsp;通过网页里面提到的方法可以实现用管理员权限开启 Python 然后用管理员权限跑脚本。&emsp;&emsp;这样就可以另外写一个执行脚本，然后通过管理员权限跑 os.rename 代码来对目录进行更名了。 &emsp;&emsp;不过我觉得这样要多写一个 python 脚本，有点多余，其实可以通过 cmd 命令来修改文件名称的。 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647import osimport sysimport ctypesimport platformtry: from PySide2.QtWidgets import QMessageBox,QApplicationexcept: from PySide.QtGui import QMessageBox,QApplicationdef modifyMayaLanguge(): # NOTE 获取cmd.exe的本地路径 https://stackoverflow.com/questions/49545009 is_wow64 = (platform.architecture()[0] == '32bit' and 'ProgramFiles(x86)' in os.environ) system32 = os.path.join(os.environ['SystemRoot'], 'SysNative' if is_wow64 else 'System32') cmd_exe = os.path.join(system32,"cmd.exe") # NOTE sys.executable 在 maya 里面运行获取到的是 maya.exe 的路径 maya_path = os.path.realpath(sys.executable) bin = os.path.dirname(maya_path) install_dir = os.path.dirname(bin) l10n = os.path.join(install_dir,"resources","l10n") # NOTE 判断当前是否中文版 zh_CN = os.path.join(l10n,"zh_CN") en_US = os.path.join(l10n,"en_US") if os.path.exists(en_US) and not os.path.exists(zh_CN): QMessageBox.information(QApplication.activeWindow(),u'提示',u'当前已经是英文版，无需切换') return # NOTE 执行cmd命令行命令 修改 l10n 文件夹名称 切换Maya为英文版 command = u'rename "&#123;zh_CN&#125;" "en_US" '.format(zh_CN=zh_CN) # NOTE 获取权限改名 result = ctypes.windll.shell32.ShellExecuteW(None, u"runas", unicode(cmd_exe), unicode('/c "%s"' % command), None, 1) # NOTE 返回 5 说明没有提供权限 if result == 5: QMessageBox.information(QApplication.activeWindow(),u'提示',u'没有获取到权限，命令执行不成功') else: # NOTE 修改成功提示框 QMessageBox.information(QApplication.activeWindow(),u'提示',u'Maya 成功切换为 英文版 \n 将自动重启Maya') # NOTE 重启 Maya os.startfile(maya_path) QApplication.quit()if __name__ == "__main__": modifyMayaLanguge() PsExec 静默获取管理员权限PsExec官方文档&amp;下载地址 1234# 基本用法PsExec -u 账户域\账户名称 -p 账户密码 E:/anaconda2/python.exe E:/test/copy_test.py# 示范代码 : 管理员权限打开 cmd 命令行窗口PsExec -u DIGITAL\timmyliang -p 123456 cmd &emsp;&emsp;PsExec 可以通过输入已知的管理员账号密码来获取权限，这样既可以保证美术人员有权限乱搞也可以让程序带权限运行。&emsp;&emsp;通过 PsExec 调用 Python 也未必有管理员权限，还需要通过上面博客的方式添加到 Python 脚本里面确保获取到了管理员权限。&emsp;&emsp;由于 PsExec 调用的 Python 已经输入过管理员权限密码，因此脚本运行就不会弹出 UAC 权限窗口。 &emsp;&emsp;使用 PsExec 调用共享路径的 Python.exe 会导致错误，有可能不是本地调用的缘故&emsp;&emsp;可以借助 cmd /c 命令来外调 Python 脚本 1PsExec -u DIGITAL\timmyliang -p 123456 cmd /c \\10.99.1.4\ftdy\hq_tool\programs\python\Python2.7.11\python.exe E:/test/copy_test.py 总结 &emsp;&emsp;Maya 设计有个不太好的地方就是语言切换没有使用 Qt 的 i18n 而是弄了 l10n，导致切换语言要重启 Maya 还是挺不方便的。&emsp;&emsp;当然如果不打开Maya的前提下成功执行了脚本，就不需要重启了。&emsp;&emsp;但是 Maya 对应的版本以及本地路径还是需要有的，如果不在一个运行的 Maya 中获取，很容易出问题(:з」∠)]]></content>
+    <content type="text"><![CDATA[Maya 切换语言的两种方法 | 系统管理员权限获取 前言 &emsp;&emsp;美术制作人员通常英文水平都不太好，因此不大希望使用软件的英文版本。&emsp;&emsp;但是出于对 Maya 技术支持的考虑，还是使用英文版较为稳定，而且维护起来更加可靠&emsp;&emsp;由于 Python2 对于 Unicode 字符处理的不友好，使用中文很容易导致一些意料之外的问题。 &emsp;&emsp;另外关于 Maya 切换语言的版本其实网上都有相关的文章讲解，这里我总结到一起而已。 方案一 添加环境变量参考链接 &emsp;&emsp;打开 windows 的环境变量编辑器，然后添加 MATA_UI_LANGUAGE 变量&emsp;&emsp;变量可以设置为 en_US (英文版) | zh_CN (中文版) 方案二 修改 Maya 安装目录 l10n 文件夹下的语言名称参考链接 &emsp;&emsp;去到 Maya 的安装目录，可以找到 resources 文件夹&emsp;&emsp;打开 resources\l10n 的目录，就可以知道两种语言的文件夹，将文件夹名称 zh_CN 修改为 en_US 就可以切换为英文版。 两个方案区别 &emsp;&emsp;其实两者实现的效果是一致的，只是如果在系统的环境变量上设置了之后，会影响到所有的 Maya 版本。&emsp;&emsp;如果只是修改文件夹名称则只对安装的 maya 起到修改效果。 &emsp;&emsp;理论上是可以在 Maya.env 文件上添加 MATA_UI_LANGUAGE=en_US 来切换语言，但是我测试并不起作用。&emsp;&emsp;官方文档 官方文档提到 Maya.env 设置语言变量是不起作用的，必须设置系统环境变量。 代码自动切换方案分析 &emsp;&emsp;个人不推荐通过代码修改 windows 下的环境变量，一方面需要管理员权限，而且后续的操作可能会对环境变量造成污染。&emsp;&emsp;系统的环境变量就是个坑，尽量只用来配合 cmd 命令行调用程序，不要将配置放到里面去，否则出错都不知道坑在哪里！~ &emsp;&emsp;当然修改文件夹名字通常不需要系统管理员权限，但是如果 Maya 安装在 默认的 C 盘目录，那恐怕也逃不过这个操作。&emsp;&emsp;其实代码操作非常简单，修改目录名称只需要用到 os.rename 即可，最大的难点就是需要先获取到系统管理员。 系统管理员权限获取 &emsp;&emsp;下面讨论的是围绕 windows 平台，美术制作人员基本不考虑使用其他平台。 通过 runas 手动获取管理员权限 &emsp;&emsp;windows 下可以通过 runas 命令来获取管理员权限，但是这样会有 UAC 弹窗告诉用户。&emsp;&emsp;如果用户是系统管理员会提示是否给程序运行的权限，如果用户不是管理员还会弹出账号密码的输入框。&emsp;&emsp;不过大多数时候有 UAC 窗口也是个好事，至少告诉用户这个操作需要系统权限，用户不爽就不给权限不操作而已。 &emsp;&emsp;其实获取系统权限的方法也是参考网上提供的方案 CSDN&emsp;&emsp;通过网页里面提到的方法可以实现用管理员权限开启 Python 然后用管理员权限跑脚本。&emsp;&emsp;这样就可以另外写一个执行脚本，然后通过管理员权限跑 os.rename 代码来对目录进行更名了。 &emsp;&emsp;不过我觉得这样要多写一个 python 脚本，有点多余，其实可以通过 cmd 命令来修改文件名称的。 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647import osimport sysimport ctypesimport platformtry: from PySide2.QtWidgets import QMessageBox,QApplicationexcept: from PySide.QtGui import QMessageBox,QApplicationdef modifyMayaLanguge(): # NOTE 获取cmd.exe的本地路径 https://stackoverflow.com/questions/49545009 is_wow64 = (platform.architecture()[0] == '32bit' and 'ProgramFiles(x86)' in os.environ) system32 = os.path.join(os.environ['SystemRoot'], 'SysNative' if is_wow64 else 'System32') cmd_exe = os.path.join(system32,"cmd.exe") # NOTE sys.executable 在 maya 里面运行获取到的是 maya.exe 的路径 maya_path = os.path.realpath(sys.executable) bin = os.path.dirname(maya_path) install_dir = os.path.dirname(bin) l10n = os.path.join(install_dir,"resources","l10n") # NOTE 判断当前是否中文版 zh_CN = os.path.join(l10n,"zh_CN") en_US = os.path.join(l10n,"en_US") if os.path.exists(en_US) and not os.path.exists(zh_CN): QMessageBox.information(QApplication.activeWindow(),u'提示',u'当前已经是英文版，无需切换') return # NOTE 执行cmd命令行命令 修改 l10n 文件夹名称 切换Maya为英文版 command = u'rename "&#123;zh_CN&#125;" "en_US" '.format(zh_CN=zh_CN) # NOTE 获取权限改名 result = ctypes.windll.shell32.ShellExecuteW(None, u"runas", unicode(cmd_exe), unicode('/c "%s"' % command), None, 1) # NOTE 返回 5 说明没有提供权限 if result == 5: QMessageBox.information(QApplication.activeWindow(),u'提示',u'没有获取到权限，命令执行不成功') else: # NOTE 修改成功提示框 QMessageBox.information(QApplication.activeWindow(),u'提示',u'Maya 成功切换为 英文版 \n 将自动重启Maya') # NOTE 重启 Maya os.startfile(maya_path) QApplication.quit()if __name__ == "__main__": modifyMayaLanguge() PsExec 静默获取管理员权限PsExec官方文档&amp;下载地址 1234# 基本用法PsExec -u 账户域\账户名称 -p 账户密码 E:/anaconda2/python.exe E:/test/copy_test.py# 示范代码 : 管理员权限打开 cmd 命令行窗口PsExec -u DIGITAL\timmyliang -p 123456 cmd &emsp;&emsp;PsExec 可以通过输入已知的管理员账号密码来获取权限，这样既可以保证美术人员没有权限乱搞也可以让程序带权限运行。&emsp;&emsp;通过 PsExec 调用 Python 也未必有管理员权限，还需要通过上面博客的方式添加到 Python 脚本里面确保获取到了管理员权限。&emsp;&emsp;由于 PsExec 调用的 Python 已经输入过管理员权限密码，因此脚本运行就不会弹出 UAC 权限窗口。 &emsp;&emsp;使用 PsExec 调用共享路径的 Python.exe 会导致错误，有可能不是本地调用的缘故&emsp;&emsp;可以借助 cmd /c 命令来外调 Python 脚本 1PsExec -u DIGITAL\timmyliang -p 123456 cmd /c \\10.99.1.4\ftdy\hq_tool\programs\python\Python2.7.11\python.exe E:/test/copy_test.py 总结 &emsp;&emsp;Maya 设计有个不太好的地方就是语言切换没有使用 Qt 的 i18n 而是弄了 l10n，导致切换语言要重启 Maya 还是挺不方便的。&emsp;&emsp;当然如果不打开Maya的前提下成功执行了脚本，就不需要重启了。&emsp;&emsp;但是 Maya 对应的版本以及本地路径还是需要有的，如果不在一个运行的 Maya 中获取，很容易出问题(:з」∠)]]></content>
       <categories>
         <category>Maya</category>
         <category>CG Programming</category>
@@ -259,6 +289,7 @@
         <category>Maya</category>
         <category>CG Programming</category>
         <category>Python</category>
+        <category>Maya疑难杂症</category>
       </categories>
       <tags>
         <tag>Python</tag>
@@ -635,9 +666,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -649,9 +680,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -665,8 +696,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -711,8 +742,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -726,8 +757,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -741,8 +772,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -756,8 +787,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -771,8 +802,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -786,8 +817,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -801,8 +832,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -816,8 +847,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -831,8 +862,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -846,8 +877,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -2250,8 +2281,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>后期基本流程</tag>
         <tag>学习笔记</tag>
+        <tag>后期基本流程</tag>
       </tags>
   </entry>
   <entry>
@@ -2276,8 +2307,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>学习笔记</tag>
         <tag>前期基本流程</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
 </search>
