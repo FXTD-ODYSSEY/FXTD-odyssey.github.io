@@ -1,9 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title></title>
-    <url>%2Fposts%2F0.html</url>
-    <content type="text"><![CDATA[{"Python":{"explore":{">todo":["3_Python future-fstring 库原理探究.txt","4_Python singledispatch 库原理探究.txt","z_Python -rez 模块管理库研究.txt"]}},"Game":{"Unreal":{"tutorial":{"material":{">todo":["5_学习笔记 raywenderlich - shaders in Unreal Engine Series.txt","6_学习笔记 raywenderlich - shaders in Unreal Engine Series.txt","7_学习笔记 Unreal 中文官方 - 材质编辑中的向量运用.txt"]}}}},"CG":{"Maya":{"Dev":{"plugin":{"research":{">todo":["2_SpringMagic 动画插件原理探讨.txt","3_AnimBot 使用原理分析.txt","z_Cosmos Maya启动器代码分析.txt","z_studio library 动作库代码分析.txt"]}}}}},"Log":{"Effective":{">todo":["z_Windows 效率提升指南 （二）.txt"]},"summary":{">todo":["【总结】-2019年年度总结.txt"]}}}]]></content>
+    <title><![CDATA[VScode 结合git的全面使用流程（下）]]></title>
+    <url>%2Fposts%2Fa91a4c58.html</url>
+    <content type="text"><![CDATA[GitLens 插件使用 | .gitigonre 介绍 前言 &emsp;&emsp;上一篇介绍了 VScode 内置使用 git 的功能&emsp;&emsp;也提到了内置功能的不足，因此可以使用一个很强大的 VScode 插件 GitLens 来补充缺失的功能。&emsp;&emsp;加上 GitLens 的支持基本让 VScode 实现了全功能的 git 客户端了。 GitLens 插件 &emsp;&emsp;插件安装也非常简单，搜索插件 git 第一个就是 GitLens &emsp;&emsp;安装完成之后侧边的工具栏会多出一个 git 分支图标，点击就可以查看更详细的信息了。 文件更新显示 &emsp;&emsp;使用 Gitlens 之后侧边会有颜色块告诉你代码的更新情况 红色箭头表示删除 蓝色块表示修改 绿色块表示增添 &emsp;&emsp;点击颜色块也可以看到修改前和修改的变化。 &emsp;&emsp;也可以打开右上角的图标查看代码更新的信息。&emsp;&emsp;甚至可以查看具体的每一行代码是什么人上传贡献的。 回退 &emsp;&emsp;在 Gitlens 的左侧视图可以看到很详细的仓库信息。&emsp;&emsp;第一个分割查看仓库的所有变化&emsp;&emsp;第二个分割查看当前打开文件的变化&emsp;&emsp;第三个分割查看当前打开文件每一行的变化&emsp;&emsp;第四个分割则可以比较不同的分支标签的文件区别&emsp;&emsp;第五个分割则可以更具不同参考快速搜索每一次 commits &emsp;&emsp;我比较常用的是第一个分割的 回退 功能。&emsp;&emsp;可以找到特定的 commit 然后右键 switch 回到之前的开发代码上。&emsp;&emsp;可以在分支的地方会到 master 分支下。&emsp;&emsp;一些使用细节大家可以自己摸索，其实工具都很浅显了。 代码冲突 &emsp;&emsp;通常多人合作同时修改了同一个文件的时候就会产生代码冲突。&emsp;&emsp;也就是这一部分的代码不知道采用谁的。&emsp;&emsp;由于 git 的设置， push 之前必须要 pull 到最新的文件。&emsp;&emsp;而 pull 的文件极有可能会和自己尚未上传的 commit 产生冲突，这个时候 git 也会在文件做修改来告诉你。 &emsp;&emsp;我自己开发的时候由于 公司 和 家 分开开发,因此也会遇到类似的情况。&emsp;&emsp;VScode 内置的 git 会告诉你有冲突的文件，然后通过 Gitlens 可以快速调整冲突。 &emsp;&emsp;VScode 内置的 git 会告诉你有冲突的文件，然后通过 Gitlens 可以快速调整冲突。&emsp;&emsp;Gitlens 提供了四个按钮来快速清理 git 插入的分隔符，调整代码重提非常方便。&emsp;&emsp;而且右侧有的滚动条添加了冲突高亮，如果文件很大很复杂的时候寻找冲突也比较方便。 &emsp;&emsp;以上就是 Gitlens 中我比较常用的功能，还有搜索功能之类的也非常好用的，只不过我用得少。 .gitignore 文件 &emsp;&emsp;另外补充 .gitignore 文件的使用。&emsp;&emsp;通常我们的仓库会有很多文件，但是并不是所有的文件到想要添加到追踪里面去。&emsp;&emsp;这个时候就可以通过 .gitignore 来过滤不需要追踪的文件，比如时候 build 代码编译文件夹 .vscode 编辑器设置文件夹 还有 python 烦人的 pyc 文件。&emsp;&emsp;都可以通过 .gitignore 文件来进行过滤追踪。&emsp;&emsp;VScode 可以直接创建一个 .gitignore 文件，但是 windows 下不可行，因为 . 后缀会认定为后缀名，因此 windows 下需要 .gitignore. 输入这样才可以创建成功 &emsp;&emsp;具体 .gitignore 怎么配置推荐廖雪峰大神的文章 github 功能补充 &emsp;&emsp;github 其实本身还提供了特别多很好的功能，大家也可以用起来。 Issue &emsp;&emsp; Issue 类似于论坛，用来给开发者提意见或者 Bug 提交的。&emsp;&emsp;一些成熟的项目会有很多 Iseue， Issue 如果是 opened 状态说明还没有解决。&emsp;&emsp;如果 Issue 是 closed 的状态说明是已经解决的问题。&emsp;&emsp;有时候 Issue 的答案比 Stack Overflow 还管用，大家搜索的时候也不要忽视这里，特别是一些小众的开源项目。 &emsp;&emsp;另外 Issue 遵循 Github 发布的 API ，有些有意思的项目都快把 Github 的 Issue 功能玩坏了。&emsp;&emsp;比如典型的 gittalk 通过 Issue 来实现评论的数据记录，白嫖 Github 的服务器。 Pull request &emsp;&emsp;上一篇博客提到，社区是没有权限直接将代码合并到仓库中的，但是可以通过 pull request 来做贡献。&emsp;&emsp;首先需要先 Fork 仓库到自己的仓库上，然后修改完之后，将fork的仓库上传 pull 到开源项目中。&emsp;&emsp;至于代码是否合并就要看开源项目维护者的意愿了。 Projects &emsp;&emsp;提供了非常便捷的看板视图，方便做代码迭代和敏捷开发。 wiki &emsp;&emsp;wiki 则是仓库的说明文档。&emsp;&emsp;不过 github 的 wiki 完全基于 md 编写比较简单，很多复杂项目都是用文档生成工具来自动构建 wiki 的。 Release &emsp;&emsp;Release 界面通常包含一些需要编译发行的版本。&emsp;&emsp;特别是一些 c 和 C++ 的项目，编译一次需要很长的时间，通常仓库所有者会将编译好的版本打包压缩放到 Release 上供大家使用。 git 服务器环境 | git 钩子 &emsp;&emsp;关于 git 在服务器上构建仓库以及 git 钩子的构建 参考之前写的文章&emsp;&emsp;git 钩子可以在 git 的特定流程中执行 钩子 设定的脚本 , 比如 post-receive 可以再 push 之后出发特定脚本，具体参考上面的文章。&emsp;&emsp;在自己的服务器上搭建 git 使用 git 的钩子会更加自由一些, github 这些服务出于安全考虑 只有 网络钩子。 总结 &emsp;&emsp;以上就是 git 配合 VScode 的使用流程。&emsp;&emsp;后续还会录制一个视频详细讲解这其中的一些细节，希望大家赏脸，三连支持一下~]]></content>
+      <categories>
+        <category>git</category>
+        <category>VScode</category>
+      </categories>
+      <tags>
+        <tag>VScode</tag>
+        <tag>编辑器</tag>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[VScode 结合git的全面使用流程（上）]]></title>
+    <url>%2Fposts%2F94ffdbdf.html</url>
+    <content type="text"><![CDATA[Git 代码管理基础介绍 | 对接 github 参考 前言 &emsp;&emsp;几个月前写过一篇文章，阐述了怎么搭建 git 的环境，方便在服务器上管理好自己的代码。&emsp;&emsp;最近和师弟他们沟通，发现他们依然用着原始的压缩包备份的方式来管理代码，于是就打算写一篇完整的使用教程，方便你我他。 git介绍 &emsp;&emsp;这里需要阐明一个概念，说道 git 很多人会想到 github&emsp;&emsp;其实 github 只是 git 的远程服务器端而已，github并不等于 git ，实际上 git 是一个代码管理软件。&emsp;&emsp;不用 github 也可以用 gitlab 或者 国内的 码云 和 coding&emsp;&emsp;如果不需要图形化界面的话，甚至不需要把代码放到github上，完全可以在自己搭建的服务器上进行代码同步管理。 &emsp;&emsp;说到 git 也很容易联想到一个老牌的代码管理工具 SVN&emsp;&emsp;其实两者在使用上的区别不是很大，重点是 git是去中心的分布式管理， SVN 则刚好相反。&emsp;&emsp;不过我自己也没有深入使用 SVN ，因此我也是在网上看的文章得到的片面之词，只是阐述自己目前的理解。 &emsp;&emsp;SVN就好比银行，我们所有的交易都要以它为中心进行解算，因此银行之下的我们是不知道所有的数据的，我们只需要管理好手中的数据就可以了。&emsp;&emsp;git的话就是每个人都是银行，所有的交易都会同步到每个人的身上。&emsp;&emsp;SVN管理的好处就是简单清晰，管理好自己负责的代码即可。&emsp;&emsp;git的好处就是代码安全，如果中心服务器挂了，每个人都可以成为中心来重新建立彼此的同步。&emsp;&emsp;当然现在大行其道的是 git 代码管理。&emsp;&emsp;至于更多SVN 和 git 区别可以参考 链接 git 使用 &emsp;&emsp;git本质上是一个命令行工具，可以去到 git 的官网安装其客户端。 链接&emsp;&emsp;安装成功之后就可以在命令行上输入 git 获取到 git 的操作指令了。 &emsp;&emsp;下面关于 git 的命令行使用就详细说明了，可以参考菜鸟学院里面的教程 链接&emsp;&emsp;下面是一些常用的命令 123456789git init // 初始化本地仓库git config --global user.name "myname" // 配置用户名git config --global user.email "myname@mymail.com" //配置邮箱git remote add origin code@github.git //绑定本地和远程仓库 git pull // 拉取远程仓库的变化来同步本地的状态git add // 确认本地仓库的变化到本地缓存区git commit // 确认本地缓存区的内容，可以准备pushgit push // 提交本地仓库到远程仓库git status // 确定本地缓存区的状态 &emsp;&emsp;补充一下配置了 user 之后就可以在 git 上看到上传代码的用户，这个未必和github用户一样的。&emsp;&emsp;另外如果上传到 github 的话需要github账号的验证，每次都需要输入账号密码很麻烦。&emsp;&emsp;可以利用 ssh 进行 github 免密登录 链接 githu ssh免密登录 &emsp;&emsp;ssh 是通过 口令的机制 实现免密登录的。&emsp;&emsp;目前后端的服务器登录很常用的免密登录技术，由于口令非常复杂且无序，比输入人为的密码要安全很多 1234567891011121314151617181920212223$ ssh-keygen -t rsa -C "myname@mymail.com"Generating public/private rsa key pair.Enter file in which to save the key (/d/Users/82047/.ssh/id_rsa): testEnter passphrase (empty for no passphrase):Enter same passphrase again:Your identification has been saved in test.Your public key has been saved in test.pub.The key fingerprint is:SHA256:9h/yLOap8OzlXb5s440DqmXAVeHqwik+/azYi21YRI0 myname@mymail.comThe key's randomart image is:+---[RSA 3072]----+| o o. || E .o || . . . || ... . || .S . || o.= . || o++ B.... || .oXoB+B =+o || ++@O*.=o*+.|+----[SHA256]-----+ &emsp;&emsp;ssh-keygen -t rsa -C &quot;myname@mymail.com&quot; 语句&emsp;&emsp;默认情况下生成名字为 id_rsa ,也可以输入自定义的名字&emsp;&emsp;下面的 passphrase 可以不填写，直接留空即可&emsp;&emsp;会在当前两个文件 id_rsa 和 id_rsa.pub&emsp;&emsp;我上面输入了 test ，因此生成了 test 和 test.pub 文件。 &emsp;&emsp;不过秘钥的存放路径是在 用户文件夹下的 .ssh 目录 (默认生成的 id_rsa 会在那里) &emsp;&emsp;如果秘钥不放在这个路径是读取不了的。&emsp;&emsp;下面可以打开我刚刚生成的两个秘钥文件，直接用文本编辑器打开即可。 &emsp;&emsp;第一张图是私钥&emsp;&emsp;第二张图是带pub 后缀是公钥 ， pub 就是 public 的缩写。 &emsp;&emsp;可以看到两个文件是一长串乱码。&emsp;&emsp;可以简单将公钥理解为锁，私钥就是唯一匹配这把锁的钥匙。&emsp;&emsp;从这个乱码的复杂程度可以知道它的安全性是很高的，如果秘钥没有暴露的话基本上无法破解的。 &emsp;&emsp;后面的操作就是将 pub 的公钥添加到 github 账号的位置即可，具体操作可以参考上面提供的链接的截图操作。&emsp;&emsp;github1每次需要登录信息的时候，都会调用 .ssh 目录下的秘钥进行匹配，匹配成功即登录成功。 &emsp;&emsp;.ssh 目录可以添加一个 config 文件(不带后缀)，可以参考下面的格式填写。 123456789101112131415#Default GitHub Host github.com HostName github.com User git IdentityFile ~/.ssh/id_rsa Host github-personal HostName github.com User git IdentityFile ~/.ssh/821412111 Host l0v0.com HostName 129.204.87.195 User git IdentityFile ~/.ssh/blog &emsp;&emsp;这个配置文件可以根据 clone 网址配置来读取不同秘钥&emsp;&emsp;比如说github上面默认 clone 下来的网址是 git@github.com:FXTD-ODYSSEY/mpdb.git&emsp;&emsp;@后面的部分就是 Host&emsp;&emsp;可以像我上面那样修改 Host 对应的名字调用不同的秘钥进行登录 (如果秘钥是不同的 gihub 账号就可以免密切换登录账号)&emsp;&emsp;HostName 就对应的 IP 地址 (域名的背后也是根据 DNS 服务获取 IP 地址，可以利用 ping 命令获取域名地址) &emsp;&emsp;理解这个之后就可以根据我上面的 ip 地址来登录我自己构建的服务器的 git&emsp;&emsp;比如说 git@l0v0.com:/home/git/repos/blog.git&emsp;&emsp;就会调用我上面的 blog 的秘钥然后利用服务器上的 ssh 服务来登录服务器。 &emsp;&emsp;因此免密登录更加安全，也更加方便。 VScode 内置 git 使用方法 &emsp;&emsp;经过前面一通的铺垫之后，终于开始今天的主角了。&emsp;&emsp;VScode 默认内置 git 的支持，当然图形化界面客户端也不一定要用 vscode ，git本身自带了一个图形化界面&emsp;&emsp;安装了 git 之后在任意目录下右键就有 Git Gui Here 的选项 &emsp;&emsp;使用上其实大同小异，VScode本身的功能加上插件辅助基本也可以实现差不多的效果。 认识界面 &emsp;&emsp;主要包含上面的按钮以及菜单的选项。&emsp;&emsp;不过通常只会菜单里的功能通常只会用到 pull 和 push 而已，其他杂七杂八的选项都可以不管。 文件更新示例 &emsp;&emsp;当你对仓库已经被跟踪的文件进行修改的时候，会有三种文件状态。 M 是 modify 的缩写即该文件存在修改 D 是 delete 的缩写即该文件被删除了 U 是 Update 的缩写即该文件是新添加 &emsp;&emsp;选中显示的文件可以对比前后修改的区别。 commit 代码 &emsp;&emsp;文件按钮的的意思。&emsp;&emsp;如果是新添加的文件，放弃修改就会提示彻底删除文件。&emsp;&emsp;如果是删除的文件，选择放弃修改就会从仓库中恢复文件(再也不用担心误删的文件找不到了)&emsp;&emsp;点击 + 号确认文件的修改就会提到 stash Changes 上 (对应 git add 命令) &emsp;&emsp;确认了文件之后，在输入框输入这次更新的内容，然后点击打勾就可以保存这一次更新了 (对应 git commit 命令)&emsp;&emsp;如果当前所有的 Changes 都要 commit ，那可以直接输入上传的信息并且打勾就可以快速 commit 了。 push 代码 &emsp;&emsp;这个时候 vscode 的右下角就会出现上箭头的数字为 1 (上箭头是push的更新,下箭头是可以pull的更新)&emsp;&emsp;当然如果之前没有 push 过代码的话，这个可能会没有数字显示。&emsp;&emsp;这个时候就可以将代码 push 到 github 上了 (对应 git push 命令) &emsp;&emsp;完成这一步之后就可以打开 github 仓库查看代码的更新了。 补充 &emsp;&emsp;另外 push 的时候如果没有设置 ssh 秘钥登录的话， VScode 会弹出账号密码的输入窗口进行登录。&emsp;&emsp;默认情况下个人仓库只能仓库创建者更新仓库代码，第三方的更新只能发布 pull request (这个流程后续补充)&emsp;&emsp;这因为如此，github 的 public 仓库可以被所有人读取，但是只有仓库拥有者可以对仓库进行写入(需要登录)&emsp;&emsp;因此多人协作的话可以使用 github 组织功能，参与开发的人加入到组织，然后再让组织开发成员的写入权限即可。 github 查看代码 &emsp;&emsp;打开 github 的仓库可以看到之前 commit 的信息已经显示出来了。 &emsp;&emsp;这个就是 git 的基础用法，只需掌握上面的步骤就可以完成个人开发并且把代码上传到 github 。&emsp;&emsp;如果只是在一个电脑上开发，基本上也不会用到 pull 的功能的。 pull 代码 &emsp;&emsp;有时候比如说公司和家里分别开发代码，那么 push 之后两边的电脑就不同步了。&emsp;&emsp;这个时候就需要 pull 拉去 github 上的新代码来实现仓库同步。&emsp;&emsp;也可以通过 vscode 右下角的下箭头看到仓库是否可以 pull &emsp;&emsp;然后点击菜单的 git pull 进行仓库更新 (对应 git pull 命令) 分支切换 &emsp;&emsp;代码开发的过程中，可能有不同的开发思路或者不同版本的代码想要留存个快照。&emsp;&emsp;可以通过创建分支来实现，默认的仓库其实也是一个分支，默认名字叫做 master&emsp;&emsp;vscode 可以直接在左下角创建分支 &emsp;&emsp;在上面的输入框中输入分支的名字即可 &emsp;&emsp;我在上面创建了 release 分支，这样我就可以再 VScode 切换到 release 分支&emsp;&emsp;我可以像之前那样对 release 分支进行各种修改 push 和 pull，这些修改就不会影响到 master 分支了。 &emsp;&emsp;第一次上传新的分支 VScode 会有弹窗提示。&emsp;&emsp;上传成功之后也可以通过 github 来切换查看分支。 总结 &emsp;&emsp;上面就是 VScode 内置 git 的支持，基本覆盖日常的使用流程。&emsp;&emsp;如果是个人开发已经完全够用了。&emsp;&emsp;但是如果涉及到一些团队协作的功能，那么 VScode 还是不够强大，比如处理代码冲突之类的支持就不太友好。&emsp;&emsp;那么下一篇就来介绍 VScode 的功能增强实现。]]></content>
+      <categories>
+        <category>git</category>
+        <category>VScode</category>
+      </categories>
+      <tags>
+        <tag>VScode</tag>
+        <tag>编辑器</tag>
+        <tag>git</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Python 函数传参验证探索]]></title>
@@ -476,8 +499,8 @@
       </categories>
       <tags>
         <tag>Maya</tag>
-        <tag>Autodesk</tag>
         <tag>Arnold</tag>
+        <tag>Autodesk</tag>
       </tags>
   </entry>
   <entry>
@@ -697,9 +720,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -711,9 +734,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1328,8 +1351,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -1342,8 +1365,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -1629,6 +1652,19 @@
       <tags>
         <tag>Maya</tag>
         <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Houdini - 计算模型体积 过滤问题模型]]></title>
+    <url>%2Fposts%2F8150782b.html</url>
+    <content type="text"><![CDATA[批量遍历模型 过滤体积小的部分 前言 &emsp;&emsp;最近花城汇项目又遇到了小小的问题（拖到现在，面目全无）&emsp;&emsp;3dsMax挤出的盒子并不是全部都是盒子，有部分只是面片，如何检测出这些多余的部分呢？&emsp;&emsp;我想了一下，想起了Houdini的measure节点，直接计算模型体积进行过滤就OK了 measure节点 &emsp;&emsp;然而事情并没有我想象的那么顺利。&emsp;&emsp;我们这边的模型是一堆box&emsp;&emsp;如果直接连接measure节点，会根据模型上的每个面进行体积计算 &emsp;&emsp;我需要的是对单个模型进行计算。&emsp;&emsp;然而如此循环遍历单个模型呢？&emsp;&emsp;我最开始是想用类似破碎的方案，直接加入assemble节点打包，&emsp;&emsp;循环遍历所有的物体。&emsp;&emsp;然而这样根本就计算不出体积。 &emsp;&emsp;因此我想到所有的box都丢进循环中&emsp;&emsp;最开始也不知道怎么操作，测试了一下就是弄好出来了&emsp;&emsp;添加connective节点将所有的模型面编号统一输出一个class属性，Houdini 16.5 的foreach节点自带相关操作了。 &emsp;&emsp;后面就是怎么计算体积了&emsp;&emsp;毕竟总不能去计算每一个面&emsp;&emsp;这里我想起了voronoi的时候的isoOffset节点&emsp;&emsp;通过那个节点可以将模型转成雾&emsp;&emsp;如此一来就可以计算体积了 &emsp;&emsp;但是这样输出没有模型&emsp;&emsp;过滤就没办法操作&emsp;&emsp;于是我想到使用attribute transfer将体积属性传递给原模型&emsp;&emsp;最后再用delete节点对模型进行过滤，就可以找到box模型中有问题的部分。 总结 &emsp;&emsp;其实很简单的操作，本来还想着用Maya Python实现的，想到Houdini Measure节点就懒得写了。&emsp;&emsp;最后发现Houdini的坑也不少。&emsp;&emsp;不过目前也攻克了。&emsp;&emsp;后面我找了一下，发现Maya可以使用 computePolysetVolume 命令计算体积&emsp;&emsp;但是这个命令只能用MEL执行&emsp;&emsp;于是又在网上查了一下，原来Python也可以执行MEL，那就不必担心。链接 2018-10-12 根据面数过滤模型 &emsp;&emsp;关于寻找问题模型的方法，又有了新的思路&emsp;&emsp;鉴于问题模型一般都是一个到两个面的面片，我可以计算片面数对模型进行过滤。&emsp;&emsp;思路是很清晰的，但是我却被 connective 节点生成的class属性给难住了。&emsp;&emsp;我是希望通过计算class数字相同的情况出现的次数，如果出现次数比较少，就进行过滤。&emsp;&emsp;但是这个操作非常难以实现，最主要的原因在于 wrangle 节点&emsp;&emsp;wrangle 中的primitive遍历会注意遍历每一个面片执行wrangle中的代码&emsp;&emsp;这样根本就没有办法将相关的变量累加起来。&emsp;&emsp;于是在这个死循环中写了很多无谓的代码进行测试。 &emsp;&emsp;最后我发现，用foreach节点可以有效地将所有的模型分离出来。&emsp;&emsp;这样只要直接根据面数过滤相关的模型即可。]]></content>
+      <categories>
+        <category>Houdini</category>
+      </categories>
+      <tags>
+        <tag>Houdini</tag>
+        <tag>模型</tag>
+        <tag>体积</tag>
       </tags>
   </entry>
   <entry>
