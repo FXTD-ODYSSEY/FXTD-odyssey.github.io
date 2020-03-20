@@ -671,6 +671,219 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-hexo-blog/2_Hexo博客优化之路（二）- 前端添加图片水印方案" class="article article-type-post" itemscope
+  itemprop="blogPost">
+
+  <div class="article-inner">
+    
+    <input type="hidden" class="isFancy" />
+    
+    
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/posts/35734.html">Hexo博客优化之路（二）- 前端添加图片水印方案</a>
+    </h1>
+  
+
+    </header>
+    
+      
+      <div class="article-entry" itemprop="articleBody">
+        
+        
+        <h1 id="利用JavaScript给图片添加水印"><a href="#利用JavaScript给图片添加水印" class="headerlink" title="利用JavaScript给图片添加水印"></a><center>利用JavaScript给图片添加水印</center></h1>
+        
+        
+      </div>
+
+      
+      <div class="article-info article-info-index">
+        
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/前端/">前端</a><a class="article-category-link" href="/categories/前端/hexo/">hexo</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/博客/">博客</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/图片水印/">图片水印</a></li></ul>
+    </div>
+
+        
+        <p class="article-more-link">
+          <a 
+            href="/posts/35734.html#more">查看更多 >></a>
+        </p>
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    </div>
+
+    
+</article>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  if ($(".highlight").length > 0) {//判断代码块是否存在
+    $(".highlight").each(function (index) {//遍历代码块
+      let btnDiv = $('<div></div>');
+      $(this).prepend(btnDiv);
+
+      let scope = this;
+      btnDiv.css('position', 'absolute');
+
+      $(window).load(function () {//确保其他东西加载完成才执行
+        btnDiv.css('top', $(scope).position().top + 12);
+        btnDiv.css('right', '2em');
+      });
+
+      $(window).resize(function () {//当浏览器大小变化时
+        setTimeout(function () {
+          btnDiv.css('top', $(scope).position().top + 12);
+          btnDiv.css('right', '2em');
+        }, 100);
+      });
+
+      //用于复制代码按钮
+      $(scope).find('.code').addClass("code" + index);
+
+      //复制按钮
+      let copyBtn = $("<button type='button' class='btn btn-primary' id='copyBtn" + index + "'data-clipboard-action='copy' data-clipboard-target='.code" + index + "'>复制</button>");
+      $(btnDiv).prepend(copyBtn);
+
+
+      //识别Vex
+      if ($(this).attr('data-lang') == 'vex') {
+
+        let VEXBtn = $("<button type='button' class='btn btn-primary' id='VEXBtn" + index + "'>VEX原生样式</button>");
+        $(btnDiv).prepend(VEXBtn);
+
+        let VEXBtnCheck = false;
+        let scope = this;
+
+        $(scope).find('.built_in').removeClass('built_in').addClass("VEX_built_in");
+        $(scope).find('.string').removeClass('string').addClass("VEX_string");
+        $(scope).find('.operator').removeClass('operator').addClass("VEX_operator");
+        $(scope).find('.number').removeClass('number').addClass("VEX_number");
+        $(scope).find('.command').removeClass('command').addClass("VEX_command");
+        $(scope).find('.comment').removeClass('comment').addClass("VEX_comment");
+        $(scope).find('.id').removeClass('id').addClass("VEX_id");
+
+        $('#VEXBtn' + index).click(function () {
+          if (VEXBtnCheck) {
+            $(this).text('VEX原生样式');
+            VEXBtnCheck = false;
+            $(scope).find('.built_in').removeClass('built_in').addClass("VEX_built_in");
+            $(scope).find('.string').removeClass('string').addClass("VEX_string");
+            $(scope).find('.operator').removeClass('operator').addClass("VEX_operator");
+            $(scope).find('.number').removeClass('number').addClass("VEX_number");
+            $(scope).find('.command').removeClass('command').addClass("VEX_command");
+            $(scope).find('.comment').removeClass('comment').addClass("VEX_comment");
+            $(scope).find('.id').removeClass('id').addClass("VEX_id");
+          } else {
+            $(this).text('自定义样式');
+            VEXBtnCheck = true;
+            $(scope).find('.VEX_built_in').removeClass('VEX_built_in').addClass("built_in");
+            $(scope).find('.VEX_string').removeClass('VEX_string').addClass("string");
+            $(scope).find('.VEX_operator').removeClass('VEX_operator').addClass("operator");
+            $(scope).find('.VEX_number').removeClass('VEX_number').addClass("number");
+            $(scope).find('.VEX_command').removeClass('VEX_command').addClass("command");
+            $(scope).find('.VEX_comment').removeClass('VEX_comment').addClass("comment");
+            $(scope).find('.VEX_id').removeClass('VEX_id').addClass("id");
+          }
+
+        });
+      }
+
+      //识别MEL
+      if ($(this).attr('data-lang') == 'mel') {
+        let melBtn = $("<button type='button' class='btn btn-primary' id='melBtn" + index + "'>MEL原生样式</button>");
+        $(btnDiv).prepend(melBtn);
+
+        let melBtnCheck = false;
+        let scope = this;
+
+        $(scope).find('.keyword').removeClass('keyword').addClass("mel_keyword");
+        $(scope).find('.string').removeClass('string').addClass("mel_string");
+        $(scope).find('.number').removeClass('number').addClass("mel_number");
+
+        $(scope).find('.command').removeClass('command').addClass("mel_command");
+        $(scope).find('.operator').removeClass('operator').addClass("mel_operator");
+
+        $('#melBtn' + index).click(function () {
+          if (melBtnCheck) {
+            $(this).text('MEL原生样式');
+            melBtnCheck = false;
+            $(scope).find('.keyword').removeClass('keyword').addClass("mel_keyword");
+            $(scope).find('.string').removeClass('string').addClass("mel_string");
+            $(scope).find('.number').removeClass('number').addClass("mel_number");
+
+            $(scope).find('.command').removeClass('command').addClass("mel_command");
+            $(scope).find('.operator').removeClass('operator').addClass("mel_operator");
+          } else {
+            $(this).text('自定义样式');
+            melBtnCheck = true;
+            $(scope).find('.mel_keyword').removeClass('mel_keyword').addClass("keyword");
+            $(scope).find('.mel_string').removeClass('mel_string').addClass("string");
+            $(scope).find('.mel_number').removeClass('mel_number').addClass("number");
+            $(scope).find('.mel_command').removeClass('mel_command').addClass("command");
+            $(scope).find('.mel_operator').removeClass('mel_operator').addClass("operator");
+          }
+        });
+      }
+    })
+  }
+</script>
+
+<script>
+
+  function codeAutoResize() {
+
+    if ($(".highlight").length > 0) {//判断代码块是否存在
+      $(".highlight").each(function (index) {//遍历代码块
+        let codeWidth;
+        let parentWidth = $(this).css('width');//获取代码块的宽度
+        let childWidth = $(this).children('table').css('width');//获取代码的宽度
+        if (parseInt(parentWidth) < parseInt(childWidth)) {//转成整数比较宽度大小
+          codeWidth = childWidth;
+        } else {
+          codeWidth = parentWidth;
+        }
+        $(this).children('style').remove();//清理style标签
+        $(this).addClass("resize" + index);//添加class名
+        $(this).append("<style>.highlight.resize" + index + "::before{width:" + codeWidth + "}</style>");
+      });
+    }
+  }
+
+  setInterval(function () {
+    codeAutoResize();//初始化
+  }, 500);
+
+
+  $(window).resize(function () {
+    codeAutoResize();//改变尺寸的时候执行
+  });
+
+  // NOTE 单个链接自动居中
+  $(".article-entry>p").find("a").each(function() {
+    $(this).parent().css('text-align','center')
+  })
+</script>
+  
     <article id="post-hexo-blog/1_Hexo博客优化之路（一）- 博客瘦身方法" class="article article-type-post" itemscope
   itemprop="blogPost">
 
@@ -2420,219 +2633,6 @@
         <p class="article-more-link">
           <a 
             href="/posts/733.html#more">查看更多 >></a>
-        </p>
-        
-        <div class="clearfix"></div>
-      </div>
-      
-    </div>
-
-    
-</article>
-
-
-
-
-
-
-
-
-
-
-
-<script>
-  if ($(".highlight").length > 0) {//判断代码块是否存在
-    $(".highlight").each(function (index) {//遍历代码块
-      let btnDiv = $('<div></div>');
-      $(this).prepend(btnDiv);
-
-      let scope = this;
-      btnDiv.css('position', 'absolute');
-
-      $(window).load(function () {//确保其他东西加载完成才执行
-        btnDiv.css('top', $(scope).position().top + 12);
-        btnDiv.css('right', '2em');
-      });
-
-      $(window).resize(function () {//当浏览器大小变化时
-        setTimeout(function () {
-          btnDiv.css('top', $(scope).position().top + 12);
-          btnDiv.css('right', '2em');
-        }, 100);
-      });
-
-      //用于复制代码按钮
-      $(scope).find('.code').addClass("code" + index);
-
-      //复制按钮
-      let copyBtn = $("<button type='button' class='btn btn-primary' id='copyBtn" + index + "'data-clipboard-action='copy' data-clipboard-target='.code" + index + "'>复制</button>");
-      $(btnDiv).prepend(copyBtn);
-
-
-      //识别Vex
-      if ($(this).attr('data-lang') == 'vex') {
-
-        let VEXBtn = $("<button type='button' class='btn btn-primary' id='VEXBtn" + index + "'>VEX原生样式</button>");
-        $(btnDiv).prepend(VEXBtn);
-
-        let VEXBtnCheck = false;
-        let scope = this;
-
-        $(scope).find('.built_in').removeClass('built_in').addClass("VEX_built_in");
-        $(scope).find('.string').removeClass('string').addClass("VEX_string");
-        $(scope).find('.operator').removeClass('operator').addClass("VEX_operator");
-        $(scope).find('.number').removeClass('number').addClass("VEX_number");
-        $(scope).find('.command').removeClass('command').addClass("VEX_command");
-        $(scope).find('.comment').removeClass('comment').addClass("VEX_comment");
-        $(scope).find('.id').removeClass('id').addClass("VEX_id");
-
-        $('#VEXBtn' + index).click(function () {
-          if (VEXBtnCheck) {
-            $(this).text('VEX原生样式');
-            VEXBtnCheck = false;
-            $(scope).find('.built_in').removeClass('built_in').addClass("VEX_built_in");
-            $(scope).find('.string').removeClass('string').addClass("VEX_string");
-            $(scope).find('.operator').removeClass('operator').addClass("VEX_operator");
-            $(scope).find('.number').removeClass('number').addClass("VEX_number");
-            $(scope).find('.command').removeClass('command').addClass("VEX_command");
-            $(scope).find('.comment').removeClass('comment').addClass("VEX_comment");
-            $(scope).find('.id').removeClass('id').addClass("VEX_id");
-          } else {
-            $(this).text('自定义样式');
-            VEXBtnCheck = true;
-            $(scope).find('.VEX_built_in').removeClass('VEX_built_in').addClass("built_in");
-            $(scope).find('.VEX_string').removeClass('VEX_string').addClass("string");
-            $(scope).find('.VEX_operator').removeClass('VEX_operator').addClass("operator");
-            $(scope).find('.VEX_number').removeClass('VEX_number').addClass("number");
-            $(scope).find('.VEX_command').removeClass('VEX_command').addClass("command");
-            $(scope).find('.VEX_comment').removeClass('VEX_comment').addClass("comment");
-            $(scope).find('.VEX_id').removeClass('VEX_id').addClass("id");
-          }
-
-        });
-      }
-
-      //识别MEL
-      if ($(this).attr('data-lang') == 'mel') {
-        let melBtn = $("<button type='button' class='btn btn-primary' id='melBtn" + index + "'>MEL原生样式</button>");
-        $(btnDiv).prepend(melBtn);
-
-        let melBtnCheck = false;
-        let scope = this;
-
-        $(scope).find('.keyword').removeClass('keyword').addClass("mel_keyword");
-        $(scope).find('.string').removeClass('string').addClass("mel_string");
-        $(scope).find('.number').removeClass('number').addClass("mel_number");
-
-        $(scope).find('.command').removeClass('command').addClass("mel_command");
-        $(scope).find('.operator').removeClass('operator').addClass("mel_operator");
-
-        $('#melBtn' + index).click(function () {
-          if (melBtnCheck) {
-            $(this).text('MEL原生样式');
-            melBtnCheck = false;
-            $(scope).find('.keyword').removeClass('keyword').addClass("mel_keyword");
-            $(scope).find('.string').removeClass('string').addClass("mel_string");
-            $(scope).find('.number').removeClass('number').addClass("mel_number");
-
-            $(scope).find('.command').removeClass('command').addClass("mel_command");
-            $(scope).find('.operator').removeClass('operator').addClass("mel_operator");
-          } else {
-            $(this).text('自定义样式');
-            melBtnCheck = true;
-            $(scope).find('.mel_keyword').removeClass('mel_keyword').addClass("keyword");
-            $(scope).find('.mel_string').removeClass('mel_string').addClass("string");
-            $(scope).find('.mel_number').removeClass('mel_number').addClass("number");
-            $(scope).find('.mel_command').removeClass('mel_command').addClass("command");
-            $(scope).find('.mel_operator').removeClass('mel_operator').addClass("operator");
-          }
-        });
-      }
-    })
-  }
-</script>
-
-<script>
-
-  function codeAutoResize() {
-
-    if ($(".highlight").length > 0) {//判断代码块是否存在
-      $(".highlight").each(function (index) {//遍历代码块
-        let codeWidth;
-        let parentWidth = $(this).css('width');//获取代码块的宽度
-        let childWidth = $(this).children('table').css('width');//获取代码的宽度
-        if (parseInt(parentWidth) < parseInt(childWidth)) {//转成整数比较宽度大小
-          codeWidth = childWidth;
-        } else {
-          codeWidth = parentWidth;
-        }
-        $(this).children('style').remove();//清理style标签
-        $(this).addClass("resize" + index);//添加class名
-        $(this).append("<style>.highlight.resize" + index + "::before{width:" + codeWidth + "}</style>");
-      });
-    }
-  }
-
-  setInterval(function () {
-    codeAutoResize();//初始化
-  }, 500);
-
-
-  $(window).resize(function () {
-    codeAutoResize();//改变尺寸的时候执行
-  });
-
-  // NOTE 单个链接自动居中
-  $(".article-entry>p").find("a").each(function() {
-    $(this).parent().css('text-align','center')
-  })
-</script>
-  
-    <article id="post-fontend/Three.js/Three-js-学习之路（零）" class="article article-type-post" itemscope
-  itemprop="blogPost">
-
-  <div class="article-inner">
-    
-    <input type="hidden" class="isFancy" />
-    
-    
-    <header class="article-header">
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/posts/24239.html">Three.js-学习之路（零）</a>
-    </h1>
-  
-
-    </header>
-    
-      
-      <div class="article-entry" itemprop="articleBody">
-        
-        
-        <h1 id="WebGL引言"><a href="#WebGL引言" class="headerlink" title="WebGL引言"></a><center>WebGL引言</center></h1>
-        
-        
-      </div>
-
-      
-      <div class="article-info article-info-index">
-        
-        
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/three-js/">three.js</a><a class="article-category-link" href="/categories/three-js/前端/">前端</a>
-    </div>
-
-
-        
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebGL/">WebGL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/three-js/">three.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li></ul>
-    </div>
-
-        
-        <p class="article-more-link">
-          <a 
-            href="/posts/24239.html#more">查看更多 >></a>
         </p>
         
         <div class="clearfix"></div>

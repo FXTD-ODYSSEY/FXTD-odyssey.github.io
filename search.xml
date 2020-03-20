@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Maya插件 - collapsableShelf]]></title>
+    <url>%2Fposts%2F204db704.html</url>
+    <content type="text"><![CDATA[Maya 工具架分割符的伸缩增强增强 前言 &emsp;&emsp;最近工作上，动画制作人员都想要更好地管理工具架上的图标。&emsp;&emsp;他们突发奇想给我提了个需求 ， 希望让 Maya 的工具架有类似于 StatusLine 上面那样有伸缩功能。&emsp;&emsp;我想了一下，如果通过 Qt 的骚操作的未必不能实现。&emsp;&emsp;于是我就愉快地接受了挑战。 github 仓库 前期研究 &emsp;&emsp;由于工具架的数据是会报错到本地 mel 文件里面去的。&emsp;&emsp;因此如果我自己添加一个可以收缩的组件的话会影响到 工具架 的按钮存储的。&emsp;&emsp;因此需要用现有的widget来转成可伸缩的效果。 &emsp;&emsp;最初我是想到要写一个新的 mel runtimeCommand 的形式生成一个带layout的组件，后续的伸缩可以转成 Qt 来实现。&emsp;&emsp;但是这样就需要改写 工具架的 mel 脚本 ， 还是不够方便。&emsp;&emsp;于是我注意到了 工具架的一些分隔图标。&emsp;&emsp;在 Maya 里面是无法通过 工具架 的编辑器进行添加的。&emsp;&emsp;不过可以通过修改 用户文档的 pref/shelves 里面的mel来实现 separator 的添加。 遇到的问题 &emsp;&emsp;于是我就开始着手写方案。&emsp;&emsp;其实整个流程我之前都有所接触过了，因此主要的框架搭建起来算是驾轻就熟。 工具架加载问题 &emsp;&emsp;之前开发 commandLauncher 的时候踩过 工具架 的坑。&emsp;&emsp;Maya默认是不会加载所有的工具架的，只会加载当前显示的工具架，这样就导致无法获取工具架上的图标信息。&emsp;&emsp;我之前开发 commandLauncher 的时候就已经弄了一个 自动加载所有工具架的函数。&emsp;&emsp;于是这里可以直接套用毫无问题。 伸缩组件搭建 &emsp;&emsp;我之前在 开发 QtLib (或者说更早的时候)，就已经弄好了一个 Collapsible 组件。&emsp;&emsp;效果是带动画的。&emsp;&emsp;这里的伸缩效果也是参考当时的效果进行修改开发，不过是纵向改为了横向。 &emsp;&emsp;当然这个过程中遇到了一些伸缩的坑，特别是一开始不知道要给主组件添加宽度。&emsp;&emsp;导致添加进去的图标都挤在了一起，后面通过 setFixedWidth 解决了问题。 添加工具选项 &emsp;&emsp;我一开始也是打算类似于 commandLauncher 一样在 StatusLine 上添加一个 图标 进行提示的。&emsp;&emsp;后来还是打算添加到 工具架 的 option 按钮上了，这样更加合乎道理。 &emsp;&emsp;在原先的 menu 基础上添加 选项其实不难， 直接用 cmds 库也可以解决。 * 程序退出卸载功能 &emsp;&emsp;这个功能就非常坎坷了。&emsp;&emsp;上面的功能虽然完美，但是一旦影响到了整个工具架的 mel 文件信息就完蛋了。&emsp;&emsp;而且由于用了 Qt 的骚操作，那些可以伸缩的组件全部无法被 Maya 识别出来了。&emsp;&emsp;如果是以伸缩组件的形式推出 Maya 会导致这些伸缩部分的图标丢失的。 &emsp;&emsp;所以为了避免这个情况，我需要在 Maya 推出保存 shelf 的时候触发一个事件来还原工具架。&emsp;&emsp;我最初想到的是通过 scriptJob 的事件来完成这个操作。&emsp;&emsp;去看了 scriptJob 的文档，果然发现了 quitApplication 的事件。&emsp;&emsp;于是我用了测试代码如下 123import sysfrom maya import cmdscmds.scriptJob(runOnce=1,event=['quitApplication',lambda:sys.stdout.write("quit")]) &emsp;&emsp;但是经过我的测试，上述的命令是无法在Maya的脚本编辑器看到输出的。&emsp;&emsp;于是为了验证这个事件是否触发了，我又单独写了一个文件读写的操作，&emsp;&emsp;这样我就可以通过查看目标文件有没有写入我预期的数据来确定程序是否触发。 &emsp;&emsp;经过一番折腾，我的确可以通过 IO 操作看到程序是触发了的，但是再这个阶段运行卸载程序似乎已经没有意义了。&emsp;&emsp;Maya已经完成了保存 mel 的操作。 &emsp;&emsp;于是我开始寻找更好的触发条件，最开始我想到了 OpenMaya 的 Message 相关的类。&emsp;&emsp;我之前也有接触过，可以参考我的文章 Maya 轴心移动研究 &emsp;&emsp;于是我又查了一下，在 OpenMaya2.0 的 MEventMessage 里面的确找到了退出事件。&emsp;&emsp;然而这个事件本质上和 scriptJob 是一样的，也是 quitApplication &emsp;&emsp;最后又折腾了一番之后，感觉 Maya 的确没有提供一个退出之前执行的勾子。&emsp;&emsp;于是没办法了，只好抓住最好的救命稻草，通过 Qt 的 eventFilter 来获取退出事件。&emsp;&emsp;但是 Filter 出来的事件太多，而且程序退出的时候并不是所有的事件都可以显示到 脚本编辑器 里面的。&emsp;&emsp;于是我就改写为每获取一个事件就进行一个 IO 操作将数据输出到 txt 文本里面。&emsp;&emsp;综合上面的显示的事件列表，我发现每次退出最后执行的事件类型都是 ChildRemoved&emsp;&emsp;当然如果点击右上角的关闭按钮还有 Close 的事件触发，这个事件感觉更为准确，但是如果是在 菜单 里面点击退出的则没有触发 Close&emsp;&emsp;但是 ChildRemoved 每次都能触发出来。&emsp;&emsp;于是我抱着最后的希望在 ChildRemoved 事件下触发 uninstall 事件。&emsp;&emsp;然后就成功解决了目前的问题了，无论是用什么形式的退出，都可以还原 工具架 而不会导致图标丢失。 总结 &emsp;&emsp;这次开发感觉由之前的研究铺路，明显要踩的坑少了很多了。&emsp;&emsp;后续还需要完善一下 github 仓库的说明 ， 还有 UI 的美化也可以考虑一下的。]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>CG Programming</category>
+        <category>Python</category>
+        <category>Maya插件开发</category>
+      </categories>
+      <tags>
+        <tag>Maya</tag>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Python DCC 嵌入 浏览器 探索]]></title>
     <url>%2Fposts%2Fd2b44b01.html</url>
     <content type="text"><![CDATA[浏览器嵌入 | 跨软件实现 WebGL 可视化 前言 &emsp;&emsp;最近打算开发一个 DCC 间共同的资源浏览器，计划通过 WebGL 实现三维视窗的效果。&emsp;&emsp;Maya 内置的 PySide2 是可以构建浏览器的。&emsp;&emsp;但是对 WebGL 的支持非常糟糕 ，那么就需要嵌入一个通用的的三维浏览器窗口来实现。 &emsp;&emsp;即便是 maya 之外的环境实现的 PyQt WebEngine 实现的效果都不太理想，比如 threejs 官方编辑器会没有显示白屏。 &emsp;&emsp;于是我就开始想如何如何才能更好地将浏览器嵌入到 DCC 软件中，从而让前端技术可以引入进去。 &emsp;&emsp;欢迎到我的 github 仓库 CefWidget上查看嵌入的源码 技术选型 &emsp;&emsp;虽然 PyQt 的 WebGL 似乎有点问题，但是基础的一些显示起码是可以用的。&emsp;&emsp;但是要将 Maya 外部的 Python 跑起来的话需要解决将外部第三方的窗口嵌入到 Maya 窗口里面的问题。&emsp;&emsp;我看了网上大部分的解决方案都需要获取 窗口 hwnd 也就是 不同系统下的窗口 ID 然后只能通过 Qt5 的方案来嵌入。 QWindow.fromWinId()&emsp;&emsp;首先获取 hwnd 还没有多平台兼容的方案，而且由于只有Qt5支持嵌入，所以 Qt4 无法兼容了。 &emsp;&emsp;后来我也尝试在 Maya 嵌入 winId 的，但是无法直接传入整形数，可能还需要一些 ctypes 或者 shiboken 转换方案。&emsp;&emsp;太麻烦了我就没有找解决方案。&emsp;&emsp;而且第三方软件接入的痛点在于完全独立于目前运行的程序，如果软件本身没有开放的接口就无法调用了。&emsp;&emsp;所有的 UI 程序都是一个不断监听进行事件处理的死循环，即便是 Qt 嵌入 Qt 两头都是源码清楚的情况下也无法交互。&emsp;&emsp;因为两者的事件监听是不共通的，这边 Qt 窗口的信号无法在另一头的 Qt 窗口上触发。&emsp;&emsp;所以就导致修改窗口大小不同步，点击按钮无法触发另一个窗口的事件诸如此类的问题。 &emsp;&emsp;后来我转换思路，不再搜索嵌入第三方窗口，而是嵌入浏览器，反而是开阔了很多。&emsp;&emsp;其中就找到了很好的一个方案，那就是 CEF。&emsp;&emsp;CEF 全称是 Chromium Embeded framwork, 因此就是针对 Chromium 谷歌浏览器内核的嵌入第三方的框架&emsp;&emsp;并且 github 上还可以找到 cefpython 库实现了 CEF 框架的 python 绑定。 &emsp;&emsp;看了一下官方的那里，不仅仅支持 Qt ，很多 Python 的图形化框架都是支持嵌入的，而且嵌入的方式是获取 Qt 的 winId ， 背后的跨平台嵌入操作由框架完成&emsp;&emsp;因此我就决定使用 cefpython 方案了。 cefpython &emsp;&emsp;由于 cefpython 是由 C++ 绑定过来的，因此就不用想在 maya 这些软件上面调用了，不可能兼容的。&emsp;&emsp;当然有源码或许可以用 mayapy 重新编译一个针对 Maya 版本的 cefpython ，但是这样跨软件兼容的实现就失败了。&emsp;&emsp;因此一定要活用 cef 框架自带的嵌入功能，以第三方的形式嵌入到 Qt 的 Widget 里面。 cefpython 使用 &emsp;&emsp;在研究如何使用 cefpython 之前还是需要了解清楚这个库是怎么使用的。&emsp;&emsp;网上可以找到国内的一些文章 12345678910from cefpython3 import cefpython as cefimport platformimport sysdef main(): cef.Initialize() cef.CreateBrowserSync(url="http://www.baidu.com",window_title="Hello World!") cef.MessageLoop() cef.Shutdown()if __name__ == '__main__': main() &emsp;&emsp;运行 pip install cefpython3 安装库之后就可以调用了。&emsp;&emsp;我去掉了上面的版本检测，让代码看起来更加简单一些。 &emsp;&emsp;上面的例子就是个 hello world 例子而已。&emsp;&emsp;那么如何才能将 浏览器 嵌入到 Qt 的窗口当中呢？ 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909192import sysimport osimport ctypesfrom PySide.QtGui import *from PySide.QtCore import *from cefpython3 import cefpythonclass CefWidget(QWidget): browser = None def __init__(self, parent = None): super(CefWidget, self).__init__(parent) self.show() self.createTimer() def createTimer(self): self.timer = QTimer() self.timer.timeout.connect(self.onTimer) self.timer.start(10) def onTimer(self): cefpython.MessageLoopWork() def embed(self): # it needs to be called after setupping the layout, windowInfo = cefpython.WindowInfo() windowInfo.SetAsChild(int(self.winIdFixed())) self.browser = cefpython.CreateBrowserSync(windowInfo, navigateUrl="https://blog.l0v0.com/my_work/OPENGL_homework/old_Method/") def winIdFixed(self): # PySide bug: QWidget.winId() returns &lt;PyCObject object at 0x02FD8788&gt;, # there is no easy way to convert it to int. try: return int(self.winId()) except: if sys.version_info[0] == 2: ctypes.pythonapi.PyCObject_AsVoidPtr.restype = ctypes.c_void_p ctypes.pythonapi.PyCObject_AsVoidPtr.argtypes = [ctypes.py_object] return ctypes.pythonapi.PyCObject_AsVoidPtr(self.winId()) elif sys.version_info[0] == 3: ctypes.pythonapi.PyCapsule_GetPointer.restype = ctypes.c_void_p ctypes.pythonapi.PyCapsule_GetPointer.argtypes = [ctypes.py_object] return ctypes.pythonapi.PyCapsule_GetPointer(self.winId(), None) def moveEvent(self, event): cefpython.WindowUtils.OnSize(int(self.winIdFixed()), 0, 0, 0) def resizeEvent(self, event): cefpython.WindowUtils.OnSize(int(self.winIdFixed()), 0, 0, 0)class MainWindow(QMainWindow): def __init__(self, parent = None): super(MainWindow, self).__init__(parent) self.setGeometry(150,150, 800, 800) self.view = CefWidget(self) m_vbox = QVBoxLayout() m_label = QLabel("Another Widget") m_label.setMaximumHeight(100) m_vbox = QVBoxLayout() m_vbox.addWidget(m_label) m_vbox.addWidget(self.view) frame = QFrame() frame.setLayout(m_vbox) self.setCentralWidget(frame) self.view.embed()if __name__ == "__main__": settings = &#123;&#125; settings["browser_subprocess_path"] = "%s/%s" % ( cefpython.GetModuleDirectory(), "subprocess") settings["context_menu"] = &#123; "enabled": False, "navigation": False, # Back, Forward, Reload "print": False, "view_source": False, "external_browser": False, # Open in external browser "devtools": False, # Developer Tools &#125; cefpython.Initialize(settings) app = QApplication(sys.argv) win = MainWindow() win.show() app.exec_() &emsp;&emsp;没错主要是通过 ctypes 转换 self.winId 的方法来获取窗口的整数 ID&emsp;&emsp;后面只需要将 id 传入到 SetAsChild 方法里面就可以实现嵌入了。&emsp;&emsp;需要注意的是需要用定时器来 MessageLoopWork 的方法来不断同步浏览器的状态。 &emsp;&emsp;上面的例子还只是个简化版的嵌入，更进一步的多平台兼容可以参照官方提供的 qt.py cefpython 打包 &emsp;&emsp;当然上面的例子是无法在 DCC 软件里面跨平台使用的，因此需要通过 pyinstaller 打包成可执行的 exe 文件。&emsp;&emsp;好在官方提供了 cefpython 用 pyinstaller 打包的例子&emsp;&emsp;不过由于要打包自己的脚本还需要修改一下 spec 文件里面定位的编译源代码路径。&emsp;&emsp;并且我自己打包测试的时候出了一些 Bug 打包失败，发现 hook-cefpython3.py 的输出路径缺少了个 “.” &emsp;&emsp;另外编译的时候虽然是直接运行 pyinstaller.py 文件，但是命令行运行路径必须要切换到当前脚本的目录，否则就无法找到 hook-cefpython3.py 脚本。&emsp;&emsp;我上传到 github 的仓库已经修复了这个问题。 &emsp;&emsp;打包完成之后会有 100 多M那么大(:з」∠)&emsp;&emsp;其中主要是 libcef.dll 这个就有 90+M 的大小，没办法这个就是使用 cef 的代价。 rpyc 通信 &emsp;&emsp;成功打包之后的确可以实现浏览器嵌入到任意的 Qt 窗口了。&emsp;&emsp;但是正如我在技术选型上提到的，组件是完全独立，如何解决两个窗口之间的通信问题就很关键。&emsp;&emsp;最原始的方法其实可以通过本地的 IO 操作，不过网上查了资料之后还是用了 socket 端口的方案。&emsp;&emsp;轮子是不可能自己去造的，于是就用了现成的 rpyc 方案，实现 python 程序的相互通信。&emsp;&emsp;而且 rpyc 没有 C 相关的调用，以你可以再不同的平台下通用。 &emsp;&emsp;原本是打算将 rpyc 和 浏览器 两者的调用合并到一起的。&emsp;&emsp;但是问题就来了， rpyc 也会开启一个死循环进行监听，这和 浏览器 的事件调用冲突了。&emsp;&emsp;所以没办法，最后也将 rpyc 的 server 单独分离出来调用。 &emsp;&emsp;由于运行的 CefBrowser 是死循环的缘故，因此我只能让 CefBrowser 不停地连接 rpyc 保持状态的同步。&emsp;&emsp;这个操作增加了很多非必要的开销。 socket 通信 &emsp;&emsp;写文章的时候感觉通过 rpyc 独立成三份代码有点奇怪，应该可以将 浏览器和 rpyc 调用合并到一起的。&emsp;&emsp;毕竟 rpyc 的阻塞肯定也是类似于 while True 的方式实现的，刚好可以和 浏览器的 UI 事件处理合并，就不需要单独分出来了。&emsp;&emsp;而且这样也就不需要 浏览器 不断地连接 rpyc 实现同步了，调用起来更加高效。 &emsp;&emsp;花了大半天的代码修改，最后决定使用 python 自带的 socket 模块， 根本不需要 笨重的 rpyc 模块了。&emsp;&emsp;当然转换到 socket 之后也遇到了很多坑，花了我贼多的时间。&emsp;&emsp;特别是 创建浏览器嵌入的过程，我生成 uuid 记录到 服务端的字典里面，下次调用就知道这个 CefBrowser 对应的 CEF 框架的浏览器了。&emsp;&emsp;一开始 uuid 是在服务端生成的，所以我要通过 socket 将这个 uuid 数据返回到 客户端。&emsp;&emsp;但是这个操作会有个奇葩的BUG，我调试了好久才发现只要是获取服务端返回值并且添加了窗口的嵌入 CreateBrowserSync 这个函数就会直接卡死。&emsp;&emsp;但是如果不嵌入浏览器的话又完全没有问题，不获取返回值也没有问题，让我着急得干瞪眼了。&emsp;&emsp;后来测试了好久，灵机一动，uuid其实可以在生成 CefBrowser 类的时候生成然后传进 服务端，这样就不需要 获取 返回值了。&emsp;&emsp;通过这个方法解决了这个坑爹的卡死问题。 CefBrowser 调用 &emsp;&emsp;整体的原理已经在上面说了。&emsp;&emsp;后续就是做一个 QWidget 包裹成 CefBrowser 来完成 rpyc 相关的通信处理。&emsp;&emsp;简化 API 调用的复杂度。 loadUrl str 加载网页路径 reload 刷新当前页面 goBack 后退 goForward 前进 getUrl 获取当前的网页地址 embed int str 传入窗口 id 嵌入窗口，后一个是初始化网页的传参 &emsp;&emsp;另外需要注意的是 embed 必须要所有的窗口构建完成才可以使用。&emsp;&emsp;否则获取的 winId 不对无法嵌入会报错的。&emsp;&emsp;我特意做了一个装饰器 autoCefEmbed 可以嵌入到主窗口 UI 的 init 函数里面，自动实现窗口的 embed&emsp;&emsp;autoCefEmbed 装饰器会先开启 Widget 的显示，然后再隐藏，否则嵌入浏览器将会出错。 &emsp;&emsp;具体的运行例子可以参照 master 仓库下的 test 文件夹中的 importTest.py&emsp;&emsp;只要将路径改为自己本地的 CefWIdget 路径就可以运行起来了。 CEF 框架缺点 &emsp;&emsp;CEF实在是太大了，虽然完美实现了跨平台多端兼容，但是 libcef.dll 的大小显然非常的不友好。&emsp;&emsp;主要是因为集成了很多不需要的功能比如说js的后台调试器之类的。 &emsp;&emsp;而且大小几乎接近便携版的 Chrome 却依然无法支持 h.264 等诸多视频格式，H5视频都不支持，貌似是商业license的缘故 &emsp;&emsp;后来我在网上找到了更好的嵌入方案 miniblink&emsp;&emsp;这个对 CEF 框架做了极致的大小优化，而且还可以将 node.js 集成实现 electron 的运行。&emsp;&emsp;只可惜是纯 C++ 的调用，也不知道是否可以做到类似 CEF 一样嵌入的效果。&emsp;&emsp;以后有时间再进一步研究 C++ 的问题。]]></content>
@@ -91,6 +106,7 @@
         <category>Maya</category>
         <category>CG Programming</category>
         <category>Python</category>
+        <category>Maya插件开发</category>
       </categories>
       <tags>
         <tag>Maya</tag>
@@ -106,8 +122,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>android</tag>
         <tag>效率</tag>
+        <tag>android</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -120,8 +136,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>android</tag>
         <tag>效率</tag>
+        <tag>android</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -219,8 +235,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>Windows</tag>
+        <tag>效率</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -246,6 +262,7 @@
         <category>Maya</category>
         <category>CG Programming</category>
         <category>Python</category>
+        <category>Maya插件开发</category>
       </categories>
       <tags>
         <tag>Maya</tag>
@@ -513,8 +530,8 @@
       </categories>
       <tags>
         <tag>Maya</tag>
-        <tag>Arnold</tag>
         <tag>Autodesk</tag>
+        <tag>Arnold</tag>
       </tags>
   </entry>
   <entry>
@@ -539,8 +556,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -565,8 +582,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
       </tags>
   </entry>
   <entry>
@@ -578,8 +595,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
       </tags>
   </entry>
   <entry>
@@ -591,8 +608,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
       </tags>
   </entry>
   <entry>
@@ -604,8 +621,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
       </tags>
   </entry>
   <entry>
@@ -1304,8 +1321,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1334,8 +1351,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1392,8 +1409,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1487,8 +1504,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1557,8 +1574,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1572,8 +1589,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1598,8 +1615,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1745,8 +1762,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -2335,8 +2352,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>拍照指南</tag>
         <tag>学习笔记</tag>
+        <tag>拍照指南</tag>
       </tags>
   </entry>
   <entry>
@@ -2388,8 +2405,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>学习笔记</tag>
         <tag>前期基本流程</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
 </search>
