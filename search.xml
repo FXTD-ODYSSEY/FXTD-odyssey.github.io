@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Unreal 导入 FBX 选项事项]]></title>
+    <url>%2Fposts%2F4ad87fc3.html</url>
+    <content type="text"><![CDATA[Maya 输出 FBX 导入 Unreal 踩过的坑 前言 &emsp;&emsp;由于工作的关系，对接引擎就会遇到很多导入导出的问题，这里总结一波。 动画勾选 step &emsp;&emsp;动画导入到虚幻的时候务必要勾选 step&emsp;&emsp;否则动画读取小数位的关键帧会有抖动的问题。 绑定导入 &emsp;&emsp;绑定导入到虚幻的时候通常都需要将 normal 的切换为 imported normal&emsp;&emsp;否则一些特殊修改的法线信息就不会导入了 Use T0 As Ref Pose &emsp;&emsp;关于 Unreal 绑定导入最坑爹的属性莫过于这个了&emsp;&emsp;关于这个属性相关的问题几乎无法在网上找到相关的描述&emsp;&emsp;而官方文档的介绍也只是说会将模型动画的第一帧作为绑定 pose&emsp;&emsp;但是在实际流程中，这个选项勾选和不勾选会导致很多很奇怪的问题。 &emsp;&emsp;有时候 Maya 导出的绑定文件会导致动作产生奇奇怪怪的错位。&emsp;&emsp;比如某些骨骼会莫名其妙地偏转了一定的度数。&emsp;&emsp;但是神奇的是将 FBX 导回 Maya 查看是一切正常的。&emsp;&emsp;然而如果勾选 Use T0 As Ref Pose 选项就可以解决问题 &emsp;&emsp;本来以为勾选就万事大吉了，可是后来有出了差错。&emsp;&emsp;如果勾选 Use T0 As Ref Pose 有时候会导致法线的显示异常。&emsp;&emsp;而且只会对 imported 的法线产生问题，如果是 computed 的法线则显示正常。 &emsp;&emsp;结果是两个问题无论是否勾选都会出问题。 动作错位 &emsp;&emsp;后来折腾了好久也没有解决方案，只好求救于我的导师了。&emsp;&emsp;关于 Pose 的问题，我导师很快就给出了一针见血的解决方案。&emsp;&emsp;原来这个问题和 Maya 绑定的 bindpose 有关，有可能是绑定文件修改过多导致产生多个 BindPose&emsp;&emsp;bindpose 直接不匹配就有可能导致偏移问题。 &emsp;&emsp;解决方法也很简单，只需要将这些 bindpose 全部删除掉，重新生成一个新的 bindpose 就可以了。&emsp;&emsp;这个操作也不影响到绑定和权重，非常方便。&emsp;&emsp;bindpose 的生成可以选择模型执行 Maya 的 mel 命令 1dagPose -bp -save 法线错乱 &emsp;&emsp;最初按照上面的方法的确解决了pose的问题，因此法线错乱的问题也就放在一边没有管了。&emsp;&emsp;不过按照导师的说法就是尽量不要勾选 Use T0 As Ref Pose &emsp;&emsp;可是后来就出现了完全反过来的情况。&emsp;&emsp;也就是勾选 Use T0 As Ref Pose 的话法线是正常的，但是如果不勾选的话 法线 是错乱的。&emsp;&emsp;于是我又测试了好久，期间尝试对重新绑定等操作。&emsp;&emsp;于是我中间的测试过程中，尽管中间过程中有些错误的操作，但是重新绑定的模型导入到引擎就好了。&emsp;&emsp;于是我就把完善的后续工作交给外包处理，等重新绑定完成了之后再放到引擎测试。&emsp;&emsp;结果回来的模型还是错乱的。&emsp;&emsp;于是我人都傻了，为啥我之前简单的测试是可以的呢？&emsp;&emsp;于是我自己完善了一边导出流程，结果发现自己导出的也是有问题的。 &emsp;&emsp;于是我又对比了之前那个不完善版本的区别，最后发现模型有转了 90 度的区别。&emsp;&emsp;这边绑定模型都是默认转了 90 度对接到引擎里面的。&emsp;&emsp;而这个模型我把他旋转到 0 度导入到引擎就是正确的法线效果了。 &emsp;&emsp;这个法线让我目瞪口呆了，后来咨询了绑定外包之后。&emsp;&emsp;得出大概是模型没有锁定法线导致的。&emsp;&emsp;的确模型的法线是特殊修改过的，而且不可以在 90 度的状态下锁定，必须要在 Maya 的 0 度状态下锁定法线。&emsp;&emsp;然后再旋转回 90 度，这样子导出的模型就不会有奇奇怪怪的法线问题了。 总结 &emsp;&emsp;没想到虚幻的导入会涉及到这些问题。&emsp;&emsp;特别是 Use T0 As Ref Pose 这个选项居然会影响到法线。&emsp;&emsp;不过都还好，问题最后都顺利解决了。]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>Unreal</category>
+      </categories>
+      <tags>
+        <tag>Maya</tag>
+        <tag>FBX</tag>
+        <tag>Unreal</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Python future-fstring库 原理解析]]></title>
     <url>%2Fposts%2F595dd86f.html</url>
-    <content type="text"><![CDATA[python codec 处理 黑科技 前言 &emsp;&emsp;很找之前我就发现了一个 python 黑科技一样的库，没错就是兼容 python2 的 future-fstrings 实现&emsp;&emsp;这个库的使用方法也是奇妙得很。 123# -*- coding: future_fstrings -*-thing = 'world'print(f'hello &#123;thing&#125;') &emsp;&emsp;只要正确安装了 future-fstrings 就可以通过 coding 的方式来兼容 python3 才可以使用 f-string&emsp;&emsp;而且这个黑科技居然没有用到 C 语言的支持，完全依靠原生 python 实现的。&emsp;&emsp;打开 future-fstrings 的主脚本也不到 300 行的代码&emsp;&emsp;到底是怎么做到的呀~ future-fstrings 主脚本探索 &emsp;&emsp;打开 github 仓库可以看到除了 setup.py 用来安装的脚本之外，主脚本就只有一个 future-fstrings.py&emsp;&emsp;一开始我都把目光关注到了 main 函数上了。&emsp;&emsp;然而 main 函数貌似只是个命令行调用工具，如果在 python 中直接运行这个脚本是会报错的，要求我传入参数。&emsp;&emsp;很显然脚本不应该是怎么用的。&emsp;&emsp;于是我继续往上面代码翻阅， 123456789101112131415161718192021222324fstring_decode = decodeSUPPORTS_FSTRINGS = _natively_supports_fstrings()if SUPPORTS_FSTRINGS: # pragma: no cover decode = utf_8.decode # noqa IncrementalDecoder = utf_8.incrementaldecoder # noqa StreamReader = utf_8.streamreader # noqa# codec apicodec_map = &#123; name: codecs.CodecInfo( name=name, encode=utf_8.encode, decode=decode, incrementalencoder=utf_8.incrementalencoder, incrementaldecoder=IncrementalDecoder, streamreader=StreamReader, streamwriter=utf_8.streamwriter, ) for name in ('future-fstrings', 'future_fstrings')&#125;def register(): # pragma: no cover codecs.register(codec_map.get) &emsp;&emsp;我发现这里运行的代码其实都是一些常亮的声明，并没有找到脚本的入口函数的位置(:з」∠)&emsp;&emsp;并且上面的字典运用也是震惊到我了，没想到 python 的字典还可以这么写的。&emsp;&emsp;这么写获取到的 codec_map 打印出来如下 12print codec_map&#123;u'future-fstrings': &lt;codecs.CodecInfo object for encoding future-fstrings at 0x266d888&gt;, u'future_fstrings': &lt;codecs.CodecInfo object for encoding future_fstrings at 0x2cba4c8&gt;&#125; &emsp;&emsp;这个操作不仅仅是给字典赋予了 key 值， key 值还传入到 CodecInfo 的类声明参数里面。&emsp;&emsp;可以通过这个方法快速生成不同传参的实例 &emsp;&emsp;好的，我们差点扯远了，目前需要找到的 future-fstrings 的入口函数&emsp;&emsp;然而只是从主脚本来看除了 main 函数之外就没有其他入口函数了。&emsp;&emsp;后来我仔细阅读 future-fstrings 的 readme 文档，里面提到 A .pth file which registers a codec on interpreter startup.&emsp;&emsp;这个 .pth 文件是什么东西来的呢？&emsp;&emsp;于是网上查了一下，原来这个 .pth 文件里面存储的 python 代码可以在 python.exe 运行的时候立刻执行，&emsp;&emsp;通过这个方法可以实现一些函数的初始化。 &emsp;&emsp;不过 github 仓库里面并没有 .pth 的文件，于是我去看了 setup.py 的代码&emsp;&emsp;果然找到了 python 代码生成 .pth 的代码 12345678PTH = ( 'try:\n' ' import future_fstrings\n' 'except ImportError:\n' ' pass\n' 'else:\n' ' future_fstrings.register()\n') &emsp;&emsp;也可以去到 python 的 site-packages 可以找到名字为 aaaaa_future_fstrings.pth 的文件 (这名字起得也是够随意的) 1import sys; exec('try:\n import future_fstrings\nexcept ImportError:\n pass\nelse:\n future_fstrings.register()\n') &emsp;&emsp;现在就找到入口的代码了，每当 python.exe 运行的时候都会执行 register 方法的 12def register(): # pragma: no cover codecs.register(codec_map.get) &emsp;&emsp;而 register 方法执行的是 codecs.register 方法，这个貌似是定义了一个新的编码格式。 codecs 库研究 &emsp;&emsp;codecs 库 python 原生的字符编码处理库，查阅了官方文档可以知道python支持自定义编码的扩展的。&emsp;&emsp;不过具体要怎么使用，还是得找 Stack Overflow 来解决。 链接 &emsp;&emsp;Stack Overflow 的代码是针对 python3 写的，我改写了一个 python2 的版本 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647import codecsimport string# NOTE https://stackoverflow.com/questions/38777818/how-do-i-properly-create-custom-text-codecs# prepare map from numbers to letters_encode_table = &#123;str(number): bytes(letter) for number, letter in enumerate(string.ascii_lowercase)&#125;# prepare inverse map_decode_table = &#123;v: k for k, v in _encode_table.items()&#125;def custom_encode(text): # example encoder that converts ints to letters # see https://docs.python.org/3/library/codecs.html#codecs.Codec.encode return b''.join(_encode_table[x] for x in text), len(text)def custom_decode(binary): # example decoder that converts letters to ints # see https://docs.python.org/3/library/codecs.html#codecs.Codec.decode return ''.join(_decode_table[x] for x in binary), len(binary)def custom_search_function(encoding_name): return codecs.CodecInfo(encode=custom_encode, decode=custom_decode, name='Reasons')def main(): # register your custom codec # note that CodecInfo.name is used later codecs.register(custom_search_function) binary = 'abcdefg' # decode letters to numbers text = binary.decode('Reasons') print(text) # 0123456 # encode numbers to letters binary2 = text.encode('Reasons') print(binary2) # abcdefgif __name__ == '__main__': main() &emsp;&emsp;通过上面的例子就可以自定义自己的编码处理方式，将字符串转换成其他的字符串。&emsp;&emsp;通过 encode 将字符神奇地转换为了数字的形式。 &emsp;&emsp;通过这个简单的例子我们可以大致窥探到 future-fstrings 的实现原理。&emsp;&emsp;我们也可以用下面的例子来验证我们的想法。 1234text = "world"fstring = 'f"hello &#123;text&#125;"'.decode('future-fstrings')print fstring# "hello &#123;&#125;".format((text)) &emsp;&emsp;可以看到 future-fstrings 其实就是将 f-string 形式的代码转换为了 format 的方式。&emsp;&emsp;所以 futre-strings 毕竟是没有使用 C 语言的方式实现，运行效率肯定不可能达到 python3 的速度了。&emsp;&emsp;但是能够实现代码转换的方式也着实让我震惊不已。 &emsp;&emsp;我之前研究过 pdb 代码追踪的过程，我知道如果是在 pyc 之类的文件上是实现不了源码的追踪的(除非源码还放在pyc的同级目录下)&emsp;&emsp;因为 pyc 已经转换为了 python 的字节码，可以通过 dis 库看到里面类似汇编语言的操作。&emsp;&emsp;于是我就开始疑虑，这种字符替代的方式是需要读取源码的，那恐怕 pyc 文件里面就不奏效了。 &emsp;&emsp;然而我测试了官方的 coding 放在开头的用啊，future-fstrings 完全可以在 pyc 里面使用，不受影响。&emsp;&emsp;于是我就开始好奇了，全局代码替换的方式是怎么实现的。 coding声明 全局替换的实现 &emsp;&emsp;最初我是打算使用断点测试研究 coding声明 设置背后的原理的&emsp;&emsp;但是这个 coding声明 必须放到最上面根本就没办法启动 pdb&emsp;&emsp;不过使用 encode 方式的话倒是可以通过 pdb 追踪到 future-fstrings 的脚本。&emsp;&emsp;代码会自己执行到 decode 函数中并且将相关的字符串传到 函数的 参数里&emsp;&emsp;于是我还是用传统的 print 方式测试打印&emsp;&emsp;然后就一目了然了。 &emsp;&emsp;如果添加了头声明，decode 传入了整个文件的源码。&emsp;&emsp;然后future-strings 用各种字符的操作将所有的 f-string 转换为了 python 的 format 字符处理形式。&emsp;&emsp;然后编码转换过程结束了之后， python 才会编译源码进行执行。&emsp;&emsp;这也解释了为啥 pyc 执行不受影响。&emsp;&emsp;因为 pyc 文件里面封存的是字节码也就是先完成了 编码 之后再编译出来的。&emsp;&emsp;所以通过 pyc 执行的时候，即便用于编译的 py 文件是有 coding 声明的 ，但是 pyc 却不会触发到 future-fstrings 的 decode 函数。 &emsp;&emsp;这个就是 future-fstrings 的原理~ 总结 &emsp;&emsp;的确理解了 codec 的方式之后，通过 codec 可以实现很多黑科技，毕竟是直接对源码进行的操作。&emsp;&emsp;而且通过 python 逻辑可以知道 pyc pyd 等等编译方案都不受影响的。&emsp;&emsp;唯一的缺点就是 python 的 coding 只能接受一个，如果使用了 future-fstrings 的编码就意味着无法使用其他的编码格式了。]]></content>
+    <content type="text"><![CDATA[python codec 处理 黑科技 前言 &emsp;&emsp;很找之前我就发现了一个 python 黑科技一样的库，没错就是兼容 python2 的 future-fstrings 实现&emsp;&emsp;这个库的使用方法也是奇妙得很。 123# -*- coding: future_fstrings -*-thing = 'world'print(f'hello &#123;thing&#125;') &emsp;&emsp;只要正确安装了 future-fstrings 就可以通过 coding 的方式来兼容 python3 才可以使用 f-string&emsp;&emsp;而且这个黑科技居然没有用到 C 语言的支持，完全依靠原生 python 实现的。&emsp;&emsp;打开 future-fstrings 的主脚本也不到 300 行的代码&emsp;&emsp;到底是怎么做到的呀~ future-fstrings 主脚本探索 &emsp;&emsp;打开 github 仓库可以看到除了 setup.py 用来安装的脚本之外，主脚本就只有一个 future-fstrings.py&emsp;&emsp;一开始我都把目光关注到了 main 函数上了。&emsp;&emsp;然而 main 函数貌似只是个命令行调用工具，如果在 python 中直接运行这个脚本是会报错的，要求我传入参数。&emsp;&emsp;很显然脚本不应该是怎么用的。&emsp;&emsp;于是我继续往上面代码翻阅， 123456789101112131415161718192021222324fstring_decode = decodeSUPPORTS_FSTRINGS = _natively_supports_fstrings()if SUPPORTS_FSTRINGS: # pragma: no cover decode = utf_8.decode # noqa IncrementalDecoder = utf_8.incrementaldecoder # noqa StreamReader = utf_8.streamreader # noqa# codec apicodec_map = &#123; name: codecs.CodecInfo( name=name, encode=utf_8.encode, decode=decode, incrementalencoder=utf_8.incrementalencoder, incrementaldecoder=IncrementalDecoder, streamreader=StreamReader, streamwriter=utf_8.streamwriter, ) for name in ('future-fstrings', 'future_fstrings')&#125;def register(): # pragma: no cover codecs.register(codec_map.get) &emsp;&emsp;我发现这里运行的代码其实都是一些常亮的声明，并没有找到脚本的入口函数的位置(:з」∠)&emsp;&emsp;并且上面的字典运用也是震惊到我了，没想到 python 的字典还可以这么写的。&emsp;&emsp;这么写获取到的 codec_map 打印出来如下 12print codec_map&#123;u'future-fstrings': &lt;codecs.CodecInfo object for encoding future-fstrings at 0x266d888&gt;, u'future_fstrings': &lt;codecs.CodecInfo object for encoding future_fstrings at 0x2cba4c8&gt;&#125; &emsp;&emsp;这个操作不仅仅是给字典赋予了 key 值， key 值还传入到 CodecInfo 的类声明参数里面。&emsp;&emsp;可以通过这个方法快速生成不同传参的实例 &emsp;&emsp;好的，我们差点扯远了，目前需要找到的 future-fstrings 的入口函数&emsp;&emsp;然而只是从主脚本来看除了 main 函数之外就没有其他入口函数了。&emsp;&emsp;后来我仔细阅读 future-fstrings 的 readme 文档，里面提到 A .pth file which registers a codec on interpreter startup.&emsp;&emsp;这个 .pth 文件是什么东西来的呢？&emsp;&emsp;于是网上查了一下，原来这个 .pth 文件里面存储的 python 代码可以在 python.exe 运行的时候立刻执行，&emsp;&emsp;通过这个方法可以实现一些函数的初始化。 &emsp;&emsp;不过 github 仓库里面并没有 .pth 的文件，于是我去看了 setup.py 的代码&emsp;&emsp;果然找到了 python 代码生成 .pth 的代码 12345678PTH = ( 'try:\n' ' import future_fstrings\n' 'except ImportError:\n' ' pass\n' 'else:\n' ' future_fstrings.register()\n') &emsp;&emsp;也可以去到 python 的 site-packages 可以找到名字为 aaaaa_future_fstrings.pth 的文件 (这名字起得也是够随意的) 1import sys; exec('try:\n import future_fstrings\nexcept ImportError:\n pass\nelse:\n future_fstrings.register()\n') &emsp;&emsp;现在就找到入口的代码了，每当 python.exe 运行的时候都会执行 register 方法的 12def register(): # pragma: no cover codecs.register(codec_map.get) &emsp;&emsp;而 register 方法执行的是 codecs.register 方法，这个貌似是定义了一个新的编码格式。 codecs 库研究 &emsp;&emsp;codecs 库 python 原生的字符编码处理库，查阅了官方文档可以知道python支持自定义编码的扩展的。&emsp;&emsp;不过具体要怎么使用，还是得找 Stack Overflow 来解决。 链接 &emsp;&emsp;Stack Overflow 的代码是针对 python3 写的，我改写了一个 python2 的版本 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647import codecsimport string# NOTE https://stackoverflow.com/questions/38777818/how-do-i-properly-create-custom-text-codecs# prepare map from numbers to letters_encode_table = &#123;str(number): bytes(letter) for number, letter in enumerate(string.ascii_lowercase)&#125;# prepare inverse map_decode_table = &#123;v: k for k, v in _encode_table.items()&#125;def custom_encode(text): # example encoder that converts ints to letters # see https://docs.python.org/3/library/codecs.html#codecs.Codec.encode return b''.join(_encode_table[x] for x in text), len(text)def custom_decode(binary): # example decoder that converts letters to ints # see https://docs.python.org/3/library/codecs.html#codecs.Codec.decode return ''.join(_decode_table[x] for x in binary), len(binary)def custom_search_function(encoding_name): return codecs.CodecInfo(encode=custom_encode, decode=custom_decode, name='Reasons')def main(): # register your custom codec # note that CodecInfo.name is used later codecs.register(custom_search_function) binary = 'abcdefg' # decode letters to numbers text = binary.decode('Reasons') print(text) # 0123456 # encode numbers to letters binary2 = text.encode('Reasons') print(binary2) # abcdefgif __name__ == '__main__': main() &emsp;&emsp;通过上面的例子就可以自定义自己的编码处理方式，将字符串转换成其他的字符串。&emsp;&emsp;通过 encode 将字符神奇地转换为了数字的形式。 &emsp;&emsp;通过这个简单的例子我们可以大致窥探到 future-fstrings 的实现原理。&emsp;&emsp;我们也可以用下面的例子来验证我们的想法。 1234text = "world"fstring = 'f"hello &#123;text&#125;"'.decode('future-fstrings')print fstring# "hello &#123;&#125;".format((text)) &emsp;&emsp;可以看到 future-fstrings 其实就是将 f-string 形式的代码转换为了 format 的方式。&emsp;&emsp;所以 futre-strings 毕竟是没有使用 C 语言的方式实现，运行效率肯定不可能达到 python3 的速度了。&emsp;&emsp;但是能够实现代码转换的方式也着实让我震惊不已。 &emsp;&emsp;我之前研究过 pdb 代码追踪的过程，我知道如果是在 pyc 之类的文件上是实现不了源码的追踪的(除非源码还放在pyc的同级目录下)&emsp;&emsp;因为 pyc 已经转换为了 python 的字节码，可以通过 dis 库看到里面类似汇编语言的操作。&emsp;&emsp;于是我就开始疑虑，这种字符替代的方式是需要读取源码的，那恐怕 pyc 文件里面就不奏效了。 &emsp;&emsp;然而我测试了官方的 coding 放在开头的用啊，future-fstrings 完全可以在 pyc 里面使用，不受影响。&emsp;&emsp;于是我就开始好奇了，全局代码替换的方式是怎么实现的。 coding声明 全局替换的实现 &emsp;&emsp;最初我是打算使用断点测试研究 coding声明 设置背后的原理的&emsp;&emsp;但是这个 coding声明 必须放到最上面根本就没办法启动 pdb&emsp;&emsp;不过使用 encode 方式的话倒是可以通过 pdb 追踪到 future-fstrings 的脚本。&emsp;&emsp;代码会自己执行到 decode 函数中并且将相关的字符串传到 函数的 参数里&emsp;&emsp;于是我还是用传统的 print 方式测试打印&emsp;&emsp;然后就一目了然了。 &emsp;&emsp;如果添加了头声明，decode 传入了整个文件的源码。&emsp;&emsp;然后future-strings 用各种字符的操作将所有的 f-string 转换为了 python 的 format 字符处理形式。&emsp;&emsp;然后编码转换过程结束了之后， python 才会编译源码进行执行。&emsp;&emsp;这也解释了为啥 pyc 执行不受影响。&emsp;&emsp;因为 pyc 文件里面封存的是字节码也就是先完成了 编码 之后再编译出来的。&emsp;&emsp;所以通过 pyc 执行的时候，即便用于编译的 py 文件是有 coding 声明的 ，但是 pyc 却不会触发到 future-fstrings 的 decode 函数。 &emsp;&emsp;这个就是 future-fstrings 的原理~ 总结 &emsp;&emsp;的确理解了 codec 的方式之后，通过 codec 可以实现很多黑科技，毕竟是直接对源码进行的操作。&emsp;&emsp;而且通过 python 逻辑可以知道 pyc pyd 等等编译方案都不受影响的。&emsp;&emsp;唯一的缺点就是 python 的 coding 只能接受一个，如果使用了 future-fstrings 的编码就意味着无法使用其他的编码格式了。 &emsp;&emsp;另外利用类似的黑科技的还有 dropbox 公司开发的 pyxl&emsp;&emsp;也是通过 coding 的方式让 python 支持 html 代码的嵌入]]></content>
       <categories>
         <category>Python</category>
         <category>Python黑科技</category>
@@ -149,8 +163,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>android</tag>
+        <tag>效率</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -163,8 +177,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>android</tag>
+        <tag>效率</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -262,8 +276,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -389,8 +403,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>3dsMax</tag>
         <tag>Python</tag>
+        <tag>3dsMax</tag>
       </tags>
   </entry>
   <entry>
@@ -443,8 +457,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>3dsMax</tag>
         <tag>Python</tag>
+        <tag>3dsMax</tag>
       </tags>
   </entry>
   <entry>
@@ -557,8 +571,8 @@
       </categories>
       <tags>
         <tag>Maya</tag>
-        <tag>Autodesk</tag>
         <tag>Arnold</tag>
+        <tag>Autodesk</tag>
       </tags>
   </entry>
   <entry>
@@ -583,8 +597,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -609,8 +623,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
       </tags>
   </entry>
   <entry>
@@ -622,8 +636,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
       </tags>
   </entry>
   <entry>
@@ -635,8 +649,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
       </tags>
   </entry>
   <entry>
@@ -648,8 +662,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
       </tags>
   </entry>
   <entry>
@@ -1348,8 +1362,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1378,8 +1392,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1436,8 +1450,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1531,8 +1545,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1601,8 +1615,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1616,8 +1630,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1642,8 +1656,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1789,8 +1803,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>

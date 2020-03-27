@@ -4,8 +4,35 @@
 
     
   <url>
+    <loc>https://blog.l0v0.com/posts/4ad87fc3.html</loc>
+    <lastmod>2020-03-27T09:51:43.650Z</lastmod>
+    <data>
+        <display>
+        <title>Unreal 导入 FBX 选项事项</title>
+        <pubTime>2020-03-27T09:51:13.000Z</pubTime>
+        
+        <tag>Maya</tag>
+         
+        <tag>FBX</tag>
+         
+        <tag>Unreal</tag>
+         
+         
+           
+             
+              <breadCrumb title="Maya" url="https://blog.l0v0.com/categories/Maya/"/>
+          
+             
+              <breadCrumb title="Unreal" url="https://blog.l0v0.com/categories/Maya/Unreal/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://blog.l0v0.com/posts/595dd86f.html</loc>
-    <lastmod>2020-03-26T03:54:15.814Z</lastmod>
+    <lastmod>2020-03-26T05:57:19.292Z</lastmod>
     <data>
         <display>
         <title>Python future-fstring库 原理解析</title>
@@ -28,7 +55,7 @@
     
   <url>
     <loc>https://blog.l0v0.com/posts/864bfe61.html</loc>
-    <lastmod>2020-03-26T02:28:56.578Z</lastmod>
+    <lastmod>2020-03-26T05:43:59.681Z</lastmod>
     <data>
         <display>
         <title>Maya Reference Edit 属性清理</title>
@@ -828,9 +855,9 @@
         <title>安卓手机效率提升指南（二）</title>
         <pubTime>2020-02-29T09:14:52.000Z</pubTime>
         
-        <tag>效率</tag>
-         
         <tag>android</tag>
+         
+        <tag>效率</tag>
          
         <tag>app</tag>
          
@@ -855,9 +882,9 @@
         <title>安卓手机效率提升指南（一）</title>
         <pubTime>2020-02-27T10:17:10.000Z</pubTime>
         
-        <tag>效率</tag>
-         
         <tag>android</tag>
+         
+        <tag>效率</tag>
          
         <tag>app</tag>
          
@@ -882,9 +909,9 @@
         <title>Windows 效率提升指南</title>
         <pubTime>2020-02-05T09:21:48.000Z</pubTime>
         
-        <tag>Windows</tag>
-         
         <tag>效率</tag>
+         
+        <tag>Windows</tag>
          
         <tag>软件</tag>
          
@@ -1349,9 +1376,9 @@
         <title>3dsMax FBX导出工具进阶版</title>
         <pubTime>2019-12-20T01:42:50.000Z</pubTime>
         
-        <tag>3dsMax</tag>
-         
         <tag>Python</tag>
+         
+        <tag>3dsMax</tag>
          
          
            
@@ -1464,9 +1491,9 @@
         <title>【回忆录】 - 我的大三</title>
         <pubTime>2019-10-26T08:43:56.000Z</pubTime>
         
-        <tag>人生</tag>
-         
         <tag>回顾</tag>
+         
+        <tag>人生</tag>
          
          
            
@@ -1509,9 +1536,9 @@
         <title>3dsMax FBX导出工具</title>
         <pubTime>2019-11-26T05:49:51.000Z</pubTime>
         
-        <tag>3dsMax</tag>
-         
         <tag>Python</tag>
+         
+        <tag>3dsMax</tag>
          
          
            
@@ -1654,9 +1681,9 @@
         <title>华强方特 实习 第一周</title>
         <pubTime>2018-11-17T11:40:43.000Z</pubTime>
         
-        <tag>人生</tag>
-         
         <tag>回顾</tag>
+         
+        <tag>人生</tag>
          
         <tag>学习</tag>
          
@@ -1704,9 +1731,9 @@
         <title>【回忆录】 - 我的大一</title>
         <pubTime>2019-10-26T07:36:05.000Z</pubTime>
         
-        <tag>人生</tag>
-         
         <tag>回顾</tag>
+         
+        <tag>人生</tag>
          
          
            
@@ -1729,9 +1756,9 @@
         <title>【回忆录】 - 我的大二</title>
         <pubTime>2019-10-26T07:40:09.000Z</pubTime>
         
-        <tag>人生</tag>
-         
         <tag>回顾</tag>
+         
+        <tag>人生</tag>
          
          
            
@@ -1813,9 +1840,9 @@
         
         <tag>Maya</tag>
          
-        <tag>Autodesk</tag>
-         
         <tag>Arnold</tag>
+         
+        <tag>Autodesk</tag>
          
          
            
@@ -1888,9 +1915,9 @@
         <title>【回忆录】 - 我的高中</title>
         <pubTime>2019-10-26T07:25:54.000Z</pubTime>
         
-        <tag>人生</tag>
-         
         <tag>回顾</tag>
+         
+        <tag>人生</tag>
          
          
            
@@ -1913,9 +1940,9 @@
         <title>校招之路</title>
         <pubTime>2019-10-27T02:36:44.000Z</pubTime>
         
-        <tag>人生</tag>
-         
         <tag>回顾</tag>
+         
+        <tag>人生</tag>
          
         <tag>学习</tag>
          
@@ -1943,9 +1970,9 @@
         <title>【总结】 2019年1月回顾 | 2月学习计划</title>
         <pubTime>2019-02-07T02:48:32.000Z</pubTime>
         
-        <tag>人生</tag>
-         
         <tag>回顾</tag>
+         
+        <tag>人生</tag>
          
         <tag>学习</tag>
          
@@ -2057,33 +2084,6 @@
     
     
   <url>
-    <loc>https://blog.l0v0.com/posts/59323.html</loc>
-    <lastmod>2019-11-07T13:28:22.904Z</lastmod>
-    <data>
-        <display>
-        <title>数据结构大作业回顾</title>
-        <pubTime>2018-08-09T13:48:15.000Z</pubTime>
-        
-        <tag>SFML</tag>
-         
-        <tag>C++</tag>
-         
-        <tag>数据结构</tag>
-         
-         
-           
-             
-              <breadCrumb title="大学" url="https://blog.l0v0.com/categories/%E5%A4%A7%E5%AD%A6/"/>
-          
-             
-              <breadCrumb title="C++" url="https://blog.l0v0.com/categories/%E5%A4%A7%E5%AD%A6/C/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://blog.l0v0.com/posts/6250.html</loc>
     <lastmod>2019-11-07T13:28:22.904Z</lastmod>
     <data>
@@ -2104,6 +2104,33 @@
           
              
               <breadCrumb title="前端" url="https://blog.l0v0.com/categories/three-js/%E5%89%8D%E7%AB%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/59323.html</loc>
+    <lastmod>2019-11-07T13:28:22.904Z</lastmod>
+    <data>
+        <display>
+        <title>数据结构大作业回顾</title>
+        <pubTime>2018-08-09T13:48:15.000Z</pubTime>
+        
+        <tag>SFML</tag>
+         
+        <tag>C++</tag>
+         
+        <tag>数据结构</tag>
+         
+         
+           
+             
+              <breadCrumb title="大学" url="https://blog.l0v0.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+          
+             
+              <breadCrumb title="C++" url="https://blog.l0v0.com/categories/%E5%A4%A7%E5%AD%A6/C/"/>
           
         </display>
     </data>
@@ -2613,36 +2640,6 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/3fb9ee2b.html</loc>
-    <lastmod>2019-11-07T13:28:22.895Z</lastmod>
-    <data>
-        <display>
-        <title>Vue 学习之路（七）</title>
-        <pubTime>2019-07-01T14:26:10.000Z</pubTime>
-        
-        <tag>前端</tag>
-         
-        <tag>JavaScript</tag>
-         
-        <tag>Vue</tag>
-         
-         
-           
-             
-              <breadCrumb title="前端" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/"/>
-          
-             
-              <breadCrumb title="Vue" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/Vue/"/>
-          
-             
-              <breadCrumb title="Vue学习之路" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://blog.l0v0.com/posts/edb999b4.html</loc>
     <lastmod>2019-11-07T13:28:22.895Z</lastmod>
     <data>
@@ -2673,12 +2670,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/88b7d26d.html</loc>
-    <lastmod>2019-11-07T13:28:22.894Z</lastmod>
+    <loc>https://blog.l0v0.com/posts/3fb9ee2b.html</loc>
+    <lastmod>2019-11-07T13:28:22.895Z</lastmod>
     <data>
         <display>
-        <title>Vue 学习之路（五）</title>
-        <pubTime>2019-06-30T08:28:49.000Z</pubTime>
+        <title>Vue 学习之路（七）</title>
+        <pubTime>2019-07-01T14:26:10.000Z</pubTime>
         
         <tag>前端</tag>
          
@@ -2763,12 +2760,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/2d0c41c5.html</loc>
-    <lastmod>2019-11-07T13:28:22.893Z</lastmod>
+    <loc>https://blog.l0v0.com/posts/88b7d26d.html</loc>
+    <lastmod>2019-11-07T13:28:22.894Z</lastmod>
     <data>
         <display>
-        <title>Vue 学习之路（一）</title>
-        <pubTime>2019-06-29T12:02:47.000Z</pubTime>
+        <title>Vue 学习之路（五）</title>
+        <pubTime>2019-06-30T08:28:49.000Z</pubTime>
         
         <tag>前端</tag>
          
@@ -2799,6 +2796,36 @@
         <display>
         <title>Vue 学习之路（二）</title>
         <pubTime>2019-06-30T00:47:40.000Z</pubTime>
+        
+        <tag>前端</tag>
+         
+        <tag>JavaScript</tag>
+         
+        <tag>Vue</tag>
+         
+         
+           
+             
+              <breadCrumb title="前端" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/"/>
+          
+             
+              <breadCrumb title="Vue" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/Vue/"/>
+          
+             
+              <breadCrumb title="Vue学习之路" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/2d0c41c5.html</loc>
+    <lastmod>2019-11-07T13:28:22.893Z</lastmod>
+    <data>
+        <display>
+        <title>Vue 学习之路（一）</title>
+        <pubTime>2019-06-29T12:02:47.000Z</pubTime>
         
         <tag>前端</tag>
          
@@ -3090,12 +3117,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/40670.html</loc>
+    <loc>https://blog.l0v0.com/posts/37543.html</loc>
     <lastmod>2019-11-07T13:28:22.887Z</lastmod>
     <data>
         <display>
-        <title>Three.js - 学习之路（三）</title>
-        <pubTime>2018-07-27T02:05:53.000Z</pubTime>
+        <title>Three.js - 学习之路（二）</title>
+        <pubTime>2018-07-27T00:53:38.000Z</pubTime>
         
         <tag>前端</tag>
          
@@ -3117,12 +3144,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/37543.html</loc>
+    <loc>https://blog.l0v0.com/posts/40670.html</loc>
     <lastmod>2019-11-07T13:28:22.887Z</lastmod>
     <data>
         <display>
-        <title>Three.js - 学习之路（二）</title>
-        <pubTime>2018-07-27T00:53:38.000Z</pubTime>
+        <title>Three.js - 学习之路（三）</title>
+        <pubTime>2018-07-27T02:05:53.000Z</pubTime>
         
         <tag>前端</tag>
          
@@ -3198,12 +3225,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/59091.html</loc>
+    <loc>https://blog.l0v0.com/posts/57520.html</loc>
     <lastmod>2019-11-07T13:28:22.885Z</lastmod>
     <data>
         <display>
-        <title>Three.js - postprocessing 后期处理</title>
-        <pubTime>2018-08-18T02:38:03.000Z</pubTime>
+        <title>Three.js - EditorContrl 添加区域限制</title>
+        <pubTime>2018-09-17T09:10:53.000Z</pubTime>
         
         <tag>前端</tag>
          
@@ -3211,7 +3238,7 @@
          
         <tag>WebGL</tag>
          
-        <tag>postprocessing</tag>
+        <tag>摄像机</tag>
          
          
            
@@ -3227,12 +3254,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/57520.html</loc>
+    <loc>https://blog.l0v0.com/posts/59091.html</loc>
     <lastmod>2019-11-07T13:28:22.885Z</lastmod>
     <data>
         <display>
-        <title>Three.js - EditorContrl 添加区域限制</title>
-        <pubTime>2018-09-17T09:10:53.000Z</pubTime>
+        <title>Three.js - postprocessing 后期处理</title>
+        <pubTime>2018-08-18T02:38:03.000Z</pubTime>
         
         <tag>前端</tag>
          
@@ -3240,7 +3267,7 @@
          
         <tag>WebGL</tag>
          
-        <tag>摄像机</tag>
+        <tag>postprocessing</tag>
          
          
            
@@ -3364,30 +3391,6 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/33086.html</loc>
-    <lastmod>2019-11-07T13:28:22.868Z</lastmod>
-    <data>
-        <display>
-        <title>Photogrammetry 学习之路（三）</title>
-        <pubTime>2018-07-14T12:28:56.000Z</pubTime>
-        
-        <tag>Photogrammetry</tag>
-         
-        <tag>学习笔记</tag>
-         
-        <tag>拍照指南</tag>
-         
-         
-           
-             
-              <breadCrumb title="Photogrammetry" url="https://blog.l0v0.com/categories/Photogrammetry/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://blog.l0v0.com/posts/30435.html</loc>
     <lastmod>2019-11-07T13:28:22.868Z</lastmod>
     <data>
@@ -3402,6 +3405,30 @@
         <tag>标记</tag>
          
         <tag>遮罩</tag>
+         
+         
+           
+             
+              <breadCrumb title="Photogrammetry" url="https://blog.l0v0.com/categories/Photogrammetry/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/33086.html</loc>
+    <lastmod>2019-11-07T13:28:22.868Z</lastmod>
+    <data>
+        <display>
+        <title>Photogrammetry 学习之路（三）</title>
+        <pubTime>2018-07-14T12:28:56.000Z</pubTime>
+        
+        <tag>Photogrammetry</tag>
+         
+        <tag>学习笔记</tag>
+         
+        <tag>拍照指南</tag>
          
          
            
@@ -3484,16 +3511,16 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/6f4e3164.html</loc>
+    <loc>https://blog.l0v0.com/posts/bb58a66.html</loc>
     <lastmod>2019-11-07T13:28:22.865Z</lastmod>
     <data>
         <display>
-        <title>【总结】 2019年2月回顾 | 3月学习计划</title>
-        <pubTime>2019-03-02T10:22:57.000Z</pubTime>
+        <title>【总结】-2019年3月、4月回顾-5月学习计划</title>
+        <pubTime>2019-04-09T05:10:05.000Z</pubTime>
         
-        <tag>人生</tag>
-         
         <tag>回顾</tag>
+         
+        <tag>人生</tag>
          
         <tag>学习</tag>
          
@@ -3511,16 +3538,16 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/bb58a66.html</loc>
+    <loc>https://blog.l0v0.com/posts/6f4e3164.html</loc>
     <lastmod>2019-11-07T13:28:22.865Z</lastmod>
     <data>
         <display>
-        <title>【总结】-2019年3月、4月回顾-5月学习计划</title>
-        <pubTime>2019-04-09T05:10:05.000Z</pubTime>
+        <title>【总结】 2019年2月回顾 | 3月学习计划</title>
+        <pubTime>2019-03-02T10:22:57.000Z</pubTime>
         
-        <tag>人生</tag>
-         
         <tag>回顾</tag>
+         
+        <tag>人生</tag>
          
         <tag>学习</tag>
          
@@ -3545,9 +3572,9 @@
         <title>【总结】 2018年12月回顾 | 1月学习计划</title>
         <pubTime>2018-12-29T13:35:03.000Z</pubTime>
         
-        <tag>人生</tag>
-         
         <tag>回顾</tag>
+         
+        <tag>人生</tag>
          
         <tag>学习</tag>
          
@@ -3572,9 +3599,9 @@
         <title>【总结】 2018年11月回顾 | 12月学习计划</title>
         <pubTime>2018-12-02T05:38:38.000Z</pubTime>
         
-        <tag>人生</tag>
-         
         <tag>回顾</tag>
+         
+        <tag>人生</tag>
          
         <tag>学习</tag>
          
@@ -3599,9 +3626,9 @@
         <title>【总结】 2018年9月回顾 | 10月学习计划</title>
         <pubTime>2018-10-01T01:18:57.000Z</pubTime>
         
-        <tag>人生</tag>
-         
         <tag>回顾</tag>
+         
+        <tag>人生</tag>
          
         <tag>学习</tag>
          
@@ -3626,9 +3653,9 @@
         <title>【总结】 2018年10月回顾 | 11月学习计划</title>
         <pubTime>2018-10-30T14:08:27.000Z</pubTime>
         
-        <tag>人生</tag>
-         
         <tag>回顾</tag>
+         
+        <tag>人生</tag>
          
         <tag>学习</tag>
          
@@ -3706,12 +3733,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/332f70b.html</loc>
+    <loc>https://blog.l0v0.com/posts/50d67130.html</loc>
     <lastmod>2019-11-07T13:28:22.858Z</lastmod>
     <data>
         <display>
-        <title>Maya Ziva 设置参考</title>
-        <pubTime>2019-01-10T07:05:12.000Z</pubTime>
+        <title>Maya Python - TSM镜像工具</title>
+        <pubTime>2019-01-02T07:05:12.000Z</pubTime>
         
         <tag>Maya</tag>
          
@@ -3767,12 +3794,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/50d67130.html</loc>
+    <loc>https://blog.l0v0.com/posts/332f70b.html</loc>
     <lastmod>2019-11-07T13:28:22.858Z</lastmod>
     <data>
         <display>
-        <title>Maya Python - TSM镜像工具</title>
-        <pubTime>2019-01-02T07:05:12.000Z</pubTime>
+        <title>Maya Ziva 设置参考</title>
+        <pubTime>2019-01-10T07:05:12.000Z</pubTime>
         
         <tag>Maya</tag>
          
@@ -4049,12 +4076,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/41123651.html</loc>
+    <loc>https://blog.l0v0.com/posts/d81d7e23.html</loc>
     <lastmod>2019-11-07T13:28:22.849Z</lastmod>
     <data>
         <display>
-        <title>Shader学习之路(五)</title>
-        <pubTime>2019-06-23T06:59:09.000Z</pubTime>
+        <title>Shader学习之路(六)</title>
+        <pubTime>2019-06-23T07:40:58.000Z</pubTime>
         
         <tag>Unity</tag>
          
@@ -4077,12 +4104,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/d81d7e23.html</loc>
+    <loc>https://blog.l0v0.com/posts/41123651.html</loc>
     <lastmod>2019-11-07T13:28:22.849Z</lastmod>
     <data>
         <display>
-        <title>Shader学习之路(六)</title>
-        <pubTime>2019-06-23T07:40:58.000Z</pubTime>
+        <title>Shader学习之路(五)</title>
+        <pubTime>2019-06-23T06:59:09.000Z</pubTime>
         
         <tag>Unity</tag>
          
@@ -4239,12 +4266,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/4e9ee1dc.html</loc>
+    <loc>https://blog.l0v0.com/posts/410ea085.html</loc>
     <lastmod>2019-11-07T13:28:22.844Z</lastmod>
     <data>
         <display>
-        <title>观看笔记 - Maya 100 招 - 第四十一招到第五十招</title>
-        <pubTime>2019-06-24T13:10:30.000Z</pubTime>
+        <title>观看笔记 - Maya 100 招 - 第三十一招到第四十招</title>
+        <pubTime>2019-06-23T11:10:30.000Z</pubTime>
         
         <tag>Maya</tag>
          
@@ -4262,12 +4289,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/410ea085.html</loc>
+    <loc>https://blog.l0v0.com/posts/4e9ee1dc.html</loc>
     <lastmod>2019-11-07T13:28:22.844Z</lastmod>
     <data>
         <display>
-        <title>观看笔记 - Maya 100 招 - 第三十一招到第四十招</title>
-        <pubTime>2019-06-23T11:10:30.000Z</pubTime>
+        <title>观看笔记 - Maya 100 招 - 第四十一招到第五十招</title>
+        <pubTime>2019-06-24T13:10:30.000Z</pubTime>
         
         <tag>Maya</tag>
          
@@ -4548,34 +4575,6 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/988.html</loc>
-    <lastmod>2019-11-07T13:28:22.837Z</lastmod>
-    <data>
-        <display>
-        <title>MEL - 选点成盒插件</title>
-        <pubTime>2018-09-03T00:27:14.000Z</pubTime>
-        
-        <tag>Maya</tag>
-         
-        <tag>MEL</tag>
-         
-         
-           
-             
-              <breadCrumb title="Maya" url="https://blog.l0v0.com/categories/Maya/"/>
-          
-             
-              <breadCrumb title="CG Programming" url="https://blog.l0v0.com/categories/Maya/CG-Programming/"/>
-          
-             
-              <breadCrumb title="MEL" url="https://blog.l0v0.com/categories/Maya/CG-Programming/MEL/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://blog.l0v0.com/posts/1905.html</loc>
     <lastmod>2019-11-07T13:28:22.837Z</lastmod>
     <data>
@@ -4604,26 +4603,27 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/50174.html</loc>
-    <lastmod>2019-11-07T13:28:22.835Z</lastmod>
+    <loc>https://blog.l0v0.com/posts/988.html</loc>
+    <lastmod>2019-11-07T13:28:22.837Z</lastmod>
     <data>
         <display>
-        <title>观看笔记 - Pluralsight - Houdini VEX Fundamentals</title>
-        <pubTime>2018-09-23T02:57:40.000Z</pubTime>
+        <title>MEL - 选点成盒插件</title>
+        <pubTime>2018-09-03T00:27:14.000Z</pubTime>
         
-        <tag>Houdini</tag>
+        <tag>Maya</tag>
          
-        <tag>pluralsight</tag>
-         
-        <tag>VEX</tag>
+        <tag>MEL</tag>
          
          
            
              
-              <breadCrumb title="Houdini" url="https://blog.l0v0.com/categories/Houdini/"/>
+              <breadCrumb title="Maya" url="https://blog.l0v0.com/categories/Maya/"/>
           
              
-              <breadCrumb title="VEX" url="https://blog.l0v0.com/categories/Houdini/VEX/"/>
+              <breadCrumb title="CG Programming" url="https://blog.l0v0.com/categories/Maya/CG-Programming/"/>
+          
+             
+              <breadCrumb title="MEL" url="https://blog.l0v0.com/categories/Maya/CG-Programming/MEL/"/>
           
         </display>
     </data>
@@ -4658,18 +4658,18 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/21898.html</loc>
-    <lastmod>2019-11-07T13:28:22.834Z</lastmod>
+    <loc>https://blog.l0v0.com/posts/50174.html</loc>
+    <lastmod>2019-11-07T13:28:22.835Z</lastmod>
     <data>
         <display>
-        <title>Houdini VDB 将CAD图纸转成实体模型</title>
-        <pubTime>2018-09-21T12:02:41.000Z</pubTime>
+        <title>观看笔记 - Pluralsight - Houdini VEX Fundamentals</title>
+        <pubTime>2018-09-23T02:57:40.000Z</pubTime>
         
         <tag>Houdini</tag>
          
-        <tag>模型</tag>
+        <tag>pluralsight</tag>
          
-        <tag>VDB</tag>
+        <tag>VEX</tag>
          
          
            
@@ -4677,7 +4677,7 @@
               <breadCrumb title="Houdini" url="https://blog.l0v0.com/categories/Houdini/"/>
           
              
-              <breadCrumb title="Three.js" url="https://blog.l0v0.com/categories/Houdini/Three-js/"/>
+              <breadCrumb title="VEX" url="https://blog.l0v0.com/categories/Houdini/VEX/"/>
           
         </display>
     </data>
@@ -4702,6 +4702,33 @@
            
              
               <breadCrumb title="Houdini" url="https://blog.l0v0.com/categories/Houdini/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/21898.html</loc>
+    <lastmod>2019-11-07T13:28:22.834Z</lastmod>
+    <data>
+        <display>
+        <title>Houdini VDB 将CAD图纸转成实体模型</title>
+        <pubTime>2018-09-21T12:02:41.000Z</pubTime>
+        
+        <tag>Houdini</tag>
+         
+        <tag>模型</tag>
+         
+        <tag>VDB</tag>
+         
+         
+           
+             
+              <breadCrumb title="Houdini" url="https://blog.l0v0.com/categories/Houdini/"/>
+          
+             
+              <breadCrumb title="Three.js" url="https://blog.l0v0.com/categories/Houdini/Three-js/"/>
           
         </display>
     </data>
