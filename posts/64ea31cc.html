@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <meta name="baidu-site-verification" content="L6Lm9d5Crl"/>
+  
+  
+  
+  
+  <title>Maya MGTools&amp;animBot 动画插件研究 | 智伤帝的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="推荐 MGTools 和 animBot 插件 | 做动画事半功倍">
+<meta name="keywords" content="Maya,Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Maya MGTools&amp;animBot 动画插件研究">
+<meta property="og:url" content="https://blog.l0v0.com/posts/64ea31cc.html">
+<meta property="og:site_name" content="智伤帝的个人博客">
+<meta property="og:description" content="推荐 MGTools 和 animBot 插件 | 做动画事半功倍">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-04-06T03:39:47.235Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Maya MGTools&amp;animBot 动画插件研究">
+<meta name="twitter:description" content="推荐 MGTools 和 animBot 插件 | 做动画事半功倍">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/avatar.png" class="js-avatar">
+            
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">智伤帝</a></h1>
+        </hgroup>
+        
+        <p class="header-subtitle"><br></p>
+        
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        <!-- <div class="icon-wrap icon-categories hide">
+                            <i class="fa fa-th" aria-hidden="true" style="font: normal normal normal 30px/1 FontAwesome;margin: 2px auto;color: #333;"></i>
+                        </div>
+                        <div class="icon-wrap icon-archive hide" >
+                            <i class="fa fa-archive" aria-hidden="true" style="font: normal normal normal 30px/1 FontAwesome;margin: 2px auto;color: #333;"></i>
+                        </div> -->
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        <!-- <div class="icon-wrap icon-ribbon hide">
+                            <i class="fa fa-search" aria-hidden="true" style="font: normal normal normal 30px/1 FontAwesome;margin: 2px auto;color: #333;"></i>
+                        </div> -->
+                        
+                    </div>
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li idx='0'>菜单</li>
+                        <li idx='1'>标签</li>
+                        <li>分类</li>
+                        <li>归档</li>
+                        
+                        <li idx='2'>友情链接</li>
+                        
+                        
+                        
+                        <li class="popup-trigger">搜索</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a  href="/archives/">所有文章</a></li>
+                        
+                            <li><a  href="/categories/Maya/Maya-100-招/">Maya100招</a></li>
+                        
+                            <li><a  href="/categories/总结/效率提升指南/">效率提升指南</a></li>
+                        
+                            <li><a  href="/categories/Photogrammetry/">Photogrammetry</a></li>
+                        
+                            <li><a  href="/categories/python/Python结合Qt系列开发教程/">Python Qt 开发教程</a></li>
+                        
+                            <li><a  href="/tags/VScode/">VScode 全面使用攻略</a></li>
+                        
+                            <li><a  href="/categories/前端/hexo/">Hexo博客搭建历程</a></li>
+                        
+                            <li><a  href="/categories/Shader学习之路/">Shader学习之路</a></li>
+                        
+                            <li><a  href="/categories/前端/Vue/Vue学习之路/">Vue学习之路</a></li>
+                        
+                            <li><a  href="/my_work/">我的作品</a></li>
+                        
+                            <li><a  href="/about/">关于我</a></li>
+                        
+                            <li><a  href="/categories/总结/回忆录/">回忆录</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl github"  target="_blank" href="https://github.com/FXTD-ODYSSEY" title="github">github</a>
+                            
+                                <a class="fl bilibili"  target="_blank" href="https://space.bilibili.com/12895307" title="bilibili">bilibili</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/3dsMax/" style="font-size: 13.06px;">3dsMax</a> <a href="/tags/Arnold/" style="font-size: 12px;">Arnold</a> <a href="/tags/Autodesk/" style="font-size: 13.06px;">Autodesk</a> <a href="/tags/BlendShape/" style="font-size: 12px;">BlendShape</a> <a href="/tags/C/" style="font-size: 12px;">C#</a> <a href="/tags/C/" style="font-size: 15.18px;">C++</a> <a href="/tags/FBX/" style="font-size: 12px;">FBX</a> <a href="/tags/Git/" style="font-size: 12px;">Git</a> <a href="/tags/Hexo/" style="font-size: 12px;">Hexo</a> <a href="/tags/Houdini/" style="font-size: 21.53px;">Houdini</a> <a href="/tags/JavaScript/" style="font-size: 26.82px;">JavaScript</a> <a href="/tags/Laravel/" style="font-size: 12px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 12px;">Linux</a> <a href="/tags/MEL/" style="font-size: 15.18px;">MEL</a> <a href="/tags/Maya/" style="font-size: 30px;">Maya</a> <a href="/tags/NextCloud/" style="font-size: 12px;">NextCloud</a> <a href="/tags/Photogrammetry/" style="font-size: 15.18px;">Photogrammetry</a> <a href="/tags/Pluralsight/" style="font-size: 12px;">Pluralsight</a> <a href="/tags/PyMel/" style="font-size: 12px;">PyMel</a> <a href="/tags/PyQt/" style="font-size: 24.71px;">PyQt</a> <a href="/tags/PySide/" style="font-size: 19.41px;">PySide</a> <a href="/tags/Python/" style="font-size: 28.94px;">Python</a> <a href="/tags/Qt/" style="font-size: 19.41px;">Qt</a> <a href="/tags/Qt-Designer/" style="font-size: 12px;">Qt Designer</a> <a href="/tags/React/" style="font-size: 13.06px;">React</a> <a href="/tags/Rigging/" style="font-size: 12px;">Rigging</a> <a href="/tags/SFML/" style="font-size: 12px;">SFML</a> <a href="/tags/Unity/" style="font-size: 17.29px;">Unity</a> <a href="/tags/Unreal/" style="font-size: 18.35px;">Unreal</a> <a href="/tags/VDB/" style="font-size: 12px;">VDB</a> <a href="/tags/VEX/" style="font-size: 12px;">VEX</a> <a href="/tags/VScode/" style="font-size: 20.47px;">VScode</a> <a href="/tags/Vue/" style="font-size: 22.59px;">Vue</a> <a href="/tags/WebGL/" style="font-size: 23.65px;">WebGL</a> <a href="/tags/Windows/" style="font-size: 12px;">Windows</a> <a href="/tags/Ziva/" style="font-size: 12px;">Ziva</a> <a href="/tags/aboutCG/" style="font-size: 12px;">aboutCG</a> <a href="/tags/android/" style="font-size: 13.06px;">android</a> <a href="/tags/app/" style="font-size: 13.06px;">app</a> <a href="/tags/bootstrap/" style="font-size: 12px;">bootstrap</a> <a href="/tags/fancybox/" style="font-size: 12px;">fancybox</a> <a href="/tags/git/" style="font-size: 13.06px;">git</a> <a href="/tags/mongodb/" style="font-size: 12px;">mongodb</a> <a href="/tags/mysql/" style="font-size: 12px;">mysql</a> <a href="/tags/node-js/" style="font-size: 13.06px;">node.js</a> <a href="/tags/photo-sphere-viewer/" style="font-size: 12px;">photo sphere viewer</a> <a href="/tags/php/" style="font-size: 12px;">php</a> <a href="/tags/pluralsight/" style="font-size: 15.18px;">pluralsight</a> <a href="/tags/postprocessing/" style="font-size: 12px;">postprocessing</a> <a href="/tags/reference/" style="font-size: 12px;">reference</a> <a href="/tags/require-js/" style="font-size: 13.06px;">require.js</a> <a href="/tags/shader/" style="font-size: 17.29px;">shader</a> <a href="/tags/sop/" style="font-size: 16.24px;">sop</a> <a href="/tags/three-js/" style="font-size: 23.65px;">three.js</a> <a href="/tags/unity/" style="font-size: 12px;">unity</a> <a href="/tags/zplus/" style="font-size: 15.18px;">zplus</a> <a href="/tags/人生/" style="font-size: 25.76px;">人生</a> <a href="/tags/代码块/" style="font-size: 13.06px;">代码块</a> <a href="/tags/体积/" style="font-size: 13.06px;">体积</a> <a href="/tags/入门/" style="font-size: 12px;">入门</a> <a href="/tags/全景地图/" style="font-size: 12px;">全景地图</a> <a href="/tags/前期基本流程/" style="font-size: 12px;">前期基本流程</a> <a href="/tags/前端/" style="font-size: 27.88px;">前端</a> <a href="/tags/前端框架/" style="font-size: 12px;">前端框架</a> <a href="/tags/动态网页/" style="font-size: 12px;">动态网页</a> <a href="/tags/华强方特/" style="font-size: 12px;">华强方特</a> <a href="/tags/博客/" style="font-size: 23.65px;">博客</a> <a href="/tags/可道云/" style="font-size: 12px;">可道云</a> <a href="/tags/后期基本流程/" style="font-size: 12px;">后期基本流程</a> <a href="/tags/后端/" style="font-size: 13.06px;">后端</a> <a href="/tags/回顾/" style="font-size: 26.82px;">回顾</a> <a href="/tags/图片水印/" style="font-size: 12px;">图片水印</a> <a href="/tags/大二/" style="font-size: 12px;">大二</a> <a href="/tags/大学/" style="font-size: 12px;">大学</a> <a href="/tags/学习/" style="font-size: 20.47px;">学习</a> <a href="/tags/学习笔记/" style="font-size: 17.29px;">学习笔记</a> <a href="/tags/宝塔/" style="font-size: 12px;">宝塔</a> <a href="/tags/对象存储/" style="font-size: 12px;">对象存储</a> <a href="/tags/小程序/" style="font-size: 12px;">小程序</a> <a href="/tags/总结/" style="font-size: 12px;">总结</a> <a href="/tags/拍照指南/" style="font-size: 12px;">拍照指南</a> <a href="/tags/搜索/" style="font-size: 12px;">搜索</a> <a href="/tags/摄像机/" style="font-size: 12px;">摄像机</a> <a href="/tags/效率/" style="font-size: 14.12px;">效率</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 12px;">数据结构</a> <a href="/tags/新生/" style="font-size: 12px;">新生</a> <a href="/tags/标记/" style="font-size: 12px;">标记</a> <a href="/tags/模型/" style="font-size: 14.12px;">模型</a> <a href="/tags/正则表达式/" style="font-size: 12px;">正则表达式</a> <a href="/tags/特效/" style="font-size: 12px;">特效</a> <a href="/tags/编辑器/" style="font-size: 20.47px;">编辑器</a> <a href="/tags/网站/" style="font-size: 12px;">网站</a> <a href="/tags/自我思考/" style="font-size: 12px;">自我思考</a> <a href="/tags/设计模式/" style="font-size: 12px;">设计模式</a> <a href="/tags/评论/" style="font-size: 12px;">评论</a> <a href="/tags/转载/" style="font-size: 13.06px;">转载</a> <a href="/tags/软件/" style="font-size: 12px;">软件</a> <a href="/tags/遮罩/" style="font-size: 12px;">遮罩</a> <a href="/tags/面向对象/" style="font-size: 12px;">面向对象</a>
+                    </div>
+                </section>
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://ilmvfx.wordpress.com/">【Maya】 一半君的总结纸</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.sucialism.com/">【Maya】 机器猫个人网站</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.aducg.com/">【Maya】 Adu Blog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.davidcuellar.es/">【Maya】 DAVID CUELLAR</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.perryleijten.com/#">【Maya】 Perry Leijten</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.janpijpers.com/">【Maya】 Jan Pijpers</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.trevorius.com/">【Maya】 Trevor van Hoof</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://comet-cartoons.com/">【Maya】 Michael Comet</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://bindpose.com/">【Maya】 bindpose</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.stargrav.com/">【Maya】 stargrav</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://technicaldirector.nl/">【Maya】 rj Blog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://noahalzayer.net/">【Maya】 Noah Alzayer</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.sigillarium.com/blog/">【Maya】 sigillarium</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.stepanjirka.com/">【Maya】 Stepan Jirka</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.djx.com.au/blog/">【Maya】 djx</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.cesarsaez.me/">【Maya】 CESAR SAEZ</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.fevrierdorian.com/blog/">【Maya】 Dorian Fevrier&#39;s blog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://fredrikaverpil.github.io/">【Maya】 Fredrik Averpil</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://danostrov.com/">【Maya】 Dan Ostrov</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://iwonderwhatjoeisworkingon.blogspot.com/">【Maya】 Joseph Yu</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.braverabbit.com/">【Maya】 brave rabbit</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.animator.idv.tw/">【Maya】 好动分子</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://thinkinganimation.com">【Maya|Anim】 Thinking Animation</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://mayastation.typepad.com/maya-station/">【Maya】 MayaStation</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.btbat.com/">【Maya】 国内 R站</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://tech-artists.org/">【Maya】 tech-artists TA 论坛</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://around-the-corner.typepad.com/adn/">【Maya】 Autokdesk ADN 官方博客</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.toadstorm.com/blog/">【Maya&amp;Houdini】 Toadstorm Nerdblog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.tokeru.com/cgwiki/index.php?title=Main_Page">【Houdini】 cgwiki</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.cnblogs.com/simonxia/">【Houdini】 嘉豪一点点</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://space.bilibili.com/32532051/">【Houdini】 CGBIBI_FX</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://tech-artists.org/">【图形学】 技术奇异点</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.mooooc.com/">【架构】 纯洁的微笑</a>
+                    
+                    </div>
+                </section>
+                
+                
+            </div>
+        </div>
+    </header>
+</div>
+
+<div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索一下" spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+<script>//ESC键退出
+    
+</script>
+
+ <script type="text/javascript">
+ $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        $('.search-popup').hide();
+        $('.search-popup-overlay').remove();
+        $('body').css('overflow', '');
+      }
+    });
+    
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    
+    // Search DB path;
+    var search_path = "search.xml";
+    // var search_path = "{{ config.search.path }}";
+    // if (search_path.length === 0) {
+    //   search_path = "search.xml";
+    // } else if (/json$/i.test(search_path)) {
+    //   isXml = false;
+    // }
+    // var path = "{{ config.root }}" + search_path;
+    var path = window.location.protocol + "//" + window.location.host + "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+      
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          
+          isfetched = true;
+          $('.popup').detach().appendTo('#container');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  // var upperBound = parseInt('{{ theme.local_search.top_n_per_article }}');
+                  // if (upperBound >= 0) {
+                  //   slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  // }
+                  slicesOfContent = slicesOfContent.slice(0, 1);
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+  
+          if ('auto' === '{{ theme.local_search.trigger }}') {//判断总是false
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            input.addEventListener('input', inputEventFunction);
+            // $('.search-icon').click(inputEventFunction);
+            // input.addEventListener('keypress', function (event) {
+            //   if (event.keyCode === 13) {
+            //     inputEventFunction();
+            //   }
+            // });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+    
+  </script>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">智伤帝</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/avatar.png" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">智伤帝</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle"><br></p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/categories/Maya/Maya-100-招/">Maya100招</a></li>
+                
+                    <li><a href="/categories/总结/效率提升指南/">效率提升指南</a></li>
+                
+                    <li><a href="/categories/Photogrammetry/">Photogrammetry</a></li>
+                
+                    <li><a href="/categories/python/Python结合Qt系列开发教程/">Python Qt 开发教程</a></li>
+                
+                    <li><a href="/tags/VScode/">VScode 全面使用攻略</a></li>
+                
+                    <li><a href="/categories/前端/hexo/">Hexo博客搭建历程</a></li>
+                
+                    <li><a href="/categories/Shader学习之路/">Shader学习之路</a></li>
+                
+                    <li><a href="/categories/前端/Vue/Vue学习之路/">Vue学习之路</a></li>
+                
+                    <li><a href="/my_work/">我的作品</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                    <li><a href="/categories/总结/回忆录/">回忆录</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="github" target="_blank" href="https://github.com/FXTD-ODYSSEY" title="github">github</a>
+                    
+                        <a class="bilibili" target="_blank" href="https://space.bilibili.com/12895307" title="bilibili">bilibili</a>
+                    
+                </div>
+            </nav>
+        </header>
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-CG/Maya/Dev/Log/Maya 动画插件研究" class="article article-type-post" itemscope
+  itemprop="blogPost">
+
+  <div class="article-inner">
+    
+    <input type="hidden" class="isFancy" />
+    
+    
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Maya MGTools&amp;animBot 动画插件研究
+    </h1>
+  
+
+    </header>
+    
+    <div class="article-info article-info-post">
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Maya/">Maya</a><a class="article-category-link" href="/categories/Maya/CG-Programming/">CG Programming</a><a class="article-category-link" href="/categories/Maya/CG-Programming/Python/">Python</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Maya/">Maya</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li></ul>
+    </div>
+
+      
+      <div class="article-meta">
+        <a href="/posts/64ea31cc.html" class="article-date">
+      <time datetime="2020-04-06T02:00:10.000Z" itemprop="datePublished">2020-04-06</time>
+</a>
+      </div>
+      
+        <div class="clearfix"></div>
+      </div>
+      
+      
+      <div class="article-entry" itemprop="articleBody">
+        
+        
+        <div id="hexo-blog-encrypt" data-wpm="抱歉, 这个密码看着不太对, 请再试试." data-whm="抱歉, 这个文章不能被校验, 不过您还是能看看解密后的内容.">
+  <div class="hbe-input-container">
+  <input type="password" id="hbePass" placeholder="" />
+    <label for="hbePass">您好, 这里需要密码.</label>
+    <div class="bottom-line"></div>
+  </div>
+  <script id="hbeData" type="hbeData" data-hmacdigest="440b1dd154b96997c7bd3cb0c1799135adfd84d2a52a99bdc72558bb9655d427">3b01c4a3b348e03c504845ca2888be032fcb9b7a652d645aea8bb73cef6eab2592a7bb4fcbb5399058673fca7f4e6fc961411a5f3ae883a61754db2b7d7ea90d2b2e08c3efcef05c0fda3ca09c96826e3e530a3e7035eae2f9064a74e0c36aa231995ed7eab62cd9591256159b3e84b18469a3dbf15512b012f24f84d55f0254fdaa2ba130485cda8a86b9e2126b1e4e26baa4c4f0d57904375895a5d850ed2440e1c764f6f43007b2384ce080ea6ceabc267832483716b8dc5532fce8ca9e8518d1663c003597590cb9e6ab3be7cd8d1c0ec0739b0accbf02a44db62d3b543a07e61d42a175a8fdd6146488a465cca9fb398bac280e0bd20617203d02ad14dd01a48f9e880e66699e3d23a4f7a78a641eca62f0ba44c2ba333df2831616de83e0ffbc0d60bc5eb9d752408510bf0223278f7cc8474e7cf443aabf8c291b7b69d676995dfc3d47d904097f9819d933bc92eb5f840d4cabfd7605cdc959468e3f8dc1380036a233bf19661590eb17c240478c9db18134dadc11980496721e541d9bc34b7e6d9c82db950a6cd9b54b494fd30e070c72d532d68248b0223dea7c5bc7accf335d4a75201d9fe27f1fccbad8f2cdbee232b8d1d97d52fb89d8f92054cfd0c855f0086d3b4c5a8db8e5f08c287c8f1cc5d435bc8173fab4f406848401c4e969a0c469a613fd190b130d499a3ab71f6e53aaaa2d884356f58e40f15418938df68dca67ee814af126d95c4293be76a1e47e5d9321a65a65e336d950357044bf67c7d33dbc907cab8748dfa8c4403c3bd6ec21e78521708152c59bda159cc824655a1351016a9bdb4af432b66cf0df25a6d0241eae1e330aaecf51acdcc5c89fd0c4c562362e68228819587574d10f34697e6d9d7ab84f86a74037199413fb85964d132266f5464f697e40b15a4d361b7169f665611462d7eff07ce61f94b4c07c0f40908fba3a6c642d1ee32e014a050042f298837d54bd68ed8ace4c674db3befa4dcdb432d21f881b2b03bc9330d23ba86d4b553999925509eb7783e18d103c9b1913b0c67f80b8a7f785e79fb80e27cb78a21121b93b30c56c96f0dcd92fa18a0f88c51baeda8e701902c5052df072039c6966b9fe6c89f375885738aa43edc93a486ac1f52516ead6980cbd3fc077a0d0a676a975cc7a8b03048921ca532cdbb9f593512944f812d000b5e99dd3deaa0e57f0867e4b467644ea2d19612a397bf82556a72e33cff756b839ed72ddd6bb8ce204cc458ec240aa7f4f8e4033af532217194256c588f2ae8b4fab63ca578fbc69445fda174c14fd385c867ad2a171fb8d46a185c05700f4521c3c725a7d7e328129b9e3835c2ad121e6dcd0180ccb4ebaebccdf5d41563bcbd7e73f0351a2387cc3993283a33a7c99f0aa311b17348ced05e925d2a0a71e4bd9e218c62e799394841a5c70381acb7b1f8f238f3802a3c20e56e1d9c92e0422794a6fff13aa3d150401a02e6c4dfdd00c9fcbee5231ef6574aa024077d6258b016304a8aad90dd28f840ec27449b2ee7644298b176c9b02cbf8a2221f1a0d235a54280e40d72fbe8d0d9d4c9f68d5b3624db3aa9a504f9f61dc8b2483ddf9c5b46a69d0c03ed4c47fc1379fbcf3cc5dd726ea900f9e2b82237afacea69fabd038ecc1a53895b11fccba5e2f63c7ca26c831adff6c2b9d1f2935c315d4678048963b3916d7ff93311066bc328e41180a01026868ff7dbcc640047beed462eedc5deb6376ff85c88bce157d6d5a708d3646f9af97d022c57cb78d9ef2ecfb059e16b3fd285d041877cf6abd193823cde6b4463883c4fc91f174183075e01585499042015384b939a423a01f861b8a1f72e9e30a4932e93ebc75cea2186b67b60d89afee39ae56d3b502d866b35a7e3bdfe2383d4dad7b6ea0de39453f9e9e73e63874e5610836d9aa9159dc7847d7684b75ce894d311c0648a1c915c72e8688955bff17fd36b1991a741f656cb9d2c34113a96f00342a92a62fa137816648f2bdaf3a8d7b399d3a115692046b0734b181f364d9f00e7ffdfdaf1ea4c126b6f5fd420a8954d7808dfcb87c40404ac79829fe57a4693069add01b490e681c0dc640a5b0fd591547d69a3bb7e24d533b80f7b8c0c2bbd2463975c989114212bd63a95e0cfa60d2641dd1d3f1b2f9ffcbd58fe42778b318d0d7bd954494900e7dc5d000e2694208a05e0269dc6ced494cdee092e4145324197a436bd5f735ac36c91495eee27fa1d9781dbf3bde45c84e4d43616cba62a15320814b37bda6c919b82b10e771e56570d59510bb0dd18d5ac3b534e24b5a2057d50f81627aa6c9ec150ce212a64bc167a5e0ddf05f6a666e53413dded8f539080ec2f91c09e968d10c05e9db51ec04b1f683b72143cbd7c6aed2687b926fdb598048a9c166a5d11d012a659def84a683c4e80968ef91ed24fc4e6d109338b54e1ab67a2ed045301b2d2d3b00b6f6096ec5a94a9d76346e6b25175042f7a24dfce9d41f8aa9fab049f301a82a0317da663ff84c79760707e79ca21bd4743bdb3bd5e6e15e6fe29114fdb1c49487c1cc51e118c0c83014929b18f05ce1da7199ccecf5ce110f957fe53a6d1c1d0458612acf698178dfdac5bc5e7deb51a78a14646e7c166e46e071861d12dd03dda336d4bfe67adddc9491ea6e3fdf46bcbf2d4fcdbe7faf1318340d0a232456050118cc308b65c5933be7378f5667619d2189a388ad52724421160d9388256825fe3a87de41ee39bd1d78d40a150a647f22a7896511ef5b338969efbc49b58a583713461aec074a52aff35fd5077ec877d375463473287e2133ed1bcfe17e48e8a72919d37c333cccd900a9c470fad153d8bd719111378d8e2c1135277636d01fdace26543dedeb286a2299e2b4bc81e4156b55d3fa4059bf2c5d159722b8f25090aa8c377ddd66b45c94f053f1a2da2d9972356ac1136314cd42f5ea142b0942d3066e9b74aa44c6577fa71cf9f6372ba5418ae9f5e90683de76c180a4891735576212a789901359e74db4c667a90fdd0acd7776f04c75084208e265ff2a8e9306ccfbf23c45ecd4b7296e116f8af576ac7e93a1f1048cdff9847058527f2566bef5cb150678601669ca4910374f9c6011100569de679a8ce620960e9fb235767266723e2d8fcafa2bfe2b8073a69bd9e5af8cc52ca9d32dcf57d7211acedd6df33002bfca07bb57a0fb8166be37433a7059662032ef73f8231cdc4e80fe46c6b57a32e02ff19083bd24970be79f923803b65e4370ca9549d9ad041430fa2ced2a143743d300741af8f96ad0edc0fa7b55e0170655e6b3ed5d992d41d6429cf2d6e3ffcb2f99dbaff9ce881d63094e02548ce8433bd6be2ca89b548a7e4af097e14452d3b11ab9fd0b1ab2fb6b71e21d8a4f5da78d8cbefe821a9db97fb310ea06ac9f34f7a4ef3a273b3abfc7e6db5f201bdf757384c4ded1f5cf24ac0f8bbc438201fc37976d9fe12c23a54b092a278dc21f0875a1918825a439ecf435f5f1a9a454d56cf9ac7d931b0399ac50c32368efb6780dde24f03d61a6fd88cc68520a536420f5f235075c143567c902a1cb8e2ad9b29bc75f8db491559681f276c5094c95ca49412721a8220e6b8036845f7f194647a1ed75317012477607e82210e7a062b5541edb569187b21e0c276b2f397e0707c72e29314424d532a556034bcaa70e6bbc9e66754cb515ced0759cf47ed848563df68096a70d426a3ff71c9b66740b727ff61b79df02fa9abe13ea689c2adf266922296bbde2dced7ba6ad4b66aa900f5d47868969e83c6be324a9c58fa4136a368df3b9daf35f80a5089675d394127d47e86c928c8c7696ced8a6108ef01541f96ef67a222b626a599fdafb67f1f911833b837a8eeda4bb72aa73b76006852fe51158b67f797803088c2255fa4014be0f107753fdb09bcd9dc19458c834f7811d7284a3af9b40444d20e5cd9256ddd3594ed764d78e8fbe01296858c2346ec129b3798e98279c9f0086c0ad29412bf1c9b1e272543462c981eb2980877665b06d0af3766fdfe3a89681d26c372a37ae3867fefc7628d8737f90762ce50ed693cf83dd79bf0714b6702087debe9eba4f1b54268478dab9e48aeb0a4d70b77a95b606b2a3150886d392765e0f611f21b33aaab4cc16945bb90c63b8151ed396c2a6f4b593dbd20e8cab06d9b4a29bf52da8e26ca6d27ed24273df0ecf6df8cf55706ef7c523889b3396ca91b79107cd62173973db8effd78307197ebb9588ddd8d928bf7464ae3d2710594d35cd01ffd3c98de68b49dfdf1b06dc953a2d554263b31c596b2eb978e9e2cff39999de5e6cf6e2de00f09b9fea4c0f8cd47718db9ec82375e76ad6180bf4c09cbeddbb4ee75d90df531dcdc8e5d91cb088b13319d53e9b70f2008a56ca54299047f9897094d8cda187df43a6abc7195f13d39bca3b53f4e1c10cf18a9c4d41ccc149981858585ed8c9c0f1c91545bc49fecffff249d2eec32aaceaa1d8fa1cf26ebfc9f8ac1ed15390b67feaf580459d69b0ffb57c036ffe0985e7c7b25ecaba71f8bc54ff95dba9f0cff5110b2d7e50d33bd0336f9f627e442f33614a7da75aabef8a06c89fc5247f720a3d298e4f141db4a076ed7bc63463cf7dae997cffa7112820170b290425324caf25d7e02daa6056e3bfa920be64d6f902164010513f25a5486925f9912f729f04a950a68055a556c91b64840c4835f75abdf35b58eb5f9ee9b3a134e2e82303ca560847abcec9338cedb2891843a8babd79e9d100e421c343c5a76a8dc95a6d60a538bd3cfca7f5f4405c5959ab4b7453a8113f8deadb9eccc1335c74057ab489723698150d71641f0ad548a9e82560f819a68d8f4fa330c600f607c92040af5defccfada565175c1bde744d5545cd8416f2af209c04c3fdabd1dd14a8b11c45220b2c52f2db5cc471f9403fbfd0ad0698510b5d768b09896f89e70af224338ca6a6c238ad234fa9cffcdadf68f8b990ec839f0b885a3c54b069439a34f272470361fe4f02b85274d662f5f3971deebeb26ba305c7f84d922be81bbc8f65c9b5eae348dd61270949d8bc232b1e591fe97bc12c22d0a6b1276954ef42706b5fc91749e7a250d52b16982c3b0e8482c8423f2554095efbdc470487bd9d05a761cb4d9de82b55812e960ebc32f4bc6c9da5d6c1de8aa7246027e05df20c27bb8465a7eee5a4a3de537182f7ab465522554f155fc774f1888acecfeedeb0774cc350dc1f0080335cb3e97c059beb26a2105d8ae3c693dcfe98cf333200a60ae6997b4a6aa18b56d5f943dc21087a78200c41880550c17b480a3c58bbdfa07dd124ecd346c5c236db49c038a682d7e7986b20c60b415763abe3173d94bb4aeb20df92b33c137b6dcd3c5ac96c5575bd7691ff5d7807a3f8e38f04b119e714209b5ae98a816628affbb39af570fcd4dfbab069b8962cf90e9b7406cdb6c80ff0b3bf59e02e41e6527484a920f36207d884a81c507e88ce91871e5193cef3307f9b3c6eb0ed58885fa7424d4555d77c684e86ce2f25e78d5861b778adf1a2d43d5afd392e5726e15b42affde397347adf1fcefdeff0bb00bea393e359bfc197e2a89c9c4c209b449d546d22cc8e2b338a602fbf76c5c1b14e0d5557c4b1735cf4a83702e6bebf0026a949af9205eba9756b88f93979f9c1d1ceb32099bd7cbeab32c1b707b1c903b1ea752b13cdce8a6bd4afdae7de9b3f05d366e726bc61335b3bd5095c0d4f523789bbbfb22622ed2b0ce5f97d30ed6cbd7e51c8e773eb87ef2a20cec60f9c224619d1977831b2596358651aeefeea2c7d785875bb51f7d6be7e49aa3035fd438c9f679868ff4145c5921b3440ce8105b458e7714c73e76dca0a6491ae5c5e381d9ee14dded1bdc4b408a037843fcfe7675e72cd6385fbe81174a949097f3ab0362d2ee6f04a1d0b8e4e639fdd66d37583f31d335d8bb4ef211986ce87275c9c165f4a4a9b700841bbe2a1bfc2010df518a127b6d5b173e55487325132aaf827fe92e7ad3853aae61182616576e9b9fc1cee23a885bce53ac78d0faeec3e778f5e96da656a4ab90cbc5afc44a8d14d4537c1067ff38036e701e5966ff919eb947352be9e5b4ecfe35bc789f2736e457ec00b053628a3a9ecba2b083e387a1bea9151776207d6fbc8a1baadf8914e4d65860a2a1d6cb7c4934bd40d00ca8f2367ef9abf4661554a1f3f6bbb2918297acbfaa2fe7f2cb96032053bc1f9f2a7155b801e3ebef3a87d14166374266149346831bf032c8a5e05e88794c397dd5dfe5d6dcca733b1a2a0ad1a23ca6057ca9ae7477f056aeb112ad22bf64f15d344a20925486a11261223b21cab03e34f4735ecfe2159f7ddd4769bc209355bc132c7e74b77287805c0c2d038d9d38b7703508c6eb1781fdb5336ef72dbe9259d899070b29788a59c25618e09274e93f931457220bb2d7e85a19309b7cf0f38cc369dd5c54ab9510aa558c1662263642ed7127a3cefe9fc425eaebc323db23fc3068435d7607fdddb178d1215aebd70ab4c519358d86a39028319cc2c116875bfd9db52fcbbd97d8447ab5435dfdc951799d9607bfcafcdffd7e3a43d50c91d883040acf273376a4aa94eb06f8d19ac4a2f200c74eacf443a9b7be8e4ff9b5aae9e2b762358e5c0fd86db328e5eb34fe84bd19bda5718e10d3f3cb9aedbb2e4ea94ab1ffa0deceac4c8d45f9adf94ce896740c5faa129c26467068bd8a98b57919ce5bb17a9a4bf3899911537d334e0d4c27703d7f794e647ca9c7a91e479ba728b41475e2b2e29da974068e7cc46c0f22602675ba532c299681fef9cab2a56ca031930fb4c7d5f37cfeb55e2b73decfc1fa96be5d0e2519d586df2364f776ea2f0d930d489994a9156beaa4f1b7e6487d36e7dd86206c4f90e441885a1e753a66ffed353e7c710ac3c77140ab8bd279b9704ffa3e645236c19185a5b4d157c8db0086e3b81baeaebf7b939c843f6f6f6ec2f0b089633eb0f411b0f7e86434924a24d54911e7d43fe5a2fa3026cc3c2dd0c532ddcf0f4489c33e687933a35a9f33220841b2d8b812c32733af783c19d748d7ab67f9b5a2f839bb43ae2a3d56a8967de6c36fe69908312f26f2b55784d6b6f5bf24c0541c206bdfac93f4f3d8f680f8a65829616744265f380a7597f31c2c12f76daf7a8027a1cdcbbf0c70c8d92bcfb9f3d954a32219c7bd01da3023a592e1189823bb4cf21810e8b3cd313be00a2124203121c54376fcdb40c61a40dca2421a32586f9b4b2e67598f615994934406a016c15cc0982d047aebde4cd75ce5b2d08d79cb918fe4968fa8fa3fefc3e1acf12ac77a7ca04aee9b251b1988e8ebf650397adac0cc409c9eb0a76f5df5fafd5588c54ed1423f3f0ad6efe267489eb26113060f9fb1fab641bce30053b3ee2dd3e277d0f95a9dab49a661d347b76f30e166875b981be4c7d4bbc7d0add7631cbe87b3a605424dbf29fb15c9ba29483ded28a174ea7989b9e7c9331b7335ce4b16bce76513ace37da56556cbdcb2d4f38aa1c43ff3ac9303684ff825ffcf691e779aac275f5ffb0ee5467bc8e80eac6af827db923dbd8a23f775c08b4b630254b4db774c3890293d2c9e14718042b02e1fbd5ba05af273c3c10527c0b36d11b079d88ea5140e8ca0b30ffdef161dd38278d310b78d8f230d5de7f3441fc6f6f228b025e440d2800e2d20e11799038b1606fb1fa5c8df2b77863a8329516fafa5fd73a8c1e2a56e1807582efb7782d91f70a2f67469ea5b3504cfbccbd706abebb672cd3cd382a800238679fab5523812e43feaa953a28a808db1ec4a2d883f0e87b11de033b039853a1f53e99cafdd1dec7b014ede12b246438c9ea679e5be0b530120c939cd36e864e56fab377d3db25d68a902872c81e97b1ce1a7108680773b925bc5f30b97cc7cf5cd0f52e6c1b1422d2329b724712fb07b3effd1752e6ee716810590dff89268a8b9e3adb554fc2767da1f3c4bb756a580dfb855d39fccae2d9a5b20107ddedb48b1e702b1a8fb94dbd7a8998a22e09ab4707cf9cf12e48c4bbf553f0d4a9d22800e6ff70ebe1dd732090896542452af5bfe006d5d3a011c629b11900da71c0eef78bc919be0bbcecc4a158e4e3021143ceea06f980774fea081161b3046ecd09f20c0e0136a30405bc3147f3fc7507308a1ce5654d2a4464fa86c3f1ccc9930e840067df0e1c26b149762f1622e70b2b22478049ca3b41cc34f414a5b81ade6b6a00f4f4ce51047543b84291aee4027e2f29b50f03f1a017aa51c0628269d62eef522553522daaf8321f48622ab1f209e2bbb2b3deb140cc91206f2ec14886ba1b39df0bd25005dfffbe537723edce34266286d60199bfb68fa07dcde8207791bee0511ee50b65445575c6664d849f584ec368f76002944ba2ebb8d66892641afe33b3c6081565439ea5a08dd002f1c51da0bb25a272e7fb9144cbc991878e66fae75ee06c51f25e40e55b1dbf658153344fa7fe572b6882c2dcdabe29ab27fbb56c366fddaa331f190afb12790764ddc060b577230e978e01eea90789cff35e03ee00dc7f68f76072ae341ce827cb292fd034a5b54f7894a102b6fab9046ba77b65868c20d57e1ab84c703ea09379f46bcb8e18df31cd6c20609a2024fc2514d4d9897aed720a0758297110366faca5f3c4dabd35d8444bf2e21091f5674c3add78934c2acd3eef7b539a19bded14b60fcbf1fc844e9847cb24655000f378f4c910279b3c32da7322bc17db49d9ad2d69b78083e4936d48668ceff36f2fe3325bcb5c2bc6edc0fb66ad88a05d1497f4c461a2b98a67b2e020db3bf59435c6a3f826fe737666ecc69badb77d30035874f8f2e685967a63ed4f2b012af774325a81000bd33f1f6cef05bba6cae03097174fc508d28ba204f41619e7c5d58fb2f6ecec66f22c87aaee9ddd9de26633fb57db9179b83951f97b958f115733b54204dc6941602800aafe7dbcf17d3e6671bf105c9c5520377603ced2e7bc56c68007bd7b41503d9c8b73271a1e92ecb33eae8c2885cb9f25d5ece766fe4218179c0ca2a67e832f0f41f6d807b494d160875e5cd18e97a199243dfc1bbdb4dca7c7ef5bcab6b4bdda1a52d098e3fc78479939312d4e19220d246baf1f18dddee249033d8849442570d929f210bacaa25d10265cdb00418f5de955e0e73e1d3059fa641c6a7496382e709e422b5baf81d09fdf2d5defbff5e20743803b03cfff26ed19b5ba82f696c3c15e2e9bc50da43c31d24c7a281f4271f5d2dd2fbab9c4491d714f109befa75d8b1182672086e88deed2e9c5b53ab68db4796dc25e1afe5dfb33bc0564a706fafd021f1f76ff105ce25172a51a8f8c2f17183f770bad77bba9e29a544d782ee490c2c1d3bd7ecbdbc9b1686c455038db9458ced6dce6246fa3013c2a9698eb87442c95e6b5b57564a94d01a1ccebda1e5428c1e637429bb0ea006fdfb0241088773c4b6566272b5c6c8afaad44b6aadd06c8adc8d3704d5cbc46cbf228257451f79b0ebb6b319c634599df926202829a242e35a0f98fe78ac30787d416c1da2fa9076934080ea03bb32a57a93879ed407488f3d1350a35e43a3406ce080c3438564af904dc706b447966bb47c9e4358fb9f40d9500af891a8c3eae7cee40d58213054f49e816eade4883f1d2afd287c63c3e98469aaa2eb794fd97216df1c8ab09ff071af503386d1b7bbfea3b3a543e923d2b58e9fb06ed871776f266c4828c60c5a95aa65a4e700e75950c1f0b5dce35f99eee40beb804657e2942b00c4a89a1fd1734c13d3a5e41ba40a95c157f3504b70c67061c64ad32ee6e92d154d68e24d3a3add535bbf00cc73018a82ef90176589427db6f898504628529ba4b89908be58d009941557e4acf73f3705a2c22550cdc187e425c6776a2979cfedbbee282e555e321991f1e112a3e90d0a0b73155accd60f042e83fe03ce5f9152cf024eb5956b5c19c6816af3c5e74dbea52c77798262fe695fa8b6a470dd1bdeae4e3556bbbc45d2f907ee55f452fe0fc63e85b2a931fa0f36ec84cec41d3db1b9216ba5c51c57ab6324d346df874087173c670fe0fdb7cc5b50c9d03a521511991fc6073e08ae551240891ea7a039f93162663a18f048d5a540e0c012509bfc1fae97f4aea4da1b5dc71fedea1a761db58be46a3f8dfee87f9005da9bb1a17c5e6d9a2f74b193d74a72fdcfc51cad79076b38f534df164abc8fb0ccaf74808d93954dd2dda05db33f829c8c3c3dd73d56c090fd850bddbcc80ef6e87fe5203cf1fedba35d190130ee544fb3b5fcdeb4219b2fa6794f45a090bd083046b84e9d91c8107c3f2ca20d9ef306a2e4aff6883f8df843d6a12c5dad01068a5c26e5ac2d2ff45ba68055a974e2efaec3a61f1057bee1e2be87dec3419e1cc3f04af054ae831b4d2230b50f9a46dc4b16d2622b8ac404a4f19a8c8aba9a4060f6d55c99f8294b35eb23f0fef302100b65bf981709fdfa7d10c37f5816b65ad460762848befaedb05f55dda156e757087509f1f32ccc6f14351182028a45f41c638748c253806c6f64ffc1a93fa28eb576e6b87dc51309b03bcb4f637a737b43bb83eb724b72da03252f3bfead5ee5ec8edc4bce1a2e0d4cfc247032cae961209b8bbb391e24b402728d3e5436e18b5a276dc49ae3e41eb5231f85d1f53ee358786518d677963340ea459c0670bee336c5eada41940cfb7c03c56ce47d295f5df6d602937bf0cf87d0af0df38cf0a84189eff79ddd8e3f3af90174d277f28397519e154376cd88d2c25a74a8ab66b03a2797ea2d9ef5467df12532aca34a12e29951530bd65745d0407b85292e786666c70e69e02312cdd359739adaae62b3f021abc466f698ae285437d0f3b2d09f85927d3ba5ec5dcebcc9abc413183d9dc27f8b0e399f2feaa4598eeb1dd8a332148722dcffee7be7f7b677bd0cc0ead2f89f108b02e9b0edd66a36672a79f158b76cc5a870460542236ea836ad419f950dab680414819b0de49465dbc32dc331bab1cb5b41807899fca42aabee611717bb9ab4a409b24091125a22d4095d6b9ddc8e4f137d8a6c7ba0817d0355c4f88a20e564a2873bc8f75b113a494ba66bccfa57665db41c4a574a231555ab93554c2feaf9cb610a542a84e67cdbc5c106a35e7e7092fdb77efd5250bafd81e592f77609a51dc10bdf9556b9d9147cf38e5a498e0088ccf528737a305e0a68c7ca0623fef013afc2b9c30b92ec5ed21ac742d2571728ce6e32067739eca8c9453e179cb38ffbe5c9dd67fd91520dab4780f1b9070b309e7716befdbeb71c6297ffedf1f3387b29b4d555aecccd15024c04e8eedb66dac179a7cb3ca9b57bdb96a7512a68af4d47ac9be43c54870b992426e5b2a4ac5414e45a30205b0c7622ab02efac01ee443fb91a46b50f8ab118411f8df2c994c002a2ce833052dd8a2a2ad0a3556ba5306f5aa7be38e0534263f70d2bf38b0881ea0474d36903af9c3977b1966ec75d0563ece4376ef8d71ec2c70703477462edd71a237214e4c5428622e513450788d58e55c760ac48b59c44bf744c48a5f6dd104c333f7aed6db3999eb98928353d1cf47d6809d734bb8e044d509bc62dd1183b438678e9bc2e2356a38c9febf5467dff7a0463d868c2f7bdce0fafe8cd06295d97b70f370de022e5fd4587174dd1ad758925fb88c43da7f990d90b2a75387e77cad6b8dab4d4ef51baaf418020a0250b74ba2590bcf3e3f25816974893acb1c6d34a54fb5561cee4841a4b9a779feb0d739d6e0ae8455004bed4e4ebf19280801c6a267d5ba8cad027bbef54475d40cc752ead718a92f79d44ccc2b1c086b7359044a6d0fb387c6ab02cd4e5c1022e33b0e955cee07875483e2921937eb380c8bbf24b2e89dab4573e975f8fbcf47fa1e033d8ad09cce07a28b698c24ab592ef02c0bf36b7afd8b00656a9ce69a6934e5d56c6960f491a6d2463a7931d20debf7831f44c65453168c3b815589536c68710d2f92bee2f2c91840c0b36e2f79f0b03ea9abd41e37d3c8ca2cdc49b9452de6b061588a8eddff221134330c7be8bc9c5265148a218e19a6f8b4a7e0191bf2f2518429f6cd91dddbabd494cc5ae19f70883834e518b74f00d620dbb6e913c7528c74b501bd4701c0f068fa574eded9d83291045317c3a53e2aabb34fb9c6debde7326fa0e4b28cc741f96718f00d5402da052ea24828cb5da6fa4baa57130a089be6abba9853e47d441953f5bf0a8e6a4f98209710bb0f435bc0e383493d26aa88a608766b241d4d62ce59370fb1f4c5b09d2ba89d309e486b59d9255f04feac454c450255e314496c95d162a1f27dc4b29c5e10faacdb44b22f4b2d3bfacd508a2b11a9d589d37f6e56d70e9cb79dd859a1973467609a7cf1da0b0b6794f8ccabcc544fe39fe54fb38de6c2d9c4b688add74511cea0b4777a31ad07b8573f0878680fcce9092ef828a098da8084266ef2db104f00d09bacef3cb91dbea34bc398bec1f89eea47361a2b87079e8dcb82b5589f935499f6a3749aae766d3dc56d92b0b1323a8f3b8afe626086487103b73598788a4cfb219b6d932eba9bb571a67833d983c92240e70791baa54fb7187a0440137068f2c5df43d7e1b445be9887bb0871ba4f9cbab87181de530a7115e561032457ae1b0bb1bb6b91138c99e6a7c6da64306ba6241a3b385db8db716ae5691650117123d6c3b37a0b7403f28dd4b790aa00d9dac83ae4d2f5203f2e8dfa72babd8547671b3c20f016f83d45418e07d455e944736a6f3735a4a62c683c99de3d731cd54ae15d01f10ff44b71026efdd5453569fdd6efb4456f4ab690a0fb9c493336f24c7140dcef2b9fefe59855159cfd9f2f54fcd8f9072c59d2aec41176c886fdeeb8398fcec0abc0eb6a807709f9744344b47b8ac100151ff8bda20decdbc377bb132491f38a8b96f87d37f1dff5c8fb8b9f5ab735ced02d20501688ab0d601f519042773c76e744d0ee4778be480f919d03cec08ec2674e4b4b5720de94e396e1e975679adb03d9a0af1d44bdacde4d18db157c2ac841172bee03e95313773169844b00a9576836d99573aee1776485e54430eba238dc18068b7d48c4919dbaf80e03fb8cb8965a6f3f1eabd5c7daa4e53a426a6d041cfb70e7812a08d5fd1b802dff3810061bf647a88ca36e67175f38b4754d6860652e169f85e9a4ef858e07b4d8fc3247c6a4748c8aca645a347464759dc391e3f9dbf1237c2f2d8b75ad6467e78f9d959ab7e0b6aa567f556ca84aa34838562eb2f5cff8ba3cf2528e1fce6b17961a12b0cf7e8bce969ee617f6a8065a98bf9d1acf0c995135cc68a39d6e363e8ff46b27b6f54d3e69c535eb6f054ab4b0c89711cd6fc20a2facdd2468eb1fbefdd60890ed4d3302ad0309b6500efd9b0f8869ac623579d19905f9efe54e0fd5140cafbc89b827689766dd7a8e3776bf16d23c3ebece7069e0e670e5b8d8d891da4c1b4ec88c841d86437f45c577e12a6d22498330f5d2705091098621d3c14b1c51bd7f642c7981e3f4acb329c2cb704a6ca84d950cb0bacfc05c9b63f05033576e26aae72851aba97c1e60a899cc429cabaa8f0080fa14110df5dce961ed17cc12605cc73d992320e1795b2861be4c1795991be7eff258f14a74b29f09c4f97fe65b8db3103a23e3981fe39ec1a5ddd31b93eccee57d945dfc9dda4d98bd1fd5cb8ea255f955662e050ebe04debd93141250f61cab35f11ee6870c9ffb442b529f89172ac6582e2c584c9b95ec5bc16a56505649c18f44212b932ca2f16e1a98d99f3d2117a550dabc929bbe12f676153f58020da88b7773d64b142ba5ac315bc8d8d159dc22448fed9c9e37f4dade9825fcc53e588169fb1b67f67d1d70d4606156e56d5d6ec527c9bfe57435ba7e8f998c21310bf777ee922388f51cb7845235ccc5e74b7a79cebf37bbc4299fde1bf0df30f1b3849c976d0a928ec1e9a2c4641f99d7ca76c15bb618d1a8d30d799fdecf68643252e8eeefa8537e3e5c9fb69e786bb9c34c0b3e78489ee843469dcd3afc47b8aa04eff20a803ccd5a27d8a98d43c83c5e9e82ac6d3313679cc5e393baaea78eae308627ff62d8be26304bcb70bf4ec80480840167a109da3f70bd0857612ae246246324f06883ffde1bea91956de9283ad4ed7061e3f96894cf2b43bfc8ee1ded03eda2e31ce59fdb7548d6ab95bbc78093a7447ff74fe4917ebc5bc8756cfbc1b42aa7b1c4552ea06e5c2c9634f3e495fcf63dac5a8807f24c068be8ecf4fb4e9548989ed050a2aa8d94a215abd32ad939ad7d1abee70d71e760ce30b8dcd48595f739c9d7740c12255a3a539c68a48d900963475db2ee930e2f73ed7339e3e810169b9acacd76f8c987a962666a3323ba5cb809c6a4c3241f2d3d5ef93fccb046798f33879b709efcd2a4026909b021c24feabf4bfd30beb5eecdb159a0235c28fadbfc284144b5e62ef1fa5c33b3972a1e4daa150cc7fdf2ba68569885ffe604f39fa881301bf45648bcf3e01bb4e85b35c4ca40d8b51db836661f44f196837925496d5cdb67c10bd4c4643a85defa4c2779ce60b2fb431dfe6be7d8408116b284bdcb5817fa4818099d1a601264beb6ecbd7d6674cf685187b4a2e99cde4e475358e68e253f3d7af62a304d8ecc63184e7cd843589d49bd4c699348a1441f5b414d3379f919fe5847fb78ae1923b30f7fd1377ffe2a287eddc891ea8b25047298b52aa3df16f689d13b13c716455e18147e0129043ddf9da43fd936e01bb5a01bc7315646c18da357999af42d7764e13509942c6931387ab992ccb4b4bc2f91f10993f7f46e38c5195fb9d2b72a9f77e07b78af3c898855391d42a86db7fdc88c6820d19db720f52a81ca995a946a200bcea40b0e04d466e3f348762271fd25d43b6ba18d93323cdd1cb20853fe404adaab982b46b3df3bda533352955fde758ae63305bc66223b444e3d8fe916ee94c99884c7297515649314b466c565dd73a9fadc0f982594a6a55aa31cfc39710558df7d9d7bded823ba6bd0e47f41b81de5c42be44c7544bad4a317916b9bd545900e67cf6d369b2ce45712a079be19d65719a7e36fd8c6375c4c933ab0bf193aca17c21e9a56a2ec752de4ca167a69aa039d0902dcec0bd91c3a19ed6956bf044110541c7ee950ff0c9f606d1f1d44985f80cb082c65dcb1e8e1efeeef05f9363134206abfba6d0082a4939e524647a941b10d24c6dc0df255bcf825e4f922ae0a1357f0d570b3d1e720dd0b59dd4695d8538f23ca06ad7dacb2015cf5d1903fcc9ec3b24afc1b91fa9adb5d6f2c22cce3b0eda3e86e73f30c4fa39ebfef123e6e361f0adaf1229159b1a8bcfe630144ef206ba2f8baaf8eea43387e559bc89cc0c90b5a3f4ea02201e0c0280ce8bb4d15b1d5483bd81cb5b9a65673f023397d1b69ae72d33848765ff78e014d7f96698706313db1b8655e762185c8c093089fe04459e3ddfa9984d944dfc41a611b10144c1ad829a6af60a5b5c9bab64fbd82256fd2ead079952e9574db668787e8c0aa8dc265720582afe6523b42d4b6917522d3ae9de1451d7e43d95a32010975ac12d1e233232e68be38159fa0495ad5f2d91d9d0df8b1e795d6f9053d63c1e593e7a6223b0d3de9148316d07fccc1ee5ca34a2b72b2ac1f6defd6d3db85e17363fe7f9212186ab90e81e56e888f700e007be32928e50bb9cf8c79113b7bd66f47ca2bac7b8188212d0ba5ec17d23750ee98983c8fd53018114a103f505e29c9aa8f83a1d5af41c05d17af7529e34d39fdd7a0f9a586d93870673ad8dd7bf68c8d7030f178e7bd3388e0262eb7f27e12ad1bac9e482bac55e58400636072028fc49972b3ba0653d1b6e1a2e4ef8234959d062886985aed680a137505518b79fc3e19dfc7ddea811d93cfd23e6f43f0220193c1585240de6e85d29e26e3b661f51053eece12321721c29a8766222be384448c18c1b6515397d86ed0022e92a09311c85e732a7791a06b8f61a69ebeaf6558cfbc4e2491beba45fb4d5e3101180df11fffe468ffafe95302518b5def07249977ddad5ae2daf8c4dacd9b683e8829dfa58914e3bcfa44cd1c08883b37474734b6ed19a23a6463e5644098af1f4568989125ed94e5dc719c48baa0b6609ac5b8ba32722240d1342ee797f1a59297a8c195be4cb4493997c42b1b64f7841d1511863352921568582c27129530d68b9187eea3c4912e78061c79bd938d10d8a76178b63838b2ad28c28ca4ab9e4cc986c45569558805584162bce10798250283f31d15fc27103438fd7eb1875256b232850fe1495020889132da2f2b6c3d2fffc920b919e478756861ab9a6665f5e5c044fd79e137d332126e730e33bcf78901d083c11a023acef11c3e6c1392c1fee2c1699465f37923b8ae46ba447b82161735b1f34eb375e43c827151367168a896b2d0fe5f74ae26cc577a000b373c80d8341ff90757b18fa49b9c4b0c13292423ef3a39c73fe435318441df15ae8c0d3b4bc57d9bd3755d304ca64462eb73fa102a1318d3b0c8a0ab9e6274534a5609ccbd4018983775d64782c1e0e1bbbe61a61f38eedb3cbcc36c006abd529564c4935d97d1ef2840df503d2be3f0dd846201334d7ad2d9de5c88f383759940ffbd07c4b244594549a41102cad456a9fb88249269e8ac42a83059f325c7fdcebac2662fa6927ade2282cd97b5998be1b42c7421b441e81a7fb6d279e81798923209288a88150a18ec38f931fc156e9ac4dea6fad3b08e14c2b33210688f653645fe06586b7f1a3ffd49916e254b561ff09b9f6429f7998a7dfa58a3f7f6a0af4ca4bff65d5717ea07af4b4d2be48fc7f1a1c2f6ee6cb07aee7bfbe32cbb4957a21b5127c0d5c8ddacffcd97d0de21734d216fe30dada60a1f52e333ecb166f2c16a3389c91b06a374ae13370dbf0ca264fc0ee2d4ec490d506998be06637d82aae620f858637216e2a28ff57efadebb3e9923e93c9cf651830fb1179560f32b881e435e145d1004797c5365f73f2538158e8a8385140a24b287cc4b9b99cfe69e806c265f8465994344e89dd9e502afd63b8c07a7d31d1a4c5c0e245ed3958a82d491fa42ed79903e77f8c874394f744944542f893981730239634bab73fe75e5ee2d31a39e983fdcec050b47e8cf0333351ff28b60d8bc52a5a7a4704fe891c43a99ec28737f3942be8d006b2b5af394e4b2293f8de3a0e989eb1ceff7b6c0dc905711dd39aedc6f7deec3a0af8654e418a7a0ba9001451252ae87ab70bb645955465dac4a2ce817198c8c3ffeacb2cbf206ecb6eede157deef9b962366552de52e17bfa604079aa25904648a42d7633fefe8a770962b8fe5de3624e3e39f4db8e4977e63260b2f8a335aefae449d533bf839f1ad838e600d62aa744b0e060b05903c78a4696e64e3e3398889a6f4c511294cb02c3aaad69fc0f36370836df1fff8fce4e062176558f3ac81d0458e6129e4712313a311f061722c597d479736d7a42de04245fdc87ad406fbe19f1cdccb9bafe936a859f2234805028104681feeab2d5d68b14da3dc9dde376586d5f2349fc7f6d94068492f064e1bf5e6e2be0def03ad6c70c5c27a715cea5aa6e5110214567c13533a6cc00a058e126784f6099caf634b2172933ca60e43b6a40ab91777ce7b9c66b6b1a3a8ed935c1aa3da3915a1a672ed898bcca71799e36015dcba4f5ec0edc88b9591b04d9031f5898fffc30b11560c4f4ec460c20998e68ba094921a05886c1c7c074eb86e8439df98b38ac5c7537056f1527edce315b96a530794371dad23d0f0caa3fa1d5599a440908d6d723729f7e9a0d2863ab0e6bb9270f9ef58547e01011ca087994836da545f0ef2d970dccd912eb6f74bfc01b8f970ed49e45690009b7dcdfa97129ef3e1a6785852066255938d5c502e48e06a2d5f2a0c0daeaaebef3b491dca1f363e8532f6806d94881a8d9e11158907906e0ff08d5cfcd6c1e096f94a89b6aa99579e7a79743f802587a66da0e4a8a6ed21fe2ea40e18a067f93b7be820fbdb8fe14e7142e7e009c61c96b0a2b04d53057fff7513220cd7df993e8c9d2c7b99f3c3aa5fe907cceb7f409a376b13692239d85dbe22e6a566ecbb000953ac05b4a49be1f1005fa274ba9d08c0271514e980639442b447541cd0b67967d868e04a5fabf50c26323d23aeb672b8ea8be999388080aeee57b83464fb96280a8546946ba926513c739ae29a9d7416436efdf2b9662fc39a2ea01a8e10f7afec6edfb4f67328c89766af548299bcc1c5d7b4731a2429d9ce48ba70142f683ef2648b07c03532de9332add10faad17dd8b4f6811a252045d7641fac9f397d30fa13934c967e8bfe59f4628f1ed18df29e33954a02a68e197c3aff7e6d3657b07f7e695be62d31183d6917a6608d5006154baede514a3dce3ad4e048a942ac0f723bed4815aaae13ab57ebbc880cce71b0a41bcddec0c1909e5ff6b4226a66f27ebaadbbe8ef3e48ba1b9b1484d47b495f9f7806cb42e2b105bd69f96c5c5b4e45cf345dc7388992b04a5173943a445418dc034fa624862598a56559000ed3cc8743425480d7d870deaf714112ae8195a98171939bc181e61eddf67ca0ea6c32fda1c7fbbca3c33600b28921c13fa3f23038</script>
+</div>
+<script src="/lib/blog-encrypt.js"></script><link href="/css/blog-encrypt.css" rel="stylesheet" type="text/css">
+        
+      </div>
+
+      
+    </div>
+
+    
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/posts/64ea31cc.html">Maya MGTools&amp;animBot 动画插件研究</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 智伤帝 的个人博客">智伤帝</a></p>
+        <p><span>发布时间:</span>2020年04月06日 - 10时00分</p>
+        <p><span>最后更新:</span>2020年04月06日 - 11时39分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/posts/64ea31cc.html" title="Maya MGTools&amp;animBot 动画插件研究">https://blog.l0v0.com/posts/64ea31cc.html</a>
+            <span class="copy-path" data-clipboard-text="原文: https://blog.l0v0.com/posts/64ea31cc.html　　作者: 智伤帝" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <!-- <script src="/js/clipboard.min.js"></script> -->
+            <!-- <script> var clipboard = new Clipboard('.copy-path');</script> -->
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+
+        
+
+     
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            if(dataid=="alipay")
+            $(".shang_payimg").css("border-color","#4094c7");
+            else
+            $(".shang_payimg").css("border-color","#22aa3b");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+
+
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/posts/4ad87fc3.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Unreal 导入 FBX 选项事项</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+    
+</article>
+
+<div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    
+</div>
+<style>
+    .left-col .switch-btn {
+        display: none;
+    }
+    .left-col .switch-area {
+        display: none;
+    }
+</style>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+            $(".switch-btn, .switch-area").fadeOut(300);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+            $(".switch-btn, .switch-area").fadeIn(500);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+        $(".switch-btn, .switch-area").show();
+    }
+</script>
+
+    <style>
+        .toc {
+            white-space: nowrap;
+            overflow-x: hidden;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            $(".toc li a").mouseover(function() {
+                var title = $(this).attr('href');
+                $(this).attr("title", title);
+            });
+        })
+    </script>
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+
+<!-- <section id="comments">
+<link rel="stylesheet" href="/css/gitment.min.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  id: 'Maya MGTools&amp;animBot 动画插件研究', // 可选。默认为 location.href
+  owner: 'FXTD-odyssey',
+  repo: 'FXTD-odyssey.github.io',
+  oauth: {
+    client_id: '355e44f722e24963b9dd',
+    client_secret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+  },
+})
+gitment.render('comments')
+</script>
+</section> -->
+
+
+
+<section id="comments">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.5.0/gitalk.min.css" rel="stylesheet">
+  <div class="gitalk" style="width:90%;margin:auto;">
+    <div id="gitalk-container"></div>
+    <script type="text/javascript">
+      require(["https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.5.0/gitalk.min.js","https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.10.0/js/md5.min.js"], function (Gitalk,md5) {
+
+        const gitalk = new Gitalk({
+          clientID: '355e44f722e24963b9dd',
+          clientSecret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+          repo: 'FXTD-odyssey.github.io',
+          owner: 'FXTD-odyssey',
+          admin: ['FXTD-odyssey'],
+          id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+
+      });
+    </script>
+  </div>
+</section>
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a  href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a  href="/posts/4ad87fc3.html" title="下一篇: Unreal 导入 FBX 选项事项">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/posts/64ea31cc.html">Maya MGTools&animBot 动画插件研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4ad87fc3.html">Unreal 导入 FBX 选项事项</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/595dd86f.html">Python future-fstring库 原理解析</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/864bfe61.html">Maya Reference Edit 属性清理</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/204db704.html">Maya插件 - collapsableShelf</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d2b44b01.html">Python DCC 嵌入 浏览器 探索</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/a91a4c58.html">VScode 结合git的全面使用流程（下）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/94ffdbdf.html">VScode 结合git的全面使用流程（上）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/67e3cff5.html">Python 函数传参验证探索</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/a7c99667.html">Maya 奇怪的Callback报错</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/19ce97d6.html">Maya 内置图标探索</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/18de3838.html">Maya插件 - CommandLauncher</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/471f7aaa.html">安卓手机效率提升指南（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/fc7c2790.html">安卓手机效率提升指南（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f862fce.html">Maya2017 材质面板打开报错空白</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/53fbd124.html">Maya 中文乱码坑</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/e3ab7e13.html">Maya 模块安装探讨</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6f5d3bd5.html">Maya 语言切换</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/3c1dd960.html">私有云搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/513460b.html">Maya 法线解锁进阶</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/fcc8e205.html">Windows 效率提升指南</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/aa6ded84.html">Maya Qt 多线程提升交互体验</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/13258e66.html">Maya插件 - mpdb - Maya Python Debugger</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/614e755e.html">VScode - Setting Sync 配置同步之坑</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4120b797.html">Maya 轴心移动研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/66c5da7.html">Python pdb 调试模块研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/83897e45.html">Overlapper 动画插件研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/842747c9.html">Maya 代码管理</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ddafb500.html">Maya轮廓挤出研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b70d8b0c.html">3dsMax FBX导出工具进阶版</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/716eb47e.html">Maya2017 大纲列表显示 Bug</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/53edd78c.html">【转载】 「原力动画」全面开放自研新技术，希望助力中国动画行业发展</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4cc5c02.html">Maya 法线解锁</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f4dcd89b.html">3dsMax FBX导出工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/fc4346ec.html">Maya 次级控制器跟随方案</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5486e619.html">【转载】 加速Maya开启与关闭的方法 | Adu Blog</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7cc09d5d.html">VScode - 全面使用攻略（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/31de3e0f.html">VScode - 全面使用攻略（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1947fed4.html">VScode - 全面使用攻略（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/26180f28.html">观看笔记 - AboutCG - Maya API 编程教学 for TD</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4c52085.html">Hexo博客优化之路（十） - 置顶文章 | 代码注释颜色区分 | 评论自动初始化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/intro.html">【置顶】 智伤帝 | 博客全面指引</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/8bb6468c.html">Maya Arnold 渲染设置崩溃</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/efd57a69.html">Autodesk Genuine Service 破解无效解决方案</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/216efd3e.html">校招之路</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c8c0ddca.html">一灯问卷小程序 开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/21ad06c1.html">【回忆录】 - 我的大三</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/63f190cc.html">【回忆录】 - 我的大二</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5871be65.html">【回忆录】 - 我的大一</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/40745d4d.html">【回忆录】 - 我的高中</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4d164b82.html">VScode - MayaPy插件开发总结</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/9915f9db.html">学习笔记 Unreal 官方 - Water Pack Overview</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/99ca25ca.html">学习笔记 水材质制作 Unlocking the Unreal Engine Material Editor</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/11d100be.html">学习笔记 Udemy - Unlocking the Unreal Engine Material Editor</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c476f94c.html">学习笔记 Pluralsight - Unreal Engine 4 Materials Fundamentals</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d58573f8.html">学习笔记 Packt Publishing - Unreal Engine 4 - The Complete Beginner's Course</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/54f0044c.html">学习笔记 Lynda - Unreal Essential Training</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b5d3f6ab.html">Maya BlendShape 中间值获取</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/a1569efd.html">Maya Python 视锥可视工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c45f3e57.html">node.js 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f449d28f.html">node.js 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/284524f6.html">Vue 坑爹记录</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f6cd0ecb.html">Maya Python RBF工具开发研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c38bc3c2.html">Navicat连接远程数据库</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/372dc2f3.html">Vue 学习之路（十）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b21fe737.html">Vue 学习之路（九）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c8d2c668.html">Vue 学习之路（八）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/3fb9ee2b.html">Vue 学习之路（七）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/edb999b4.html">Vue 学习之路（六）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/88b7d26d.html">Vue 学习之路（五）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/e729172a.html">Vue 学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50040e4f.html">Vue 学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1d1aad1d.html">Vue 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2d0c41c5.html">Vue 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4e9ee1dc.html">观看笔记 - Maya 100 招 - 第四十一招到第五十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/410ea085.html">观看笔记 - Maya 100 招 - 第三十一招到第四十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/9ab1cd0e.html">观看笔记 - Maya 100 招 - 第二十一招到第三十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d81d7e23.html">Shader学习之路(六)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/41123651.html">Shader学习之路(五)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/47b9612c.html">Shader学习之路(四)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/671aaad8.html">Shader学习之路(三)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2a04098a.html">Shader学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1a12e552.html">Shader学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/df0a441f.html">观看笔记 - Maya 100 招 - 第十一招到第二十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/23e3cff.html">观看笔记 - Maya 100 招 - 第一招到第十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/77c88c0d.html">Hexo博客优化之路（九） - 服务器配置 | 博客部署</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ccad2d76.html">PHP Laravel框架试水</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b1b98494.html">Unity - 场景漫游课程设计</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/712b664b.html">Python - Python Qt 开发教程(7)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6830570a.html">Python - Python Qt 开发教程(6)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/431d04c9.html">Python - Python Qt 开发教程(5)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5fce3fcb.html">Maya C++ 多核性能测试</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5a063588.html">Python - Python Qt 开发教程(4)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2e0af969.html">Python - Python Qt 开发教程 扩展说明</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1547a34f.html">Python - Python Qt 开发教程(3)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c5c920e.html">Python - Python Qt 开发教程(2)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2c06616b.html">Python - Python Qt 开发教程(1)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f0a58164.html">Maya C++ MEL语句 性能测试 & 插件开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/bb58a66.html">【总结】-2019年3月、4月回顾-5月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/404240a4.html">Maya Python Publish 检查功能开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6f4e3164.html">【总结】 2019年2月回顾 | 3月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/237316ce.html">Maya Python - Publish工具开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/de2ca4c2.html">React - React 两日游有感</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d8bf85b3.html">观看笔记 - Pluralsight React:The Big Picture</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/642ecb99.html">【总结】 2019年1月回顾 | 2月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f6caaeeb.html">Maya Python - 镜头路线管理器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/332f70b.html">Maya Ziva 设置参考</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f62b6398.html">OpenMaya - VertexConstraint插件开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/41495e54.html">Maya Python - 外包检查工具开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50d67130.html">Maya Python - TSM镜像工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4c4a3e97.html">【总结】 2018年12月回顾 | 1月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/e3d81e44.html">Maya Ziva 初步探索</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c5dbea3.html">Python - CHR_Encrypter CHR文件加密器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/dc7fc7b9.html">Maya Python - 藤蔓生长快速绑定工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ce6b2154.html">Maya Python - ALembic导入导出助手</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/568b8654.html">【总结】 2018年11月回顾 | 12月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/57d6cbdb.html">华强方特 实习 第一周</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7c31db18.html">python - PLB downloader 开发完成</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4323d1ae.html">【总结】 2018年10月回顾 | 11月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ccdac3f3.html">Python - 用 PyQt 写 Pluralsight 下载器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ef451c1b.html">观看笔记 - PyQt &  Qt Designer 三套教程</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5b9053f9.html">Python - 用 PyQt 写爬虫界面</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7d4ea2e3.html">Python爬虫 -  抓取 青年之声 数据</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/19cb914e.html">Maya Python  - 自动生成序号插件</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/8150782b.html">Houdini - 计算模型体积 过滤问题模型</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/8150782b.html">Houdini - 计算模型体积 过滤问题模型</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/68d818a2.html">观看笔记 - Creating an Animated Paper Folding Effect in Maya</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5c26d29c.html">观看笔记 - Python For Maya Artist Friendly Programming</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/13d1de85.html">观看笔记 - Pluralsight - Python for Maya Fundamentals</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/fe733535.html">【总结】 2018年9月回顾 | 10月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/59506.html">Hexo博客优化之路（八） - Gitment换成Gittalk | SEO优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/17676.html">数字媒体技术专业网站 - 搭建感想</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/53349.html">VScode - 实现Maya-python代码快速提示</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50174.html">观看笔记 - Pluralsight - Houdini VEX Fundamentals</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/3087.html">VisualStudioCode 编辑器安利</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/21898.html">Houdini VDB 将CAD图纸转成实体模型</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/15486.html">观看笔记 - Pluralsight - Houdini SOP Solver</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/57520.html">Three.js - EditorContrl 添加区域限制</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/33613.html">浅谈优越感</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/988.html">MEL - 选点成盒插件</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/52737.html"> MEL - 面片自动匹配插件（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/19450.html">MEL - 面片自动匹配插件（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/35846.html">Three.js -通过JQuery处理脚本异步加载</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24831.html">Three.js -动态加载相关的js</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/59091.html">Three.js - postprocessing 后期处理</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4257.html">至2018级数字媒体技术新生</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/56108.html">Hexo博客优化之路（七）- 代码块进阶优化&分类优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1905.html">MEL 随机大小插件</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50883.html">Hexo博客优化之路(六) - 本地搜索优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/51575.html">Hexo博客优化之路（五）- 代码块优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50589.html">Three.js - 用最小面数生成立体的物体</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/39119.html">Hexo博客优化之路（四）- fancybox 图片跳转问题</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/59323.html">数据结构大作业回顾</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/37850.html">Hexo博客优化之路（三）- 正则表达式 清除markdown中的HTML标签</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/35734.html">Hexo博客优化之路（二）- 前端添加图片水印方案</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/20763.html">Hexo博客优化之路（一）- 博客瘦身方法</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/60230.html">Houdini-学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/12961.html">Three.js - 学习之路（五）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/61471.html">Three.js - 学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/34183.html">Houdini-学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/40670.html">Three.js - 学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/37543.html">Three.js - 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/33144.html">Three.js - 房产信息线上浏览Demo</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/733.html">Three.js - 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24239.html">Three.js-学习之路（零）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/35326.html">Houdini-学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6532.html">Houdini-学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6507.html">bootstrap 学习感悟</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6250.html">渔村苏维埃政府旧址-数字博物馆</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24028.html">PyMel 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/30435.html">Photogrammetry-学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/33086.html">Photogrammetry 学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/63727.html">Hexo个人博客搭建遇到的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/36167.html">Photogrammetry 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24208.html">Houdini-学习之路(零)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7485.html">Photogrammetry 学习之路（一）</a></li></ul>
+    
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+
+    <script>
+        $(".post-list").addClass("toc-article");
+        // $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#toc, .switch-btn, .switch-area").toggle();
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+                $(".switch-btn, .switch-area").fadeToggle(300);
+            }
+        })
+    </script>
+
+
+
+
+<script>
+        
+</script>
+
+
+<script>
+  if ($(".highlight").length > 0) {//判断代码块是否存在
+    $(".highlight").each(function (index) {//遍历代码块
+      let btnDiv = $('<div></div>');
+      $(this).prepend(btnDiv);
+
+      let scope = this;
+      btnDiv.css('position', 'absolute');
+
+      $(window).load(function () {//确保其他东西加载完成才执行
+        btnDiv.css('top', $(scope).position().top + 12);
+        btnDiv.css('right', '2em');
+      });
+
+      $(window).resize(function () {//当浏览器大小变化时
+        setTimeout(function () {
+          btnDiv.css('top', $(scope).position().top + 12);
+          btnDiv.css('right', '2em');
+        }, 100);
+      });
+
+      //用于复制代码按钮
+      $(scope).find('.code').addClass("code" + index);
+
+      //复制按钮
+      let copyBtn = $("<button type='button' class='btn btn-primary' id='copyBtn" + index + "'data-clipboard-action='copy' data-clipboard-target='.code" + index + "'>复制</button>");
+      $(btnDiv).prepend(copyBtn);
+
+
+      //识别Vex
+      if ($(this).attr('data-lang') == 'vex') {
+
+        let VEXBtn = $("<button type='button' class='btn btn-primary' id='VEXBtn" + index + "'>VEX原生样式</button>");
+        $(btnDiv).prepend(VEXBtn);
+
+        let VEXBtnCheck = false;
+        let scope = this;
+
+        $(scope).find('.built_in').removeClass('built_in').addClass("VEX_built_in");
+        $(scope).find('.string').removeClass('string').addClass("VEX_string");
+        $(scope).find('.operator').removeClass('operator').addClass("VEX_operator");
+        $(scope).find('.number').removeClass('number').addClass("VEX_number");
+        $(scope).find('.command').removeClass('command').addClass("VEX_command");
+        $(scope).find('.comment').removeClass('comment').addClass("VEX_comment");
+        $(scope).find('.id').removeClass('id').addClass("VEX_id");
+
+        $('#VEXBtn' + index).click(function () {
+          if (VEXBtnCheck) {
+            $(this).text('VEX原生样式');
+            VEXBtnCheck = false;
+            $(scope).find('.built_in').removeClass('built_in').addClass("VEX_built_in");
+            $(scope).find('.string').removeClass('string').addClass("VEX_string");
+            $(scope).find('.operator').removeClass('operator').addClass("VEX_operator");
+            $(scope).find('.number').removeClass('number').addClass("VEX_number");
+            $(scope).find('.command').removeClass('command').addClass("VEX_command");
+            $(scope).find('.comment').removeClass('comment').addClass("VEX_comment");
+            $(scope).find('.id').removeClass('id').addClass("VEX_id");
+          } else {
+            $(this).text('自定义样式');
+            VEXBtnCheck = true;
+            $(scope).find('.VEX_built_in').removeClass('VEX_built_in').addClass("built_in");
+            $(scope).find('.VEX_string').removeClass('VEX_string').addClass("string");
+            $(scope).find('.VEX_operator').removeClass('VEX_operator').addClass("operator");
+            $(scope).find('.VEX_number').removeClass('VEX_number').addClass("number");
+            $(scope).find('.VEX_command').removeClass('VEX_command').addClass("command");
+            $(scope).find('.VEX_comment').removeClass('VEX_comment').addClass("comment");
+            $(scope).find('.VEX_id').removeClass('VEX_id').addClass("id");
+          }
+
+        });
+      }
+
+      //识别MEL
+      if ($(this).attr('data-lang') == 'mel') {
+        let melBtn = $("<button type='button' class='btn btn-primary' id='melBtn" + index + "'>MEL原生样式</button>");
+        $(btnDiv).prepend(melBtn);
+
+        let melBtnCheck = false;
+        let scope = this;
+
+        $(scope).find('.keyword').removeClass('keyword').addClass("mel_keyword");
+        $(scope).find('.string').removeClass('string').addClass("mel_string");
+        $(scope).find('.number').removeClass('number').addClass("mel_number");
+
+        $(scope).find('.command').removeClass('command').addClass("mel_command");
+        $(scope).find('.operator').removeClass('operator').addClass("mel_operator");
+
+        $('#melBtn' + index).click(function () {
+          if (melBtnCheck) {
+            $(this).text('MEL原生样式');
+            melBtnCheck = false;
+            $(scope).find('.keyword').removeClass('keyword').addClass("mel_keyword");
+            $(scope).find('.string').removeClass('string').addClass("mel_string");
+            $(scope).find('.number').removeClass('number').addClass("mel_number");
+
+            $(scope).find('.command').removeClass('command').addClass("mel_command");
+            $(scope).find('.operator').removeClass('operator').addClass("mel_operator");
+          } else {
+            $(this).text('自定义样式');
+            melBtnCheck = true;
+            $(scope).find('.mel_keyword').removeClass('mel_keyword').addClass("keyword");
+            $(scope).find('.mel_string').removeClass('mel_string').addClass("string");
+            $(scope).find('.mel_number').removeClass('mel_number').addClass("number");
+            $(scope).find('.mel_command').removeClass('mel_command').addClass("command");
+            $(scope).find('.mel_operator').removeClass('mel_operator').addClass("operator");
+          }
+        });
+      }
+    })
+  }
+</script>
+
+<script>
+
+  function codeAutoResize() {
+
+    if ($(".highlight").length > 0) {//判断代码块是否存在
+      $(".highlight").each(function (index) {//遍历代码块
+        let codeWidth;
+        let parentWidth = $(this).css('width');//获取代码块的宽度
+        let childWidth = $(this).children('table').css('width');//获取代码的宽度
+        if (parseInt(parentWidth) < parseInt(childWidth)) {//转成整数比较宽度大小
+          codeWidth = childWidth;
+        } else {
+          codeWidth = parentWidth;
+        }
+        $(this).children('style').remove();//清理style标签
+        $(this).addClass("resize" + index);//添加class名
+        $(this).append("<style>.highlight.resize" + index + "::before{width:" + codeWidth + "}</style>");
+      });
+    }
+  }
+
+  setInterval(function () {
+    codeAutoResize();//初始化
+  }, 500);
+
+
+  $(window).resize(function () {
+    codeAutoResize();//改变尺寸的时候执行
+  });
+
+  // NOTE 单个链接自动居中
+  $(".article-entry>p").find("a").each(function() {
+    $(this).parent().css('text-align','center')
+  })
+</script></div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2020 智伤帝
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo &nbsp;&nbsp;</a><a href="https://github.com/maochunguang" target="_blank">Blog</a> by 智伤帝
+            </div>
+        </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 1;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'xxxxx', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "//hm.baidu.com/hm.js?xxxxxx";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+<div class="scroll" id="scroll">
+    <a href="javascript:;"><i class="fa fa-arrow-up"></i></a>
+    <!-- <a href="#comments"><i class="fa fa-comments-o"></i></a> -->
+    <a href="javascript:;"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    var $top = $('.fa-arrow-up');
+    var $bottom = $('.fa-arrow-down');
+
+    $top.on('click', function () {
+
+      $('body').velocity('scroll');
+    });
+    $bottom.on('click', function () {
+
+      $('#footer').velocity('scroll');
+    });
+
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+  </div>
+  
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+    </script>
+    
+</body>
+</html>
