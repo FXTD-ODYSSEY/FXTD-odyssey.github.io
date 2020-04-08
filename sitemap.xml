@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.l0v0.com/posts/84ce2047.html</loc>
+    
+    <lastmod>2020-04-08T10:18:47.555Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://blog.l0v0.com/posts/64ea31cc.html</loc>
     
     <lastmod>2020-04-06T03:39:47.235Z</lastmod>
@@ -548,14 +555,14 @@
   </url>
   
   <url>
-    <loc>https://blog.l0v0.com/my_work/index.html</loc>
+    <loc>https://blog.l0v0.com/tags/index.html</loc>
     
     <lastmod>2019-11-07T13:28:22.906Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://blog.l0v0.com/tags/index.html</loc>
+    <loc>https://blog.l0v0.com/my_work/index.html</loc>
     
     <lastmod>2019-11-07T13:28:22.906Z</lastmod>
     

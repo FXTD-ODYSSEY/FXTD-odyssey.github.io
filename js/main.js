@@ -16,6 +16,7 @@ require([], function (){
         window['Velocity']=velocity;
 
     });
+    require(["../js/jquery.event.move.js","../js/jquery.twentytwenty.js"])
 
 
 

@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <meta name="baidu-site-verification" content="L6Lm9d5Crl"/>
+  
+  
+  
+  
+  <title>Arnold 风格化渲染研究 | 智伤帝的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Arnold shader 开发">
+<meta name="keywords" content="Arnold,osl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Arnold 风格化渲染研究">
+<meta property="og:url" content="https://blog.l0v0.com/posts/84ce2047.html">
+<meta property="og:site_name" content="智伤帝的个人博客">
+<meta property="og:description" content="Arnold shader 开发">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/01.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/origin.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/02.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/03.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/04.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/05.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/06.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/07.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/08.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/09.gif">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/10.gif">
+<meta property="og:image" content="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/points_quads.png">
+<meta property="og:image" content="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/points_visibility.png">
+<meta property="og:image" content="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/node_network_shading_annotated.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_1_second_hit.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_3_quantize.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_2_opacity1.0_emission_edge.png">
+<meta property="og:image" content="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/node_network_shading_annotated.png">
+<meta property="og:image" content="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/stroke_automatic_alignment.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/11.gif">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/facingratio_cam.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/facingratio_cam_range.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_1_opacity_mask_emission_mask.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_2_opacity_mask_emission_mask.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/full.png">
+<meta property="og:updated_time" content="2020-04-08T10:18:47.555Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Arnold 风格化渲染研究">
+<meta name="twitter:description" content="Arnold shader 开发">
+<meta name="twitter:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/01.png">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        
+<!-- <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script> -->
+<script src="https://cdn.bootcss.com/require.js/2.3.6/require.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/avatar.png" class="js-avatar">
+            
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">智伤帝</a></h1>
+        </hgroup>
+        
+        <p class="header-subtitle"><br></p>
+        
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        <!-- <div class="icon-wrap icon-categories hide">
+                            <i class="fa fa-th" aria-hidden="true" style="font: normal normal normal 30px/1 FontAwesome;margin: 2px auto;color: #333;"></i>
+                        </div>
+                        <div class="icon-wrap icon-archive hide" >
+                            <i class="fa fa-archive" aria-hidden="true" style="font: normal normal normal 30px/1 FontAwesome;margin: 2px auto;color: #333;"></i>
+                        </div> -->
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        <!-- <div class="icon-wrap icon-ribbon hide">
+                            <i class="fa fa-search" aria-hidden="true" style="font: normal normal normal 30px/1 FontAwesome;margin: 2px auto;color: #333;"></i>
+                        </div> -->
+                        
+                    </div>
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li idx='0'>菜单</li>
+                        <li idx='1'>标签</li>
+                        <li>分类</li>
+                        <li>归档</li>
+                        
+                        <li idx='2'>友情链接</li>
+                        
+                        
+                        
+                        <li class="popup-trigger">搜索</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a  href="/archives/">所有文章</a></li>
+                        
+                            <li><a  href="/categories/Maya/Maya-100-招/">Maya100招</a></li>
+                        
+                            <li><a  href="/categories/总结/效率提升指南/">效率提升指南</a></li>
+                        
+                            <li><a  href="/categories/Photogrammetry/">Photogrammetry</a></li>
+                        
+                            <li><a  href="/categories/python/Python结合Qt系列开发教程/">Python Qt 开发教程</a></li>
+                        
+                            <li><a  href="/tags/VScode/">VScode 全面使用攻略</a></li>
+                        
+                            <li><a  href="/categories/前端/hexo/">Hexo博客搭建历程</a></li>
+                        
+                            <li><a  href="/categories/Shader学习之路/">Shader学习之路</a></li>
+                        
+                            <li><a  href="/categories/前端/Vue/Vue学习之路/">Vue学习之路</a></li>
+                        
+                            <li><a  href="/my_work/">我的作品</a></li>
+                        
+                            <li><a  href="/about/">关于我</a></li>
+                        
+                            <li><a  href="/categories/总结/回忆录/">回忆录</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl github"  target="_blank" href="https://github.com/FXTD-ODYSSEY" title="github">github</a>
+                            
+                                <a class="fl bilibili"  target="_blank" href="https://space.bilibili.com/12895307" title="bilibili">bilibili</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/3dsMax/" style="font-size: 13.06px;">3dsMax</a> <a href="/tags/Arnold/" style="font-size: 13.06px;">Arnold</a> <a href="/tags/Autodesk/" style="font-size: 13.06px;">Autodesk</a> <a href="/tags/BlendShape/" style="font-size: 12px;">BlendShape</a> <a href="/tags/C/" style="font-size: 12px;">C#</a> <a href="/tags/C/" style="font-size: 15.18px;">C++</a> <a href="/tags/FBX/" style="font-size: 12px;">FBX</a> <a href="/tags/Git/" style="font-size: 12px;">Git</a> <a href="/tags/Hexo/" style="font-size: 12px;">Hexo</a> <a href="/tags/Houdini/" style="font-size: 21.53px;">Houdini</a> <a href="/tags/JavaScript/" style="font-size: 26.82px;">JavaScript</a> <a href="/tags/Laravel/" style="font-size: 12px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 12px;">Linux</a> <a href="/tags/MEL/" style="font-size: 15.18px;">MEL</a> <a href="/tags/Maya/" style="font-size: 30px;">Maya</a> <a href="/tags/NextCloud/" style="font-size: 12px;">NextCloud</a> <a href="/tags/Photogrammetry/" style="font-size: 15.18px;">Photogrammetry</a> <a href="/tags/Pluralsight/" style="font-size: 12px;">Pluralsight</a> <a href="/tags/PyMel/" style="font-size: 12px;">PyMel</a> <a href="/tags/PyQt/" style="font-size: 24.71px;">PyQt</a> <a href="/tags/PySide/" style="font-size: 19.41px;">PySide</a> <a href="/tags/Python/" style="font-size: 28.94px;">Python</a> <a href="/tags/Qt/" style="font-size: 19.41px;">Qt</a> <a href="/tags/Qt-Designer/" style="font-size: 12px;">Qt Designer</a> <a href="/tags/React/" style="font-size: 13.06px;">React</a> <a href="/tags/Rigging/" style="font-size: 12px;">Rigging</a> <a href="/tags/SFML/" style="font-size: 12px;">SFML</a> <a href="/tags/Unity/" style="font-size: 17.29px;">Unity</a> <a href="/tags/Unreal/" style="font-size: 18.35px;">Unreal</a> <a href="/tags/VDB/" style="font-size: 12px;">VDB</a> <a href="/tags/VEX/" style="font-size: 12px;">VEX</a> <a href="/tags/VScode/" style="font-size: 20.47px;">VScode</a> <a href="/tags/Vue/" style="font-size: 22.59px;">Vue</a> <a href="/tags/WebGL/" style="font-size: 23.65px;">WebGL</a> <a href="/tags/Windows/" style="font-size: 12px;">Windows</a> <a href="/tags/Ziva/" style="font-size: 12px;">Ziva</a> <a href="/tags/aboutCG/" style="font-size: 12px;">aboutCG</a> <a href="/tags/android/" style="font-size: 13.06px;">android</a> <a href="/tags/app/" style="font-size: 13.06px;">app</a> <a href="/tags/bootstrap/" style="font-size: 12px;">bootstrap</a> <a href="/tags/fancybox/" style="font-size: 12px;">fancybox</a> <a href="/tags/git/" style="font-size: 13.06px;">git</a> <a href="/tags/mongodb/" style="font-size: 12px;">mongodb</a> <a href="/tags/mysql/" style="font-size: 12px;">mysql</a> <a href="/tags/node-js/" style="font-size: 13.06px;">node.js</a> <a href="/tags/osl/" style="font-size: 12px;">osl</a> <a href="/tags/photo-sphere-viewer/" style="font-size: 12px;">photo sphere viewer</a> <a href="/tags/php/" style="font-size: 12px;">php</a> <a href="/tags/pluralsight/" style="font-size: 15.18px;">pluralsight</a> <a href="/tags/postprocessing/" style="font-size: 12px;">postprocessing</a> <a href="/tags/reference/" style="font-size: 12px;">reference</a> <a href="/tags/require-js/" style="font-size: 13.06px;">require.js</a> <a href="/tags/shader/" style="font-size: 17.29px;">shader</a> <a href="/tags/sop/" style="font-size: 16.24px;">sop</a> <a href="/tags/three-js/" style="font-size: 23.65px;">three.js</a> <a href="/tags/unity/" style="font-size: 12px;">unity</a> <a href="/tags/zplus/" style="font-size: 15.18px;">zplus</a> <a href="/tags/人生/" style="font-size: 25.76px;">人生</a> <a href="/tags/代码块/" style="font-size: 13.06px;">代码块</a> <a href="/tags/体积/" style="font-size: 13.06px;">体积</a> <a href="/tags/入门/" style="font-size: 12px;">入门</a> <a href="/tags/全景地图/" style="font-size: 12px;">全景地图</a> <a href="/tags/前期基本流程/" style="font-size: 12px;">前期基本流程</a> <a href="/tags/前端/" style="font-size: 27.88px;">前端</a> <a href="/tags/前端框架/" style="font-size: 12px;">前端框架</a> <a href="/tags/动态网页/" style="font-size: 12px;">动态网页</a> <a href="/tags/华强方特/" style="font-size: 12px;">华强方特</a> <a href="/tags/博客/" style="font-size: 23.65px;">博客</a> <a href="/tags/可道云/" style="font-size: 12px;">可道云</a> <a href="/tags/后期基本流程/" style="font-size: 12px;">后期基本流程</a> <a href="/tags/后端/" style="font-size: 13.06px;">后端</a> <a href="/tags/回顾/" style="font-size: 26.82px;">回顾</a> <a href="/tags/图片水印/" style="font-size: 12px;">图片水印</a> <a href="/tags/大二/" style="font-size: 12px;">大二</a> <a href="/tags/大学/" style="font-size: 12px;">大学</a> <a href="/tags/学习/" style="font-size: 20.47px;">学习</a> <a href="/tags/学习笔记/" style="font-size: 17.29px;">学习笔记</a> <a href="/tags/宝塔/" style="font-size: 12px;">宝塔</a> <a href="/tags/对象存储/" style="font-size: 12px;">对象存储</a> <a href="/tags/小程序/" style="font-size: 12px;">小程序</a> <a href="/tags/总结/" style="font-size: 12px;">总结</a> <a href="/tags/拍照指南/" style="font-size: 12px;">拍照指南</a> <a href="/tags/搜索/" style="font-size: 12px;">搜索</a> <a href="/tags/摄像机/" style="font-size: 12px;">摄像机</a> <a href="/tags/效率/" style="font-size: 14.12px;">效率</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 12px;">数据结构</a> <a href="/tags/新生/" style="font-size: 12px;">新生</a> <a href="/tags/标记/" style="font-size: 12px;">标记</a> <a href="/tags/模型/" style="font-size: 14.12px;">模型</a> <a href="/tags/正则表达式/" style="font-size: 12px;">正则表达式</a> <a href="/tags/特效/" style="font-size: 12px;">特效</a> <a href="/tags/编辑器/" style="font-size: 20.47px;">编辑器</a> <a href="/tags/网站/" style="font-size: 12px;">网站</a> <a href="/tags/自我思考/" style="font-size: 12px;">自我思考</a> <a href="/tags/设计模式/" style="font-size: 12px;">设计模式</a> <a href="/tags/评论/" style="font-size: 12px;">评论</a> <a href="/tags/转载/" style="font-size: 13.06px;">转载</a> <a href="/tags/软件/" style="font-size: 12px;">软件</a> <a href="/tags/遮罩/" style="font-size: 12px;">遮罩</a> <a href="/tags/面向对象/" style="font-size: 12px;">面向对象</a>
+                    </div>
+                </section>
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://ilmvfx.wordpress.com/">【Maya】 一半君的总结纸</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.sucialism.com/">【Maya】 机器猫个人网站</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.aducg.com/">【Maya】 Adu Blog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.davidcuellar.es/">【Maya】 DAVID CUELLAR</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.perryleijten.com/#">【Maya】 Perry Leijten</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.janpijpers.com/">【Maya】 Jan Pijpers</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.trevorius.com/">【Maya】 Trevor van Hoof</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://comet-cartoons.com/">【Maya】 Michael Comet</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://bindpose.com/">【Maya】 bindpose</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.stargrav.com/">【Maya】 stargrav</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://technicaldirector.nl/">【Maya】 rj Blog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://noahalzayer.net/">【Maya】 Noah Alzayer</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.sigillarium.com/blog/">【Maya】 sigillarium</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.stepanjirka.com/">【Maya】 Stepan Jirka</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.djx.com.au/blog/">【Maya】 djx</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.cesarsaez.me/">【Maya】 CESAR SAEZ</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.fevrierdorian.com/blog/">【Maya】 Dorian Fevrier&#39;s blog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://fredrikaverpil.github.io/">【Maya】 Fredrik Averpil</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://danostrov.com/">【Maya】 Dan Ostrov</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://iwonderwhatjoeisworkingon.blogspot.com/">【Maya】 Joseph Yu</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.braverabbit.com/">【Maya】 brave rabbit</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.animator.idv.tw/">【Maya】 好动分子</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://thinkinganimation.com">【Maya|Anim】 Thinking Animation</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://mayastation.typepad.com/maya-station/">【Maya】 MayaStation</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.btbat.com/">【Maya】 国内 R站</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://tech-artists.org/">【Maya】 tech-artists TA 论坛</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://around-the-corner.typepad.com/adn/">【Maya】 Autokdesk ADN 官方博客</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.toadstorm.com/blog/">【Maya&amp;Houdini】 Toadstorm Nerdblog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.tokeru.com/cgwiki/index.php?title=Main_Page">【Houdini】 cgwiki</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.cnblogs.com/simonxia/">【Houdini】 嘉豪一点点</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://space.bilibili.com/32532051/">【Houdini】 CGBIBI_FX</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://tech-artists.org/">【图形学】 技术奇异点</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.mooooc.com/">【架构】 纯洁的微笑</a>
+                    
+                    </div>
+                </section>
+                
+                
+            </div>
+        </div>
+    </header>
+</div>
+
+<div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索一下" spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+<script>//ESC键退出
+    
+</script>
+
+ <script type="text/javascript">
+ $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        $('.search-popup').hide();
+        $('.search-popup-overlay').remove();
+        $('body').css('overflow', '');
+      }
+    });
+    
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    
+    // Search DB path;
+    var search_path = "search.xml";
+    // var search_path = "{{ config.search.path }}";
+    // if (search_path.length === 0) {
+    //   search_path = "search.xml";
+    // } else if (/json$/i.test(search_path)) {
+    //   isXml = false;
+    // }
+    // var path = "{{ config.root }}" + search_path;
+    var path = window.location.protocol + "//" + window.location.host + "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+      
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          
+          isfetched = true;
+          $('.popup').detach().appendTo('#container');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  // var upperBound = parseInt('{{ theme.local_search.top_n_per_article }}');
+                  // if (upperBound >= 0) {
+                  //   slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  // }
+                  slicesOfContent = slicesOfContent.slice(0, 1);
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+  
+          if ('auto' === '{{ theme.local_search.trigger }}') {//判断总是false
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            input.addEventListener('input', inputEventFunction);
+            // $('.search-icon').click(inputEventFunction);
+            // input.addEventListener('keypress', function (event) {
+            //   if (event.keyCode === 13) {
+            //     inputEventFunction();
+            //   }
+            // });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+    
+  </script>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">智伤帝</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/avatar.png" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">智伤帝</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle"><br></p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/categories/Maya/Maya-100-招/">Maya100招</a></li>
+                
+                    <li><a href="/categories/总结/效率提升指南/">效率提升指南</a></li>
+                
+                    <li><a href="/categories/Photogrammetry/">Photogrammetry</a></li>
+                
+                    <li><a href="/categories/python/Python结合Qt系列开发教程/">Python Qt 开发教程</a></li>
+                
+                    <li><a href="/tags/VScode/">VScode 全面使用攻略</a></li>
+                
+                    <li><a href="/categories/前端/hexo/">Hexo博客搭建历程</a></li>
+                
+                    <li><a href="/categories/Shader学习之路/">Shader学习之路</a></li>
+                
+                    <li><a href="/categories/前端/Vue/Vue学习之路/">Vue学习之路</a></li>
+                
+                    <li><a href="/my_work/">我的作品</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                    <li><a href="/categories/总结/回忆录/">回忆录</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="github" target="_blank" href="https://github.com/FXTD-ODYSSEY" title="github">github</a>
+                    
+                        <a class="bilibili" target="_blank" href="https://space.bilibili.com/12895307" title="bilibili">bilibili</a>
+                    
+                </div>
+            </nav>
+        </header>
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-CG/Arnold/Arnold 风格化渲染研究" class="article article-type-post" itemscope
+  itemprop="blogPost">
+
+  <div class="article-inner">
+    
+    <input type="hidden" class="isFancy" />
+    
+    
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Arnold 风格化渲染研究
+    </h1>
+  
+
+    </header>
+    
+    <div class="article-info article-info-post">
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Arnold/">Arnold</a><a class="article-category-link" href="/categories/Arnold/CG-Programming/">CG Programming</a><a class="article-category-link" href="/categories/Arnold/CG-Programming/osl/">osl</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Arnold/">Arnold</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/osl/">osl</a></li></ul>
+    </div>
+
+      
+      <div class="article-meta">
+        <a href="/posts/84ce2047.html" class="article-date">
+      <time datetime="2020-04-08T01:20:11.000Z" itemprop="datePublished">2020-04-08</time>
+</a>
+      </div>
+      
+        <div class="clearfix"></div>
+      </div>
+      
+      
+      <div class="article-entry" itemprop="articleBody">
+        
+        
+        <h1 id="Arnold-shader-开发"><a href="#Arnold-shader-开发" class="headerlink" title="Arnold shader 开发"></a>Arnold shader 开发</h1><a id="more"></a>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>&emsp;&emsp;最近我的上级有个关于 Arnold 风格化渲染的研究方向，刚好没有人搞，所以我就来搞这个东西的研究了。<br>&emsp;&emsp;当时他就针对 osl 相关的问题咨询了我。<br>&emsp;&emsp;虽然我听说过 osl ，不过对于他的理解和研究也只是浮于表面而已。<br>&emsp;&emsp;记得去年快过年的时候，上家公司的主管也找了我让我去研究 osl 开发 和 Alembic API<br>&emsp;&emsp;可惜过年回来之后就是各种 publish 流程开发所以一直没有时间和精力去弄这个。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;后来对于 osl 的功能也是通过一次 TD 交流会里面学到的。<br>&emsp;&emsp;当时渲染大佬有讲到他们使用 osl 来处理贴图的方案。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;当时就提到 TriplanerProjection 立体投射的概念，让我想起了之前看 unreal 教程处理贴图。 <a href="./11d100be.html#无缝投射贴图材质">教程文章</a><br>&emsp;&emsp;通过这个方法可以做出无缝衔接无线纹理的贴图效果。<br>&emsp;&emsp;osl作为 shader 语言自然也是可以类似 unreal 的 hlsl 一样实现的。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;不过这一次上级给了我一个更神奇的风格化效果。<a href="http://www.zenopelgrims.com/project-arnold-brushstroke-shader-quantize.html" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;国外的大佬已经做好了，原理也已经写在了上面，具体怎么实现的还是需要花时间去研究出来。</p>
+</blockquote>
+<h2 id="素材研究准备"><a href="#素材研究准备" class="headerlink" title="素材研究准备"></a>素材研究准备</h2><blockquote>
+<p>&emsp;&emsp;上面的链接已经提供了免费且完整的素材资源，但是如果要 C++ 源码就需要花 60 欧元购买了。<br>&emsp;&emsp;其实我还是很疑惑的，我认为既然有 osl 为啥还需要 C++ 生成 dll，莫非这个 dll 也是 osl 生成的。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;于是我又去到了 osl 的 github 仓库搜罗了一圈，发现 osl 需要 C++ 编译成工具，然后通过工具编译 osl 源码才能运行起来。<br>&emsp;&emsp;于是我又开始研究怎么编译出 osl的编译工具，根据 github 上提供的 <a href="https://github.com/imageworks/OpenShadingLanguage/blob/master/INSTALL.md" target="_blank" rel="noopener">build指引</a>，开始准备很多 C++ 库_(:з」∠)__<br>&emsp;&emsp;不过也在这里重新认识了一遍 LLVM 神器，以及完美的 CLang 编译工具， 总算是知道怎么在 windows 下编译 C++ 而不需要通过安装 VS 这种庞然大物了。<br>&emsp;&emsp;以前看教程看到 Mac 内置了 gcc 就觉得特别方便，不过网上的所有资料都指出在 windows 下还是推荐 VS 全家桶来编译，我之前搞 Maya C++ 开发就已经装了所以我就不需要多做其他的操作。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;然后就是继续下载各种神奇的 C++ 库，趁着有时间，又去学习翻 Arnold 的文档看 osl 以及去 youtube 找 osl 相关的教程。<a href="https://www.youtube.com/watch?v=vBZ0WaOl_B8&amp;t=717s" target="_blank" rel="noopener">教程链接</a><br>&emsp;&emsp;于是我就发现，Arnold 貌似已经内置了 osl 的编译工具了，在 youtube 上找到教程，可以看到 Maya2019 的版本已经提供了 osl 节点实时编译 osl 生成效果了。<br>&emsp;&emsp;所以我搞到这里就此打住了，应该 arnold 已经配套好 osl 的编译工具了，我不需要把这一步编译操作也做了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;于是我进一步研究 Arnold 的官方文档，折腾了一圈才知道，这个 dll 是 Arnold 的 C++ shader 开发做的， osl 存在一些不能实现的效果 <a href="https://blender.stackexchange.com/questions/2719/osl-and-raytracing/2754" target="_blank" rel="noopener">参考链接</a><br>&emsp;&emsp;osl是用来定义 shader 显示的效果，没有办法控制渲染器采样，因此关于 raytracing 相关的东西需要用 Arnold 的 C++ shader 来配合。</p>
+</blockquote>
+<h2 id="Arnold-C-开发"><a href="#Arnold-C-开发" class="headerlink" title="Arnold C++ 开发"></a>Arnold C++ 开发</h2><h3 id="简单的插件开发方法"><a href="#简单的插件开发方法" class="headerlink" title="简单的插件开发方法"></a>简单的插件开发方法</h3><blockquote>
+<p>&emsp;&emsp;基于上面的信息，可以去 Arnold 的文档研究怎么通过 C++ 编译器生成一个 Arnold 可用的 dll 文件。<br>&emsp;&emsp;官方的文档就有怎么实现一个简单的插件，操作只需要跟着官方做一遍就大致了解了。<a href="https://docs.arnoldrenderer.com/display/A5ARP/Creating+a+Simple+Plugin" target="_blank" rel="noopener">文档</a></p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;直接将官方提供的 ass文件 和 cpp文件 弄成本地的文件。 <a href="https://github.com/FXTD-ODYSSEY/arnold_dev_learning/tree/master/arnold_plugin/official/0_Creating%20a%20Simple%20Plugin" target="_blank" rel="noopener">github参考</a><br>&emsp;&emsp;然后就是下载 Arnold SDK 调用 clang-cl 来编译了。<br>&emsp;&emsp;Arnold SDK 可以在这个<a href="https://www.arnoldrenderer.com/arnold/download/archive/" target="_blank" rel="noopener">链接</a>下载。<br>&emsp;&emsp;需要注意自己使用软件的 Arnold 版本，存在版本不兼容的情况。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;上面做准备研究的时候就已经装上了 LLVM ，因此就可以使用 clang-cl 来编译 C++ 了。<br>&emsp;&emsp;我个人觉得 VS 太过复杂了，反而搞不清楚这些编译操作的原本面貌，不太友好。<br>&emsp;&emsp;arnold 官方给的编译命令也是 命令行代码，只需要复制到命令行，将 cl 改为 clang-cl 就 OK 了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;我自己测试的时候， Arnold 的 SDK 环境变量貌似不太奏效，因此我还是用了绝对路径。<br>&emsp;&emsp;后面我就干脆写成了一个 <a href="https://github.com/FXTD-ODYSSEY/arnold_dev_learning/blob/master/arnold_plugin/arnold_pluigin_compile.py" target="_blank" rel="noopener">python 文件</a>，直接遍历文件目录下所有的 cpp 文件自动编译输出。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;编译的时候会有一个警告，只需要将 strcpy 内置函数改为 strcpy_s 就不会有警告了。<br>&emsp;&emsp;编译成功之后就是一个完整的 dll 文件， python代码也将一些不相干的文件统统删除了。<br>&emsp;&emsp;最后就是将 dll 文件放到 arnold 的 plugins 目录下即可读取。<br>&emsp;&emsp;以 Maya 的 Arnold 为例，只需要将 dll 放到 <code>C:\solidangle\mtoadeploy\$maya_version\plugins</code>  这个路径即可。 ($maya_version 指 Maya的版本比如 2017、2018)</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;最后一步就是将 ass 文件拖到 Maya 里面，点击 Arnold 渲染。<br>&emsp;&emsp;就可以看到和官方文档完全一致的 红色球体 了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;当然如果编译的版本对不上或者哪里操作不对就是 紫色 的。</p>
+</blockquote>
+<h3 id="Arnold-插件开发规范"><a href="#Arnold-插件开发规范" class="headerlink" title="Arnold 插件开发规范"></a>Arnold 插件开发规范</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// https://docs.arnoldrenderer.com/display/A5ARP/Creating+a+Simple+Plugin</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ai.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line">AI_SHADER_NODE_EXPORT_METHODS(SimpleMethods);</span><br><span class="line"> </span><br><span class="line"><span class="keyword">enum</span> SimpleParams &#123; p_color &#125;;</span><br><span class="line"> </span><br><span class="line">node_parameters</span><br><span class="line">&#123;</span><br><span class="line">   AiParameterRGB(<span class="string">"color"</span>, <span class="number">0.7f</span>, <span class="number">0.7f</span>, <span class="number">0.7f</span>);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">node_initialize&#123;&#125;</span><br><span class="line">node_update&#123;&#125;</span><br><span class="line">node_finish&#123;&#125;</span><br><span class="line"> </span><br><span class="line">shader_evaluate</span><br><span class="line">&#123;</span><br><span class="line">   <span class="comment">// sg 是指 AtShaderGlobals 类型</span></span><br><span class="line">   sg-&gt;out.RGB() = AiShaderEvalParamRGB(p_color);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">node_loader</span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">if</span> (i &gt; <span class="number">0</span>)</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">   node-&gt;methods     = SimpleMethods;</span><br><span class="line">   node-&gt;output_type = AI_TYPE_RGB;</span><br><span class="line">   node-&gt;name        = <span class="string">"simple"</span>;</span><br><span class="line">   node-&gt;node_type   = AI_NODE_SHADER;</span><br><span class="line">   strcpy_s(node-&gt;version, AI_VERSION);</span><br><span class="line">   <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;一个 Arnold cpp 文件必须要包含有上面这种结构<br>&emsp;&emsp;根据名字就可以判断出这个节点的 生命周期 ， 学过 threejs 就很好理解了。<br>&emsp;&emsp;node 对应的是 节点层 的操作 而 shader_evaluate 就是材质层的操作了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;这里面用到了 sg 对象让我非常困惑，而且这个东西在 文档 搜索也找不出所以然。<br>&emsp;&emsp;后来在看其他的代码中发现 sg 原来是 AtShaderGlobals 类型，再查一下这个类型的<a href="https://docs.arnoldrenderer.com/api/arnold-6.0.2.1/structAtShaderGlobals.html" target="_blank" rel="noopener">文档</a>就清楚了</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;至于 enum 类型类需要罗列出可以接入的属性名称，需要加入 <code>p_</code> 前缀，这个为啥没有找到佐证，最好还是按照官方的写法加上 <code>p_</code> 开头的前缀和下面 <code>AiParameterRGB</code> 以及 <code>AiShaderEvalParamRGB</code> 调用对应。</p>
+</blockquote>
+<h2 id="风格化渲染研究"><a href="#风格化渲染研究" class="headerlink" title="风格化渲染研究"></a>风格化渲染研究</h2><blockquote>
+<p>&emsp;&emsp;经过上面的一番折腾之后，我们可以逐步回到最开始要研究的效果了 <a href="http://www.zenopelgrims.com/project-arnold-brushstroke-shader-quantize.html" target="_blank" rel="noopener">链接</a></p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;我研究的过程是非常坎坷的，但是现在研究透了，可以重头梳理一遍，不容易产生混乱。<br>&emsp;&emsp;首先这个 Demo 里面提供的文件，我梳理之后整个流程包括了几个步骤</p>
+<ul>
+<li>渲染场景的搭建</li>
+<li>Houdini 获取模型的点云信息</li>
+<li>Maya 搭建渲染处理节点</li>
+<li>通过 Arnold 的 C++ shader 和 osl shader 对渲染效果进行风格化处理</li>
+</ul>
+</blockquote>
+<p><a href="https://gumroad.com/l/WIFvn" target="_blank" rel="noopener">Demo 文件下载地址</a></p>
+<h3 id="渲染场景梳理"><a href="#渲染场景梳理" class="headerlink" title="渲染场景梳理"></a>渲染场景梳理</h3><blockquote>
+<p>&emsp;&emsp;下载 Demo 文件之后打开 Maya 文件夹里面的 maya 场景就有下面所示的效果。<br>&emsp;&emsp;打开之前需要先将相应的 dll 和 osl 挪到 Arnold 的插件目录 <code>C:\solidangle\mtoadeploy\$maya_version\plugins</code><br>&emsp;&emsp;dll 只有两个 Arnold 的编译版本，比如我使用的 2019 就没有对应的版本，需要去下载 Arnold SDK 找到对应版本重新编译源码。</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/01.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;案例提供的场景源文件包括模型文件、灯光组、三层点云层<br>&emsp;&emsp;arnold 的 ass 默认情况下是以 boundingbox 显示，可以在属性编辑器里面切换为 点云 方便预览。<br>&emsp;&emsp;另外模型并没有使用贴图，而是使用了顶点颜色。<br>&emsp;&emsp;默认情况下 Maya 的视窗是无法预览到 模型的顶点颜色的。<br>&emsp;&emsp;最后我是参考了 Arnold 的一个教程解决问题 <a href="https://www.bilibili.com/video/BV1jx411x7Vb?p=30" target="_blank" rel="noopener">链接</a></p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;显然三个 ass 文件都是 houdini 导出的点云信息的文件<br>&emsp;&emsp;如果去掉三个 ass 点渲染就是纯粹的没有任何风格化的渲染效果了。</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/origin.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;因此在研究 Arnold 渲染之前首先需要搞清楚这些点云信息是如何通过 Houdini 生成的。<br>&emsp;&emsp;作者的 Demo 网页也提供了相关的信息。<br>&emsp;&emsp;我们可以打开 Houdini 文件查看一下，由于这里利用了 Arnold 插件导出 ass 如果没有安装 Houdini 的 Arnold 插件是会有警告的。</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/02.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;这个不影响研究 点云 生成</p>
+</blockquote>
+<h3 id="Houdini-点云生成"><a href="#Houdini-点云生成" class="headerlink" title="Houdini 点云生成"></a>Houdini 点云生成</h3><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/03.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;Houdini 打开包含有两个模型文件、三层生成点云的组还有一个 abc 相机文件。<br>&emsp;&emsp;abc相机文件用了绝对路径，需要重新指定一下路径，否则路径就在原点了。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;base_geo 组生成了模型的法线。<br>&emsp;&emsp;而 foxhead 则通过绘制 density 的方式用来单独调整鼻子周围的 scatter 操作。 </p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/04.png" alt="alt"></p>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/05.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;scatter 节点还要输出 UV 的信息给后面的 wrangle 节点使用</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/06.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;后面就是主要的 wrangle 节点进行的操作了</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/07.png" alt="alt"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">v@p_orig = @P;</span><br><span class="line">// 根据 UV 空间获取模型的法线信息 | 输出的两个属性是从 scatter 节点生成的</span><br><span class="line">@N = primuv(1, &quot;N&quot;, i@sourceprim, v@sourceprimuv);</span><br><span class="line">// 沿着法线方向 进行随机偏移</span><br><span class="line">@P += @N * rand(@ptnum) * ch(&quot;distance&quot;);</span><br><span class="line"></span><br><span class="line">// rand 获取的数值 0 - 1 之间重新映射到 1.5 - 3.0 之间</span><br><span class="line">// 设置点云每个点的半径 | 后面点云转卡片通过这个属性定义卡片的大小</span><br><span class="line">@ar_radius = fit(rand(@ptnum+1), 0.0, 1.0, 1.5, 3.0);</span><br><span class="line"></span><br><span class="line">// 设置两个用来导出到 ass 的属性</span><br><span class="line">v@worldPosition = v@P;</span><br><span class="line">v@worldVelocity = v@N;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;最后就是删除掉不相干的信息进行 ass 导出即可。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;上面就是第一层点云生成的方案，第二层和第三层的点云生成方案其实也 大差不差 。<br>&emsp;&emsp;主要是添加了沿着摄像机偏移的操作。</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/08.png" alt="alt"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 获取 abc摄像机的 transform</span><br><span class="line">matrix m = optransform(&apos;/obj/rendercam_moving_001/group2/rendercam&apos;);</span><br><span class="line">// https://www.sidefx.com/docs/houdini/vex/functions/cracktransform.html </span><br><span class="line">vector cam_pos = cracktransform(0, 0, 0, set(0, 0, 0), m);</span><br><span class="line"></span><br><span class="line">// 沿着摄像机的方向偏移点云</span><br><span class="line">@P += normalize(cam_pos - @P) * chf(&quot;dist&quot;);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;最初我也不太理解 cam_pos 的操作是什么意思。网上找到了一篇文章讲解 <a href="http://andy.moonbase.net/archives/1397" target="_blank" rel="noopener">链接</a></p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/09.gif" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;这样做的好处是摄像机观察的点云不会有任何变化，但是点云相对摄像机的位置更近了，这样就有了不同层的叠加效果。<br>&emsp;&emsp;后面点云在 Arnold 渲染成面片，由于更加靠近的缘故，因此渲染的面片会更大。</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/10.gif" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;在 Houdini 阶段可能还不太能理解上面动图的含义，还没有关系<br>&emsp;&emsp;后续导出需要注意的部分，已经在网页上写得很清楚了。</p>
+</blockquote>
+<p><img src="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/points_quads.png" alt="points_quads"></p>
+<blockquote>
+<p>&emsp;&emsp;点云的类型需要选择 quad ，这样 Arnold 渲染的时候就会将点云当成朝向摄像机的面片进行渲染。</p>
+</blockquote>
+<p><img src="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/points_visibility.png" alt="points_visibility"></p>
+<blockquote>
+<p>&emsp;&emsp;最后导出的时候需要将 点云 设置到 points 的 trace_set 。<br>&emsp;&emsp;后面用 C++ shader 进行采用的时候可以自动过滤掉。</p>
+</blockquote>
+<h3 id="Maya-节点搭建"><a href="#Maya-节点搭建" class="headerlink" title="Maya 节点搭建"></a>Maya 节点搭建</h3><blockquote>
+<p>&emsp;&emsp;终于到了噩梦的开始了。</p>
+</blockquote>
+<p><img src="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/node_network_shading_annotated.png" alt="node_network_shading_annotated"></p>
+<blockquote>
+<p>&emsp;&emsp;Maya 里面搭建出上述的节点进行处理。<br>&emsp;&emsp;Houdini 导出 ass 已经包含了相关的 属性<br>&emsp;&emsp;因此在 Maya 里面可以通过 userdata 读取到渲染器中。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;中间 绿色框的 aiQuantizeCutEdge  和 粉色 aiQuantize 就是 C++ 编写的 shader 节点。 <a href="https://github.com/FXTD-ODYSSEY/arnold_dev_learning/blob/master/examples/brushstrokes" target="_blank" rel="noopener">源码</a></p>
+</blockquote>
+<h3 id="aiQuantize"><a href="#aiQuantize" class="headerlink" title="aiQuantize"></a>aiQuantize</h3><blockquote>
+<p>&emsp;&emsp;aiQuantize 节点的作用就是给点云面片上色。</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_1_second_hit.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;上面的效果就是 layer_1 输出渲染透明度为 1 的效果。</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">ShaderData* data = (ShaderData*)AiNodeGetLocalData(node);</span><br><span class="line"></span><br><span class="line">  AtVector pos = AiShaderEvalParamVec(p_pos);</span><br><span class="line">  <span class="comment">// NOTE 法线的相反方向</span></span><br><span class="line">  AtVector dir = - AiShaderEvalParamVec(p_dir);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (data-&gt;trace_set.length()) &#123;</span><br><span class="line">    AiShaderGlobalsSetTraceSet(sg, data-&gt;trace_set, <span class="literal">false</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  AtRay ray_intersect_along_normal = AiMakeRay(AI_RAY_SUBSURFACE, pos, &amp;dir, AI_BIG, sg);</span><br><span class="line">  AtScrSample hit = AtScrSample();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(AiTrace(ray_intersect_along_normal, AI_RGB_WHITE, hit))&#123;</span><br><span class="line">    <span class="comment">// NOTE 获取点云碰撞到模型点的颜色</span></span><br><span class="line">    AtVector hitpoint = hit.point;</span><br><span class="line">    <span class="comment">// NOTE 获取摄像机到碰撞点的方向</span></span><br><span class="line">    AtVector dir_cam_hit = AiV3Normalize(hitpoint - data-&gt;cam_pos);</span><br><span class="line"></span><br><span class="line">    AtRay ray_intersect_camera = AiMakeRay(AI_RAY_SUBSURFACE, data-&gt;cam_pos, &amp;dir_cam_hit, AI_BIG, sg);</span><br><span class="line">    AtScrSample hit2 = AtScrSample();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// NOTE 如果摄像机也能碰到的点才赋值颜色</span></span><br><span class="line">    <span class="keyword">if</span>(AiTrace(ray_intersect_camera, AI_RGB_WHITE, hit2))&#123;</span><br><span class="line">      sg-&gt;out.RGB() = hit2.color;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  AiShaderGlobalsUnsetTraceSet(sg);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;C++的代码里面是 获取了点云点的位置和法线信息，然后生成一个新的采样光线，从点云的点出发朝法线的反方向 向 模型射去。 (AiMakeRay 创建光线)<br>&emsp;&emsp;然后可以获取到碰撞到模型的点 (AiTrace 获取到 AtScrSample 数据)</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;然后再算 碰撞到模型的点到摄像机的方向，再从摄像机发射光线去碰撞模型获取正对摄像机的颜色色块。<br>&emsp;&emsp;获取到的颜色赋予给点云的点上，由于点云是以面片的形式渲染，因此就渲染成了一大块颜色。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;可能上面的颜色一大坨不太好区分，我单独将 Fox 鼻子区域的点云渲染出来就比较清晰了。</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_3_quantize.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;因此这一步的处理之后是一大堆色块堆叠在一起的效果。<br>&emsp;&emsp;这个就是风格化处理的底色，后面就是遮罩的处理从而过滤出更好的风格化效果。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;这里也可以回过头来看看上面提到的 Houdini 沿摄像机偏移的作用。<br>&emsp;&emsp;由于点云更加靠近摄像机，因此生成的面片范围显得更大了。</p>
+</blockquote>
+<h3 id="aiQuantizeCutEdge"><a href="#aiQuantizeCutEdge" class="headerlink" title="aiQuantizeCutEdge"></a>aiQuantizeCutEdge</h3><blockquote>
+<p>&emsp;&emsp;通过上面的底色效果可以知道，由于面片的大小会导致颜色的溢出，需要有区分边界的方法来过滤。<br>&emsp;&emsp;这个节点就是生成这样一张过滤贴图。</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_2_opacity1.0_emission_edge.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;处理方法其实和 aiQuantize 大同小异</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">ShaderData* data = (ShaderData*)AiNodeGetLocalData(node);</span><br><span class="line"></span><br><span class="line">AtVector pos = AiShaderEvalParamVec(p_pos);</span><br><span class="line">AtVector dir = - AiShaderEvalParamVec(p_dir);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (data-&gt;trace_set.length()) &#123;</span><br><span class="line">  AiShaderGlobalsSetTraceSet(sg, data-&gt;trace_set, <span class="literal">false</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">AtVector p_orig = sg-&gt;P;</span><br><span class="line"></span><br><span class="line">AtRay ray_intersect_along_normal = AiMakeRay(AI_RAY_CAMERA, pos, &amp;dir, AI_BIG, sg);</span><br><span class="line">AtScrSample hit = AtScrSample();</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(AiTrace(ray_intersect_along_normal, AI_RGB_WHITE, hit))&#123;</span><br><span class="line">  AtVector dir_cam_hit = AiV3Normalize(p_orig - data-&gt;cam_pos);</span><br><span class="line"></span><br><span class="line">  AtRay ray_intersect_camera = AiMakeRay(AI_RAY_CAMERA, data-&gt;cam_pos, &amp;dir_cam_hit, AI_BIG, sg);</span><br><span class="line">  AtScrSample hit2 = AtScrSample();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (AiTrace(ray_intersect_camera, AI_RGB_WHITE, hit2))&#123;</span><br><span class="line">      <span class="comment">// NOTE 判断是否碰撞点所获取的物体是否一致</span></span><br><span class="line">      <span class="keyword">if</span> (hit2.obj != hit.obj)&#123;</span><br><span class="line">          sg-&gt;out.RGB() = AI_RGB_BLACK;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          sg-&gt;out.RGB() = AI_RGB_WHITE;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">AiShaderGlobalsUnsetTraceSet(sg);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;主要的区别在于第一次碰撞之后，第二次发射光线是射向点云的位置。<br>&emsp;&emsp;在模型边缘的点比较稀疏，会稍微溢出模型的，因此第二次碰撞是碰不到模型的。<br>&emsp;&emsp;因此处于边缘的点云就全部过滤出来渲染变成了黑色。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;这个节点主要用来过滤出第一层风格化的效果。</p>
+</blockquote>
+<h3 id="align-uvcoords-to-vec-osl-处理"><a href="#align-uvcoords-to-vec-osl-处理" class="headerlink" title="align_uvcoords_to_vec osl 处理"></a>align_uvcoords_to_vec osl 处理</h3><p><img src="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/node_network_shading_annotated.png" alt="node_network_shading_annotated"></p>
+<blockquote>
+<p>&emsp;&emsp;C++ 的部分已经讲完，下面就是针对 osl 的过滤处理。<br>&emsp;&emsp;align_uvcoords_to_vec 的作用幸好作者输出了将风格化笔触替换为箭头的渲染图，就非常好理解了。</p>
+</blockquote>
+<p><img src="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/stroke_automatic_alignment.png" alt="stroke_automatic_alignment"></p>
+<blockquote>
+<p>&emsp;&emsp;我也测试了一下如果去掉 align 的渲染效果。</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/11.gif" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;虽然整体看起来似乎不知其所以然，如果是箭头的话没有align肯定都是不带偏转角度朝上的。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">float magnitude(vector v) &#123;</span><br><span class="line">    // NOTE 计算向量的长度</span><br><span class="line">    return sqrt(v[0] * v[0] + v[1] * v[1]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">shader align_uvcoords_to_vec(</span><br><span class="line">    point p = point(0),</span><br><span class="line">    point vec = point(0),</span><br><span class="line">    vector scale = vector(1),</span><br><span class="line">    output vector uv = vector(u,v,0)</span><br><span class="line">)&#123;</span><br><span class="line">    // NOTE 获取点云 屏幕 坐标</span><br><span class="line">    point p_ss = transform(&quot;world&quot;, &quot;screen&quot;, p);</span><br><span class="line">    // NOTE 获取点云屏幕坐标的法线方向</span><br><span class="line">    point p_v_ss = transform(&quot;world&quot;, &quot;screen&quot;, p+vec);</span><br><span class="line">    // NOTE 获取点云屏幕坐标的向上方向</span><br><span class="line">    point p_up_ss = transform(&quot;world&quot;, &quot;screen&quot;, p+point(0, 1, 0));</span><br><span class="line"></span><br><span class="line">    vector a = normalize(p_ss - p_v_ss);</span><br><span class="line">    vector b = normalize(p_ss - p_up_ss);</span><br><span class="line"></span><br><span class="line">    vector a2 = a[0] &lt; 0.0 ? a : -a;</span><br><span class="line">    // NOTE 计算出向上向量和法线向量的角度差</span><br><span class="line">    float angle = acos(dot(a2, b) / (magnitude(a2)*magnitude(b)));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    // NOTE 居中根据角度差旋转</span><br><span class="line">    uv = vector(u, v, 0);</span><br><span class="line">    uv -= 0.5;</span><br><span class="line">    uv  = rotate(uv, angle, point(0,0,0), vector(0,0,1));</span><br><span class="line">    uv /= scale;</span><br><span class="line">    uv += 0.5;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="facingratio-cam"><a href="#facingratio-cam" class="headerlink" title="facingratio_cam"></a>facingratio_cam</h3><blockquote>
+<p>&emsp;&emsp;通过这个 osl 和 法线算出模型的朝向摄像机的区域，越朝向摄像机就越呈现白色。</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/facingratio_cam.png" alt="alt"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">shader facingratio_cam(</span><br><span class="line">	point pos = point(0),</span><br><span class="line">	point vec = point(0),</span><br><span class="line">	output float result = 0.0</span><br><span class="line">)&#123;</span><br><span class="line">	// NOTE 获取摄像机的位置</span><br><span class="line">	point camerapos = point(&quot;camera&quot;, 0, 0, 0);</span><br><span class="line">	</span><br><span class="line">	// NOTE 摄像机到点云的向量和法线向量的点乘 | 当法线和射向摄像机的向量重合时 角度值为 0 cos值为 1</span><br><span class="line">	result = dot(normalize(camerapos - pos), vec);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;这个过滤主要是为了过滤朝向摄像机相关向量的偏转，因为点云的法线越是朝向摄像机，法线屏幕向量就非常接近原点。<br>&emsp;&emsp;到这里的时候计算偏转角度就没有什么意义了，因此可以通过这个来过滤，当然这里还需要翻转一下颜色</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/facingratio_cam_range.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;这也是为啥箭头图的法线朝向摄像机的部分颜色会变浅。<br>&emsp;&emsp;并且第二层的边缘效果处理也是用了这里的效果进行处理，</p>
+</blockquote>
+<h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><blockquote>
+<p>&emsp;&emsp;最后将上面的处理全部合并到一起所看到的贴图如下</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_1_opacity_mask_emission_mask.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;第一层透贴</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_2_opacity_mask_emission_mask.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;第二层透贴</p>
+</blockquote>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/full.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;最终效果</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>&emsp;&emsp;这一次又查了很多 Arnold 的文档，学到了很多新东西。<br>&emsp;&emsp;后面我还在 github 上发现了用 Arnold 处理 卡通 效果的库，后面有空可进一步研究 <a href="https://github.com/iceprincefounder/sytoons/wiki/3.syToons%E6%9D%90%E8%B4%A8" target="_blank" rel="noopener">github</a></p>
+</blockquote>
+
+        
+      </div>
+
+      
+    </div>
+
+    
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/posts/84ce2047.html">Arnold 风格化渲染研究</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 智伤帝 的个人博客">智伤帝</a></p>
+        <p><span>发布时间:</span>2020年04月08日 - 09时20分</p>
+        <p><span>最后更新:</span>2020年04月08日 - 18时18分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/posts/84ce2047.html" title="Arnold 风格化渲染研究">https://blog.l0v0.com/posts/84ce2047.html</a>
+            <span class="copy-path" data-clipboard-text="原文: https://blog.l0v0.com/posts/84ce2047.html　　作者: 智伤帝" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <!-- <script src="/js/clipboard.min.js"></script> -->
+            <!-- <script> var clipboard = new Clipboard('.copy-path');</script> -->
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+
+        
+
+     
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            if(dataid=="alipay")
+            $(".shang_payimg").css("border-color","#4094c7");
+            else
+            $(".shang_payimg").css("border-color","#22aa3b");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+
+
+    </div>
+
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/posts/64ea31cc.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Maya MGTools&amp;animBot 动画插件研究</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+    
+</article>
+
+<div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Arnold-shader-开发"><span class="toc-number">1.</span> <span class="toc-text">Arnold shader 开发</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#素材研究准备"><span class="toc-number">1.2.</span> <span class="toc-text">素材研究准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Arnold-C-开发"><span class="toc-number">1.3.</span> <span class="toc-text">Arnold C++ 开发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#简单的插件开发方法"><span class="toc-number">1.3.1.</span> <span class="toc-text">简单的插件开发方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Arnold-插件开发规范"><span class="toc-number">1.3.2.</span> <span class="toc-text">Arnold 插件开发规范</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#风格化渲染研究"><span class="toc-number">1.4.</span> <span class="toc-text">风格化渲染研究</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#渲染场景梳理"><span class="toc-number">1.4.1.</span> <span class="toc-text">渲染场景梳理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Houdini-点云生成"><span class="toc-number">1.4.2.</span> <span class="toc-text">Houdini 点云生成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Maya-节点搭建"><span class="toc-number">1.4.3.</span> <span class="toc-text">Maya 节点搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#aiQuantize"><span class="toc-number">1.4.4.</span> <span class="toc-text">aiQuantize</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#aiQuantizeCutEdge"><span class="toc-number">1.4.5.</span> <span class="toc-text">aiQuantizeCutEdge</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#align-uvcoords-to-vec-osl-处理"><span class="toc-number">1.4.6.</span> <span class="toc-text">align_uvcoords_to_vec osl 处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#facingratio-cam"><span class="toc-number">1.4.7.</span> <span class="toc-text">facingratio_cam</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#输出"><span class="toc-number">1.4.8.</span> <span class="toc-text">输出</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">1.5.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
+</div>
+<style>
+    .left-col .switch-btn {
+        display: none;
+    }
+    .left-col .switch-area {
+        display: none;
+    }
+</style>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<!-- <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script> -->
+<script src="https://cdn.bootcss.com/require.js/2.3.6/require.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+            $(".switch-btn, .switch-area").fadeOut(300);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+            $(".switch-btn, .switch-area").fadeIn(500);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+        $(".switch-btn, .switch-area").show();
+    }
+</script>
+
+    <style>
+        .toc {
+            white-space: nowrap;
+            overflow-x: hidden;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            $(".toc li a").mouseover(function() {
+                var title = $(this).attr('href');
+                $(this).attr("title", title);
+            });
+        })
+    </script>
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+
+<!-- <section id="comments">
+<link rel="stylesheet" href="/css/gitment.min.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  id: 'Arnold 风格化渲染研究', // 可选。默认为 location.href
+  owner: 'FXTD-odyssey',
+  repo: 'FXTD-odyssey.github.io',
+  oauth: {
+    client_id: '355e44f722e24963b9dd',
+    client_secret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+  },
+})
+gitment.render('comments')
+</script>
+</section> -->
+
+
+
+<section id="comments">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.5.0/gitalk.min.css" rel="stylesheet">
+  <div class="gitalk" style="width:90%;margin:auto;">
+    <div id="gitalk-container"></div>
+    <script type="text/javascript">
+      require(["https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.5.0/gitalk.min.js","https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.10.0/js/md5.min.js"], function (Gitalk,md5) {
+
+        const gitalk = new Gitalk({
+          clientID: '355e44f722e24963b9dd',
+          clientSecret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+          repo: 'FXTD-odyssey.github.io',
+          owner: 'FXTD-odyssey',
+          admin: ['FXTD-odyssey'],
+          id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+
+      });
+    </script>
+  </div>
+</section>
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a  href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a  href="/posts/64ea31cc.html" title="下一篇: Maya MGTools&amp;animBot 动画插件研究">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/posts/84ce2047.html">Arnold 风格化渲染研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/64ea31cc.html">Maya MGTools&animBot 动画插件研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4ad87fc3.html">Unreal 导入 FBX 选项事项</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/595dd86f.html">Python future-fstring库 原理解析</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/864bfe61.html">Maya Reference Edit 属性清理</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/204db704.html">Maya插件 - collapsableShelf</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d2b44b01.html">Python DCC 嵌入 浏览器 探索</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/a91a4c58.html">VScode 结合git的全面使用流程（下）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/94ffdbdf.html">VScode 结合git的全面使用流程（上）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/67e3cff5.html">Python 函数传参验证探索</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/a7c99667.html">Maya 奇怪的Callback报错</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/19ce97d6.html">Maya 内置图标探索</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/18de3838.html">Maya插件 - CommandLauncher</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/471f7aaa.html">安卓手机效率提升指南（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/fc7c2790.html">安卓手机效率提升指南（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f862fce.html">Maya2017 材质面板打开报错空白</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/53fbd124.html">Maya 中文乱码坑</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/e3ab7e13.html">Maya 模块安装探讨</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6f5d3bd5.html">Maya 语言切换</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/3c1dd960.html">私有云搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/513460b.html">Maya 法线解锁进阶</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/fcc8e205.html">Windows 效率提升指南</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/aa6ded84.html">Maya Qt 多线程提升交互体验</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/13258e66.html">Maya插件 - mpdb - Maya Python Debugger</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/614e755e.html">VScode - Setting Sync 配置同步之坑</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4120b797.html">Maya 轴心移动研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/66c5da7.html">Python pdb 调试模块研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/83897e45.html">Overlapper 动画插件研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/842747c9.html">Maya 代码管理</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ddafb500.html">Maya轮廓挤出研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b70d8b0c.html">3dsMax FBX导出工具进阶版</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/716eb47e.html">Maya2017 大纲列表显示 Bug</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/53edd78c.html">【转载】 「原力动画」全面开放自研新技术，希望助力中国动画行业发展</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4cc5c02.html">Maya 法线解锁</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f4dcd89b.html">3dsMax FBX导出工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/fc4346ec.html">Maya 次级控制器跟随方案</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5486e619.html">【转载】 加速Maya开启与关闭的方法 | Adu Blog</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7cc09d5d.html">VScode - 全面使用攻略（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/31de3e0f.html">VScode - 全面使用攻略（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1947fed4.html">VScode - 全面使用攻略（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/26180f28.html">观看笔记 - AboutCG - Maya API 编程教学 for TD</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4c52085.html">Hexo博客优化之路（十） - 置顶文章 | 代码注释颜色区分 | 评论自动初始化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/intro.html">【置顶】 智伤帝 | 博客全面指引</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/8bb6468c.html">Maya Arnold 渲染设置崩溃</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/efd57a69.html">Autodesk Genuine Service 破解无效解决方案</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/216efd3e.html">校招之路</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c8c0ddca.html">一灯问卷小程序 开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/21ad06c1.html">【回忆录】 - 我的大三</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/63f190cc.html">【回忆录】 - 我的大二</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5871be65.html">【回忆录】 - 我的大一</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/40745d4d.html">【回忆录】 - 我的高中</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4d164b82.html">VScode - MayaPy插件开发总结</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/9915f9db.html">学习笔记 Unreal 官方 - Water Pack Overview</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/99ca25ca.html">学习笔记 水材质制作 Unlocking the Unreal Engine Material Editor</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/11d100be.html">学习笔记 Udemy - Unlocking the Unreal Engine Material Editor</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c476f94c.html">学习笔记 Pluralsight - Unreal Engine 4 Materials Fundamentals</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d58573f8.html">学习笔记 Packt Publishing - Unreal Engine 4 - The Complete Beginner's Course</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/54f0044c.html">学习笔记 Lynda - Unreal Essential Training</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b5d3f6ab.html">Maya BlendShape 中间值获取</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/a1569efd.html">Maya Python 视锥可视工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c45f3e57.html">node.js 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f449d28f.html">node.js 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/284524f6.html">Vue 坑爹记录</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f6cd0ecb.html">Maya Python RBF工具开发研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c38bc3c2.html">Navicat连接远程数据库</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/372dc2f3.html">Vue 学习之路（十）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b21fe737.html">Vue 学习之路（九）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c8d2c668.html">Vue 学习之路（八）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/3fb9ee2b.html">Vue 学习之路（七）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/edb999b4.html">Vue 学习之路（六）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/88b7d26d.html">Vue 学习之路（五）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/e729172a.html">Vue 学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50040e4f.html">Vue 学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1d1aad1d.html">Vue 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2d0c41c5.html">Vue 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4e9ee1dc.html">观看笔记 - Maya 100 招 - 第四十一招到第五十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/410ea085.html">观看笔记 - Maya 100 招 - 第三十一招到第四十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/9ab1cd0e.html">观看笔记 - Maya 100 招 - 第二十一招到第三十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d81d7e23.html">Shader学习之路(六)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/41123651.html">Shader学习之路(五)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/47b9612c.html">Shader学习之路(四)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/671aaad8.html">Shader学习之路(三)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2a04098a.html">Shader学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1a12e552.html">Shader学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/df0a441f.html">观看笔记 - Maya 100 招 - 第十一招到第二十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/23e3cff.html">观看笔记 - Maya 100 招 - 第一招到第十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/77c88c0d.html">Hexo博客优化之路（九） - 服务器配置 | 博客部署</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ccad2d76.html">PHP Laravel框架试水</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b1b98494.html">Unity - 场景漫游课程设计</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/712b664b.html">Python - Python Qt 开发教程(7)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6830570a.html">Python - Python Qt 开发教程(6)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/431d04c9.html">Python - Python Qt 开发教程(5)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5fce3fcb.html">Maya C++ 多核性能测试</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5a063588.html">Python - Python Qt 开发教程(4)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2e0af969.html">Python - Python Qt 开发教程 扩展说明</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1547a34f.html">Python - Python Qt 开发教程(3)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c5c920e.html">Python - Python Qt 开发教程(2)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2c06616b.html">Python - Python Qt 开发教程(1)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f0a58164.html">Maya C++ MEL语句 性能测试 & 插件开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/bb58a66.html">【总结】-2019年3月、4月回顾-5月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/404240a4.html">Maya Python Publish 检查功能开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6f4e3164.html">【总结】 2019年2月回顾 | 3月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/237316ce.html">Maya Python - Publish工具开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/de2ca4c2.html">React - React 两日游有感</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d8bf85b3.html">观看笔记 - Pluralsight React:The Big Picture</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/642ecb99.html">【总结】 2019年1月回顾 | 2月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f6caaeeb.html">Maya Python - 镜头路线管理器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/332f70b.html">Maya Ziva 设置参考</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f62b6398.html">OpenMaya - VertexConstraint插件开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/41495e54.html">Maya Python - 外包检查工具开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50d67130.html">Maya Python - TSM镜像工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4c4a3e97.html">【总结】 2018年12月回顾 | 1月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/e3d81e44.html">Maya Ziva 初步探索</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c5dbea3.html">Python - CHR_Encrypter CHR文件加密器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/dc7fc7b9.html">Maya Python - 藤蔓生长快速绑定工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ce6b2154.html">Maya Python - ALembic导入导出助手</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/568b8654.html">【总结】 2018年11月回顾 | 12月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/57d6cbdb.html">华强方特 实习 第一周</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7c31db18.html">python - PLB downloader 开发完成</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4323d1ae.html">【总结】 2018年10月回顾 | 11月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ccdac3f3.html">Python - 用 PyQt 写 Pluralsight 下载器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ef451c1b.html">观看笔记 - PyQt &  Qt Designer 三套教程</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5b9053f9.html">Python - 用 PyQt 写爬虫界面</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7d4ea2e3.html">Python爬虫 -  抓取 青年之声 数据</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/19cb914e.html">Maya Python  - 自动生成序号插件</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/8150782b.html">Houdini - 计算模型体积 过滤问题模型</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/8150782b.html">Houdini - 计算模型体积 过滤问题模型</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/68d818a2.html">观看笔记 - Creating an Animated Paper Folding Effect in Maya</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5c26d29c.html">观看笔记 - Python For Maya Artist Friendly Programming</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/13d1de85.html">观看笔记 - Pluralsight - Python for Maya Fundamentals</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/fe733535.html">【总结】 2018年9月回顾 | 10月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/59506.html">Hexo博客优化之路（八） - Gitment换成Gittalk | SEO优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/17676.html">数字媒体技术专业网站 - 搭建感想</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/53349.html">VScode - 实现Maya-python代码快速提示</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50174.html">观看笔记 - Pluralsight - Houdini VEX Fundamentals</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/3087.html">VisualStudioCode 编辑器安利</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/21898.html">Houdini VDB 将CAD图纸转成实体模型</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/15486.html">观看笔记 - Pluralsight - Houdini SOP Solver</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/57520.html">Three.js - EditorContrl 添加区域限制</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/33613.html">浅谈优越感</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/988.html">MEL - 选点成盒插件</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/52737.html"> MEL - 面片自动匹配插件（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/19450.html">MEL - 面片自动匹配插件（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/35846.html">Three.js -通过JQuery处理脚本异步加载</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24831.html">Three.js -动态加载相关的js</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/59091.html">Three.js - postprocessing 后期处理</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4257.html">至2018级数字媒体技术新生</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/56108.html">Hexo博客优化之路（七）- 代码块进阶优化&分类优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1905.html">MEL 随机大小插件</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50883.html">Hexo博客优化之路(六) - 本地搜索优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/51575.html">Hexo博客优化之路（五）- 代码块优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50589.html">Three.js - 用最小面数生成立体的物体</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/39119.html">Hexo博客优化之路（四）- fancybox 图片跳转问题</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/59323.html">数据结构大作业回顾</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/37850.html">Hexo博客优化之路（三）- 正则表达式 清除markdown中的HTML标签</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/35734.html">Hexo博客优化之路（二）- 前端添加图片水印方案</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/20763.html">Hexo博客优化之路（一）- 博客瘦身方法</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/60230.html">Houdini-学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/12961.html">Three.js - 学习之路（五）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/61471.html">Three.js - 学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/34183.html">Houdini-学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/40670.html">Three.js - 学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/37543.html">Three.js - 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/33144.html">Three.js - 房产信息线上浏览Demo</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/733.html">Three.js - 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24239.html">Three.js-学习之路（零）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/35326.html">Houdini-学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6532.html">Houdini-学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6507.html">bootstrap 学习感悟</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6250.html">渔村苏维埃政府旧址-数字博物馆</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24028.html">PyMel 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/30435.html">Photogrammetry-学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/33086.html">Photogrammetry 学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/63727.html">Hexo个人博客搭建遇到的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/36167.html">Photogrammetry 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24208.html">Houdini-学习之路(零)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7485.html">Photogrammetry 学习之路（一）</a></li></ul>
+    
+<!-- <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script> -->
+<script src="https://cdn.bootcss.com/require.js/2.3.6/require.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+
+    <script>
+        $(".post-list").addClass("toc-article");
+        // $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#toc, .switch-btn, .switch-area").toggle();
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+                $(".switch-btn, .switch-area").fadeToggle(300);
+            }
+        })
+    </script>
+
+
+
+
+<script>
+        
+</script>
+
+
+<script>
+  if ($(".highlight").length > 0) {//判断代码块是否存在
+    $(".highlight").each(function (index) {//遍历代码块
+      let btnDiv = $('<div></div>');
+      $(this).prepend(btnDiv);
+
+      let scope = this;
+      btnDiv.css('position', 'absolute');
+
+      $(window).load(function () {//确保其他东西加载完成才执行
+        btnDiv.css('top', $(scope).position().top + 12);
+        btnDiv.css('right', '2em');
+      });
+
+      $(window).resize(function () {//当浏览器大小变化时
+        setTimeout(function () {
+          btnDiv.css('top', $(scope).position().top + 12);
+          btnDiv.css('right', '2em');
+        }, 100);
+      });
+
+      //用于复制代码按钮
+      $(scope).find('.code').addClass("code" + index);
+
+      //复制按钮
+      let copyBtn = $("<button type='button' class='btn btn-primary' id='copyBtn" + index + "'data-clipboard-action='copy' data-clipboard-target='.code" + index + "'>复制</button>");
+      $(btnDiv).prepend(copyBtn);
+
+
+      //识别Vex
+      if ($(this).attr('data-lang') == 'vex') {
+
+        let VEXBtn = $("<button type='button' class='btn btn-primary' id='VEXBtn" + index + "'>VEX原生样式</button>");
+        $(btnDiv).prepend(VEXBtn);
+
+        let VEXBtnCheck = false;
+        let scope = this;
+
+        $(scope).find('.built_in').removeClass('built_in').addClass("VEX_built_in");
+        $(scope).find('.string').removeClass('string').addClass("VEX_string");
+        $(scope).find('.operator').removeClass('operator').addClass("VEX_operator");
+        $(scope).find('.number').removeClass('number').addClass("VEX_number");
+        $(scope).find('.command').removeClass('command').addClass("VEX_command");
+        $(scope).find('.comment').removeClass('comment').addClass("VEX_comment");
+        $(scope).find('.id').removeClass('id').addClass("VEX_id");
+
+        $('#VEXBtn' + index).click(function () {
+          if (VEXBtnCheck) {
+            $(this).text('VEX原生样式');
+            VEXBtnCheck = false;
+            $(scope).find('.built_in').removeClass('built_in').addClass("VEX_built_in");
+            $(scope).find('.string').removeClass('string').addClass("VEX_string");
+            $(scope).find('.operator').removeClass('operator').addClass("VEX_operator");
+            $(scope).find('.number').removeClass('number').addClass("VEX_number");
+            $(scope).find('.command').removeClass('command').addClass("VEX_command");
+            $(scope).find('.comment').removeClass('comment').addClass("VEX_comment");
+            $(scope).find('.id').removeClass('id').addClass("VEX_id");
+          } else {
+            $(this).text('自定义样式');
+            VEXBtnCheck = true;
+            $(scope).find('.VEX_built_in').removeClass('VEX_built_in').addClass("built_in");
+            $(scope).find('.VEX_string').removeClass('VEX_string').addClass("string");
+            $(scope).find('.VEX_operator').removeClass('VEX_operator').addClass("operator");
+            $(scope).find('.VEX_number').removeClass('VEX_number').addClass("number");
+            $(scope).find('.VEX_command').removeClass('VEX_command').addClass("command");
+            $(scope).find('.VEX_comment').removeClass('VEX_comment').addClass("comment");
+            $(scope).find('.VEX_id').removeClass('VEX_id').addClass("id");
+          }
+
+        });
+      }
+
+      //识别MEL
+      if ($(this).attr('data-lang') == 'mel') {
+        let melBtn = $("<button type='button' class='btn btn-primary' id='melBtn" + index + "'>MEL原生样式</button>");
+        $(btnDiv).prepend(melBtn);
+
+        let melBtnCheck = false;
+        let scope = this;
+
+        $(scope).find('.keyword').removeClass('keyword').addClass("mel_keyword");
+        $(scope).find('.string').removeClass('string').addClass("mel_string");
+        $(scope).find('.number').removeClass('number').addClass("mel_number");
+
+        $(scope).find('.command').removeClass('command').addClass("mel_command");
+        $(scope).find('.operator').removeClass('operator').addClass("mel_operator");
+
+        $('#melBtn' + index).click(function () {
+          if (melBtnCheck) {
+            $(this).text('MEL原生样式');
+            melBtnCheck = false;
+            $(scope).find('.keyword').removeClass('keyword').addClass("mel_keyword");
+            $(scope).find('.string').removeClass('string').addClass("mel_string");
+            $(scope).find('.number').removeClass('number').addClass("mel_number");
+
+            $(scope).find('.command').removeClass('command').addClass("mel_command");
+            $(scope).find('.operator').removeClass('operator').addClass("mel_operator");
+          } else {
+            $(this).text('自定义样式');
+            melBtnCheck = true;
+            $(scope).find('.mel_keyword').removeClass('mel_keyword').addClass("keyword");
+            $(scope).find('.mel_string').removeClass('mel_string').addClass("string");
+            $(scope).find('.mel_number').removeClass('mel_number').addClass("number");
+            $(scope).find('.mel_command').removeClass('mel_command').addClass("command");
+            $(scope).find('.mel_operator').removeClass('mel_operator').addClass("operator");
+          }
+        });
+      }
+    })
+  }
+</script>
+
+<script>
+
+  function codeAutoResize() {
+
+    if ($(".highlight").length > 0) {//判断代码块是否存在
+      $(".highlight").each(function (index) {//遍历代码块
+        let codeWidth;
+        let parentWidth = $(this).css('width');//获取代码块的宽度
+        let childWidth = $(this).children('table').css('width');//获取代码的宽度
+        if (parseInt(parentWidth) < parseInt(childWidth)) {//转成整数比较宽度大小
+          codeWidth = childWidth;
+        } else {
+          codeWidth = parentWidth;
+        }
+        $(this).children('style').remove();//清理style标签
+        $(this).addClass("resize" + index);//添加class名
+        $(this).append("<style>.highlight.resize" + index + "::before{width:" + codeWidth + "}</style>");
+      });
+    }
+  }
+
+  setInterval(function () {
+    codeAutoResize();//初始化
+  }, 500);
+
+
+  $(window).resize(function () {
+    codeAutoResize();//改变尺寸的时候执行
+  });
+
+  // NOTE 单个链接自动居中
+  $(".article-entry>p").find("a").each(function() {
+    $(this).parent().css('text-align','center')
+  })
+</script></div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2020 智伤帝
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo &nbsp;&nbsp;</a><a href="https://github.com/maochunguang" target="_blank">Blog</a> by 智伤帝
+            </div>
+        </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<!-- <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script> -->
+<script src="https://cdn.bootcss.com/require.js/2.3.6/require.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 1;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'xxxxx', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "//hm.baidu.com/hm.js?xxxxxx";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+<div class="scroll" id="scroll">
+    <a href="javascript:;"><i class="fa fa-arrow-up"></i></a>
+    <!-- <a href="#comments"><i class="fa fa-comments-o"></i></a> -->
+    <a href="javascript:;"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    var $top = $('.fa-arrow-up');
+    var $bottom = $('.fa-arrow-down');
+
+    $top.on('click', function () {
+
+      $('body').velocity('scroll');
+    });
+    $bottom.on('click', function () {
+
+      $('#footer').velocity('scroll');
+    });
+
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+  </div>
+  
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+    </script>
+    
+</body>
+</html>
