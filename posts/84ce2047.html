@@ -29,21 +29,21 @@
 <meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/08.png">
 <meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/09.gif">
 <meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/10.gif">
-<meta property="og:image" content="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/points_quads.png">
-<meta property="og:image" content="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/points_visibility.png">
-<meta property="og:image" content="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/node_network_shading_annotated.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/brushstroke-shader/points_quads.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/brushstroke-shader/points_visibility.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/brushstroke-shader/node_network_shading_annotated.png">
 <meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_1_second_hit.png">
 <meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_3_quantize.png">
 <meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_2_opacity1.0_emission_edge.png">
-<meta property="og:image" content="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/node_network_shading_annotated.png">
-<meta property="og:image" content="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/stroke_automatic_alignment.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/brushstroke-shader/node_network_shading_annotated.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/brushstroke-shader/stroke_automatic_alignment.png">
 <meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/11.gif">
 <meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/facingratio_cam.png">
 <meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/facingratio_cam_range.png">
 <meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_1_opacity_mask_emission_mask.png">
 <meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/layer_2_opacity_mask_emission_mask.png">
 <meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/render/full.png">
-<meta property="og:updated_time" content="2020-04-08T10:18:47.555Z">
+<meta property="og:updated_time" content="2020-04-09T00:19:45.289Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Arnold 风格化渲染研究">
 <meta name="twitter:description" content="Arnold shader 开发">
@@ -868,18 +868,18 @@
 <blockquote>
 <p>&emsp;&emsp;在 Houdini 阶段可能还不太能理解上面动图的含义，还没有关系<br>&emsp;&emsp;后续导出需要注意的部分，已经在网页上写得很清楚了。</p>
 </blockquote>
-<p><img src="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/points_quads.png" alt="points_quads"></p>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/brushstroke-shader/points_quads.png" alt="points_quads"></p>
 <blockquote>
 <p>&emsp;&emsp;点云的类型需要选择 quad ，这样 Arnold 渲染的时候就会将点云当成朝向摄像机的面片进行渲染。</p>
 </blockquote>
-<p><img src="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/points_visibility.png" alt="points_visibility"></p>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/brushstroke-shader/points_visibility.png" alt="points_visibility"></p>
 <blockquote>
 <p>&emsp;&emsp;最后导出的时候需要将 点云 设置到 points 的 trace_set 。<br>&emsp;&emsp;后面用 C++ shader 进行采用的时候可以自动过滤掉。</p>
 </blockquote>
 <h3 id="Maya-节点搭建"><a href="#Maya-节点搭建" class="headerlink" title="Maya 节点搭建"></a>Maya 节点搭建</h3><blockquote>
 <p>&emsp;&emsp;终于到了噩梦的开始了。</p>
 </blockquote>
-<p><img src="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/node_network_shading_annotated.png" alt="node_network_shading_annotated"></p>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/brushstroke-shader/node_network_shading_annotated.png" alt="node_network_shading_annotated"></p>
 <blockquote>
 <p>&emsp;&emsp;Maya 里面搭建出上述的节点进行处理。<br>&emsp;&emsp;Houdini 导出 ass 已经包含了相关的 属性<br>&emsp;&emsp;因此在 Maya 里面可以通过 userdata 读取到渲染器中。</p>
 </blockquote>
@@ -924,11 +924,11 @@
 <blockquote>
 <p>&emsp;&emsp;这个节点主要用来过滤出第一层风格化的效果。</p>
 </blockquote>
-<h3 id="align-uvcoords-to-vec-osl-处理"><a href="#align-uvcoords-to-vec-osl-处理" class="headerlink" title="align_uvcoords_to_vec osl 处理"></a>align_uvcoords_to_vec osl 处理</h3><p><img src="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/node_network_shading_annotated.png" alt="node_network_shading_annotated"></p>
+<h3 id="align-uvcoords-to-vec-osl-处理"><a href="#align-uvcoords-to-vec-osl-处理" class="headerlink" title="align_uvcoords_to_vec osl 处理"></a>align_uvcoords_to_vec osl 处理</h3><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/brushstroke-shader/node_network_shading_annotated.png" alt="node_network_shading_annotated"></p>
 <blockquote>
 <p>&emsp;&emsp;C++ 的部分已经讲完，下面就是针对 osl 的过滤处理。<br>&emsp;&emsp;align_uvcoords_to_vec 的作用幸好作者输出了将风格化笔触替换为箭头的渲染图，就非常好理解了。</p>
 </blockquote>
-<p><img src="http://www.zenopelgrims.com/assets/img/projects/brushstroke-shader/stroke_automatic_alignment.png" alt="stroke_automatic_alignment"></p>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Arnold/paintBrush/brushstroke-shader/stroke_automatic_alignment.png" alt="stroke_automatic_alignment"></p>
 <blockquote>
 <p>&emsp;&emsp;我也测试了一下如果去掉 align 的渲染效果。</p>
 </blockquote>
@@ -980,7 +980,7 @@
         <p><span>本文标题:</span><a href="/posts/84ce2047.html">Arnold 风格化渲染研究</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 智伤帝 的个人博客">智伤帝</a></p>
         <p><span>发布时间:</span>2020年04月08日 - 09时20分</p>
-        <p><span>最后更新:</span>2020年04月08日 - 18时18分</p>
+        <p><span>最后更新:</span>2020年04月09日 - 08时19分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/posts/84ce2047.html" title="Arnold 风格化渲染研究">https://blog.l0v0.com/posts/84ce2047.html</a>
             <span class="copy-path" data-clipboard-text="原文: https://blog.l0v0.com/posts/84ce2047.html　　作者: 智伤帝" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
