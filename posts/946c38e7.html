@@ -8,20 +8,20 @@
   
   
   
-  <title>Maya 语言切换 | 智伤帝的个人博客</title>
+  <title>Maya Standalone 提取 | 智伤帝的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Maya 切换语言的两种方法 | 系统管理员权限获取">
+  <meta name="description" content="提取出最小可执行的 Maya">
 <meta name="keywords" content="Maya,Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Maya 语言切换">
-<meta property="og:url" content="https://blog.l0v0.com/posts/6f5d3bd5.html">
+<meta property="og:title" content="Maya Standalone 提取">
+<meta property="og:url" content="https://blog.l0v0.com/posts/946c38e7.html">
 <meta property="og:site_name" content="智伤帝的个人博客">
-<meta property="og:description" content="Maya 切换语言的两种方法 | 系统管理员权限获取">
+<meta property="og:description" content="提取出最小可执行的 Maya">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-08T07:07:05.567Z">
+<meta property="og:updated_time" content="2020-04-30T07:11:26.407Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Maya 语言切换">
-<meta name="twitter:description" content="Maya 切换语言的两种方法 | 系统管理员权限获取">
+<meta name="twitter:title" content="Maya Standalone 提取">
+<meta name="twitter:description" content="提取出最小可执行的 Maya">
   
   
     <link rel="icon" href="/img/favicon.png">
@@ -670,7 +670,7 @@
         </header>
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-CG/Maya/Dev/Log/Maya 语言切换" class="article article-type-post" itemscope
+      <div class="body-wrap"><article id="post-CG/Maya/Dev/Log/Maya Standalone 提取" class="article article-type-post" itemscope
   itemprop="blogPost">
 
   <div class="article-inner">
@@ -682,7 +682,7 @@
       
   
     <h1 class="article-title" itemprop="name">
-      Maya 语言切换
+      Maya Standalone 提取
     </h1>
   
 
@@ -702,8 +702,8 @@
 
       
       <div class="article-meta">
-        <a href="/posts/6f5d3bd5.html" class="article-date">
-      <time datetime="2020-02-23T02:43:39.000Z" itemprop="datePublished">2020-02-23</time>
+        <a href="/posts/946c38e7.html" class="article-date">
+      <time datetime="2020-04-30T06:23:18.000Z" itemprop="datePublished">2020-04-30</time>
 </a>
       </div>
       
@@ -714,61 +714,47 @@
       <div class="article-entry" itemprop="articleBody">
         
         
-        <h1 id="Maya-切换语言的两种方法-系统管理员权限获取"><a href="#Maya-切换语言的两种方法-系统管理员权限获取" class="headerlink" title="Maya 切换语言的两种方法 | 系统管理员权限获取"></a>Maya 切换语言的两种方法 | 系统管理员权限获取</h1><a id="more"></a>
+        <h1 id="提取出最小可执行的-Maya"><a href="#提取出最小可执行的-Maya" class="headerlink" title="提取出最小可执行的 Maya"></a>提取出最小可执行的 Maya</h1><a id="more"></a>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
-<p>&emsp;&emsp;美术制作人员通常英文水平都不太好，因此不大希望使用软件的英文版本。<br>&emsp;&emsp;但是出于对 Maya 技术支持的考虑，还是使用英文版较为稳定，而且维护起来更加可靠<br>&emsp;&emsp;由于 Python2 对于 Unicode 字符处理的不友好，使用中文很容易导致一些意料之外的问题。</p>
+<p>&emsp;&emsp;最近因为毕设还有开发 Python Qt 的数据绑定框架拖了很长的时间，两个都没有彻底完成，所以都没有进行文章总结。<br>&emsp;&emsp;直接导致最近没有更新 博客 <em>(:з」∠)</em></p>
 </blockquote>
 <blockquote>
-<p>&emsp;&emsp;另外关于 Maya 切换语言的版本其实网上都有相关的文章讲解，这里我总结到一起而已。</p>
+<p>&emsp;&emsp;上次在研究 <a href="./19ce97d6.html">Maya 内置图标</a>的时候就有发现Maya bin目录下的 commandList 记录了 Maya mel 命令所调用的 dll 文件<br>&emsp;&emsp;那么理论上 Maya 要运行起来其实并不需要所有的功能，我们可以从中抽丝剥茧，大大降低它的大小。<br>&emsp;&emsp;于是就有了今天这篇文章，整理完成的 <a href="https://github.com/FXTD-ODYSSEY/Mini-Maya" target="_blank" rel="noopener">github 地址</a></p>
 </blockquote>
-<h2 id="方案一-添加环境变量"><a href="#方案一-添加环境变量" class="headerlink" title="方案一 添加环境变量"></a>方案一 添加环境变量</h2><p><a href="https://jingyan.baidu.com/article/b24f6c82db72cc86bfe5dacb.html" target="_blank" rel="noopener">参考链接</a></p>
+<h2 id="提取-Maya-Standalone"><a href="#提取-Maya-Standalone" class="headerlink" title="提取 Maya Standalone"></a>提取 Maya Standalone</h2><blockquote>
+<p>&emsp;&emsp;其实提取过程并没有什么神奇的，就是将 Maya 安装目录下的文件拷贝到新的路径上。<br>&emsp;&emsp;然后运行 mayapy 测试 standalone 的 initialize 方法是否会出错。<br>&emsp;&emsp;如果出错了就想办法找到对应的 dll 继续进行拷贝。</p>
+</blockquote>
 <blockquote>
-<p>&emsp;&emsp;打开 windows 的环境变量编辑器，然后添加 MATA_UI_LANGUAGE 变量<br>&emsp;&emsp;变量可以设置为 en_US (英文版) | zh_CN (中文版)</p>
+<p>&emsp;&emsp;最初只是将 bin 目录下的 dll 拷贝测试，后来发现初始化还会用到 qt-plugin 以及 python 的依赖<br>&emsp;&emsp;因此 bin 目录外的东西也需要挪出来。</p>
 </blockquote>
-<h2 id="方案二-修改-Maya-安装目录-l10n-文件夹下的语言名称"><a href="#方案二-修改-Maya-安装目录-l10n-文件夹下的语言名称" class="headerlink" title="方案二 修改 Maya 安装目录 l10n 文件夹下的语言名称"></a>方案二 修改 Maya 安装目录 l10n 文件夹下的语言名称</h2><p><a href="https://jingyan.baidu.com/article/3f16e00328c7a82591c103e0.html" target="_blank" rel="noopener">参考链接</a></p>
 <blockquote>
-<p>&emsp;&emsp;去到 Maya 的安装目录，可以找到 resources 文件夹<br>&emsp;&emsp;打开 resources\l10n 的目录，就可以知道两种语言的文件夹，将文件夹名称 zh_CN 修改为 en_US 就可以切换为英文版。</p>
-</blockquote>
-<h2 id="两个方案区别"><a href="#两个方案区别" class="headerlink" title="两个方案区别"></a>两个方案区别</h2><blockquote>
-<p>&emsp;&emsp;其实两者实现的效果是一致的，只是如果在系统的环境变量上设置了之后，会影响到所有的 Maya 版本。<br>&emsp;&emsp;如果只是修改文件夹名称则只对安装的 maya 起到修改效果。</p>
+<p>&emsp;&emsp;后面就主要测试 bin 目录下关于 dll 的依赖了。<br>&emsp;&emsp;一个个去测试太花时间了，这里用了个小技巧。<br>&emsp;&emsp;先将 Maya bin 目录下的文件都拷贝到我的测试目录里面，然后运行 mayapy 进行初始化<br>&emsp;&emsp;后面再将所有的文件删除，此时由于 mayapy 处于运行状态，加载的dll将无法被删除。<br>&emsp;&emsp;通过这样的方法就可以快速定位出在使用的 dll 。</p>
 </blockquote>
 <hr>
 <blockquote>
-<p>&emsp;&emsp;<del>理论上是可以在 Maya.env 文件上添加 MATA_UI_LANGUAGE=en_US 来切换语言，但是我测试并不起作用。</del><br>&emsp;&emsp;<a href="http://help.autodesk.com/view/MAYAUL/2018/ENU/?guid=GUID-FC154DF1-CC21-4DBF-9FAC-19FDE6DCBC9A" target="_blank" rel="noopener">官方文档</a> 官方文档提到 Maya.env 设置语言变量是不起作用的，必须设置系统环境变量。</p>
-</blockquote>
-<h2 id="代码自动切换方案分析"><a href="#代码自动切换方案分析" class="headerlink" title="代码自动切换方案分析"></a>代码自动切换方案分析</h2><blockquote>
-<p>&emsp;&emsp;个人不推荐通过代码修改 windows 下的环境变量，一方面需要管理员权限，而且后续的操作可能会对环境变量造成污染。<br>&emsp;&emsp;系统的环境变量就是个坑，尽量只用来配合 cmd 命令行调用程序，不要将配置放到里面去，否则出错都不知道坑在哪里！~</p>
-</blockquote>
-<hr>
-<blockquote>
-<p>&emsp;&emsp;当然修改文件夹名字通常不需要系统管理员权限，但是如果 Maya 安装在 默认的 C 盘目录，那恐怕也逃不过这个操作。<br>&emsp;&emsp;其实代码操作非常简单，修改目录名称只需要用到 os.rename 即可，最大的难点就是需要先获取到系统管理员。</p>
-</blockquote>
-<h2 id="系统管理员权限获取"><a href="#系统管理员权限获取" class="headerlink" title="系统管理员权限获取"></a>系统管理员权限获取</h2><blockquote>
-<p>&emsp;&emsp;下面讨论的是围绕 windows 平台，美术制作人员基本不考虑使用其他平台。</p>
-</blockquote>
-<h3 id="通过-runas-手动获取管理员权限"><a href="#通过-runas-手动获取管理员权限" class="headerlink" title="通过 runas 手动获取管理员权限"></a>通过 runas 手动获取管理员权限</h3><blockquote>
-<p>&emsp;&emsp;windows 下可以通过 runas 命令来获取管理员权限，但是这样会有 UAC 弹窗告诉用户。<br>&emsp;&emsp;如果用户是系统管理员会提示是否给程序运行的权限，如果用户不是管理员还会弹出账号密码的输入框。<br>&emsp;&emsp;不过大多数时候有 UAC 窗口也是个好事，至少告诉用户这个操作需要系统权限，用户不爽就不给权限不操作而已。</p>
-</blockquote>
-<hr>
-<blockquote>
-<p>&emsp;&emsp;其实获取系统权限的方法也是参考网上提供的方案 <a href="https://blog.csdn.net/MemoryD/article/details/83148305" target="_blank" rel="noopener">CSDN</a><br>&emsp;&emsp;通过网页里面提到的方法可以实现用管理员权限开启 Python 然后用管理员权限跑脚本。<br>&emsp;&emsp;这样就可以另外写一个执行脚本，然后通过管理员权限跑 os.rename 代码来对目录进行更名了。</p>
+<p>&emsp;&emsp;这里遇到了一些坑，都是和保存文件有关的。<br>&emsp;&emsp;为了方便调用 mayapy ，我将 bin 目录路径添加到了系统环境变量里面了，这就导致一些确实的 dll 居然加载了我 Maya 原来的目录位置。<br>&emsp;&emsp;后来我测试的时候只好将 Maya 的 bin 目录稍微改一下名字来解决这个问题。</p>
 </blockquote>
 <blockquote>
-<p>&emsp;&emsp;不过我觉得这样要多写一个 python 脚本，有点多余，其实可以通过 cmd 命令来修改文件名称的。</p>
+<p>&emsp;&emsp;经过一番调整测试，总算是 standalone 初始化不会提示 dll 报错了。<br>&emsp;&emsp;但是没想到这种状态下保存 Maya 文件还是会出错，加载 OpenMaya.dll 出错了。<br>&emsp;&emsp;于是又进行了 dll 的测试，借助 git 版本 管理可以将当前可运行的 dll 一次 commit 进行记录保护，这样继续测试就很舒服了。</p>
 </blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line"><span class="keyword">import</span> platform</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="keyword">from</span> PySide2.QtWidgets <span class="keyword">import</span> QMessageBox,QApplication</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="keyword">from</span> PySide.QtGui <span class="keyword">import</span> QMessageBox,QApplication</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">modifyMayaLanguge</span><span class="params">()</span>:</span></span><br><span class="line">        </span><br><span class="line">    <span class="comment"># NOTE 获取cmd.exe的本地路径 https://stackoverflow.com/questions/49545009</span></span><br><span class="line">    is_wow64 = (platform.architecture()[<span class="number">0</span>] == <span class="string">'32bit'</span> <span class="keyword">and</span> <span class="string">'ProgramFiles(x86)'</span> <span class="keyword">in</span> os.environ)</span><br><span class="line">    system32 = os.path.join(os.environ[<span class="string">'SystemRoot'</span>], <span class="string">'SysNative'</span> <span class="keyword">if</span> is_wow64 <span class="keyword">else</span> <span class="string">'System32'</span>)</span><br><span class="line">    cmd_exe = os.path.join(system32,<span class="string">"cmd.exe"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># NOTE sys.executable 在 maya 里面运行获取到的是 maya.exe 的路径</span></span><br><span class="line">    maya_path = os.path.realpath(sys.executable)</span><br><span class="line">    bin = os.path.dirname(maya_path)</span><br><span class="line">    install_dir = os.path.dirname(bin)</span><br><span class="line">    l10n = os.path.join(install_dir,<span class="string">"resources"</span>,<span class="string">"l10n"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># NOTE 判断当前是否中文版</span></span><br><span class="line">    zh_CN = os.path.join(l10n,<span class="string">"zh_CN"</span>)</span><br><span class="line">    en_US = os.path.join(l10n,<span class="string">"en_US"</span>)</span><br><span class="line">    <span class="keyword">if</span> os.path.exists(en_US) <span class="keyword">and</span> <span class="keyword">not</span> os.path.exists(zh_CN):</span><br><span class="line">        QMessageBox.information(QApplication.activeWindow(),<span class="string">u'提示'</span>,<span class="string">u'当前已经是英文版，无需切换'</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># NOTE 执行cmd命令行命令 修改 l10n 文件夹名称 切换Maya为英文版</span></span><br><span class="line">    command = <span class="string">u'rename "&#123;zh_CN&#125;" "en_US" '</span>.format(zh_CN=zh_CN)</span><br><span class="line">    <span class="comment"># NOTE 获取权限改名 </span></span><br><span class="line">    result = ctypes.windll.shell32.ShellExecuteW(<span class="keyword">None</span>, <span class="string">u"runas"</span>, unicode(cmd_exe), unicode(<span class="string">'/c "%s"'</span> % command), <span class="keyword">None</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># NOTE 返回 5 说明没有提供权限</span></span><br><span class="line">    <span class="keyword">if</span> result == <span class="number">5</span>:</span><br><span class="line">        QMessageBox.information(QApplication.activeWindow(),<span class="string">u'提示'</span>,<span class="string">u'没有获取到权限，命令执行不成功'</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># NOTE 修改成功提示框</span></span><br><span class="line">        QMessageBox.information(QApplication.activeWindow(),<span class="string">u'提示'</span>,<span class="string">u'Maya 成功切换为 英文版 \n 将自动重启Maya'</span>)</span><br><span class="line">        <span class="comment"># NOTE 重启 Maya</span></span><br><span class="line">        os.startfile(maya_path)</span><br><span class="line">        QApplication.quit()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    modifyMayaLanguge()</span><br></pre></td></tr></table></figure>
-<h3 id="PsExec-静默获取管理员权限"><a href="#PsExec-静默获取管理员权限" class="headerlink" title="PsExec 静默获取管理员权限"></a>PsExec 静默获取管理员权限</h3><p><a href="https://docs.microsoft.com/en-us/sysinternals/downloads/psexec" target="_blank" rel="noopener">PsExec官方文档&amp;下载地址</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基本用法</span></span><br><span class="line">PsExec -u 账户域\账户名称  -p 账户密码  E:/anaconda2/python.exe E:/<span class="built_in">test</span>/copy_test.py</span><br><span class="line"><span class="comment"># 示范代码 : 管理员权限打开 cmd 命令行窗口</span></span><br><span class="line">PsExec -u DIGITAL\timmyliang  -p 123456  cmd</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>&emsp;&emsp;PsExec 可以通过输入已知的管理员账号密码来获取权限，这样既可以保证美术人员没有权限乱搞也可以让程序带权限运行。<br>&emsp;&emsp;通过 PsExec 调用 Python 也未必有管理员权限，还需要通过上面博客的方式添加到 Python 脚本里面确保获取到了管理员权限。<br>&emsp;&emsp;由于 PsExec 调用的 Python 已经输入过管理员权限密码，因此脚本运行就不会弹出 UAC 权限窗口。</p>
+<p>&emsp;&emsp;后续保存文件的时候还会出现摄像机名称全部编程 transform 了，然后 shape 的命名也不正确导致 Maya 打开显示不出模型。<br>&emsp;&emsp;后来经过我的排查，我发现只要将 Maya resource 目录下的 MayaStrings 文件添加上就正常了。</p>
 </blockquote>
-<hr>
 <blockquote>
-<p>&emsp;&emsp;使用 PsExec 调用共享路径的 Python.exe 会导致错误，有可能不是本地调用的缘故<br>&emsp;&emsp;可以借助 cmd /c 命令来外调 Python 脚本 </p>
+<p>&emsp;&emsp;最后我还将 python 的一些依赖包给删除了，比如 alembic 包，用得比较少，大小有点大。</p>
 </blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PsExec -u DIGITAL\timmyliang  -p 123456 cmd /c \\10.99.1.4\ftdy\hq_tool\programs\python\Python2.7.11\python.exe E:/<span class="built_in">test</span>/copy_test.py</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;最后精简的大小大概在 350M<br>&emsp;&emsp;这个结果其实非常不理想，原本是希望精简到 100M 以下的，而且这个状态还没有 FBX 插件，不过 FBX 插件也就 12 M，加上也还可以接受的。<br>&emsp;&emsp;还有许多内置插件也被干掉了，就在 bin 目录下的 plug-ins </p>
+</blockquote>
+<h2 id="GUI-开发"><a href="#GUI-开发" class="headerlink" title="GUI 开发"></a>GUI 开发</h2><blockquote>
+<p>&emsp;&emsp;弄好了精简版的 Maya 之后，我就打算弄一个 python 脚本自动将相关的 dll 文件拷贝出来，开箱即用。<br>&emsp;&emsp;原本只是打算开发命令行的版本，后来想了一下不如就开发一个图形化界面版本吧。<br>&emsp;&emsp;考虑到 Python 执行的脚本，那么图形化工具还是用 Python 自带的 tkinter 吧。<br>&emsp;&emsp;毕竟这个包几乎所有的 Python 都有的，可是万万没想到 Maya 的 Python 似乎砍掉了。<br>&emsp;&emsp;于是我只好写两个版本的图形化界面了。<br>&emsp;&emsp;正好可以学习一下 Tkinter 的界面开发。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;可能我已经习惯了 Qt 开发方式了，所以使用 Tkinter 开发还是非常的不习惯。<br>&emsp;&emsp;Tkinter 的教程可以参考国外的教程网站 <a href="https://www.geeksforgeeks.org/python-gui-tkinter/" target="_blank" rel="noopener">geeksforgeeks</a> ，有很完善的代码案例<br>&emsp;&emsp;Tkinter 还有一个缺点就是 Python2 和 Python3 的调用有很大不同，兼容需要一些处理。</p>
+</blockquote>
+<p><a href="https://github.com/FXTD-ODYSSEY/Mini-Maya/blob/master/install.py" target="_blank" rel="noopener">源码参考</a></p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
-<p>&emsp;&emsp;Maya 设计有个不太好的地方就是语言切换没有使用 Qt 的 i18n 而是弄了 l10n，导致切换语言要重启 Maya 还是挺不方便的。<br>&emsp;&emsp;当然如果不打开Maya的前提下成功执行了脚本，就不需要重启了。<br>&emsp;&emsp;但是 Maya 对应的版本以及本地路径还是需要有的，如果不在一个运行的 Maya 中获取，很容易出问题<em>(:з」∠)</em></p>
+<p>&emsp;&emsp;其实这次的精简操作突然兴起就干了起来，这几天一直在研究 Qt 的双向数据绑定的实现方案。<br>&emsp;&emsp;QMVVM 的开发有了很大的进展，不过我还真的不确定我所使用的模式是否真的是 QMVVM 模式，先开发完成再看吧。<br>&emsp;&emsp;明天就 五一 了，继续加班，撸起袖子加油干。</p>
 </blockquote>
 
         
@@ -780,13 +766,13 @@
     
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/posts/6f5d3bd5.html">Maya 语言切换</a></p>
+        <p><span>本文标题:</span><a href="/posts/946c38e7.html">Maya Standalone 提取</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 智伤帝 的个人博客">智伤帝</a></p>
-        <p><span>发布时间:</span>2020年02月23日 - 10时43分</p>
-        <p><span>最后更新:</span>2020年03月08日 - 15时07分</p>
+        <p><span>发布时间:</span>2020年04月30日 - 14时23分</p>
+        <p><span>最后更新:</span>2020年04月30日 - 15时11分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/posts/6f5d3bd5.html" title="Maya 语言切换">https://blog.l0v0.com/posts/6f5d3bd5.html</a>
-            <span class="copy-path" data-clipboard-text="原文: https://blog.l0v0.com/posts/6f5d3bd5.html　　作者: 智伤帝" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/posts/946c38e7.html" title="Maya Standalone 提取">https://blog.l0v0.com/posts/946c38e7.html</a>
+            <span class="copy-path" data-clipboard-text="原文: https://blog.l0v0.com/posts/946c38e7.html　　作者: 智伤帝" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <!-- <script src="/js/clipboard.min.js"></script> -->
             <!-- <script> var clipboard = new Clipboard('.copy-path');</script> -->
         </p>
@@ -855,18 +841,9 @@
 
 <nav id="article-nav">
   
-    <a href="/posts/e3ab7e13.html" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          Maya 模块安装探讨
-        
-      </div>
-    </a>
   
-  
-    <a href="/posts/3c1dd960.html" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">私有云搭建</div>
+    <a href="/posts/84ce2047.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Arnold 风格化渲染研究</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -877,7 +854,7 @@
 
 <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Maya-切换语言的两种方法-系统管理员权限获取"><span class="toc-number">1.</span> <span class="toc-text">Maya 切换语言的两种方法 | 系统管理员权限获取</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方案一-添加环境变量"><span class="toc-number">1.2.</span> <span class="toc-text">方案一 添加环境变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方案二-修改-Maya-安装目录-l10n-文件夹下的语言名称"><span class="toc-number">1.3.</span> <span class="toc-text">方案二 修改 Maya 安装目录 l10n 文件夹下的语言名称</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#两个方案区别"><span class="toc-number">1.4.</span> <span class="toc-text">两个方案区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码自动切换方案分析"><span class="toc-number">1.5.</span> <span class="toc-text">代码自动切换方案分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#系统管理员权限获取"><span class="toc-number">1.6.</span> <span class="toc-text">系统管理员权限获取</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过-runas-手动获取管理员权限"><span class="toc-number">1.6.1.</span> <span class="toc-text">通过 runas 手动获取管理员权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PsExec-静默获取管理员权限"><span class="toc-number">1.6.2.</span> <span class="toc-text">PsExec 静默获取管理员权限</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">1.7.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#提取出最小可执行的-Maya"><span class="toc-number">1.</span> <span class="toc-text">提取出最小可执行的 Maya</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#提取-Maya-Standalone"><span class="toc-number">1.2.</span> <span class="toc-text">提取 Maya Standalone</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GUI-开发"><span class="toc-number">1.3.</span> <span class="toc-text">GUI 开发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">1.4.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
 </div>
 <style>
     .left-col .switch-btn {
@@ -955,7 +932,7 @@
 <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script>
 var gitment = new Gitment({
-  id: 'Maya 语言切换', // 可选。默认为 location.href
+  id: 'Maya Standalone 提取', // 可选。默认为 location.href
   owner: 'FXTD-odyssey',
   repo: 'FXTD-odyssey.github.io',
   oauth: {
@@ -998,13 +975,11 @@ gitment.render('comments')
 
     <div class="scroll" id="post-nav-button">
         
-            <a  href="/posts/e3ab7e13.html" title="上一篇: Maya 模块安装探讨">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a  href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a  href="/posts/3c1dd960.html" title="下一篇: 私有云搭建">
+            <a  href="/posts/84ce2047.html" title="下一篇: Arnold 风格化渲染研究">
                 <i class="fa fa-angle-right"></i>
             </a>
         

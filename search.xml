@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Maya Standalone 提取]]></title>
+    <url>%2Fposts%2F946c38e7.html</url>
+    <content type="text"><![CDATA[提取出最小可执行的 Maya 前言 &emsp;&emsp;最近因为毕设还有开发 Python Qt 的数据绑定框架拖了很长的时间，两个都没有彻底完成，所以都没有进行文章总结。&emsp;&emsp;直接导致最近没有更新 博客 (:з」∠) &emsp;&emsp;上次在研究 Maya 内置图标的时候就有发现Maya bin目录下的 commandList 记录了 Maya mel 命令所调用的 dll 文件&emsp;&emsp;那么理论上 Maya 要运行起来其实并不需要所有的功能，我们可以从中抽丝剥茧，大大降低它的大小。&emsp;&emsp;于是就有了今天这篇文章，整理完成的 github 地址 提取 Maya Standalone &emsp;&emsp;其实提取过程并没有什么神奇的，就是将 Maya 安装目录下的文件拷贝到新的路径上。&emsp;&emsp;然后运行 mayapy 测试 standalone 的 initialize 方法是否会出错。&emsp;&emsp;如果出错了就想办法找到对应的 dll 继续进行拷贝。 &emsp;&emsp;最初只是将 bin 目录下的 dll 拷贝测试，后来发现初始化还会用到 qt-plugin 以及 python 的依赖&emsp;&emsp;因此 bin 目录外的东西也需要挪出来。 &emsp;&emsp;后面就主要测试 bin 目录下关于 dll 的依赖了。&emsp;&emsp;一个个去测试太花时间了，这里用了个小技巧。&emsp;&emsp;先将 Maya bin 目录下的文件都拷贝到我的测试目录里面，然后运行 mayapy 进行初始化&emsp;&emsp;后面再将所有的文件删除，此时由于 mayapy 处于运行状态，加载的dll将无法被删除。&emsp;&emsp;通过这样的方法就可以快速定位出在使用的 dll 。 &emsp;&emsp;这里遇到了一些坑，都是和保存文件有关的。&emsp;&emsp;为了方便调用 mayapy ，我将 bin 目录路径添加到了系统环境变量里面了，这就导致一些确实的 dll 居然加载了我 Maya 原来的目录位置。&emsp;&emsp;后来我测试的时候只好将 Maya 的 bin 目录稍微改一下名字来解决这个问题。 &emsp;&emsp;经过一番调整测试，总算是 standalone 初始化不会提示 dll 报错了。&emsp;&emsp;但是没想到这种状态下保存 Maya 文件还是会出错，加载 OpenMaya.dll 出错了。&emsp;&emsp;于是又进行了 dll 的测试，借助 git 版本 管理可以将当前可运行的 dll 一次 commit 进行记录保护，这样继续测试就很舒服了。 &emsp;&emsp;后续保存文件的时候还会出现摄像机名称全部编程 transform 了，然后 shape 的命名也不正确导致 Maya 打开显示不出模型。&emsp;&emsp;后来经过我的排查，我发现只要将 Maya resource 目录下的 MayaStrings 文件添加上就正常了。 &emsp;&emsp;最后我还将 python 的一些依赖包给删除了，比如 alembic 包，用得比较少，大小有点大。 &emsp;&emsp;最后精简的大小大概在 350M&emsp;&emsp;这个结果其实非常不理想，原本是希望精简到 100M 以下的，而且这个状态还没有 FBX 插件，不过 FBX 插件也就 12 M，加上也还可以接受的。&emsp;&emsp;还有许多内置插件也被干掉了，就在 bin 目录下的 plug-ins GUI 开发 &emsp;&emsp;弄好了精简版的 Maya 之后，我就打算弄一个 python 脚本自动将相关的 dll 文件拷贝出来，开箱即用。&emsp;&emsp;原本只是打算开发命令行的版本，后来想了一下不如就开发一个图形化界面版本吧。&emsp;&emsp;考虑到 Python 执行的脚本，那么图形化工具还是用 Python 自带的 tkinter 吧。&emsp;&emsp;毕竟这个包几乎所有的 Python 都有的，可是万万没想到 Maya 的 Python 似乎砍掉了。&emsp;&emsp;于是我只好写两个版本的图形化界面了。&emsp;&emsp;正好可以学习一下 Tkinter 的界面开发。 &emsp;&emsp;可能我已经习惯了 Qt 开发方式了，所以使用 Tkinter 开发还是非常的不习惯。&emsp;&emsp;Tkinter 的教程可以参考国外的教程网站 geeksforgeeks ，有很完善的代码案例&emsp;&emsp;Tkinter 还有一个缺点就是 Python2 和 Python3 的调用有很大不同，兼容需要一些处理。 源码参考 总结 &emsp;&emsp;其实这次的精简操作突然兴起就干了起来，这几天一直在研究 Qt 的双向数据绑定的实现方案。&emsp;&emsp;QMVVM 的开发有了很大的进展，不过我还真的不确定我所使用的模式是否真的是 QMVVM 模式，先开发完成再看吧。&emsp;&emsp;明天就 五一 了，继续加班，撸起袖子加油干。]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>CG Programming</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Maya</tag>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Arnold 风格化渲染研究]]></title>
     <url>%2Fposts%2F84ce2047.html</url>
     <content type="text"><![CDATA[Arnold shader 开发 前言 &emsp;&emsp;最近我的上级有个关于 Arnold 风格化渲染的研究方向，刚好没有人搞，所以我就来搞这个东西的研究了。&emsp;&emsp;当时他就针对 osl 相关的问题咨询了我。&emsp;&emsp;虽然我听说过 osl ，不过对于他的理解和研究也只是浮于表面而已。&emsp;&emsp;记得去年快过年的时候，上家公司的主管也找了我让我去研究 osl 开发 和 Alembic API&emsp;&emsp;可惜过年回来之后就是各种 publish 流程开发所以一直没有时间和精力去弄这个。 &emsp;&emsp;后来对于 osl 的功能也是通过一次 TD 交流会里面学到的。&emsp;&emsp;当时渲染大佬有讲到他们使用 osl 来处理贴图的方案。 &emsp;&emsp;当时就提到 TriplanerProjection 立体投射的概念，让我想起了之前看 unreal 教程处理贴图。 教程文章&emsp;&emsp;通过这个方法可以做出无缝衔接无线纹理的贴图效果。&emsp;&emsp;osl作为 shader 语言自然也是可以类似 unreal 的 hlsl 一样实现的。 &emsp;&emsp;不过这一次上级给了我一个更神奇的风格化效果。链接&emsp;&emsp;国外的大佬已经做好了，原理也已经写在了上面，具体怎么实现的还是需要花时间去研究出来。 素材研究准备 &emsp;&emsp;上面的链接已经提供了免费且完整的素材资源，但是如果要 C++ 源码就需要花 60 欧元购买了。&emsp;&emsp;其实我还是很疑惑的，我认为既然有 osl 为啥还需要 C++ 生成 dll，莫非这个 dll 也是 osl 生成的。 &emsp;&emsp;于是我又去到了 osl 的 github 仓库搜罗了一圈，发现 osl 需要 C++ 编译成工具，然后通过工具编译 osl 源码才能运行起来。&emsp;&emsp;于是我又开始研究怎么编译出 osl的编译工具，根据 github 上提供的 build指引，开始准备很多 C++ 库_(:з」∠)__&emsp;&emsp;不过也在这里重新认识了一遍 LLVM 神器，以及完美的 CLang 编译工具， 总算是知道怎么在 windows 下编译 C++ 而不需要通过安装 VS 这种庞然大物了。&emsp;&emsp;以前看教程看到 Mac 内置了 gcc 就觉得特别方便，不过网上的所有资料都指出在 windows 下还是推荐 VS 全家桶来编译，我之前搞 Maya C++ 开发就已经装了所以我就不需要多做其他的操作。 &emsp;&emsp;然后就是继续下载各种神奇的 C++ 库，趁着有时间，又去学习翻 Arnold 的文档看 osl 以及去 youtube 找 osl 相关的教程。教程链接&emsp;&emsp;于是我就发现，Arnold 貌似已经内置了 osl 的编译工具了，在 youtube 上找到教程，可以看到 Maya2019 的版本已经提供了 osl 节点实时编译 osl 生成效果了。&emsp;&emsp;所以我搞到这里就此打住了，应该 arnold 已经配套好 osl 的编译工具了，我不需要把这一步编译操作也做了。 &emsp;&emsp;于是我进一步研究 Arnold 的官方文档，折腾了一圈才知道，这个 dll 是 Arnold 的 C++ shader 开发做的， osl 存在一些不能实现的效果 参考链接&emsp;&emsp;osl是用来定义 shader 显示的效果，没有办法控制渲染器采样，因此关于 raytracing 相关的东西需要用 Arnold 的 C++ shader 来配合。 Arnold C++ 开发简单的插件开发方法 &emsp;&emsp;基于上面的信息，可以去 Arnold 的文档研究怎么通过 C++ 编译器生成一个 Arnold 可用的 dll 文件。&emsp;&emsp;官方的文档就有怎么实现一个简单的插件，操作只需要跟着官方做一遍就大致了解了。文档 &emsp;&emsp;直接将官方提供的 ass文件 和 cpp文件 弄成本地的文件。 github参考&emsp;&emsp;然后就是下载 Arnold SDK 调用 clang-cl 来编译了。&emsp;&emsp;Arnold SDK 可以在这个链接下载。&emsp;&emsp;需要注意自己使用软件的 Arnold 版本，存在版本不兼容的情况。 &emsp;&emsp;上面做准备研究的时候就已经装上了 LLVM ，因此就可以使用 clang-cl 来编译 C++ 了。&emsp;&emsp;我个人觉得 VS 太过复杂了，反而搞不清楚这些编译操作的原本面貌，不太友好。&emsp;&emsp;arnold 官方给的编译命令也是 命令行代码，只需要复制到命令行，将 cl 改为 clang-cl 就 OK 了。 &emsp;&emsp;我自己测试的时候， Arnold 的 SDK 环境变量貌似不太奏效，因此我还是用了绝对路径。&emsp;&emsp;后面我就干脆写成了一个 python 文件，直接遍历文件目录下所有的 cpp 文件自动编译输出。 &emsp;&emsp;编译的时候会有一个警告，只需要将 strcpy 内置函数改为 strcpy_s 就不会有警告了。&emsp;&emsp;编译成功之后就是一个完整的 dll 文件， python代码也将一些不相干的文件统统删除了。&emsp;&emsp;最后就是将 dll 文件放到 arnold 的 plugins 目录下即可读取。&emsp;&emsp;以 Maya 的 Arnold 为例，只需要将 dll 放到 C:\solidangle\mtoadeploy\$maya_version\plugins 这个路径即可。 ($maya_version 指 Maya的版本比如 2017、2018) &emsp;&emsp;最后一步就是将 ass 文件拖到 Maya 里面，点击 Arnold 渲染。&emsp;&emsp;就可以看到和官方文档完全一致的 红色球体 了。 &emsp;&emsp;当然如果编译的版本对不上或者哪里操作不对就是 紫色 的。 Arnold 插件开发规范123456789101112131415161718192021222324252627282930313233// https://docs.arnoldrenderer.com/display/A5ARP/Creating+a+Simple+Plugin#include &lt;ai.h&gt; AI_SHADER_NODE_EXPORT_METHODS(SimpleMethods); enum SimpleParams &#123; p_color &#125;; node_parameters&#123; AiParameterRGB("color", 0.7f, 0.7f, 0.7f);&#125; node_initialize&#123;&#125;node_update&#123;&#125;node_finish&#123;&#125; shader_evaluate&#123; // sg 是指 AtShaderGlobals 类型 sg-&gt;out.RGB() = AiShaderEvalParamRGB(p_color);&#125; node_loader&#123; if (i &gt; 0) return false; node-&gt;methods = SimpleMethods; node-&gt;output_type = AI_TYPE_RGB; node-&gt;name = "simple"; node-&gt;node_type = AI_NODE_SHADER; strcpy_s(node-&gt;version, AI_VERSION); return true;&#125; &emsp;&emsp;一个 Arnold cpp 文件必须要包含有上面这种结构&emsp;&emsp;根据名字就可以判断出这个节点的 生命周期 ， 学过 threejs 就很好理解了。&emsp;&emsp;node 对应的是 节点层 的操作 而 shader_evaluate 就是材质层的操作了。 &emsp;&emsp;这里面用到了 sg 对象让我非常困惑，而且这个东西在 文档 搜索也找不出所以然。&emsp;&emsp;后来在看其他的代码中发现 sg 原来是 AtShaderGlobals 类型，再查一下这个类型的文档就清楚了 &emsp;&emsp;至于 enum 类型类需要罗列出可以接入的属性名称，需要加入 p_ 前缀，这个为啥没有找到佐证，最好还是按照官方的写法加上 p_ 开头的前缀和下面 AiParameterRGB 以及 AiShaderEvalParamRGB 调用对应。 风格化渲染研究 &emsp;&emsp;经过上面的一番折腾之后，我们可以逐步回到最开始要研究的效果了 链接 &emsp;&emsp;我研究的过程是非常坎坷的，但是现在研究透了，可以重头梳理一遍，不容易产生混乱。&emsp;&emsp;首先这个 Demo 里面提供的文件，我梳理之后整个流程包括了几个步骤 渲染场景的搭建 Houdini 获取模型的点云信息 Maya 搭建渲染处理节点 通过 Arnold 的 C++ shader 和 osl shader 对渲染效果进行风格化处理 Demo 文件下载地址 渲染场景梳理 &emsp;&emsp;下载 Demo 文件之后打开 Maya 文件夹里面的 maya 场景就有下面所示的效果。&emsp;&emsp;打开之前需要先将相应的 dll 和 osl 挪到 Arnold 的插件目录 C:\solidangle\mtoadeploy\$maya_version\plugins&emsp;&emsp;dll 只有两个 Arnold 的编译版本，比如我使用的 2019 就没有对应的版本，需要去下载 Arnold SDK 找到对应版本重新编译源码。 &emsp;&emsp;案例提供的场景源文件包括模型文件、灯光组、三层点云层&emsp;&emsp;arnold 的 ass 默认情况下是以 boundingbox 显示，可以在属性编辑器里面切换为 点云 方便预览。&emsp;&emsp;另外模型并没有使用贴图，而是使用了顶点颜色。&emsp;&emsp;默认情况下 Maya 的视窗是无法预览到 模型的顶点颜色的。&emsp;&emsp;最后我是参考了 Arnold 的一个教程解决问题 链接 &emsp;&emsp;显然三个 ass 文件都是 houdini 导出的点云信息的文件&emsp;&emsp;如果去掉三个 ass 点渲染就是纯粹的没有任何风格化的渲染效果了。 &emsp;&emsp;因此在研究 Arnold 渲染之前首先需要搞清楚这些点云信息是如何通过 Houdini 生成的。&emsp;&emsp;作者的 Demo 网页也提供了相关的信息。&emsp;&emsp;我们可以打开 Houdini 文件查看一下，由于这里利用了 Arnold 插件导出 ass 如果没有安装 Houdini 的 Arnold 插件是会有警告的。 &emsp;&emsp;这个不影响研究 点云 生成 Houdini 点云生成 &emsp;&emsp;Houdini 打开包含有两个模型文件、三层生成点云的组还有一个 abc 相机文件。&emsp;&emsp;abc相机文件用了绝对路径，需要重新指定一下路径，否则路径就在原点了。 &emsp;&emsp;base_geo 组生成了模型的法线。&emsp;&emsp;而 foxhead 则通过绘制 density 的方式用来单独调整鼻子周围的 scatter 操作。 &emsp;&emsp;scatter 节点还要输出 UV 的信息给后面的 wrangle 节点使用 &emsp;&emsp;后面就是主要的 wrangle 节点进行的操作了 12345678910111213v@p_orig = @P;// 根据 UV 空间获取模型的法线信息 | 输出的两个属性是从 scatter 节点生成的@N = primuv(1, &quot;N&quot;, i@sourceprim, v@sourceprimuv);// 沿着法线方向 进行随机偏移@P += @N * rand(@ptnum) * ch(&quot;distance&quot;);// rand 获取的数值 0 - 1 之间重新映射到 1.5 - 3.0 之间// 设置点云每个点的半径 | 后面点云转卡片通过这个属性定义卡片的大小@ar_radius = fit(rand(@ptnum+1), 0.0, 1.0, 1.5, 3.0);// 设置两个用来导出到 ass 的属性v@worldPosition = v@P;v@worldVelocity = v@N; &emsp;&emsp;最后就是删除掉不相干的信息进行 ass 导出即可。 &emsp;&emsp;上面就是第一层点云生成的方案，第二层和第三层的点云生成方案其实也 大差不差 。&emsp;&emsp;主要是添加了沿着摄像机偏移的操作。 1234567// 获取 abc摄像机的 transformmatrix m = optransform(&apos;/obj/rendercam_moving_001/group2/rendercam&apos;);// https://www.sidefx.com/docs/houdini/vex/functions/cracktransform.html vector cam_pos = cracktransform(0, 0, 0, set(0, 0, 0), m);// 沿着摄像机的方向偏移点云@P += normalize(cam_pos - @P) * chf(&quot;dist&quot;); &emsp;&emsp;最初我也不太理解 cam_pos 的操作是什么意思。网上找到了一篇文章讲解 链接 &emsp;&emsp;这样做的好处是摄像机观察的点云不会有任何变化，但是点云相对摄像机的位置更近了，这样就有了不同层的叠加效果。&emsp;&emsp;后面点云在 Arnold 渲染成面片，由于更加靠近的缘故，因此渲染的面片会更大。 &emsp;&emsp;在 Houdini 阶段可能还不太能理解上面动图的含义，还没有关系&emsp;&emsp;后续导出需要注意的部分，已经在网页上写得很清楚了。 &emsp;&emsp;点云的类型需要选择 quad ，这样 Arnold 渲染的时候就会将点云当成朝向摄像机的面片进行渲染。 &emsp;&emsp;最后导出的时候需要将 点云 设置到 points 的 trace_set 。&emsp;&emsp;后面用 C++ shader 进行采用的时候可以自动过滤掉。 Maya 节点搭建 &emsp;&emsp;终于到了噩梦的开始了。 &emsp;&emsp;Maya 里面搭建出上述的节点进行处理。&emsp;&emsp;Houdini 导出 ass 已经包含了相关的 属性&emsp;&emsp;因此在 Maya 里面可以通过 userdata 读取到渲染器中。 &emsp;&emsp;中间 绿色框的 aiQuantizeCutEdge 和 粉色 aiQuantize 就是 C++ 编写的 shader 节点。 源码 aiQuantize &emsp;&emsp;aiQuantize 节点的作用就是给点云面片上色。 &emsp;&emsp;上面的效果就是 layer_1 输出渲染透明度为 1 的效果。 123456789101112131415161718192021222324252627282930ShaderData* data = (ShaderData*)AiNodeGetLocalData(node); AtVector pos = AiShaderEvalParamVec(p_pos); // NOTE 法线的相反方向 AtVector dir = - AiShaderEvalParamVec(p_dir); if (data-&gt;trace_set.length()) &#123; AiShaderGlobalsSetTraceSet(sg, data-&gt;trace_set, false); &#125; AtRay ray_intersect_along_normal = AiMakeRay(AI_RAY_SUBSURFACE, pos, &amp;dir, AI_BIG, sg); AtScrSample hit = AtScrSample(); if(AiTrace(ray_intersect_along_normal, AI_RGB_WHITE, hit))&#123; // NOTE 获取点云碰撞到模型点的颜色 AtVector hitpoint = hit.point; // NOTE 获取摄像机到碰撞点的方向 AtVector dir_cam_hit = AiV3Normalize(hitpoint - data-&gt;cam_pos); AtRay ray_intersect_camera = AiMakeRay(AI_RAY_SUBSURFACE, data-&gt;cam_pos, &amp;dir_cam_hit, AI_BIG, sg); AtScrSample hit2 = AtScrSample(); // NOTE 如果摄像机也能碰到的点才赋值颜色 if(AiTrace(ray_intersect_camera, AI_RGB_WHITE, hit2))&#123; sg-&gt;out.RGB() = hit2.color; &#125; &#125; AiShaderGlobalsUnsetTraceSet(sg); &emsp;&emsp;C++的代码里面是 获取了点云点的位置和法线信息，然后生成一个新的采样光线，从点云的点出发朝法线的反方向 向 模型射去。 (AiMakeRay 创建光线)&emsp;&emsp;然后可以获取到碰撞到模型的点 (AiTrace 获取到 AtScrSample 数据) &emsp;&emsp;然后再算 碰撞到模型的点到摄像机的方向，再从摄像机发射光线去碰撞模型获取正对摄像机的颜色色块。&emsp;&emsp;获取到的颜色赋予给点云的点上，由于点云是以面片的形式渲染，因此就渲染成了一大块颜色。 &emsp;&emsp;可能上面的颜色一大坨不太好区分，我单独将 Fox 鼻子区域的点云渲染出来就比较清晰了。 &emsp;&emsp;因此这一步的处理之后是一大堆色块堆叠在一起的效果。&emsp;&emsp;这个就是风格化处理的底色，后面就是遮罩的处理从而过滤出更好的风格化效果。 &emsp;&emsp;这里也可以回过头来看看上面提到的 Houdini 沿摄像机偏移的作用。&emsp;&emsp;由于点云更加靠近摄像机，因此生成的面片范围显得更大了。 aiQuantizeCutEdge &emsp;&emsp;通过上面的底色效果可以知道，由于面片的大小会导致颜色的溢出，需要有区分边界的方法来过滤。&emsp;&emsp;这个节点就是生成这样一张过滤贴图。 &emsp;&emsp;处理方法其实和 aiQuantize 大同小异 12345678910111213141516171819202122232425262728293031ShaderData* data = (ShaderData*)AiNodeGetLocalData(node);AtVector pos = AiShaderEvalParamVec(p_pos);AtVector dir = - AiShaderEvalParamVec(p_dir);if (data-&gt;trace_set.length()) &#123; AiShaderGlobalsSetTraceSet(sg, data-&gt;trace_set, false);&#125;AtVector p_orig = sg-&gt;P;AtRay ray_intersect_along_normal = AiMakeRay(AI_RAY_CAMERA, pos, &amp;dir, AI_BIG, sg);AtScrSample hit = AtScrSample();if(AiTrace(ray_intersect_along_normal, AI_RGB_WHITE, hit))&#123; AtVector dir_cam_hit = AiV3Normalize(p_orig - data-&gt;cam_pos); AtRay ray_intersect_camera = AiMakeRay(AI_RAY_CAMERA, data-&gt;cam_pos, &amp;dir_cam_hit, AI_BIG, sg); AtScrSample hit2 = AtScrSample(); if (AiTrace(ray_intersect_camera, AI_RGB_WHITE, hit2))&#123; // NOTE 判断是否碰撞点所获取的物体是否一致 if (hit2.obj != hit.obj)&#123; sg-&gt;out.RGB() = AI_RGB_BLACK; &#125; else &#123; sg-&gt;out.RGB() = AI_RGB_WHITE; &#125; &#125;&#125;AiShaderGlobalsUnsetTraceSet(sg); &emsp;&emsp;主要的区别在于第一次碰撞之后，第二次发射光线是射向点云的位置。&emsp;&emsp;在模型边缘的点比较稀疏，会稍微溢出模型的，因此第二次碰撞是碰不到模型的。&emsp;&emsp;因此处于边缘的点云就全部过滤出来渲染变成了黑色。 &emsp;&emsp;这个节点主要用来过滤出第一层风格化的效果。 align_uvcoords_to_vec osl 处理 &emsp;&emsp;C++ 的部分已经讲完，下面就是针对 osl 的过滤处理。&emsp;&emsp;align_uvcoords_to_vec 的作用幸好作者输出了将风格化笔触替换为箭头的渲染图，就非常好理解了。 &emsp;&emsp;我也测试了一下如果去掉 align 的渲染效果。 &emsp;&emsp;虽然整体看起来似乎不知其所以然，如果是箭头的话没有align肯定都是不带偏转角度朝上的。 123456789101112131415161718192021222324252627282930313233float magnitude(vector v) &#123; // NOTE 计算向量的长度 return sqrt(v[0] * v[0] + v[1] * v[1]);&#125;shader align_uvcoords_to_vec( point p = point(0), point vec = point(0), vector scale = vector(1), output vector uv = vector(u,v,0))&#123; // NOTE 获取点云 屏幕 坐标 point p_ss = transform(&quot;world&quot;, &quot;screen&quot;, p); // NOTE 获取点云屏幕坐标的法线方向 point p_v_ss = transform(&quot;world&quot;, &quot;screen&quot;, p+vec); // NOTE 获取点云屏幕坐标的向上方向 point p_up_ss = transform(&quot;world&quot;, &quot;screen&quot;, p+point(0, 1, 0)); vector a = normalize(p_ss - p_v_ss); vector b = normalize(p_ss - p_up_ss); vector a2 = a[0] &lt; 0.0 ? a : -a; // NOTE 计算出向上向量和法线向量的角度差 float angle = acos(dot(a2, b) / (magnitude(a2)*magnitude(b))); // NOTE 居中根据角度差旋转 uv = vector(u, v, 0); uv -= 0.5; uv = rotate(uv, angle, point(0,0,0), vector(0,0,1)); uv /= scale; uv += 0.5;&#125; facingratio_cam &emsp;&emsp;通过这个 osl 和 法线算出模型的朝向摄像机的区域，越朝向摄像机就越呈现白色。 1234567891011shader facingratio_cam( point pos = point(0), point vec = point(0), output float result = 0.0)&#123; // NOTE 获取摄像机的位置 point camerapos = point(&quot;camera&quot;, 0, 0, 0); // NOTE 摄像机到点云的向量和法线向量的点乘 | 当法线和射向摄像机的向量重合时 角度值为 0 cos值为 1 result = dot(normalize(camerapos - pos), vec);&#125; &emsp;&emsp;这个过滤主要是为了过滤朝向摄像机相关向量的偏转，因为点云的法线越是朝向摄像机，法线屏幕向量就非常接近原点。&emsp;&emsp;到这里的时候计算偏转角度就没有什么意义了，因此可以通过这个来过滤，当然这里还需要翻转一下颜色 &emsp;&emsp;这也是为啥箭头图的法线朝向摄像机的部分颜色会变浅。&emsp;&emsp;并且第二层的边缘效果处理也是用了这里的效果进行处理， 输出 &emsp;&emsp;最后将上面的处理全部合并到一起所看到的贴图如下 &emsp;&emsp;第一层透贴 &emsp;&emsp;第二层透贴 &emsp;&emsp;最终效果 总结 &emsp;&emsp;这一次又查了很多 Arnold 的文档，学到了很多新东西。&emsp;&emsp;后面我还在 github 上发现了用 Arnold 处理 卡通 效果的库，后面有空可进一步研究 github]]></content>
@@ -191,8 +205,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>android</tag>
         <tag>效率</tag>
+        <tag>android</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -205,8 +219,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>android</tag>
         <tag>效率</tag>
+        <tag>android</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -304,8 +318,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>Windows</tag>
+        <tag>效率</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -431,8 +445,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>3dsMax</tag>
         <tag>Python</tag>
+        <tag>3dsMax</tag>
       </tags>
   </entry>
   <entry>
@@ -485,8 +499,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>3dsMax</tag>
         <tag>Python</tag>
+        <tag>3dsMax</tag>
       </tags>
   </entry>
   <entry>
@@ -2407,9 +2421,9 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>学习笔记</tag>
         <tag>标记</tag>
         <tag>遮罩</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
   <entry>
@@ -2421,8 +2435,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>拍照指南</tag>
         <tag>学习笔记</tag>
+        <tag>拍照指南</tag>
       </tags>
   </entry>
   <entry>
