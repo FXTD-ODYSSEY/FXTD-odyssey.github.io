@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Python unicode_literal 坑爹记录]]></title>
+    <url>%2Fposts%2F12108ee7.html</url>
+    <content type="text"><![CDATA[居然还发现了 Python2 的 Bug ！ 前言 &emsp;&emsp;最近打算逐渐熟悉一下 Python3 的语法效果，经过网上查找，如果在 Python2 中还原 Python3 的效果可以通过 __future__ 引入一些 Python3 的功能。&emsp;&emsp;于是我就引入了 from __future__ import unicode_literals,division,print_function 这一句。 &emsp;&emsp;unicode_literals 可以让 Python2 的字符串全部编程 unicode 模式，也就是所有字符串默认前面带 u 了，中文就不会变成乱码。 &emsp;&emsp;division 引入之后 Python2 的整数除法也可以输出浮点数了。&emsp;&emsp;比如说 1/2 默认输出是 0，因为 被除数不是浮点数 因此输出变整数了，以前我是通过 float(1)/2 来解决这个问题，现在就可以通过 __future__ 来解决 &emsp;&emsp;print_function 引入之后就可以支持 Python3 的 print ，所以 print 的写法也要和 Python3 一样加括号。&emsp;&emsp;这样 print 命令就可以直接嵌入到 lambda 函数里面，不引入的话 lambda 函数打印只能使用 sys.stdout.write &emsp;&emsp;交代了一下背景，终于要扯出今天的主角 unicode_literals 的坑了。 setProperty 要设置 byte string &emsp;&emsp;最近在开发 QMVVM 模块状态管理模块，使用 Qt 的 DynamicProperty 发现无法正确设置。 123456789101112131415161718192021222324252627282930# coding:utf-8from __future__ import unicode_literals,division,print_functionimport osimport sysfrom Qt import QtWidgetsfrom Qt import QtCorefrom Qt import QtGuiclass WidgetTest(QtWidgets.QWidget): def __init__(self): super(WidgetTest, self).__init__() # NOTE 设置 Property 为空 self.setProperty("test","hello,world") print(self.dynamicPropertyNames()) # NOTE 解决方案是去掉 unicode_literals 或者 添加 byte string self.setProperty(b"test2","hello,world") print(self.dynamicPropertyNames()) # NOTE 打印 [PySide2.QtCore.QByteArray('test2')]if __name__ == '__main__': app = QtWidgets.QApplication(sys.argv) widget = WidgetTest() widget.show() sys.exit(app.exec_()) 注: Qt 无法导入可以去 Github 下载兼容脚本 &emsp;&emsp;上面的代码就很清晰了，这背后可能也和 Qt 框架有关， Qt 可能不支持 Python unicode string&emsp;&emsp;即便这里不引入 unicode_literals ，只是 setProperty(u&#39;test&#39;,&#39;hello&#39;) 这样设置也照样不行了。 signal 调用造成递归永动机 &emsp;&emsp;我觉得正常使用几乎不会遇到这个问题，碰巧我在开发 QMVVM 模块，所以用了一些比较偏门的方法来构造变量，结果引入 unicode_literals 出了大问题。 12345678910111213141516171819202122232425262728293031323334353637# coding:utf-8from __future__ import unicode_literals,division,print_functionimport osimport sysfrom Qt import QtWidgetsfrom Qt import QtCorefrom Qt import QtGuiclass WidgetTest(QtWidgets.QWidget): # ComputedSignal = QtCore.Signal() # StateSignal = QtCore.Signal() _var_dict = &#123;&#125; _var_dict["ComputedSignal"] = QtCore.Signal() _var_dict["StateSignal"] = QtCore.Signal() locals().update(_var_dict) def __init__(self): super(WidgetTest, self).__init__() # NOTE 信号槽套娃处理 getattr(self,"StateSignal").connect(getattr(self,"ComputedSignal").emit) # NOTE 如果加上这行就会打印一堆 computed signal # self.ComputedSignal.connect(lambda:print("computed signal")) # ! 报错 RuntimeError: maximum recursion depth exceeded while calling a Python object getattr(self,"StateSignal").emit()if __name__ == '__main__': app = QtWidgets.QApplication(sys.argv) widget = WidgetTest() widget.show() sys.exit(app.exec_()) &emsp;&emsp;这里构建信号槽变量用了比较 tricky 的方法，因为 QMVVM 需要根据传入的字符串动态生成变量。&emsp;&emsp;Python 的变量背后其实就是一个 locals 的字典来产生对应关系，可以通过 update 方法更新字典从而更新到本地变量里面。&emsp;&emsp;当然除了这个方法之外 类里面 也可以使用 setattr 方法添加类属性，只不过用字典也方便我后面获取动态生成的变量。 &emsp;&emsp;后面 __init__ 函数里面 QMVVM 通过 getattr 根据字符串动态获取类属性，因此这里测试我也不直接 self.StateSignal 来获取了。&emsp;&emsp;然后这里进行了套娃处理，两个信号槽，一个触发同时会触发另一个。&emsp;&emsp;然后触发 信号槽 就会导致调用永动机从而报错了。 &emsp;&emsp;上面的代码就是我花了大半天调试精简出来的，在 QMVVM 内部的运行还是挺绕的，更何况一开始完全没有预料到问题出在 unicode_literals 里面 (:з」∠)&emsp;&emsp;解决方案也不复杂，可以去掉 unicode_literals 或者构建信号槽的变量的时候给字符串加上 b’’ 转换为 byte string 总结 &emsp;&emsp;上面的代码测试我汇总到了 github 的仓库上 代码&emsp;&emsp;后面我又测试不同版本的Python，发现 Python 2.7.16 版本已经解决了这个问题，但是 Python 2.7.14 还是出错， Maya 的 Python 2.7.11 也照样有问题。&emsp;&emsp;Python 3.7.6 完全 OK ，所以可以相当肯定这个就是 Python2 的 BUG。&emsp;&emsp;经过了这个坑之后，我还是不推荐使用 unicode_literals 了，毕竟中文乱码至少还可以运行，开了 unicode_literals 之后出问题的代价太大了。]]></content>
+      <categories>
+        <category>Python</category>
+        <category>Python黑科技</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Maya Standalone 提取]]></title>
     <url>%2Fposts%2F946c38e7.html</url>
     <content type="text"><![CDATA[提取出最小可执行的 Maya 前言 &emsp;&emsp;最近因为毕设还有开发 Python Qt 的数据绑定框架拖了很长的时间，两个都没有彻底完成，所以都没有进行文章总结。&emsp;&emsp;直接导致最近没有更新 博客 (:з」∠) &emsp;&emsp;上次在研究 Maya 内置图标的时候就有发现Maya bin目录下的 commandList 记录了 Maya mel 命令所调用的 dll 文件&emsp;&emsp;那么理论上 Maya 要运行起来其实并不需要所有的功能，我们可以从中抽丝剥茧，大大降低它的大小。&emsp;&emsp;于是就有了今天这篇文章，整理完成的 github 地址 提取 Maya Standalone &emsp;&emsp;其实提取过程并没有什么神奇的，就是将 Maya 安装目录下的文件拷贝到新的路径上。&emsp;&emsp;然后运行 mayapy 测试 standalone 的 initialize 方法是否会出错。&emsp;&emsp;如果出错了就想办法找到对应的 dll 继续进行拷贝。 &emsp;&emsp;最初只是将 bin 目录下的 dll 拷贝测试，后来发现初始化还会用到 qt-plugin 以及 python 的依赖&emsp;&emsp;因此 bin 目录外的东西也需要挪出来。 &emsp;&emsp;后面就主要测试 bin 目录下关于 dll 的依赖了。&emsp;&emsp;一个个去测试太花时间了，这里用了个小技巧。&emsp;&emsp;先将 Maya bin 目录下的文件都拷贝到我的测试目录里面，然后运行 mayapy 进行初始化&emsp;&emsp;后面再将所有的文件删除，此时由于 mayapy 处于运行状态，加载的dll将无法被删除。&emsp;&emsp;通过这样的方法就可以快速定位出在使用的 dll 。 &emsp;&emsp;这里遇到了一些坑，都是和保存文件有关的。&emsp;&emsp;为了方便调用 mayapy ，我将 bin 目录路径添加到了系统环境变量里面了，这就导致一些确实的 dll 居然加载了我 Maya 原来的目录位置。&emsp;&emsp;后来我测试的时候只好将 Maya 的 bin 目录稍微改一下名字来解决这个问题。 &emsp;&emsp;经过一番调整测试，总算是 standalone 初始化不会提示 dll 报错了。&emsp;&emsp;但是没想到这种状态下保存 Maya 文件还是会出错，加载 OpenMaya.dll 出错了。&emsp;&emsp;于是又进行了 dll 的测试，借助 git 版本 管理可以将当前可运行的 dll 一次 commit 进行记录保护，这样继续测试就很舒服了。 &emsp;&emsp;后续保存文件的时候还会出现摄像机名称全部编程 transform 了，然后 shape 的命名也不正确导致 Maya 打开显示不出模型。&emsp;&emsp;后来经过我的排查，我发现只要将 Maya resource 目录下的 MayaStrings 文件添加上就正常了。 &emsp;&emsp;最后我还将 python 的一些依赖包给删除了，比如 alembic 包，用得比较少，大小有点大。 &emsp;&emsp;最后精简的大小大概在 350M&emsp;&emsp;这个结果其实非常不理想，原本是希望精简到 100M 以下的，而且这个状态还没有 FBX 插件，不过 FBX 插件也就 12 M，加上也还可以接受的。&emsp;&emsp;还有许多内置插件也被干掉了，就在 bin 目录下的 plug-ins GUI 开发 &emsp;&emsp;弄好了精简版的 Maya 之后，我就打算弄一个 python 脚本自动将相关的 dll 文件拷贝出来，开箱即用。&emsp;&emsp;原本只是打算开发命令行的版本，后来想了一下不如就开发一个图形化界面版本吧。&emsp;&emsp;考虑到 Python 执行的脚本，那么图形化工具还是用 Python 自带的 tkinter 吧。&emsp;&emsp;毕竟这个包几乎所有的 Python 都有的，可是万万没想到 Maya 的 Python 似乎砍掉了。&emsp;&emsp;于是我只好写两个版本的图形化界面了。&emsp;&emsp;正好可以学习一下 Tkinter 的界面开发。 &emsp;&emsp;可能我已经习惯了 Qt 开发方式了，所以使用 Tkinter 开发还是非常的不习惯。&emsp;&emsp;Tkinter 的教程可以参考国外的教程网站 geeksforgeeks ，有很完善的代码案例&emsp;&emsp;Tkinter 还有一个缺点就是 Python2 和 Python3 的调用有很大不同，兼容需要一些处理。 源码参考 总结 &emsp;&emsp;其实这次的精简操作突然兴起就干了起来，这几天一直在研究 Qt 的双向数据绑定的实现方案。&emsp;&emsp;QMVVM 的开发有了很大的进展，不过我还真的不确定我所使用的模式是否真的是 QMVVM 模式，先开发完成再看吧。&emsp;&emsp;明天就 五一 了，继续加班，撸起袖子加油干。]]></content>
@@ -205,8 +217,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>android</tag>
+        <tag>效率</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -219,8 +231,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>android</tag>
+        <tag>效率</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -318,8 +330,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -445,8 +457,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>3dsMax</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -499,8 +511,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>3dsMax</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -613,8 +625,8 @@
       </categories>
       <tags>
         <tag>Maya</tag>
-        <tag>Arnold</tag>
         <tag>Autodesk</tag>
+        <tag>Arnold</tag>
       </tags>
   </entry>
   <entry>
@@ -639,8 +651,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -665,8 +677,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
       </tags>
   </entry>
   <entry>
@@ -678,8 +690,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
       </tags>
   </entry>
   <entry>
@@ -691,8 +703,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
       </tags>
   </entry>
   <entry>
@@ -704,8 +716,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
       </tags>
   </entry>
   <entry>
@@ -1404,8 +1416,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1434,8 +1446,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1492,8 +1504,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1587,8 +1599,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1657,8 +1669,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1672,8 +1684,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1698,8 +1710,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1845,8 +1857,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -2421,9 +2433,9 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
+        <tag>学习笔记</tag>
         <tag>标记</tag>
         <tag>遮罩</tag>
-        <tag>学习笔记</tag>
       </tags>
   </entry>
   <entry>
@@ -2488,8 +2500,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>学习笔记</tag>
         <tag>前期基本流程</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
 </search>
