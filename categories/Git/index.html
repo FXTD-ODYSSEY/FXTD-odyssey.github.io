@@ -7,15 +7,15 @@
   
   
    
-    <meta name="keywords" content="git" />
+    <meta name="keywords" content="Git" />
   
   
-  <title>Category: git | 智伤帝的个人博客</title>
+  <title>Category: Git | 智伤帝的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="我只能送你到这里了，剩下的路你要自己走，不要回头。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="智伤帝的个人博客">
-<meta property="og:url" content="https://blog.l0v0.com/categories/git/index.html">
+<meta property="og:url" content="https://blog.l0v0.com/categories/Git/index.html">
 <meta property="og:site_name" content="智伤帝的个人博客">
 <meta property="og:description" content="我只能送你到这里了，剩下的路你要自己走，不要回头。">
 <meta property="og:locale" content="zh-Hans">
@@ -687,62 +687,27 @@
   <div class="archive-article-inner">
     <header class="archive-article-header">
           <div class="article-meta">
-              <a href="/posts/a91a4c58.html" class="archive-article-date">
-      <time datetime="2020-03-15T07:57:39.000Z" itemprop="datePublished">03-15</time>
+              <a href="/posts/842747c9.html" class="archive-article-date">
+      <time datetime="2020-01-01T11:15:39.000Z" itemprop="datePublished">01-01</time>
 </a>
         </div>
          
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/posts/a91a4c58.html">VScode 结合git的全面使用流程（下）</a>
+      <a class="archive-article-title" href="/posts/842747c9.html">Maya 代码管理</a>
     </h1>
   
 
         <div class="article-info info-on-archive">
           
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/git/">git</a><a class="article-category-link" href="/categories/git/VScode/">VScode</a>
+    <a class="article-category-link" href="/categories/Git/">Git</a><a class="article-category-link" href="/categories/Git/Maya/">Maya</a><a class="article-category-link" href="/categories/Git/Maya/CG-Programming/">CG Programming</a><a class="article-category-link" href="/categories/Git/Maya/CG-Programming/Python/">Python</a>
     </div>
 
 
           
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VScode/">VScode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/编辑器/">编辑器</a></li></ul>
-    </div>
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/posts/94ffdbdf.html" class="archive-article-date">
-      <time datetime="2020-03-15T06:21:13.000Z" itemprop="datePublished">03-15</time>
-</a>
-        </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/posts/94ffdbdf.html">VScode 结合git的全面使用流程（上）</a>
-    </h1>
-  
-
-        <div class="article-info info-on-archive">
-          
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/git/">git</a><a class="article-category-link" href="/categories/git/VScode/">VScode</a>
-    </div>
-
-
-          
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VScode/">VScode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/编辑器/">编辑器</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/">Git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Maya/">Maya</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li></ul>
     </div>
 
         </div>
@@ -924,6 +889,44 @@ MathJax.Hub.Queue(function() {
             var title = a.attr('title');
             if (title == undefined || title == "") return;
             a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+  </div>
+  
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+    </script>
+    
+</body>
+</html>r(
 
             function() {
                 var offset = a.offset();

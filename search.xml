@@ -1,9 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Maya 影视绑定 转 游戏绑定]]></title>
+    <url>%2Fposts%2Ffa091109.html</url>
+    <content type="text"><![CDATA[兼容不同的绑定系统 前言 &emsp;&emsp;最近工作上遇到了一个大问题，一个新的项目进行测试，测试用的角色绑定居然是影视流程的绑定。&emsp;&emsp;如果使用这种绑定方式导入游戏引擎会出现很多问题，甚至直接发生错误导致无法导入的情况。&emsp;&emsp;于是针对这个问题，我弄了一个提取方案，实测 TSM 和 ADV 两种绑定系统都支持。 影视绑定 和 游戏绑定 区别 &emsp;&emsp;其实游戏绑定完全可以照搬影视的绑定。&emsp;&emsp;其中最大的区别在于，绑定文件导入引擎只需要蒙皮的骨骼就足够了，额外的控制器、IKFK切换系统等等辅助的绑定都不需要导出。&emsp;&emsp;而影视绑定里面因为不需要考虑输出到引擎的缘故，辅助系统和蒙皮骨骼基本都是混搭在一起。&emsp;&emsp;ADV 还好，还有对蒙皮的骨骼单独分离，现在项目用到的绑定就是完全混搭的状态。 &emsp;&emsp;综上所述，游戏绑定需要单独弄一套 root 骨骼层级用来蒙皮到模型上，影视的绑定系统可以约束到这套 root 骨骼上。&emsp;&emsp;这样导出蒙皮骨骼和模型就没有问题了。 绑定分离分析 &emsp;&emsp;既然目前的状态就是绑定骨骼和辅助骨骼混搭在一起了，就需要通过一些方法将这些骨骼找出来输出，这里我使用 pymel 进行获取 &emsp;&emsp;首先通过 for mesh in pm.ls(ni=1,v=1,type=&quot;mesh&quot;) 获取场景中可视的模型，当然可能会有误选和漏选，最后是将输出模型弄一个规范放到特定的层级之下。&emsp;&emsp;然后通过 for skin in mesh.listHistory(type=&quot;skinCluster&quot;) 获取模型下所有的 skinCluster 节点。&emsp;&emsp;最后通过 skin.listHistory(type=&quot;joint&quot;) 就可以找到 蒙皮节点 相连的骨骼了。 &emsp;&emsp;接下来就是在根层级上创建一个 root 骨骼，然后将获取到的蒙皮骨骼统统 parent 到上面去。&emsp;&emsp;这样就完成了蒙皮节点的剥离。&emsp;&emsp;不过直接这么操作会出大问题的，因为之前骨骼在很深的层级里面，它的坐标位置并不是世界坐标。&emsp;&emsp;如果直接 parent 不做处理那位置全部乱套了。&emsp;&emsp;所以 parent 之前需要获取骨骼的位置，结果有发现很多骨骼的一些属性被锁定和连接了。&emsp;&emsp;于是我这里就将骨骼的 位移 旋转 缩放 属性统统解锁断开连接。&emsp;&emsp;这里可能会担心这一步操作影响绑定，的确是个有损操作影响到绑定了，但是没有关系，这里的目标是输出 FBX 绑定文件，导出完成不保存即可。 &emsp;&emsp;进行上面的parent操作之后，角色大部分都没有问题，但是手腕和脚踝的部分会变形。&emsp;&emsp;经过我的研究，我发现是 IK 系统的 ikEffector 导致的，parent 之前将这些节点删除即可。 pm.delete(pm.ls(type=&quot;ikEffector&quot;)) &emsp;&emsp;parent的骨骼，有一些骨骼会带上 transform 节点。&emsp;&emsp;而且无论怎么parent 都会自动生成 transform 节点，后来再 Stack Overflow 找到了问题的原因 链接&emsp;&emsp;主要是因为骨骼或者骨骼的上层级缩放存在负值，骨骼虽然可以输入负值，估计是 Maya 不推荐这么操作所以新建一个 transform 来接收负值。&emsp;&emsp;这里我将 transform 的缩放值和 骨骼 同步，然后骨骼重新 parent 到 root 骨骼上，最后将 transform 节点删除&emsp;&emsp;这里不输出 transform 节点是因为游戏引擎也会将这个东西看做骨骼，可能会导致后续输出的骨骼数量不一致导致动画和绑定不匹配的情况。 &emsp;&emsp;最后 root 层级下的骨骼下面还带有很多不相干的骨骼节点 &emsp;&emsp;这些统统都可以删除掉 [pm.delete(node) for jnt in jnt_list for node in jnt.getChildren()]&emsp;&emsp;最后我还在提取之后给骨骼的命名加上了 ‘_bind’ 的后缀，方便后续动画输出(动画分离再做补充) &emsp;&emsp;最后输出的效果如上图。&emsp;&emsp;截图是是使用 ADV 绑定，模型来自 HumanIK 内置模型。&emsp;&emsp;虽然骨骼的层级结构全部没了，其实这恰恰是游戏引擎所喜欢的。 动画分离 &emsp;&emsp;一开始我也觉得动画分离应该和绑定分离采用同一套方案。&emsp;&emsp;但是结果反而导致很多问题，因为我的提取过程会损坏绑定系统，绑定文件还没有用到这些绑定系统，但是动画文件用到了。&emsp;&emsp;这么提取会导致动画全乱套了。 &emsp;&emsp;后来我想到 FBX 的骨骼动画匹配其实是完全更具骨骼的命名来的。&emsp;&emsp;只要命名一样就会自动将动画信息匹配过去，因此动画文件没必要做有损剥离，只需要新建一套输出骨骼即可~ &emsp;&emsp;在动画文件首先执行 [ref.importContents(True) for ref in pm.listReferences()] 这个命令。&emsp;&emsp;这个命令可以将所有的参考文件导入进来，importContents(True) 传入 True 属性可以去掉参考的命名空间，详细信息可以参照 pymel 的文档。&emsp;&emsp;后续获取骨骼的操作和绑定分离一样。 &emsp;&emsp;获取到骨骼之后根据骨骼名称生成一套带 “_bind” 后缀的骨骼。&emsp;&emsp;然后让绑定系统里面的蒙皮骨骼约束到新的骨骼上，烘焙关键帧输出骨骼即可。&emsp;&emsp;这样操作就简单了很多，不需要考虑蒙皮的关系了。 &emsp;&emsp;上面就是用 ADV 内置的走路动画进行导出的演示。&emsp;&emsp;然后选择生成的 root 骨骼导出当前选择即可。 &emsp;&emsp;导入到 虚幻引擎 完全没问题。 总结 &emsp;&emsp;工具的源码已经上传到 github 链接&emsp;&emsp;工具的导出流程没有做自动导出 FBX 的处理，因为暂时还是个临时使用的方案，真正的流程应该把 FBX 导出的操作也自动化处理，避免制作人员搞出幺蛾子。&emsp;&emsp;另外这里的导出方案完全没有考虑影视流程的 Blendshape 导出，理论上应该是不冲突的。&emsp;&emsp;除非绑定里面使用了影视流程的骨骼驱动 Blendshape 方案，可能这种方案本身就不适合导出到游戏引擎里面。]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>CG Programming</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Maya</tag>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Maya 模型拓扑变动检查]]></title>
+    <url>%2Fposts%2F5e43c76c.html</url>
+    <content type="text"><![CDATA[利用环边选择快速检查拓扑 前言 &emsp;&emsp;这两天有朋友请教我 Maya 模型拓扑 检查的问题，通常来说检查工具是流程里面必不可少的环节。&emsp;&emsp;之前我在华强的时候也弄过流程开发的拓扑检查。&emsp;&emsp;我当时测了 Maya 内置的 Blendshape 拓扑检查，发现这个检查其实就是验证顶点数是否一致而已，因此当时没有细想，就这么简单粗暴地处理了。&emsp;&emsp;这两天我往更深的方向想了一下，点数一致并不一定就是拓扑相同的。 什么是拓扑 &emsp;&emsp;拓扑其实就是布线，模型的点线面排布结构的统称，数学上也有拓扑学，我了解甚少，至少在 CG 行业里这么理解拓扑应该没有错。&emsp;&emsp;我之前也翻译过一个教程，用 Maya 讲解了拓扑的区别 Maya建模结构拓展训练教程 &emsp;&emsp;从截图可以看到，同样是球体但是可以用不同的布线来构成，外观看起来一样但是布线结构是完全不同的。&emsp;&emsp;通常来说只要符合 四边面构线 都是符合规范的，当然建模也尽量避免极点(多条线汇集的点)，所以 Maya 默认的球体是 经纬线布线 ，这会导致上下有极点，其实并不是很好地拓扑结构。 &emsp;&emsp;综上所述，拓扑就是布线结构，顶点的位置并不影响拓扑。 &emsp;&emsp;所以上图两个模型没有布线的修改的话，拓扑是完全一致的，即便这个形状看起来差距很大。 拓扑检查 &emsp;&emsp;通常来说，拓扑的变化都会导致模型的点面线的数量变化，因此最简单粗暴地检查方法就是检查两个模型的点线面数量是否一致。&emsp;&emsp;Maya 的 Blendshape 属性也有 Check Topology 复选框，勾选也是检查顶点数是否一致。&emsp;&emsp;如何获取模型的点线面，这可以利用 cmds.polyEvaluate 来获取 &emsp;&emsp;但是经过我再次思考之后，我发现有时候点线面数量完全相同，但是也会有拓扑不一致的情况。&emsp;&emsp;可以简单地演示这个问题。 &emsp;&emsp;细分之后，两个球体的拓扑结构是不相同的，而且符合建模的规范，但是点线面的数量是完全一样的。 方案一 遍历模型面的顶点序号 算 md5 进行比较 &emsp;&emsp;这个方案是大神提供的解决方案，比较简单粗暴，直接有效。&emsp;&emsp;缺点就是效率太慢了，我用 OpenMaya 的方式进行了一定的优化来加快速度。 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465import jsonimport timeimport hashlibimport pymel.core as pmfrom maya import OpenMayafrom functools import partial, wrapsdef logTime(func=None, msg="elapsed time:"): """logTime log function running time :param func: function get from decorators, defaults to None :type func: function, optional :param msg: default print message, defaults to "elapsed time:" :type msg: str, optional :return: decorator function return :rtype: dynamic type """ if not func: return partial(logTime,msg=msg) @wraps(func) def wrapper(*args, **kwargs): curr = time.time() res = func(*args, **kwargs) print(msg,time.time() - curr) return res return wrapperclass MeshTopology(object): def __init__(self, mesh_node): self.py_node = pm.PyNode(mesh_node) if self.py_node.type() == u'transform': self.py_node = self.py_node.getShape() if self.py_node.type() != u'mesh': raise TypeError('mesh_node must be a mesh type object.') @property def topology_structure(self): # data = &#123;&#125; # for f in self.py_node.f: # data[f.index()] = f.getVertices() # NOTE OpenMaya 优化 data = [] dag = self.py_node.__apimdagpath__() itr = OpenMaya.MItMeshPolygon(dag) while not itr.isDone(): vtx_list = OpenMaya.MIntArray() itr.getVertices(vtx_list) data.append(list(vtx_list)) itr.next() return data def to_json(self): return json.dumps(self.topology_structure) def to_md5(self): return hashlib.md5(self.to_json()).hexdigest() @logTime def __eq__(self, other): return self.to_md5() == other.to_md5()if __name__ == "__main__": i, j = pm.selected() print(MeshTopology(i) == MeshTopology(j)) &emsp;&emsp;节点类的写法非常牛逼，个人还不太适应这种高端写法，但是这种写法的确很适合在 Maya 里运用。&emsp;&emsp;原理其实也非常浅显，如果将 OpenMaya 的 while 去掉，用上面注释掉的 pymel 就更加清晰了。&emsp;&emsp;遍历函数所有的面，然后获取面上的顶点序号，这个是 面顶点序号 注意和 顶点序号 是不一样的。&emsp;&emsp;然后将顶点序号存储起来，通过 json 将字符串序列化，然后通过 md5 比较字符串是否有差异。 &emsp;&emsp;缺点就是需要遍历所有的面，获取速度比较慢，经过 OpenMaya 优化之后大概快了 10 倍，但是40+万面的比较还是需要 2-3s。 方案二 环边选择过滤 &emsp;&emsp;这个方案是利用 Maya 双击选择循环变的方式获取边的组成结构。&emsp;&emsp;如果拓扑一样的话，获取的循环边序号就是完全一致的。&emsp;&emsp;核心思想就是利用 cmds.polySelect(edgeLoop=int) 来选择给定序号的循环边。&emsp;&emsp;选到的循环边的边序号从模型所有边序号的集合中取出，直到模型所有边序号的集合取空为止。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687import jsonimport timeimport hashlibimport pymel.core as pmfrom maya import OpenMayafrom functools import partial, wrapsdef endPorgress(func): def wrapper(*args, **kwargs): res = None try: res = func(*args, **kwargs) except: import traceback traceback.print_exc() finally: pm.progressWindow(ep=1) return res return wrapperdef logTime(func=None, msg="elapsed time:"): """logTime log function running time :param func: function get from decorators, defaults to None :type func: function, optional :param msg: default print message, defaults to "elapsed time:" :type msg: str, optional :return: decorator function return :rtype: dynamic type """ if not func: return partial(logTime,msg=msg) @wraps(func) def wrapper(*args, **kwargs): curr = time.time() res = func(*args, **kwargs) print(msg,time.time() - curr) return res return wrapper@logTime@endPorgressdef checkTopology(display=False,sleep=0.05): sel_list = [mesh for mesh in pm.ls(pm.pickWalk(d="down"),type="mesh")] if len(sel_list) != 2: pm.headsUpMessage("Please select 2 Mesh") return num_list = [(sel.numVertices(),sel.numEdges(),sel.numFaces()) for sel in sel_list] if num_list[0] != num_list[1]: return False edge_num = num_list[0][1] pm.progressWindow( title="Check Topology", progress=0.0, isInterruptable=True ) res_list = [] for i,sel in enumerate(sel_list): edge_loop_list = [] edge_list = set(range(edge_num)) pm.progressWindow( e=1, status = 'second mesh Analysis' if i else 'first mesh Analysis') while len(edge_list) &gt; 1: idx = next(iter(edge_list), None) if pm.progressWindow( query=1, isCancelled=1 ) : return pm.progressWindow( e=1, progress=(1-len(edge_list)/edge_num)*100 ) if idx is None: break if display: edge_loop = pm.polySelect(sel,edgeLoop=idx,r=1) pm.refresh() time.sleep(sleep) if sleep &gt; 0 else None else: edge_loop = pm.polySelect(sel,edgeLoop=idx,ns=1) edge_loop_list.append(edge_loop) edge_list -= set(edge_loop) res_list.append(edge_loop_list) return res_list[0] == res_list[1]if __name__ == "__main__": print (checkTopology(display=False)) &emsp;&emsp;这个方案我加了进度条，所以在模型不复杂的情况下 GUI 会拖慢速度 (:з」∠)。&emsp;&emsp;另外我加入了 display 标记，这个标记为 True 的时候可以在 Maya 看到获取循环边的动画效果。 &emsp;&emsp;这个方案不需要用 OpenMaya 而且遍历速度会更快，40+万面的比较需要大概 0.6 s 总结 &emsp;&emsp;上面两个方案都有个缺点，如果模型的顶点序号是不一致的，都会显示拓扑不匹配。&emsp;&emsp;除了这个问题之外，这两个方案可以满足绝大多数的模型拓扑检查情况了，而且点序号不一致也检查出来是挺好的，可以提前避免后续的 Blendshape 出问题。&emsp;&emsp;最终代码也汇总到 github 上 地址]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>CG Programming</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Maya</tag>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Python unicode_literal 坑爹记录]]></title>
     <url>%2Fposts%2F12108ee7.html</url>
-    <content type="text"><![CDATA[居然还发现了 Python2 的 Bug ！ 前言 &emsp;&emsp;最近打算逐渐熟悉一下 Python3 的语法效果，经过网上查找，如果在 Python2 中还原 Python3 的效果可以通过 __future__ 引入一些 Python3 的功能。&emsp;&emsp;于是我就引入了 from __future__ import unicode_literals,division,print_function 这一句。 &emsp;&emsp;unicode_literals 可以让 Python2 的字符串全部编程 unicode 模式，也就是所有字符串默认前面带 u 了，中文就不会变成乱码。 &emsp;&emsp;division 引入之后 Python2 的整数除法也可以输出浮点数了。&emsp;&emsp;比如说 1/2 默认输出是 0，因为 被除数不是浮点数 因此输出变整数了，以前我是通过 float(1)/2 来解决这个问题，现在就可以通过 __future__ 来解决 &emsp;&emsp;print_function 引入之后就可以支持 Python3 的 print ，所以 print 的写法也要和 Python3 一样加括号。&emsp;&emsp;这样 print 命令就可以直接嵌入到 lambda 函数里面，不引入的话 lambda 函数打印只能使用 sys.stdout.write &emsp;&emsp;交代了一下背景，终于要扯出今天的主角 unicode_literals 的坑了。 setProperty 要设置 byte string &emsp;&emsp;最近在开发 QMVVM 模块状态管理模块，使用 Qt 的 DynamicProperty 发现无法正确设置。 123456789101112131415161718192021222324252627282930# coding:utf-8from __future__ import unicode_literals,division,print_functionimport osimport sysfrom Qt import QtWidgetsfrom Qt import QtCorefrom Qt import QtGuiclass WidgetTest(QtWidgets.QWidget): def __init__(self): super(WidgetTest, self).__init__() # NOTE 设置 Property 为空 self.setProperty("test","hello,world") print(self.dynamicPropertyNames()) # NOTE 解决方案是去掉 unicode_literals 或者 添加 byte string self.setProperty(b"test2","hello,world") print(self.dynamicPropertyNames()) # NOTE 打印 [PySide2.QtCore.QByteArray('test2')]if __name__ == '__main__': app = QtWidgets.QApplication(sys.argv) widget = WidgetTest() widget.show() sys.exit(app.exec_()) 注: Qt 无法导入可以去 Github 下载兼容脚本 &emsp;&emsp;上面的代码就很清晰了，这背后可能也和 Qt 框架有关， Qt 可能不支持 Python unicode string&emsp;&emsp;即便这里不引入 unicode_literals ，只是 setProperty(u&#39;test&#39;,&#39;hello&#39;) 这样设置也照样不行了。 signal 调用造成递归永动机 &emsp;&emsp;我觉得正常使用几乎不会遇到这个问题，碰巧我在开发 QMVVM 模块，所以用了一些比较偏门的方法来构造变量，结果引入 unicode_literals 出了大问题。 12345678910111213141516171819202122232425262728293031323334353637# coding:utf-8from __future__ import unicode_literals,division,print_functionimport osimport sysfrom Qt import QtWidgetsfrom Qt import QtCorefrom Qt import QtGuiclass WidgetTest(QtWidgets.QWidget): # ComputedSignal = QtCore.Signal() # StateSignal = QtCore.Signal() _var_dict = &#123;&#125; _var_dict["ComputedSignal"] = QtCore.Signal() _var_dict["StateSignal"] = QtCore.Signal() locals().update(_var_dict) def __init__(self): super(WidgetTest, self).__init__() # NOTE 信号槽套娃处理 getattr(self,"StateSignal").connect(getattr(self,"ComputedSignal").emit) # NOTE 如果加上这行就会打印一堆 computed signal # self.ComputedSignal.connect(lambda:print("computed signal")) # ! 报错 RuntimeError: maximum recursion depth exceeded while calling a Python object getattr(self,"StateSignal").emit()if __name__ == '__main__': app = QtWidgets.QApplication(sys.argv) widget = WidgetTest() widget.show() sys.exit(app.exec_()) &emsp;&emsp;这里构建信号槽变量用了比较 tricky 的方法，因为 QMVVM 需要根据传入的字符串动态生成变量。&emsp;&emsp;Python 的变量背后其实就是一个 locals 的字典来产生对应关系，可以通过 update 方法更新字典从而更新到本地变量里面。&emsp;&emsp;当然除了这个方法之外 类里面 也可以使用 setattr 方法添加类属性，只不过用字典也方便我后面获取动态生成的变量。 &emsp;&emsp;后面 __init__ 函数里面 QMVVM 通过 getattr 根据字符串动态获取类属性，因此这里测试我也不直接 self.StateSignal 来获取了。&emsp;&emsp;然后这里进行了套娃处理，两个信号槽，一个触发同时会触发另一个。&emsp;&emsp;然后触发 信号槽 就会导致调用永动机从而报错了。 &emsp;&emsp;上面的代码就是我花了大半天调试精简出来的，在 QMVVM 内部的运行还是挺绕的，更何况一开始完全没有预料到问题出在 unicode_literals 里面 (:з」∠)&emsp;&emsp;解决方案也不复杂，可以去掉 unicode_literals 或者构建信号槽的变量的时候给字符串加上 b’’ 转换为 byte string 总结 &emsp;&emsp;上面的代码测试我汇总到了 github 的仓库上 代码&emsp;&emsp;后面我又测试不同版本的Python，发现 Python 2.7.16 版本已经解决了这个问题，但是 Python 2.7.14 还是出错， Maya 的 Python 2.7.11 也照样有问题。&emsp;&emsp;Python 3.7.6 完全 OK ，所以可以相当肯定这个就是 Python2 的 BUG。&emsp;&emsp;经过了这个坑之后，我还是不推荐使用 unicode_literals 了，毕竟中文乱码至少还可以运行，开了 unicode_literals 之后出问题的代价太大了。]]></content>
+    <content type="text"><![CDATA[居然还发现了 Python2 的 Bug ！ 前言 &emsp;&emsp;最近打算逐渐熟悉一下 Python3 的语法效果，经过网上查找，如果在 Python2 中还原 Python3 的效果可以通过 __future__ 引入一些 Python3 的功能。&emsp;&emsp;于是我就引入了 from __future__ import unicode_literals,division,print_function 这一句。 &emsp;&emsp;unicode_literals 可以让 Python2 的字符串全部编程 unicode 模式，也就是所有字符串默认前面带 u 了，中文就不会变成乱码。 &emsp;&emsp;division 引入之后 Python2 的整数除法也可以输出浮点数了。&emsp;&emsp;比如说 1/2 默认输出是 0，因为 被除数不是浮点数 因此输出变整数了，以前我是通过 float(1)/2 来解决这个问题，现在就可以通过 __future__ 来解决 &emsp;&emsp;print_function 引入之后就可以支持 Python3 的 print ，所以 print 的写法也要和 Python3 一样加括号。&emsp;&emsp;这样 print 命令就可以直接嵌入到 lambda 函数里面，不引入的话 lambda 函数打印只能使用 sys.stdout.write &emsp;&emsp;交代了一下背景，终于要扯出今天的主角 unicode_literals 的坑了。 setProperty 要设置 byte string &emsp;&emsp;最近在开发 QMVVM 模块状态管理模块，使用 Qt 的 DynamicProperty 发现无法正确设置。 123456789101112131415161718192021222324252627282930# coding:utf-8from __future__ import unicode_literals,division,print_functionimport osimport sysfrom Qt import QtWidgetsfrom Qt import QtCorefrom Qt import QtGuiclass WidgetTest(QtWidgets.QWidget): def __init__(self): super(WidgetTest, self).__init__() # NOTE 设置 Property 为空 self.setProperty("test","hello,world") print(self.dynamicPropertyNames()) # NOTE 解决方案是去掉 unicode_literals 或者 添加 byte string self.setProperty(b"test2","hello,world") print(self.dynamicPropertyNames()) # NOTE 打印 [PySide2.QtCore.QByteArray('test2')]if __name__ == '__main__': app = QtWidgets.QApplication(sys.argv) widget = WidgetTest() widget.show() sys.exit(app.exec_()) 注: Qt 无法导入可以去 Github 下载兼容脚本 &emsp;&emsp;上面的代码就很清晰了，这背后可能也和 Qt 框架有关， Qt 可能不支持 Python unicode string&emsp;&emsp;即便这里不引入 unicode_literals ，只是 setProperty(u&#39;test&#39;,&#39;hello&#39;) 这样设置也照样不行了。 signal 调用造成递归永动机 &emsp;&emsp;我觉得正常使用几乎不会遇到这个问题，碰巧我在开发 QMVVM 模块，所以用了一些比较偏门的方法来构造变量，结果引入 unicode_literals 出了大问题。 12345678910111213141516171819202122232425262728293031323334353637# coding:utf-8from __future__ import unicode_literals,division,print_functionimport osimport sysfrom Qt import QtWidgetsfrom Qt import QtCorefrom Qt import QtGuiclass WidgetTest(QtWidgets.QWidget): # ComputedSignal = QtCore.Signal() # StateSignal = QtCore.Signal() _var_dict = &#123;&#125; _var_dict["ComputedSignal"] = QtCore.Signal() _var_dict["StateSignal"] = QtCore.Signal() locals().update(_var_dict) def __init__(self): super(WidgetTest, self).__init__() # NOTE 信号槽套娃处理 getattr(self,"StateSignal").connect(getattr(self,"ComputedSignal").emit) # NOTE 如果加上这行就会打印一堆 computed signal # self.ComputedSignal.connect(lambda:print("computed signal")) # ! 报错 RuntimeError: maximum recursion depth exceeded while calling a Python object getattr(self,"StateSignal").emit()if __name__ == '__main__': app = QtWidgets.QApplication(sys.argv) widget = WidgetTest() widget.show() sys.exit(app.exec_()) &emsp;&emsp;这里构建信号槽变量用了比较 tricky 的方法，因为 QMVVM 需要根据传入的字符串动态生成变量。&emsp;&emsp;Python 的变量背后其实就是一个 locals 的字典来产生对应关系，可以通过 update 方法更新字典从而更新到本地变量里面。&emsp;&emsp;当然除了这个方法之外 类里面 也可以使用 setattr 方法添加类属性，只不过用字典也方便我后面获取动态生成的变量。 &emsp;&emsp;后面 __init__ 函数里面 QMVVM 通过 getattr 根据字符串动态获取类属性，因此这里测试我也不直接 self.StateSignal 来获取了。&emsp;&emsp;然后这里进行了套娃处理，两个信号槽，一个触发同时会触发另一个。&emsp;&emsp;然后触发 信号槽 就会导致调用永动机从而报错了。 &emsp;&emsp;上面的代码就是我花了大半天调试精简出来的，在 QMVVM 内部的运行还是挺绕的，更何况一开始完全没有预料到问题出在 unicode_literals 里面 (:з」∠)&emsp;&emsp;解决方案也不复杂，可以去掉 unicode_literals 或者构建信号槽的变量的时候给字符串加上 b’’ 转换为 byte string 总结 &emsp;&emsp;上面的代码测试我汇总到了 github 的仓库上 代码&emsp;&emsp;后面我又测试不同版本的Python，发现 Python 2.7.16 版本已经解决了这个问题，但是 Python 2.7.14 还是出错， Maya 的 Python 2.7.11 也照样有问题。&emsp;&emsp;Python 3.7.6 完全 OK ，所以可以相当肯定这个就是 Python2 的 BUG。&emsp;&emsp;经过了这个坑之后，我还是不推荐使用 unicode_literals 了，毕竟中文乱码至少还可以运行，开了 unicode_literals 之后出问题的代价太大了。 更新 2020-5-7 &emsp;&emsp;在 Stack Overflow 上发现了类似的问题 链接&emsp;&emsp;或许这真的是 Qt 的 Bug 而已，如果用起来方便的话还是可以考虑一下的。]]></content>
       <categories>
         <category>Python</category>
         <category>Python黑科技</category>
@@ -625,8 +653,8 @@
       </categories>
       <tags>
         <tag>Maya</tag>
-        <tag>Autodesk</tag>
         <tag>Arnold</tag>
+        <tag>Autodesk</tag>
       </tags>
   </entry>
   <entry>
@@ -651,8 +679,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -677,8 +705,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
       </tags>
   </entry>
   <entry>
@@ -690,8 +718,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
       </tags>
   </entry>
   <entry>
@@ -703,8 +731,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
       </tags>
   </entry>
   <entry>
@@ -716,8 +744,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
       </tags>
   </entry>
   <entry>
@@ -846,9 +874,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -860,9 +888,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1416,8 +1444,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1446,8 +1474,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1477,8 +1505,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>React</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1491,8 +1519,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>React</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1504,8 +1532,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1599,8 +1627,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1669,8 +1697,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1684,8 +1712,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1710,8 +1738,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1857,8 +1885,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>人生</tag>
         <tag>回顾</tag>
+        <tag>人生</tag>
         <tag>学习</tag>
       </tags>
   </entry>
