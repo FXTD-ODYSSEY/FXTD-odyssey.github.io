@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://blog.l0v0.com/"/>
-  <updated>2020-05-10T06:28:17.504Z</updated>
+  <updated>2020-05-12T02:36:15.262Z</updated>
   <id>https://blog.l0v0.com/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Maya 模型掰直处理</title>
+    <link href="https://blog.l0v0.com/posts/4de57da5.html"/>
+    <id>https://blog.l0v0.com/posts/4de57da5.html</id>
+    <published>2020-05-12T01:31:26.000Z</published>
+    <updated>2020-05-12T02:36:15.262Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="尽可能保持-模型的曲率"><a href="#尽可能保持-模型的曲率" class="headerlink" title="尽可能保持 模型的曲率"></a>尽可能保持 模型的曲率</h1><a id="more"></a><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote><p>&emsp;&emsp;最近模型师那边遇到了一些比较麻烦的需求。<br>&emsp;&emsp;当前制作的模型弯曲过度了，如果才能将模型掰直回去 <em>(:з」∠)</em>。<br>&emsp;&emsp;刚听到这个问题的时候，下意识就想到了使用 Bend 变形器来解决。<br>&emsp;&emsp;或者将模型打平还通常会用 缩放到 0 的方式。<br>&emsp;&emsp;然而事实上并没有那么好处理。</p></blockquote><h2 id="缩放方案研究"><a href="#缩放方案研究" class="headerlink" title="缩放方案研究"></a>缩放方案研究</h2><blockquote><p>&emsp;&emsp;最开始我测试了缩放调整的方式。<br>&emsp;&emsp;但是效果不是很理想。</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/model_bend/01.gif" alt="alt"></p><blockquote><p>&emsp;&emsp;这样其实只是把模型压扁。<br>&emsp;&emsp;后来我想到了使用 squash 变形器来压，这样可以控制压的幅度，但是本质还是压扁，效果不太理想。</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/model_bend/02.gif" alt="alt"></p><h2 id="Bend-弯曲方案研究"><a href="#Bend-弯曲方案研究" class="headerlink" title="Bend 弯曲方案研究"></a>Bend 弯曲方案研究</h2><blockquote><p>&emsp;&emsp;其实最靠谱的方案应该是 Bend 弯曲方案，但是直接对模型进行弯曲达不到预期的效果。</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/model_bend/03.gif" alt="alt"></p><blockquote><p>&emsp;&emsp;于是我开始想其他的方案，我觉得最靠谱的方法应该是用 曲线 来控制模型。<br>&emsp;&emsp;然后通过弯曲曲线实现模型的整体控制。<br>&emsp;&emsp;从模型提取曲线其实不难， Maya 有将边转换为 曲线 的命令。</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/model_bend/04.png" alt="alt"></p><blockquote><p>&emsp;&emsp;提取出曲线之后可以我最先想到用 wrap 变形器实现曲线控制模型的效果。<br>&emsp;&emsp;然后再给曲线添加 Bend 变形器。<br>&emsp;&emsp;然而这个方案的效果也不理想。</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/model_bend/05.gif" alt="alt"></p><hr><blockquote><p>&emsp;&emsp;后来还想到表情绑定里面也有用到 wire 变形器来实现曲线控制模型的效果。<br>&emsp;&emsp;于是抱着试一试的形态去测试效果。</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/model_bend/06.gif" alt="alt"></p><blockquote><p>&emsp;&emsp;wire 变形器的添加比较特别，左下角有使用帮助提醒。<br>&emsp;&emsp;需要先选择模型按 Enter 然后再选择 曲线 按 Enter，可以参考 mel 的 <a href="http://help.autodesk.com/cloudhelp/2018/ENU/Maya-Tech-Docs/CommandsPython/scriptCtx.html" target="_blank" rel="noopener">scriptCtx</a> 命令<br>&emsp;&emsp;直接赋予 wire 变形器并不能完全控制模型，<br>&emsp;&emsp;因此这里还需要调整 wire 变形器的权重来控制整个模型。</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/model_bend/07.gif" alt="alt"></p><blockquote><p>&emsp;&emsp;然后对曲线添加 bend 变形器。</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/model_bend/08.gif" alt="alt"></p><blockquote><p>&emsp;&emsp;这个效果就相当好了。<br>&emsp;&emsp;必要的话还可以控制曲线的缩放来将模型打直。</p></blockquote><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote><p>&emsp;&emsp;以上就是我研究出的掰直模型的方案。<br>&emsp;&emsp;Maya 建模的时候活用 Mash 和 变形器 可以实现非常复杂的模型效果，我之前在 youtube 上看了一个系列，让我大开眼界。 <a href="https://www.youtube.com/watch?v=eyofvTg7OAA&amp;list=PLnrzQuy6WvZWf8bZSLaTnwKDWI7rzxdGd" target="_blank" rel="noopener">链接</a></p></blockquote>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;尽可能保持-模型的曲率&quot;&gt;&lt;a href=&quot;#尽可能保持-模型的曲率&quot; class=&quot;headerlink&quot; title=&quot;尽可能保持 模型的曲率&quot;&gt;&lt;/a&gt;尽可能保持 模型的曲率&lt;/h1&gt;
+    
+    </summary>
+    
+      <category term="Maya" scheme="https://blog.l0v0.com/categories/Maya/"/>
+    
+    
+      <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
+    
+  </entry>
   
   <entry>
     <title>Maya 影视绑定 转 游戏绑定</title>
@@ -542,36 +564,6 @@
       <category term="效率" scheme="https://blog.l0v0.com/tags/%E6%95%88%E7%8E%87/"/>
     
       <category term="app" scheme="https://blog.l0v0.com/tags/app/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Maya2017 材质面板打开报错空白</title>
-    <link href="https://blog.l0v0.com/posts/f862fce.html"/>
-    <id>https://blog.l0v0.com/posts/f862fce.html</id>
-    <published>2020-02-27T08:41:39.000Z</published>
-    <updated>2020-03-08T07:07:05.568Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="经-Maya2018-测试-官方已经修复"><a href="#经-Maya2018-测试-官方已经修复" class="headerlink" title="经 Maya2018 测试 - 官方已经修复"></a>经 Maya2018 测试 - 官方已经修复</h1><a id="more"></a><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote><p>&emsp;&emsp;在使用 Maya2017 的时候，偶尔会遇到 材质面板 完全空白并且报错的情况。<br>&emsp;&emsp;过去一般的解决方案就是删除我的文档的 maya 目录，让个人设置回到默认就不会有问题了。 <a href="https://forums.autodesk.com/t5/maya-forum/hypershade-window-has-nothing-in-it/td-p/8556566" target="_blank" rel="noopener">官方链接参考</a></p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Hypershade_blank/01.png" alt="alt"></p><blockquote><p>&emsp;&emsp;只不过这个问题我遇到很多遍了，每次都要清理 个人设置 还是太麻烦了。<br>&emsp;&emsp;于是我就想搞清楚是什么原因导致这个报错的，刚好最近有遇到了这个问题。<br>&emsp;&emsp;于是我将有问题的个人设置保存下来，然后和默认的个人设置进行比对，看看问题再哪里。</p></blockquote><h2 id="文件定位"><a href="#文件定位" class="headerlink" title="文件定位"></a>文件定位</h2><blockquote><p>&emsp;&emsp;我之前的<a href="./e3ab7e13.html">文章</a>里面有详细介绍 Maya 我的文档 里面各个文件夹分别存放的东西。<br>&emsp;&emsp;其实仔细定位可以发现，个人设置都存在 prefs 文件夹里面，删除这个文件夹也可以修复问题。<br>&emsp;&emsp;因此可以进一步定位到底是这个文件夹里面的什么文件导致出错。</p></blockquote><hr><blockquote><p>&emsp;&emsp;我首先将和文件夹意外的文件用错误的设置文件全部覆盖了一遍。</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Hypershade_blank/02.png" alt="alt"></p><blockquote><p>&emsp;&emsp;结果复现了报错。<br>&emsp;&emsp;因此可以将问题文件锁定在 外部这些零碎的文件上。<br>&emsp;&emsp;这些文件中 <code>userPrefs.mel</code> 文件最大，而且大小差异也很大。<br>&emsp;&emsp;于是也走了一遍替换测试的流程，结果发现就是这个文件导致问题。<br>&emsp;&emsp;于是我打开 <code>userPrefs.mel</code> 查看里面的代码。</p></blockquote><blockquote><p>&emsp;&emsp;我发现里面全部是 optionVar 的 mel 语言全局变量。<br>&emsp;&emsp;很多设置都直接和首选项里面的设置挂钩。<br>&emsp;&emsp;于是我用 vscode 对比文件差异</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Hypershade_blank/03.png" alt="alt"></p><blockquote><p>&emsp;&emsp;但是两个文件差异实在太多了。<br>&emsp;&emsp;一行一行对比显然是不现实的。<br>&emsp;&emsp;于是我从窗口打开的报错开始进一步的追踪。</p></blockquote><h2 id="报错追踪"><a href="#报错追踪" class="headerlink" title="报错追踪"></a>报错追踪</h2><figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Error: file: C:/Program Files/Autodesk/Maya2017/scripts/others/hyperShadePanel.mel line 10082: windowPref: Object 'hypershadeBrowserPanel' not found. //</span></span><br></pre></td></tr></table></figure><blockquote><p>&emsp;&emsp;打开报错的文件，可以找到报错的语句</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Hypershade_blank/04.png" alt="alt"></p><figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">windowPref</span> -q -h hypershadeBrowserPanel</span><br></pre></td></tr></table></figure><blockquote><p>&emsp;&emsp;这个是记录窗口设定的命令，于是我也在 prefs 文件夹下搜这个命令。<br>&emsp;&emsp;发现这个命令全部记录在 <code>windowPrefs.mel</code> 文件里面，而且缺失的 <code>hypershadeBrowserPanel</code> 也是有 mel 语句的。</p></blockquote><blockquote><p>&emsp;&emsp;这就让我懵逼了，于是我在错误的 Maya 下查询这个变量是否存在。</p></blockquote><figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">windowPref</span> -topLeftCorner <span class="number">250</span> <span class="number">200</span> -widthHeight <span class="number">750</span> <span class="number">215</span> -maximized false -parentMain true hypershadeBrowserPanel;</span><br><span class="line"><span class="keyword">windowPref</span> -q -ex hypershadeBrowserPanel</span><br></pre></td></tr></table></figure><blockquote><p>&emsp;&emsp;奇怪的情况发生了。<br>&emsp;&emsp;在错误的 Maya 中，即便运行上面的代码也依然返回 <code>hypershadeBrowserPanel</code> 不存在。<br>&emsp;&emsp;但是明明上一行就已经配置了相关的属性了。</p></blockquote><blockquote><p>&emsp;&emsp;于是到了这里思路就断了，只好再去研究是什么属性导致 windowPref 不起作用了。</p></blockquote><h2 id="userPrefs-mel-追踪"><a href="#userPrefs-mel-追踪" class="headerlink" title="userPrefs.mel 追踪"></a>userPrefs.mel 追踪</h2><blockquote><p>&emsp;&emsp;最开始我是搜索 hypershade 关键字。<br>&emsp;&emsp;逐一排查，发现代码里面有一大段和 hypershade 相关。<br>&emsp;&emsp;于是我将运行正常的代码复制进去运行，然而并没有解决问题。</p></blockquote><blockquote><p>&emsp;&emsp;然后我又去找 window 关键字(windowPref 找不到东西)<br>&emsp;&emsp;逐一追踪看看语句是否有差别。<br>&emsp;&emsp;然后就追踪到了 <code>saveWindowPos</code> 属性 是有差别的 ， 错误的文件没有开启<br>&emsp;&emsp;这个属性就是首选项中的 记录窗口位置选项。<br>&emsp;&emsp;于是我就将这个选项勾上，奇迹就发生了， hypershade 正常打开了。</p></blockquote><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Hypershade_blank/05.png" alt="alt"></p><blockquote><p>&emsp;&emsp;默认情况下这个选项是勾选的，如果不勾选在 Maya2017 就无法打开 材质编辑器 了。</p></blockquote><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote><p>&emsp;&emsp;后续我去测试了 Maya2018 ，发现官方已经将这个 BUG 修复了。</p></blockquote>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;经-Maya2018-测试-官方已经修复&quot;&gt;&lt;a href=&quot;#经-Maya2018-测试-官方已经修复&quot; class=&quot;headerlink&quot; title=&quot;经 Maya2018 测试 - 官方已经修复&quot;&gt;&lt;/a&gt;经 Maya2018 测试 - 官方已经修复&lt;/h1&gt;
-    
-    </summary>
-    
-      <category term="Maya" scheme="https://blog.l0v0.com/categories/Maya/"/>
-    
-      <category term="CG Programming" scheme="https://blog.l0v0.com/categories/Maya/CG-Programming/"/>
-    
-      <category term="Python" scheme="https://blog.l0v0.com/categories/Maya/CG-Programming/Python/"/>
-    
-      <category term="Maya疑难杂症" scheme="https://blog.l0v0.com/categories/Maya/CG-Programming/Python/Maya%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/"/>
-    
-    
-      <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
-    
-      <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
     
   </entry>
   

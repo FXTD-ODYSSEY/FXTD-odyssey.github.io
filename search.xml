@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Maya 模型掰直处理]]></title>
+    <url>%2Fposts%2F4de57da5.html</url>
+    <content type="text"><![CDATA[尽可能保持 模型的曲率 前言 &emsp;&emsp;最近模型师那边遇到了一些比较麻烦的需求。&emsp;&emsp;当前制作的模型弯曲过度了，如果才能将模型掰直回去 (:з」∠)。&emsp;&emsp;刚听到这个问题的时候，下意识就想到了使用 Bend 变形器来解决。&emsp;&emsp;或者将模型打平还通常会用 缩放到 0 的方式。&emsp;&emsp;然而事实上并没有那么好处理。 缩放方案研究 &emsp;&emsp;最开始我测试了缩放调整的方式。&emsp;&emsp;但是效果不是很理想。 &emsp;&emsp;这样其实只是把模型压扁。&emsp;&emsp;后来我想到了使用 squash 变形器来压，这样可以控制压的幅度，但是本质还是压扁，效果不太理想。 Bend 弯曲方案研究 &emsp;&emsp;其实最靠谱的方案应该是 Bend 弯曲方案，但是直接对模型进行弯曲达不到预期的效果。 &emsp;&emsp;于是我开始想其他的方案，我觉得最靠谱的方法应该是用 曲线 来控制模型。&emsp;&emsp;然后通过弯曲曲线实现模型的整体控制。&emsp;&emsp;从模型提取曲线其实不难， Maya 有将边转换为 曲线 的命令。 &emsp;&emsp;提取出曲线之后可以我最先想到用 wrap 变形器实现曲线控制模型的效果。&emsp;&emsp;然后再给曲线添加 Bend 变形器。&emsp;&emsp;然而这个方案的效果也不理想。 &emsp;&emsp;后来还想到表情绑定里面也有用到 wire 变形器来实现曲线控制模型的效果。&emsp;&emsp;于是抱着试一试的形态去测试效果。 &emsp;&emsp;wire 变形器的添加比较特别，左下角有使用帮助提醒。&emsp;&emsp;需要先选择模型按 Enter 然后再选择 曲线 按 Enter，可以参考 mel 的 scriptCtx 命令&emsp;&emsp;直接赋予 wire 变形器并不能完全控制模型，&emsp;&emsp;因此这里还需要调整 wire 变形器的权重来控制整个模型。 &emsp;&emsp;然后对曲线添加 bend 变形器。 &emsp;&emsp;这个效果就相当好了。&emsp;&emsp;必要的话还可以控制曲线的缩放来将模型打直。 总结 &emsp;&emsp;以上就是我研究出的掰直模型的方案。&emsp;&emsp;Maya 建模的时候活用 Mash 和 变形器 可以实现非常复杂的模型效果，我之前在 youtube 上看了一个系列，让我大开眼界。 链接]]></content>
+      <categories>
+        <category>Maya</category>
+      </categories>
+      <tags>
+        <tag>Maya</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Maya 影视绑定 转 游戏绑定]]></title>
     <url>%2Fposts%2Ffa091109.html</url>
     <content type="text"><![CDATA[兼容不同的绑定系统 前言 &emsp;&emsp;最近工作上遇到了一个大问题，一个新的项目进行测试，测试用的角色绑定居然是影视流程的绑定。&emsp;&emsp;如果使用这种绑定方式导入游戏引擎会出现很多问题，甚至直接发生错误导致无法导入的情况。&emsp;&emsp;于是针对这个问题，我弄了一个提取方案，实测 TSM 和 ADV 两种绑定系统都支持。 影视绑定 和 游戏绑定 区别 &emsp;&emsp;其实游戏绑定完全可以照搬影视的绑定。&emsp;&emsp;其中最大的区别在于，绑定文件导入引擎只需要蒙皮的骨骼就足够了，额外的控制器、IKFK切换系统等等辅助的绑定都不需要导出。&emsp;&emsp;而影视绑定里面因为不需要考虑输出到引擎的缘故，辅助系统和蒙皮骨骼基本都是混搭在一起。&emsp;&emsp;ADV 还好，还有对蒙皮的骨骼单独分离，现在项目用到的绑定就是完全混搭的状态。 &emsp;&emsp;综上所述，游戏绑定需要单独弄一套 root 骨骼层级用来蒙皮到模型上，影视的绑定系统可以约束到这套 root 骨骼上。&emsp;&emsp;这样导出蒙皮骨骼和模型就没有问题了。 绑定分离分析 &emsp;&emsp;既然目前的状态就是绑定骨骼和辅助骨骼混搭在一起了，就需要通过一些方法将这些骨骼找出来输出，这里我使用 pymel 进行获取 &emsp;&emsp;首先通过 for mesh in pm.ls(ni=1,v=1,type=&quot;mesh&quot;) 获取场景中可视的模型，当然可能会有误选和漏选，最后是将输出模型弄一个规范放到特定的层级之下。&emsp;&emsp;然后通过 for skin in mesh.listHistory(type=&quot;skinCluster&quot;) 获取模型下所有的 skinCluster 节点。&emsp;&emsp;最后通过 skin.listHistory(type=&quot;joint&quot;) 就可以找到 蒙皮节点 相连的骨骼了。 &emsp;&emsp;接下来就是在根层级上创建一个 root 骨骼，然后将获取到的蒙皮骨骼统统 parent 到上面去。&emsp;&emsp;这样就完成了蒙皮节点的剥离。&emsp;&emsp;不过直接这么操作会出大问题的，因为之前骨骼在很深的层级里面，它的坐标位置并不是世界坐标。&emsp;&emsp;如果直接 parent 不做处理那位置全部乱套了。&emsp;&emsp;所以 parent 之前需要获取骨骼的位置，结果有发现很多骨骼的一些属性被锁定和连接了。&emsp;&emsp;于是我这里就将骨骼的 位移 旋转 缩放 属性统统解锁断开连接。&emsp;&emsp;这里可能会担心这一步操作影响绑定，的确是个有损操作影响到绑定了，但是没有关系，这里的目标是输出 FBX 绑定文件，导出完成不保存即可。 &emsp;&emsp;进行上面的parent操作之后，角色大部分都没有问题，但是手腕和脚踝的部分会变形。&emsp;&emsp;经过我的研究，我发现是 IK 系统的 ikEffector 导致的，parent 之前将这些节点删除即可。 pm.delete(pm.ls(type=&quot;ikEffector&quot;)) &emsp;&emsp;parent的骨骼，有一些骨骼会带上 transform 节点。&emsp;&emsp;而且无论怎么parent 都会自动生成 transform 节点，后来再 Stack Overflow 找到了问题的原因 链接&emsp;&emsp;主要是因为骨骼或者骨骼的上层级缩放存在负值，骨骼虽然可以输入负值，估计是 Maya 不推荐这么操作所以新建一个 transform 来接收负值。&emsp;&emsp;这里我将 transform 的缩放值和 骨骼 同步，然后骨骼重新 parent 到 root 骨骼上，最后将 transform 节点删除&emsp;&emsp;这里不输出 transform 节点是因为游戏引擎也会将这个东西看做骨骼，可能会导致后续输出的骨骼数量不一致导致动画和绑定不匹配的情况。 &emsp;&emsp;最后 root 层级下的骨骼下面还带有很多不相干的骨骼节点 &emsp;&emsp;这些统统都可以删除掉 [pm.delete(node) for jnt in jnt_list for node in jnt.getChildren()]&emsp;&emsp;最后我还在提取之后给骨骼的命名加上了 ‘_bind’ 的后缀，方便后续动画输出(动画分离再做补充) &emsp;&emsp;最后输出的效果如上图。&emsp;&emsp;截图是是使用 ADV 绑定，模型来自 HumanIK 内置模型。&emsp;&emsp;虽然骨骼的层级结构全部没了，其实这恰恰是游戏引擎所喜欢的。 动画分离 &emsp;&emsp;一开始我也觉得动画分离应该和绑定分离采用同一套方案。&emsp;&emsp;但是结果反而导致很多问题，因为我的提取过程会损坏绑定系统，绑定文件还没有用到这些绑定系统，但是动画文件用到了。&emsp;&emsp;这么提取会导致动画全乱套了。 &emsp;&emsp;后来我想到 FBX 的骨骼动画匹配其实是完全更具骨骼的命名来的。&emsp;&emsp;只要命名一样就会自动将动画信息匹配过去，因此动画文件没必要做有损剥离，只需要新建一套输出骨骼即可~ &emsp;&emsp;在动画文件首先执行 [ref.importContents(True) for ref in pm.listReferences()] 这个命令。&emsp;&emsp;这个命令可以将所有的参考文件导入进来，importContents(True) 传入 True 属性可以去掉参考的命名空间，详细信息可以参照 pymel 的文档。&emsp;&emsp;后续获取骨骼的操作和绑定分离一样。 &emsp;&emsp;获取到骨骼之后根据骨骼名称生成一套带 “_bind” 后缀的骨骼。&emsp;&emsp;然后让绑定系统里面的蒙皮骨骼约束到新的骨骼上，烘焙关键帧输出骨骼即可。&emsp;&emsp;这样操作就简单了很多，不需要考虑蒙皮的关系了。 &emsp;&emsp;上面就是用 ADV 内置的走路动画进行导出的演示。&emsp;&emsp;然后选择生成的 root 骨骼导出当前选择即可。 &emsp;&emsp;导入到 虚幻引擎 完全没问题。 总结 &emsp;&emsp;工具的源码已经上传到 github 链接&emsp;&emsp;工具的导出流程没有做自动导出 FBX 的处理，因为暂时还是个临时使用的方案，真正的流程应该把 FBX 导出的操作也自动化处理，避免制作人员搞出幺蛾子。&emsp;&emsp;另外这里的导出方案完全没有考虑影视流程的 Blendshape 导出，理论上应该是不冲突的。&emsp;&emsp;除非绑定里面使用了影视流程的骨骼驱动 Blendshape 方案，可能这种方案本身就不适合导出到游戏引擎里面。 更新 2020-5-10骨架层级结构还原 &emsp;&emsp;我之前的做法将提取到的骨骼全部 parent 到 root 骨骼上，其实是非常不好的操作。&emsp;&emsp;骨骼的层级结构还是需要保留的，一些游戏引擎的动画压缩技术可能会对没有层级的骨骼产生很大的误差影响。&emsp;&emsp;而且我后面和同学交流有提到，游戏引擎的骨骼连接数是有上限的，我上面这种简单粗暴地提取方法是在跳过不符合规范了。&emsp;&emsp;而且如果要在引擎做 IK 系统，这套没有层级的方案也不可行。&emsp;&emsp;所以我又想办法复现提取骨骼的层级结果。 &emsp;&emsp;最初我没有思路，只能想到想把骨架层级结构转换成一个 json 字典进行存储。 github 123456789101112131415161718import pymel.core as pmimport pymel.core.nodetypes as ntimport jsondef hierarchy2json(parents,dump2json=True,tree=None,init=True,): parents = parents if isinstance(parents,list) else [parents] _tree = &#123;str(p):&#123;&#125; if isinstance(p,nt.Transform) else p.type() for p in parents&#125; if not isinstance(tree,dict) else tree for parent in parents: tree = _tree[str(parent)] if init else _tree for child in parent.getChildren(): tree[str(child)] = &#123;&#125; if isinstance(child,nt.Transform) else child.type() hierarchy2json(child,tree=tree[str(child)],init=False) if init: return json.dumps(_tree) if dump2json else _treeprint(hierarchy2json(pm.selected())) 1234567891011121314151617181920212223&#123; "joint1": &#123; "joint2": &#123; "joint3": &#123; "joint4": &#123;&#125; &#125; &#125; &#125;, "pSphere1": &#123; "pSphereShape1": "mesh", "nurbsCircle1": &#123; "transform1": &#123;&#125;, "nurbsCircleShape1": "nurbsCurve" &#125;, "pSphere2": &#123; "pSphereShape2": "mesh", "locator1": &#123; "locatorShape1": "locator" &#125;, "polySurfaceShape1": "mesh" &#125; &#125;&#125; &emsp;&emsp;上面是一个 hierarchy 转json 的通用方案，如果只是获取骨骼，可以修改一下递归函数的获取。&emsp;&emsp;这样的确可以生成出一个 json 树来描述骨骼的位置，但是如何从中剥离出骨骼的关系依然是个大难题。&emsp;&emsp;后来看了 Stack Overflow 的一个解答之后，突然有了灵感，其实并不需要构建这个 json 树。&emsp;&emsp;因为物体的 longName 其实就包含了层级结构的描述。&emsp;&emsp;那么利用这个特点，可以通过追述这些字符串中是否在 蒙皮骨骼列表中。 123456789101112131415161718192021def getRelParent(self,jnt_list,root): """getRelParent 根据长名称获取骨骼列表的父子关系 :param jnt_list: 蒙皮骨骼列表 :type jnt_list: list :param root: 根骨骼 :type root: [pymel.core.nodetypes.Joint] :return: 骨骼的父子关系 :rtype: dict """ jnt_parent = &#123;&#125; for jnt in jnt_list: hi_tree = jnt.longName().split("|")[1:-1] parent = None while parent not in jnt_list: if not hi_tree: parent = root break parent = pm.PyNode(hi_tree.pop()) jnt_parent[jnt] = parent if parent != root else parent return jnt_parent &emsp;&emsp;Maya 的长名是这样的形式 |pSphere1|pSphere2 我可以切分 | 获取出每个层级的物体名称的数组。&emsp;&emsp;然后从数组后面提出元素，逐个逐个判断这个元素是否在蒙皮列表里面。&emsp;&emsp;如果找不到就给到默认的根骨骼。 &emsp;&emsp;通过这个方法就可以重建骨骼的层级结构。 移动骨骼 &emsp;&emsp;在绑定状态下移动骨骼会导致变形，其实 Maya 针对这个情况有相应的功能可以开启。&emsp;&emsp;后面在 Autodesk 的官方论坛上学习到的，开启了之后就不需要处理 iKeffector 之类的绑定节点导致变形了。 &emsp;&emsp;开启关闭可以用 mel 来执行，看maya代码回调即可。 12from maya import melmel.eval('moveJointsMode 1;') transform 节点处理 &emsp;&emsp;由于这里多了一步 parent 的操作，transform 需要多一次处理。&emsp;&emsp;我之前的 transform 处理方案稍稍麻烦一点，而且遇到约束的情况，我赋值就没有意义了，后面我采用 ungroup 的方式去掉 transform。&emsp;&emsp;这样会操作会比较好。 &emsp;&emsp;遗憾的是，在复杂绑定的情况下，处理完成之后可能导致骨骼存在缩放值。&emsp;&emsp;这会导致模型的 bindpose 不匹配，特别是部分区域缩放的情况，导入到 unreal 引擎会看到骨骼蒙皮全部因为没有了骨骼的缩放而错位了。&emsp;&emsp;这里 Maya 的解决方案只能是 重新绑定(重新拷贝权重) ， unreal 引擎则可以勾选 Use t0 as ref pose 选项来解决问题。 脚本升级 &emsp;&emsp;最后我把脚本稍微升级了一下，直接拖拽到 Maya 可以生成一个工具架图标，图标是基于 Qt 的 qrc 编译出来的。&emsp;&emsp;生成图标的同时，会在我的文档maya目录下生成 filmSkin2GameSkinMod 文件夹，通过 mod 的方式在开启 Maya 的时候加载 qrc 图标。&emsp;&emsp;这样确保下次打开 Maya 也可以看到工具架上的自定义图标。 &emsp;&emsp;点击导出绑定自动在生成一个和当前打开绑定文件同名的 FBX&emsp;&emsp;导出动画则会在当前打开文件的目录下创建一个 FBXAnim 文件夹，然后将生成的 FBX 放到该生成的目录下。&emsp;&emsp;批量导出也是同理。]]></content>
@@ -650,6 +661,7 @@
     <content type="text"><![CDATA[Arnold 的 Bug 前言 &emsp;&emsp;数天前，在公司干活的时候发现，Maya的渲染设置界面会出BUG。&emsp;&emsp;在 Maya2017 下会是如下报错。&emsp;&emsp;并且所有的渲染设置都无法切换了。 &emsp;&emsp;在 Maya2018 和 Maya2019 的错误会好一点。 ma文件对比 &emsp;&emsp;幸好出问题的文件很小，还可以保存成ma文件研究问题的出处。&emsp;&emsp;于是不停地用 vscode 注释 ma 里面的代码。&emsp;&emsp;最后发现初始化的摄像机是导致这个问题的罪魁祸首。 &emsp;&emsp;我发现当初始化的四个摄像机如果都勾选 renderable 之后就会出现这个错误，而且在 Maya2017 一旦出错就得重开才可以。&emsp;&emsp;更高版本的Maya就不需要重开。]]></content>
       <categories>
         <category>Maya</category>
+        <category>Maya疑难杂症</category>
       </categories>
       <tags>
         <tag>Maya</tag>
@@ -874,9 +886,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -888,9 +900,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1505,8 +1517,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>React</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1519,8 +1531,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>React</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -2475,8 +2487,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>拍照指南</tag>
         <tag>学习笔记</tag>
+        <tag>拍照指南</tag>
       </tags>
   </entry>
   <entry>
@@ -2502,8 +2514,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>学习笔记</tag>
         <tag>后期基本流程</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
   <entry>
