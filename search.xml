@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Python - Tkinter Windows 磁盘映射工具]]></title>
+    <url>%2Fposts%2Fcbe510e2.html</url>
+    <content type="text"><![CDATA[subst 映射本地路径 | 使用 PyInstaller 打包 前言 &emsp;&emsp;windows 的本地目录映射为磁盘的操作貌似没有图形化界面。&emsp;&emsp;windows 下只能映射网络路径。 &emsp;&emsp;当然，可以通过命令行 subst 来实现这样的功能。&emsp;&emsp;刚好工作上有人给我提了这个需求，因此我就做了图形化界面来简化操作。 &emsp;&emsp;最开始我是打算使用 PyQt 进行开发的，但是打包之前大小有点太大了。&emsp;&emsp;一个简单的图形程序超过 10M 就有点过分了。&emsp;&emsp;所以后面我又去学习 Tkinter 开发，来减少程序的大小。&emsp;&emsp;Tkinter 是 Python 自带的跨平台图形界面开发库，开发起来虽然没有 Qt 那么方便(QtDesigner 是真的香)，不过 Qt 的各种功能大都能在 Tkinter 实现。&emsp;&emsp;只是 Tkinter 的UI组装方式和 Qt 有些许差别。 &emsp;&emsp;开发的界面我已经放到 Github 上 链接 Tkinter GUI 开发 &emsp;&emsp;前段时间弄 mini_maya 的时候就接触过了 Tkinter 的开发，有 Qt 的开发背景，其实学起来还是很快的。&emsp;&emsp;不过 Tkinter 学习也遇到了不少的坑。 &emsp;&emsp;Tkinter 最大的坑在于文档非常不全面，很多方法有什么参数不知道哪里查，只能在 Stack overflow 上找程序案例。 &emsp;&emsp;Tkinter 没有 Qt 的 Layout 概念&emsp;&emsp;所有的组件都会继承三种不同的排列方法， place grid pack &emsp;&emsp;place 指定到 GUI 的任意位置，位置相对于组件的父对象而言，不使用二维坐标，而是使用 0-1 的百分比。&emsp;&emsp;grid 就和 Qt 的 QGridLayout 差不多&emsp;&emsp;pack 就类似 QVBoxLayout 和 QHBoxLayout 的结合体，通过 side 参数来定义嵌入的方式。 &emsp;&emsp;Tkinter 的 Frame 就相当于 Qt 的 QWidget 可以作为组件的容器。 &emsp;&emsp;一开始 Tkinter 开发的坑在于没有 Layout 概念&emsp;&emsp;组件没有办法类似于 Qt 一样自动根据窗口大小进行拉伸，就像是 mel 语言写的窗口一样。&emsp;&emsp;后来发现其实并不是不能实现的。 &emsp;&emsp;grid 方法有 sticky 参数可以传入 东西南北 来定义组件在 grid 的显示，比如传入 “WE” 就会在 grid 这一个单元格中适应横向的大小。&emsp;&emsp;grid的单元格缩放可以通过， row_config 和 column_config 进行调整。&emsp;&emsp;pack 也有 expand 和 fill 参数实现类似于 Qt Layout 那样顶掉空白区域的效果。 &emsp;&emsp;当然要实现类似 Qt 的效果操作起来就会麻烦一点。 &emsp;&emsp;另外 Tkinter 开发让我最不适应的点就是没有最小大小的概念。&emsp;&emsp;在网上查了很多，还是没有办法实现大小的限制，如果缩放窗口最后会将所有的 GUI 塌陷隐藏。 &emsp;&emsp;后来 Stack Overflow 有个 Tkinter 的大神有提到。&emsp;&emsp;如果是单独成行的组件 可以用 pack&emsp;&emsp;如果是多个组件组装到一起的，建议用 grid&emsp;&emsp;grid可以起确保单元格没有缩放到消失。 &emsp;&emsp;目前为止还是没有办法实现固定组件的长宽，有点小遗憾&emsp;&emsp;虽然找到了可以后面设置组件长宽的方法，但是在 调整窗口大小的情况下 起不到固定长宽的目标。&emsp;&emsp;如果长宽调整输入的数值没有变化的话组件的长宽就不会跟着改变，即便加上 resize 时间回调也不起作用。 总结 &emsp;&emsp;这次又进一步加深了我对 Tkinter 的了解，并且这次用上了类的概念进行开发，已经很接近 Qt 的开发的效果。&emsp;&emsp;下次可以考虑一下 WPF 或者 AutoHotkey 的图形开发，虽然是 Windows 平台独占的，但是相信大小可以更进一步减少。]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Tkinter</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Maya 模型掰直处理]]></title>
     <url>%2Fposts%2F4de57da5.html</url>
-    <content type="text"><![CDATA[尽可能保持 模型的曲率 前言 &emsp;&emsp;最近模型师那边遇到了一些比较麻烦的需求。&emsp;&emsp;当前制作的模型弯曲过度了，如果才能将模型掰直回去 (:з」∠)。&emsp;&emsp;刚听到这个问题的时候，下意识就想到了使用 Bend 变形器来解决。&emsp;&emsp;或者将模型打平还通常会用 缩放到 0 的方式。&emsp;&emsp;然而事实上并没有那么好处理。 缩放方案研究 &emsp;&emsp;最开始我测试了缩放调整的方式。&emsp;&emsp;但是效果不是很理想。 &emsp;&emsp;这样其实只是把模型压扁。&emsp;&emsp;后来我想到了使用 squash 变形器来压，这样可以控制压的幅度，但是本质还是压扁，效果不太理想。 Bend 弯曲方案研究 &emsp;&emsp;其实最靠谱的方案应该是 Bend 弯曲方案，但是直接对模型进行弯曲达不到预期的效果。 &emsp;&emsp;于是我开始想其他的方案，我觉得最靠谱的方法应该是用 曲线 来控制模型。&emsp;&emsp;然后通过弯曲曲线实现模型的整体控制。&emsp;&emsp;从模型提取曲线其实不难， Maya 有将边转换为 曲线 的命令。 &emsp;&emsp;提取出曲线之后可以我最先想到用 wrap 变形器实现曲线控制模型的效果。&emsp;&emsp;然后再给曲线添加 Bend 变形器。&emsp;&emsp;然而这个方案的效果也不理想。 &emsp;&emsp;后来还想到表情绑定里面也有用到 wire 变形器来实现曲线控制模型的效果。&emsp;&emsp;于是抱着试一试的形态去测试效果。 &emsp;&emsp;wire 变形器的添加比较特别，左下角有使用帮助提醒。&emsp;&emsp;需要先选择模型按 Enter 然后再选择 曲线 按 Enter，可以参考 mel 的 scriptCtx 命令&emsp;&emsp;直接赋予 wire 变形器并不能完全控制模型，&emsp;&emsp;因此这里还需要调整 wire 变形器的权重来控制整个模型。 &emsp;&emsp;然后对曲线添加 bend 变形器。 &emsp;&emsp;这个效果就相当好了。&emsp;&emsp;必要的话还可以控制曲线的缩放来将模型打直。 总结 &emsp;&emsp;以上就是我研究出的掰直模型的方案。&emsp;&emsp;Maya 建模的时候活用 Mash 和 变形器 可以实现非常复杂的模型效果，我之前在 youtube 上看了一个系列，让我大开眼界。 链接]]></content>
+    <content type="text"><![CDATA[尽可能保持 模型的曲率 前言 &emsp;&emsp;最近模型师那边遇到了一些比较麻烦的需求。&emsp;&emsp;当前制作的模型弯曲过度了，如何才能将模型掰直回去 (:з」∠)。&emsp;&emsp;刚听到这个问题的时候，下意识就想到了使用 Bend 变形器来解决。&emsp;&emsp;或者将模型打平还通常会用 缩放到 0 的方式。&emsp;&emsp;然而事实上并没有那么好处理。 缩放方案研究 &emsp;&emsp;最开始我测试了缩放调整的方式。&emsp;&emsp;但是效果不是很理想。 &emsp;&emsp;这样其实只是把模型压扁。&emsp;&emsp;后来我想到了使用 squash 变形器来压，这样可以控制压的幅度，但是本质还是压扁，效果不太理想。 Bend 弯曲方案研究 &emsp;&emsp;其实最靠谱的方案应该是 Bend 弯曲方案，但是直接对模型进行弯曲达不到预期的效果。 &emsp;&emsp;于是我开始想其他的方案，我觉得最靠谱的方法应该是用 曲线 来控制模型。&emsp;&emsp;然后通过弯曲曲线实现模型的整体控制。&emsp;&emsp;从模型提取曲线其实不难， Maya 有将边转换为 曲线 的命令。 &emsp;&emsp;提取出曲线之后可以我最先想到用 wrap 变形器实现曲线控制模型的效果。&emsp;&emsp;然后再给曲线添加 Bend 变形器。&emsp;&emsp;然而这个方案的效果也不理想。 &emsp;&emsp;后来还想到表情绑定里面也有用到 wire 变形器来实现曲线控制模型的效果。&emsp;&emsp;于是抱着试一试的形态去测试效果。 &emsp;&emsp;wire 变形器的添加比较特别，左下角有使用帮助提醒。&emsp;&emsp;需要先选择模型按 Enter 然后再选择 曲线 按 Enter，可以参考 mel 的 scriptCtx 命令&emsp;&emsp;直接赋予 wire 变形器并不能完全控制模型，&emsp;&emsp;因此这里还需要调整 wire 变形器的权重来控制整个模型。 &emsp;&emsp;然后对曲线添加 bend 变形器。 &emsp;&emsp;这个效果就相当好了。&emsp;&emsp;必要的话还可以控制曲线的缩放来将模型打直。 总结 &emsp;&emsp;以上就是我研究出的掰直模型的方案。&emsp;&emsp;Maya 建模的时候活用 MASH 和 变形器 可以实现非常复杂的模型效果，我之前在 youtube 上看了一个系列，让我大开眼界。 链接]]></content>
       <categories>
         <category>Maya</category>
       </categories>
@@ -256,8 +268,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>android</tag>
         <tag>效率</tag>
+        <tag>android</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -270,8 +282,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>android</tag>
         <tag>效率</tag>
+        <tag>android</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -369,8 +381,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>Windows</tag>
+        <tag>效率</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -691,8 +703,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -717,8 +729,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
       </tags>
   </entry>
   <entry>
@@ -730,8 +742,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
       </tags>
   </entry>
   <entry>
@@ -743,8 +755,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
       </tags>
   </entry>
   <entry>
@@ -756,8 +768,8 @@
         <category>回忆录</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
       </tags>
   </entry>
   <entry>
@@ -1456,8 +1468,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1486,8 +1498,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1544,8 +1556,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1639,8 +1651,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1709,8 +1721,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1724,8 +1736,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1750,8 +1762,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -1897,8 +1909,8 @@
         <category>总结</category>
       </categories>
       <tags>
-        <tag>回顾</tag>
         <tag>人生</tag>
+        <tag>回顾</tag>
         <tag>学习</tag>
       </tags>
   </entry>
@@ -2514,8 +2526,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>后期基本流程</tag>
         <tag>学习笔记</tag>
+        <tag>后期基本流程</tag>
       </tags>
   </entry>
   <entry>
@@ -2540,8 +2552,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>学习笔记</tag>
         <tag>前期基本流程</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
 </search>
