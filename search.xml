@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Maya 法线获取归纳]]></title>
+    <url>%2Fposts%2Fd50b3a73.html</url>
+    <content type="text"><![CDATA[介绍 mel 和 pymel 的获取方法 前言 &emsp;&emsp;最近我看到TD群里有人问关于 Maya 法线获取的归纳汇总，恰好我前段时间就因为工作的需要有做过相关的开发。&emsp;&emsp;具体可以参照我之前写的文章 Maya 法线解锁 Maya 法线解锁进阶&emsp;&emsp;因此在这里总一下法线获取的归纳，希望对大家有有所帮助。 什么是法线 &emsp;&emsp;首先需要理解三维软件法线的概念，具体还是可以参照我之前翻译的教程， 平滑着色概述 平滑着色例子 &emsp;&emsp;看完教程可以知道，法线是用来描述光线射碰撞到模型上之后光线的反射行为。(不是搞图形渲染的，如有不当之处请多多包涵) &emsp;&emsp;通过上面的截图，调整点法线的角度就可以改变模型的着色效果，因此法线贴图的原理也在这里。&emsp;&emsp;通过高模烘焙的法线信息，在低模上扭曲光线让渲染的时候模拟出高模的细节。因此法线贴图比较省资源，但是效果的精细程度比不上置换贴图。 Maya中的法线 &emsp;&emsp;在Maya中，模型上有面法线和顶点法线，面法线是垂直于面的，但是实际对着色起作用的是点法线。&emsp;&emsp;我们可以在 Maya 中简单构建出两个球来说明法线对着色的影响。&emsp;&emsp;首先将其中一个球执行硬边操作。 &emsp;&emsp;从上图可以看到默认的球是软边的，两个一对比就很明显了。&emsp;&emsp;硬边的球看起来的面片非常明显，我们可以开启模型的点法线来进行对比。 &emsp;&emsp;可以看到软化边的顶点法线都是合并到一起的，硬化边的法线则根据面的朝向相互独立了。&emsp;&emsp;这就造成了平滑着色之间的区别。 &emsp;&emsp;通过上面的硬边例子可以知道，Maya的法线信息是根据面顶点进行存储的，这里的面顶点区别于模型的顶点。&emsp;&emsp;每个面上的顶点是单独计算的，进入 Maya 的 VertexFace 模式就非常清楚 &emsp;&emsp;这个模式下的面都是间隔开的，可以清晰看到每个面顶点。 使用 Mel &amp; cmds 命令获取模型法线 &emsp;&emsp;常用的命令有如下这些 polyNormalPerVertex polyAverageNormal polyNormal polySetToFaceNormal polySoftEdge &emsp;&emsp;其中最强大的命令是 polyNormalPerVertex 可以精确获取到法线的信息，并且精准调整法线。 &emsp;&emsp;另外需要额外注意的是，调整法线如果选择顶点而不是面顶点的话，那么修改的时候会将顶点相邻的面顶点一并修改。&emsp;&emsp;就无法实现法线的精准调节了。 使用 pymel &amp; OpenMaya 获取法线 &emsp;&emsp;pymel 对 OpenMaya 进行了封装，内核相通，使用起来简单很多，因此这里重点讲解 pymel 的获取。&emsp;&emsp;除了 mel 提供的命令之外，获取法线的方法还有有三种方式， 模型 面 顶点 模型获取 Mesh &emsp;&emsp;通过 pymel 获取一个模型， pymel 的 Mesh 类提供了大量和法线相关的命令（大部分都是调用 OpenMaya 实现的） 1234567import pymel.core as pmimport pymel.core.nodetypes as nt# NOTE 打印 pyeml 的 Mesh 类函数print (dir(nt.Mesh))['BoolOperation', 'MAttrClass', 'MColorRepresentation', 'MObjectColorType', 'MPublishNodeType', 'MdgTimerMetric', 'MdgTimerState', 'MdgTimerType', 'SplitPlacement', '__add__', '__apicls__', '__apihandle__', '__apimdagpath__', '__apimfn__', '__apimobject__', '__apiobject__', '__apiobjects__', '__class__', '__delattr__', '__dict__', '__doc__', '__eq__', '__format__', '__ge__', '__getattr__', '__getattribute__', '__getitem__', '__getnewargs__', '__gt__', '__hash__', '__init__', '__le__', '__lt__', '__melnode__', '__melobject__', '__metaclass__', '__module__', '__ne__', '__new__', '__nonzero__', '__or__', '__radd__', '__readonly__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__slots__', '__str__', '__subclasshook__', '__unicode__', '__weakref__', '_attr', '_componentAttributes', '_formatter_field_name_split', '_formatter_parser', '_getAssociatedColorSetInstances', '_getAssociatedUVSetInstances', '_getDagParent', '_getUVAtPoint', '_name', '_node', '_numCVsFunc_generator', '_numColorSets', '_numColors', '_numEPsFunc_generator', '_numEdges', '_numFaceVertices', '_numNormals', '_numPolygons', '_numUVSets', '_numUVs', '_numVertices', '_updateName', 'activeColor', 'addAttr', 'addChild', 'addHoles', 'addPrefix', 'area', 'assignColor', 'assignColors', 'assignUV', 'assignUVs', 'attr', 'attrDefaults', 'attrInfo', 'attributeCount', 'booleanOps', 'boundingBox', 'canBeWritten', 'cast', 'center', 'child', 'childAtIndex', 'childCount', 'classification', 'cleanupEdgeSmoothing', 'clearColors', 'clearUVs', 'comp', 'componentTypeFromName', 'componentTypeName', 'connectAttr', 'connections', 'count', 'createColorSet', 'createUVSet', 'dagPath', 'dagRoot', 'deleteAttr', 'deleteColorSet', 'deletePreset', 'deleteUVSet', 'deselect', 'destinations', 'disconnectAttr', 'dormantColor', 'drawOverrideColor', 'drawOverrideEnabled', 'drawOverrideIsReference', 'drawOverrideIsTemplate', 'duplicate', 'enableDGTiming', 'endswith', 'exists', 'extractNum', 'find', 'firstParent', 'firstParent2', 'format', 'fullPath', 'fullPathName', 'future', 'getAllParents', 'getAllPaths', 'getAssignedUVs', 'getAssociatedUVSetTextures', 'getAttr', 'getAxisAtPoint', 'getBinormals', 'getCheckSamePointTwice', 'getChildren', 'getClosestNormal', 'getClosestPoint', 'getClosestPointAndNormal', 'getColor', 'getColorRepresentation', 'getColorSetFamilyNames', 'getColorSetNames', 'getColors', 'getConnectedSetsAndMembers', 'getCurrentColorSetName', 'getCurrentUVSetName', 'getDisplayColors', 'getEdgeVertices', 'getFaceNormalIds', 'getFaceUVSetNames', 'getFaceVertexBinormal', 'getFaceVertexBinormals', 'getFaceVertexColorIndex', 'getFaceVertexColors', 'getFaceVertexNormal', 'getFaceVertexTangent', 'getFaceVertexTangents', 'getHoles', 'getIcon', 'getInstances', 'getMembers', 'getNormalIds', 'getNormals', 'getObjectColor', 'getObjectColorType', 'getOtherInstances', 'getParent', 'getParentContainer', 'getPath', 'getPoint', 'getPointAtUV', 'getPoints', 'getPolygonNormal', 'getPolygonTriangleVertices', 'getPolygonUV', 'getPolygonUVid', 'getPolygonVertices', 'getPublishedNames', 'getPublishedNodes', 'getPublishedPlugs', 'getRootTransform', 'getSiblings', 'getSubcontainers', 'getTangentId', 'getTangents', 'getTransform', 'getTriangleOffsets', 'getTriangles', 'getUV', 'getUVAtPoint', 'getUVSetFamilyNames', 'getUVSetNames', 'getUVSetsInFamily', 'getUVs', 'getUvShellsIds', 'getVertexNormal', 'getVertices', 'hasAlphaChannels', 'hasAttr', 'hasChild', 'hasColorChannels', 'hasParent', 'hide', 'hiliteColor', 'history', 'inModel', 'inUnderWorld', 'index', 'inputs', 'instanceCount', 'instanceNumber', 'intersect', 'isChildOf', 'isColorClamped', 'isColorSetPerInstance', 'isDefaultNode', 'isDisplaced', 'isEdgeSmooth', 'isFlagSet', 'isInstanceOf', 'isInstanceable', 'isInstanced', 'isInstancedAttribute', 'isIntermediate', 'isIntermediateObject', 'isLocked', 'isNormalLocked', 'isParentOf', 'isPolygonConvex', 'isReadOnly', 'isReferenced', 'isRightHandedTangent', 'isShared', 'isTrackingEdits', 'isUVSetPerInstance', 'isUniquelyNamed', 'isUsingObjectColor', 'isVisible', 'isdecimal', 'islower', 'isnumeric', 'isupper', 'join', 'listAliases', 'listAnimatable', 'listAttr', 'listComp', 'listConnections', 'listFuture', 'listHistory', 'listPresets', 'listRelatives', 'listSets', 'ljust', 'loadPreset', 'lock', 'lockFaceVertexNormals', 'lockVertexNormals', 'longName', 'lower', 'lstrip', 'makeLive', 'model', 'name', 'namespace', 'namespaceList', 'nextName', 'nextUniqueName', 'node', 'nodeName', 'nodeType', 'numChildren', 'numColorSets', 'numColors', 'numEdges', 'numFaceVertices', 'numFaces', 'numNormals', 'numPolygonVertices', 'numSelectedEdges', 'numSelectedFaces', 'numSelectedTriangles', 'numSelectedVertices', 'numTriangles', 'numUVSets', 'numUVs', 'numVertices', 'objExists', 'objectColorIndex', 'objectColorRGB', 'onBoundary', 'outputs', 'parent', 'parentAtIndex', 'parentCount', 'parentNamespace', 'partialPathName', 'partition', 'pluginName', 'polyTriangulate', 'prevName', 'referenceFile', 'registerVirtualSubClass', 'removeChild', 'removeChildAt', 'removeFaceColors', 'removeFaceVertexColors', 'removeVertexColors', 'rename', 'renameUVSet', 'replace', 'rfind', 'rindex', 'rjust', 'root', 'rpartition', 'rsplit', 'rstrip', 'savePreset', 'select', 'setAttr', 'setCheckSamePointTwice', 'setColor', 'setColorClamped', 'setColors', 'setCurrentColorSetName', 'setCurrentUVSetName', 'setDisplayColors', 'setDoNotWrite', 'setDynamicAttr', 'setEdgeSmoothing', 'setFaceColor', 'setFaceColors', 'setFaceVertexColor', 'setFaceVertexNormal', 'setIcon', 'setInstanceable', 'setIntermediate', 'setIntermediateObject', 'setLocked', 'setNormals', 'setObject', 'setObjectColor', 'setObjectColorType', 'setParent', 'setPoint', 'setPoints', 'setSomeColors', 'setSomeUVs', 'setUV', 'setUVs', 'setUseObjectColor', 'setVertexColor', 'setVertexNormal', 'shadingGroups', 'shortName', 'show', 'sources', 'split', 'startswith', 'strip', 'stripNamespace', 'stripNum', 'swapNamespace', 'syncObject', 'transformationMatrix', 'type', 'unlock', 'unlockFaceVertexNormals', 'unlockVertexNormals', 'updateSurface', 'upper', 'usingHiliteColor', 'usingObjectColor', 'worldArea'] &emsp;&emsp;通过 python dir 可以打印出 pymel 封装好的函数。&emsp;&emsp;其中和 normal 相关的操作如下 | 使用方式参考官方文档 getBinormals getClosestNormal getClosestPointAndNormal getFaceNormalIds getFaceVertexBinormal getFaceVertexBinormals getFaceVertexNormal getNormalIds getNormals getPolygonNormal getVertexNormal isNormalLocked lockFaceVertexNormals lockVertexNormals numNormals setFaceVertexNormal setNormals setVertexNormal unlockFaceVertexNormals unlockVertexNormals pymel Mesh 文档 面获取 MeshFace &emsp;&emsp;可以用上面的方法同理获取到内置的 normal 函数 getNormal getNormals normalIndex pymel MeshFace 文档 顶点获取 MeshVertex getNormal getNormals getNormalIndices pymel MeshVertex 文档 注意事项 &emsp;&emsp;MeshFace getNormal 获取面法线&emsp;&emsp;MeshVertex getNormal 获取顶点法线 也就是该顶点下相邻面顶点的法线平均值 &emsp;&emsp;MeshFace getNormals 和 MeshVertex getNormals 可以获取到相邻面顶点的法线信息，但是返回的是数组，不知道这些信息对应的面顶点关系 &emsp;&emsp;我在 Maya 2017 使用 Mesh getFaceVertexNormal 会导致 Maya 崩溃，还是用 mel 命令比较稳定 获取法线数据OpenMaya 2.0 获取 &emsp;&emsp;我之前是通过 OpenMaya 2.0 遍历模型上的面顶点来构建一个面顶点法线字典来提取法线的信息数据。&emsp;&emsp;缺点是数据不是动态的。 1234567891011121314151617181920212223from maya.api import OpenMaya as omfrom maya import cmdsimport syssel_list = cmds.ls(cmds.pickWalk(d="down"),type="mesh")sel = sel_list[0] if sel_list else sys.exit(0)sel_list = om.MSelectionList()sel_list.add(sel)dagPath = sel_list.getDagPath(0)# NOTE 获取 mesh 所有的法线信息mesh_normal = &#123;&#125;itr = om.MItMeshFaceVertex(dagPath)while not itr.isDone(): face_id = itr.faceId() vert_id = itr.vertexId() normal = itr.getNormal() mesh_normal.setdefault(vert_id,&#123;&#125;) mesh_normal[vert_id][face_id] = normal itr.next()print(mesh_normal) PyMel 获取 &emsp;&emsp;OpenMaya 用起来比较麻烦，用 pymel 获取就优雅很多。（效率会低些） 1234567891011121314import sysimport pymel.core as pmfrom collections import defaultdictsel_list = pm.ls(pm.pickWalk(d="down"),type="mesh")sel = sel_list[0] if sel_list else sys.exit(0)mesh_normal = defaultdict(dict)for vtxFace in sel.vtxFace: # NOTE currentItemIndex 获取到 ComponentIndex | 查 pymel 源码可知是 tuple 类型 vert_id,face_id = vtxFace.currentItemIndex() mesh_normal[vert_id][face_id] = pm.polyNormalPerVertex(vtxFace,q=1,normalXYZ=1)print(mesh_normal) 动态获取法线 &emsp;&emsp;如果要动态获取模型的法线信息，可以通过构建类的方式来获取。 1234567891011121314151617181920212223242526import pymel.core as pmimport pymel.core.nodetypes as ntclass NormalData(object): def __init__(self,mesh): mesh = mesh[0] if hasattr(mesh,"__iter__") else mesh mesh = mesh.node() if hasattr(mesh,"node") else mesh self.mesh = mesh.getShape() if hasattr(mesh,"getShape") else mesh if type(self.mesh) is not nt.Mesh: raise RuntimeError("Please Pass a Mesh object to NormalData Class") def __getitem__(self,item): vtxFace = self.mesh.vtxFace[item] return &#123;face_idx:pm.polyNormalPerVertex(vtxFace[face_idx],q=1,normalXYZ=1) for _,face_idx in vtxFace.indicesIter()&#125; def __repr__(self): return "%s('%s')" % (self.__class__.__name__,self.mesh)mesh_normal = NormalData(pm.selected())print(mesh_normal)print(mesh_normal[0])print(mesh_normal[0][0])# NormalData('pSphereShape1')# &#123;19: [0.19055484235286713, -0.9797220230102539, -0.06191524863243103], 0: [0.19055484235286713, -0.9797220230102539, -0.06191524863243103], 379: [0.19055484235286713, -0.9797220230102539, -0.06191524863243103], 360: [0.19055484235286713, -0.9797220230102539, -0.06191524863243103]&#125;# [0.19055484235286713, -0.9797220230102539, -0.06191524863243103] 总结 &emsp;&emsp;以上就是 Maya 的法线获取的总结。&emsp;&emsp;另外我补充一下关于法线解锁的问题， OpenMaya 中的 MFnMesh 有命令可以获取到模型的边是否为硬边和软边 isEdgeSmooth&emsp;&emsp;但是如果导出 FBX 之类的格式没有保留平滑组信息，或者是 Max 导入到 Maya 之类的情况，上面提到的命令就不管用了,即便看起来是有软硬边，但是获取的数据都是 False&emsp;&emsp;这也导致法线解锁所有的法线变硬边了，这种情况下是可以通过遍历获取面顶点的法线来重新恢软硬边的信息的，虽然我针对这个情况开发了 Maya 法线解锁工具，但是工具实现的效果并不理想。 github]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>CG Programming</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Maya</tag>
+        <tag>Python</tag>
+        <tag>法线</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Python - Tkinter Windows 磁盘映射工具]]></title>
     <url>%2Fposts%2Fcbe510e2.html</url>
     <content type="text"><![CDATA[subst 映射本地路径 | 使用 PyInstaller 打包 前言 &emsp;&emsp;windows 的本地目录映射为磁盘的操作貌似没有图形化界面。&emsp;&emsp;windows 下只能映射网络路径。 &emsp;&emsp;当然，可以通过命令行 subst 来实现这样的功能。&emsp;&emsp;刚好工作上有人给我提了这个需求，因此我就做了图形化界面来简化操作。 &emsp;&emsp;最开始我是打算使用 PyQt 进行开发的，但是打包之前大小有点太大了。&emsp;&emsp;一个简单的图形程序超过 10M 就有点过分了。&emsp;&emsp;所以后面我又去学习 Tkinter 开发，来减少程序的大小。&emsp;&emsp;Tkinter 是 Python 自带的跨平台图形界面开发库，开发起来虽然没有 Qt 那么方便(QtDesigner 是真的香)，不过 Qt 的各种功能大都能在 Tkinter 实现。&emsp;&emsp;只是 Tkinter 的UI组装方式和 Qt 有些许差别。 &emsp;&emsp;开发的界面我已经放到 Github 上 链接 Tkinter GUI 开发 &emsp;&emsp;前段时间弄 mini_maya 的时候就接触过了 Tkinter 的开发，有 Qt 的开发背景，其实学起来还是很快的。&emsp;&emsp;不过 Tkinter 学习也遇到了不少的坑。 &emsp;&emsp;Tkinter 最大的坑在于文档非常不全面，很多方法有什么参数不知道哪里查，只能在 Stack overflow 上找程序案例。 &emsp;&emsp;Tkinter 没有 Qt 的 Layout 概念&emsp;&emsp;所有的组件都会继承三种不同的排列方法， place grid pack &emsp;&emsp;place 指定到 GUI 的任意位置，位置相对于组件的父对象而言，不使用二维坐标，而是使用 0-1 的百分比。&emsp;&emsp;grid 就和 Qt 的 QGridLayout 差不多&emsp;&emsp;pack 就类似 QVBoxLayout 和 QHBoxLayout 的结合体，通过 side 参数来定义嵌入的方式。 &emsp;&emsp;Tkinter 的 Frame 就相当于 Qt 的 QWidget 可以作为组件的容器。 &emsp;&emsp;一开始 Tkinter 开发的坑在于没有 Layout 概念&emsp;&emsp;组件没有办法类似于 Qt 一样自动根据窗口大小进行拉伸，就像是 mel 语言写的窗口一样。&emsp;&emsp;后来发现其实并不是不能实现的。 &emsp;&emsp;grid 方法有 sticky 参数可以传入 东西南北 来定义组件在 grid 的显示，比如传入 “WE” 就会在 grid 这一个单元格中适应横向的大小。&emsp;&emsp;grid的单元格缩放可以通过， row_config 和 column_config 进行调整。&emsp;&emsp;pack 也有 expand 和 fill 参数实现类似于 Qt Layout 那样顶掉空白区域的效果。 &emsp;&emsp;当然要实现类似 Qt 的效果操作起来就会麻烦一点。 &emsp;&emsp;另外 Tkinter 开发让我最不适应的点就是没有最小大小的概念。&emsp;&emsp;在网上查了很多，还是没有办法实现大小的限制，如果缩放窗口最后会将所有的 GUI 塌陷隐藏。 &emsp;&emsp;后来 Stack Overflow 有个 Tkinter 的大神有提到。&emsp;&emsp;如果是单独成行的组件 可以用 pack&emsp;&emsp;如果是多个组件组装到一起的，建议用 grid&emsp;&emsp;grid可以起确保单元格没有缩放到消失。 &emsp;&emsp;目前为止还是没有办法实现固定组件的长宽，有点小遗憾&emsp;&emsp;虽然找到了可以后面设置组件长宽的方法，但是在 调整窗口大小的情况下 起不到固定长宽的目标。&emsp;&emsp;如果长宽调整输入的数值没有变化的话组件的长宽就不会跟着改变，即便加上 resize 时间回调也不起作用。 总结 &emsp;&emsp;这次又进一步加深了我对 Tkinter 的了解，并且这次用上了类的概念进行开发，已经很接近 Qt 的开发的效果。&emsp;&emsp;下次可以考虑一下 WPF 或者 AutoHotkey 的图形开发，虽然是 Windows 平台独占的，但是相信大小可以更进一步减少。]]></content>
@@ -268,8 +283,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>android</tag>
+        <tag>效率</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -282,8 +297,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>android</tag>
+        <tag>效率</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -381,8 +396,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -677,8 +692,8 @@
       </categories>
       <tags>
         <tag>Maya</tag>
-        <tag>Arnold</tag>
         <tag>Autodesk</tag>
+        <tag>Arnold</tag>
       </tags>
   </entry>
   <entry>
@@ -898,9 +913,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -912,9 +927,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1529,8 +1544,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -1543,8 +1558,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
