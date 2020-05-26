@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <meta name="baidu-site-verification" content="L6Lm9d5Crl"/>
+  
+  
+  
+  
+  <title>Maya 输出顶点动画到引擎 | 智伤帝的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="输出 exr 通过 shader 驱动顶点">
+<meta name="keywords" content="Maya,Python,game">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Maya 输出顶点动画到引擎">
+<meta property="og:url" content="https://blog.l0v0.com/posts/5c00f85e.html">
+<meta property="og:site_name" content="智伤帝的个人博客">
+<meta property="og:description" content="输出 exr 通过 shader 驱动顶点">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-05-26T16:19:32.531Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Maya 输出顶点动画到引擎">
+<meta name="twitter:description" content="输出 exr 通过 shader 驱动顶点">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        
+<!-- <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script> -->
+<script src="https://cdn.bootcss.com/require.js/2.3.6/require.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/avatar.png" class="js-avatar">
+            
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">智伤帝</a></h1>
+        </hgroup>
+        
+        <p class="header-subtitle"><br></p>
+        
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        <!-- <div class="icon-wrap icon-categories hide">
+                            <i class="fa fa-th" aria-hidden="true" style="font: normal normal normal 30px/1 FontAwesome;margin: 2px auto;color: #333;"></i>
+                        </div>
+                        <div class="icon-wrap icon-archive hide" >
+                            <i class="fa fa-archive" aria-hidden="true" style="font: normal normal normal 30px/1 FontAwesome;margin: 2px auto;color: #333;"></i>
+                        </div> -->
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        <!-- <div class="icon-wrap icon-ribbon hide">
+                            <i class="fa fa-search" aria-hidden="true" style="font: normal normal normal 30px/1 FontAwesome;margin: 2px auto;color: #333;"></i>
+                        </div> -->
+                        
+                    </div>
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li idx='0'>菜单</li>
+                        <li idx='1'>标签</li>
+                        <li>分类</li>
+                        <li>归档</li>
+                        
+                        <li idx='2'>友情链接</li>
+                        
+                        
+                        
+                        <li class="popup-trigger">搜索</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a  href="/archives/">所有文章</a></li>
+                        
+                            <li><a  href="/categories/Maya/Maya-100-招/">Maya100招</a></li>
+                        
+                            <li><a  href="/categories/总结/效率提升指南/">效率提升指南</a></li>
+                        
+                            <li><a  href="/categories/Photogrammetry/">Photogrammetry</a></li>
+                        
+                            <li><a  href="/categories/python/Python结合Qt系列开发教程/">Python Qt 开发教程</a></li>
+                        
+                            <li><a  href="/tags/VScode/">VScode 全面使用攻略</a></li>
+                        
+                            <li><a  href="/categories/前端/hexo/">Hexo博客搭建历程</a></li>
+                        
+                            <li><a  href="/categories/Shader学习之路/">Shader学习之路</a></li>
+                        
+                            <li><a  href="/categories/前端/Vue/Vue学习之路/">Vue学习之路</a></li>
+                        
+                            <li><a  href="/my_work/">我的作品</a></li>
+                        
+                            <li><a  href="/about/">关于我</a></li>
+                        
+                            <li><a  href="/categories/总结/回忆录/">回忆录</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl github"  target="_blank" href="https://github.com/FXTD-ODYSSEY" title="github">github</a>
+                            
+                                <a class="fl bilibili"  target="_blank" href="https://space.bilibili.com/12895307" title="bilibili">bilibili</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/3dsMax/" style="font-size: 13.06px;">3dsMax</a> <a href="/tags/Arnold/" style="font-size: 13.06px;">Arnold</a> <a href="/tags/Autodesk/" style="font-size: 13.06px;">Autodesk</a> <a href="/tags/BlendShape/" style="font-size: 12px;">BlendShape</a> <a href="/tags/C/" style="font-size: 12px;">C#</a> <a href="/tags/C/" style="font-size: 15.18px;">C++</a> <a href="/tags/FBX/" style="font-size: 12px;">FBX</a> <a href="/tags/Git/" style="font-size: 12px;">Git</a> <a href="/tags/Hexo/" style="font-size: 12px;">Hexo</a> <a href="/tags/Houdini/" style="font-size: 21.53px;">Houdini</a> <a href="/tags/HumanIK/" style="font-size: 12px;">HumanIK</a> <a href="/tags/JavaScript/" style="font-size: 26.82px;">JavaScript</a> <a href="/tags/Laravel/" style="font-size: 12px;">Laravel</a> <a href="/tags/Linux/" style="font-size: 12px;">Linux</a> <a href="/tags/MEL/" style="font-size: 15.18px;">MEL</a> <a href="/tags/Maya/" style="font-size: 30px;">Maya</a> <a href="/tags/NextCloud/" style="font-size: 12px;">NextCloud</a> <a href="/tags/OpenMaya/" style="font-size: 12px;">OpenMaya</a> <a href="/tags/Photogrammetry/" style="font-size: 15.18px;">Photogrammetry</a> <a href="/tags/Pluralsight/" style="font-size: 12px;">Pluralsight</a> <a href="/tags/PyMel/" style="font-size: 12px;">PyMel</a> <a href="/tags/PyQt/" style="font-size: 24.71px;">PyQt</a> <a href="/tags/PySide/" style="font-size: 19.41px;">PySide</a> <a href="/tags/Python/" style="font-size: 28.94px;">Python</a> <a href="/tags/Qt/" style="font-size: 19.41px;">Qt</a> <a href="/tags/Qt-Designer/" style="font-size: 12px;">Qt Designer</a> <a href="/tags/React/" style="font-size: 13.06px;">React</a> <a href="/tags/Rigging/" style="font-size: 12px;">Rigging</a> <a href="/tags/SFML/" style="font-size: 12px;">SFML</a> <a href="/tags/Tkinter/" style="font-size: 12px;">Tkinter</a> <a href="/tags/Unity/" style="font-size: 17.29px;">Unity</a> <a href="/tags/Unreal/" style="font-size: 18.35px;">Unreal</a> <a href="/tags/VDB/" style="font-size: 12px;">VDB</a> <a href="/tags/VEX/" style="font-size: 12px;">VEX</a> <a href="/tags/VScode/" style="font-size: 20.47px;">VScode</a> <a href="/tags/Vue/" style="font-size: 22.59px;">Vue</a> <a href="/tags/WebGL/" style="font-size: 23.65px;">WebGL</a> <a href="/tags/Windows/" style="font-size: 12px;">Windows</a> <a href="/tags/Ziva/" style="font-size: 12px;">Ziva</a> <a href="/tags/aboutCG/" style="font-size: 12px;">aboutCG</a> <a href="/tags/android/" style="font-size: 13.06px;">android</a> <a href="/tags/app/" style="font-size: 13.06px;">app</a> <a href="/tags/bootstrap/" style="font-size: 12px;">bootstrap</a> <a href="/tags/fancybox/" style="font-size: 12px;">fancybox</a> <a href="/tags/game/" style="font-size: 13.06px;">game</a> <a href="/tags/git/" style="font-size: 13.06px;">git</a> <a href="/tags/mongodb/" style="font-size: 12px;">mongodb</a> <a href="/tags/mysql/" style="font-size: 12px;">mysql</a> <a href="/tags/node-js/" style="font-size: 13.06px;">node.js</a> <a href="/tags/osl/" style="font-size: 12px;">osl</a> <a href="/tags/photo-sphere-viewer/" style="font-size: 12px;">photo sphere viewer</a> <a href="/tags/php/" style="font-size: 12px;">php</a> <a href="/tags/pluralsight/" style="font-size: 15.18px;">pluralsight</a> <a href="/tags/postprocessing/" style="font-size: 12px;">postprocessing</a> <a href="/tags/reference/" style="font-size: 12px;">reference</a> <a href="/tags/require-js/" style="font-size: 13.06px;">require.js</a> <a href="/tags/shader/" style="font-size: 17.29px;">shader</a> <a href="/tags/sop/" style="font-size: 16.24px;">sop</a> <a href="/tags/three-js/" style="font-size: 23.65px;">three.js</a> <a href="/tags/unity/" style="font-size: 12px;">unity</a> <a href="/tags/zplus/" style="font-size: 15.18px;">zplus</a> <a href="/tags/人生/" style="font-size: 25.76px;">人生</a> <a href="/tags/代码块/" style="font-size: 13.06px;">代码块</a> <a href="/tags/体积/" style="font-size: 13.06px;">体积</a> <a href="/tags/入门/" style="font-size: 12px;">入门</a> <a href="/tags/全景地图/" style="font-size: 12px;">全景地图</a> <a href="/tags/前期基本流程/" style="font-size: 12px;">前期基本流程</a> <a href="/tags/前端/" style="font-size: 27.88px;">前端</a> <a href="/tags/前端框架/" style="font-size: 12px;">前端框架</a> <a href="/tags/动态网页/" style="font-size: 12px;">动态网页</a> <a href="/tags/华强方特/" style="font-size: 12px;">华强方特</a> <a href="/tags/博客/" style="font-size: 23.65px;">博客</a> <a href="/tags/可道云/" style="font-size: 12px;">可道云</a> <a href="/tags/后期基本流程/" style="font-size: 12px;">后期基本流程</a> <a href="/tags/后端/" style="font-size: 13.06px;">后端</a> <a href="/tags/回顾/" style="font-size: 26.82px;">回顾</a> <a href="/tags/图片水印/" style="font-size: 12px;">图片水印</a> <a href="/tags/大二/" style="font-size: 12px;">大二</a> <a href="/tags/大学/" style="font-size: 12px;">大学</a> <a href="/tags/学习/" style="font-size: 20.47px;">学习</a> <a href="/tags/学习笔记/" style="font-size: 17.29px;">学习笔记</a> <a href="/tags/宝塔/" style="font-size: 12px;">宝塔</a> <a href="/tags/对象存储/" style="font-size: 12px;">对象存储</a> <a href="/tags/小程序/" style="font-size: 12px;">小程序</a> <a href="/tags/总结/" style="font-size: 12px;">总结</a> <a href="/tags/拍照指南/" style="font-size: 12px;">拍照指南</a> <a href="/tags/搜索/" style="font-size: 12px;">搜索</a> <a href="/tags/摄像机/" style="font-size: 12px;">摄像机</a> <a href="/tags/效率/" style="font-size: 14.12px;">效率</a> <a href="/tags/数据库/" style="font-size: 12px;">数据库</a> <a href="/tags/数据结构/" style="font-size: 12px;">数据结构</a> <a href="/tags/新生/" style="font-size: 12px;">新生</a> <a href="/tags/标记/" style="font-size: 12px;">标记</a> <a href="/tags/模型/" style="font-size: 14.12px;">模型</a> <a href="/tags/正则表达式/" style="font-size: 12px;">正则表达式</a> <a href="/tags/法线/" style="font-size: 12px;">法线</a> <a href="/tags/特效/" style="font-size: 12px;">特效</a> <a href="/tags/编辑器/" style="font-size: 20.47px;">编辑器</a> <a href="/tags/网站/" style="font-size: 12px;">网站</a> <a href="/tags/自我思考/" style="font-size: 12px;">自我思考</a> <a href="/tags/设计模式/" style="font-size: 12px;">设计模式</a> <a href="/tags/评论/" style="font-size: 12px;">评论</a> <a href="/tags/转载/" style="font-size: 13.06px;">转载</a> <a href="/tags/软件/" style="font-size: 12px;">软件</a> <a href="/tags/遮罩/" style="font-size: 12px;">遮罩</a> <a href="/tags/重定向/" style="font-size: 12px;">重定向</a> <a href="/tags/面向对象/" style="font-size: 12px;">面向对象</a>
+                    </div>
+                </section>
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://ilmvfx.wordpress.com/">【Maya】 一半君的总结纸</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.sucialism.com/">【Maya】 机器猫个人网站</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.aducg.com/">【Maya】 Adu Blog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.davidcuellar.es/">【Maya】 DAVID CUELLAR</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.perryleijten.com/#">【Maya】 Perry Leijten</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.janpijpers.com/">【Maya】 Jan Pijpers</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.trevorius.com/">【Maya】 Trevor van Hoof</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://comet-cartoons.com/">【Maya】 Michael Comet</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://bindpose.com/">【Maya】 bindpose</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.stargrav.com/">【Maya】 stargrav</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://technicaldirector.nl/">【Maya】 rj Blog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://noahalzayer.net/">【Maya】 Noah Alzayer</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.sigillarium.com/blog/">【Maya】 sigillarium</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.stepanjirka.com/">【Maya】 Stepan Jirka</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.djx.com.au/blog/">【Maya】 djx</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.cesarsaez.me/">【Maya】 CESAR SAEZ</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.fevrierdorian.com/blog/">【Maya】 Dorian Fevrier&#39;s blog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://fredrikaverpil.github.io/">【Maya】 Fredrik Averpil</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://danostrov.com/">【Maya】 Dan Ostrov</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://iwonderwhatjoeisworkingon.blogspot.com/">【Maya】 Joseph Yu</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.braverabbit.com/">【Maya】 brave rabbit</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.animator.idv.tw/">【Maya】 好动分子</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://thinkinganimation.com">【Maya|Anim】 Thinking Animation</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://mayastation.typepad.com/maya-station/">【Maya】 MayaStation</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.btbat.com/">【Maya】 国内 R站</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://tech-artists.org/">【Maya】 tech-artists TA 论坛</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://around-the-corner.typepad.com/adn/">【Maya】 Autokdesk ADN 官方博客</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.toadstorm.com/blog/">【Maya&amp;Houdini】 Toadstorm Nerdblog</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.tokeru.com/cgwiki/index.php?title=Main_Page">【Houdini】 cgwiki</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://www.cnblogs.com/simonxia/">【Houdini】 嘉豪一点点</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://space.bilibili.com/32532051/">【Houdini】 CGBIBI_FX</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="https://tech-artists.org/">【图形学】 技术奇异点</a>
+                    
+                      <a target="_blank"  class="main-nav-link switch-friends-link" href="http://www.mooooc.com/">【架构】 纯洁的微笑</a>
+                    
+                    </div>
+                </section>
+                
+                
+            </div>
+        </div>
+    </header>
+</div>
+
+<div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索一下" spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+<script>//ESC键退出
+    
+</script>
+
+ <script type="text/javascript">
+ $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        $('.search-popup').hide();
+        $('.search-popup-overlay').remove();
+        $('body').css('overflow', '');
+      }
+    });
+    
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    
+    // Search DB path;
+    var search_path = "search.xml";
+    // var search_path = "{{ config.search.path }}";
+    // if (search_path.length === 0) {
+    //   search_path = "search.xml";
+    // } else if (/json$/i.test(search_path)) {
+    //   isXml = false;
+    // }
+    // var path = "{{ config.root }}" + search_path;
+    var path = window.location.protocol + "//" + window.location.host + "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+      
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          
+          isfetched = true;
+          $('.popup').detach().appendTo('#container');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  // var upperBound = parseInt('{{ theme.local_search.top_n_per_article }}');
+                  // if (upperBound >= 0) {
+                  //   slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  // }
+                  slicesOfContent = slicesOfContent.slice(0, 1);
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+  
+          if ('auto' === '{{ theme.local_search.trigger }}') {//判断总是false
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            input.addEventListener('input', inputEventFunction);
+            // $('.search-icon').click(inputEventFunction);
+            // input.addEventListener('keypress', function (event) {
+            //   if (event.keyCode === 13) {
+            //     inputEventFunction();
+            //   }
+            // });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+    
+  </script>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">智伤帝</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/avatar.png" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">智伤帝</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle"><br></p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/categories/Maya/Maya-100-招/">Maya100招</a></li>
+                
+                    <li><a href="/categories/总结/效率提升指南/">效率提升指南</a></li>
+                
+                    <li><a href="/categories/Photogrammetry/">Photogrammetry</a></li>
+                
+                    <li><a href="/categories/python/Python结合Qt系列开发教程/">Python Qt 开发教程</a></li>
+                
+                    <li><a href="/tags/VScode/">VScode 全面使用攻略</a></li>
+                
+                    <li><a href="/categories/前端/hexo/">Hexo博客搭建历程</a></li>
+                
+                    <li><a href="/categories/Shader学习之路/">Shader学习之路</a></li>
+                
+                    <li><a href="/categories/前端/Vue/Vue学习之路/">Vue学习之路</a></li>
+                
+                    <li><a href="/my_work/">我的作品</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                    <li><a href="/categories/总结/回忆录/">回忆录</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="github" target="_blank" href="https://github.com/FXTD-ODYSSEY" title="github">github</a>
+                    
+                        <a class="bilibili" target="_blank" href="https://space.bilibili.com/12895307" title="bilibili">bilibili</a>
+                    
+                </div>
+            </nav>
+        </header>
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-CG/Maya/Log/Maya 输出顶点动画到引擎" class="article article-type-post" itemscope
+  itemprop="blogPost">
+
+  <div class="article-inner">
+    
+    <input type="hidden" class="isFancy" />
+    
+    
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Maya 输出顶点动画到引擎
+    </h1>
+  
+
+    </header>
+    
+    <div class="article-info article-info-post">
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Maya/">Maya</a><a class="article-category-link" href="/categories/Maya/CG-Programming/">CG Programming</a><a class="article-category-link" href="/categories/Maya/CG-Programming/Python/">Python</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Maya/">Maya</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/game/">game</a></li></ul>
+    </div>
+
+      
+      <div class="article-meta">
+        <a href="/posts/5c00f85e.html" class="article-date">
+      <time datetime="2020-05-25T12:45:56.000Z" itemprop="datePublished">2020-05-25</time>
+</a>
+      </div>
+      
+        <div class="clearfix"></div>
+      </div>
+      
+      
+      <div class="article-entry" itemprop="articleBody">
+        
+        
+        <h1 id="输出-exr-通过-shader-驱动顶点"><a href="#输出-exr-通过-shader-驱动顶点" class="headerlink" title="输出 exr 通过 shader 驱动顶点"></a>输出 exr 通过 shader 驱动顶点</h1><a id="more"></a>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>&emsp;&emsp;最近特效那边给我提了需求，需要在 Maya 输出 unreal 的顶点动画。<br>&emsp;&emsp;顶点动画输出工具其实 unreal 官方也提供了一个 <a href="https://docs.unrealengine.com/zh-CN/Engine/Animation/Tools/VertexAnimationTool/VAT_TL_Meshes/index.html" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;但是这个顶点动画输出工具是针对 3dsMax 的，需要做一个 Maya 版本。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;特效那边需要给角色做一个跟随的路径动画面片，然后将面片的动画以上述的纹理图片的形式 在 unreal 中用 shader 驱动动画。<br>&emsp;&emsp;过去整个流程也一直是在 Max 里面完成的，最近需要配合 Maya 的动画进行处理，所以如果有 Maya 相应的工具会方便很多。<br>&emsp;&emsp;我研究了一下 Max 的导出流程，还原 Max 的面片生成处理其实不难。<br>&emsp;&emsp;最大的问题反而是 Max 导出流程中微不足道的点，那就是 exr 数据导出的问题。<br>&emsp;&emsp;在 Max 里面提供了 exr 导出的 API ，而且 Max 的坐标轴和 unreal 一样，不需要额外的处理。<br>&emsp;&emsp;但是 Maya 的 exr 导出 API 藏得非常深，而且数据处理不好弄。</p>
+</blockquote>
+<h2 id="OpenMaya-输出-exr"><a href="#OpenMaya-输出-exr" class="headerlink" title="OpenMaya 输出 exr"></a>OpenMaya 输出 exr</h2><blockquote>
+<p>&emsp;&emsp;OpenMaya 的图像 API 有两个，分别是 MImage 和 MTexture<br>&emsp;&emsp;MImage 有 setPixels 命令但是支持 0 - 255 区间的数值，输出格式不支持 exr 等纹理。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;这方面的研究我之前在做 <a href="https://github.com/FXTD-ODYSSEY/MayaViewportCapture" target="_blank" rel="noopener">MayaViewportCapture</a> 工具的时候有研究过。<br>&emsp;&emsp;Maya MImage 可以通过 setPixels 赋值像素数据，也可以对像素数据进行 0 - 255 的修改。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding:utf-8</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> unicode_literals,division,print_function</span><br><span class="line"></span><br><span class="line">__author__ =  <span class="string">'timmyliang'</span></span><br><span class="line">__email__ =  <span class="string">'820472580@qq.com'</span></span><br><span class="line">__date__ = <span class="string">'2020-05-24 10:35:32'</span></span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">MImage 无法存储浮点数(8bit) | 存储格式也有限制 不支持 exr</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> maya.api.OpenMaya <span class="keyword">as</span> om</span><br><span class="line"><span class="keyword">import</span> maya.api.OpenMayaUI <span class="keyword">as</span> omui</span><br><span class="line"><span class="keyword">import</span> maya.api.OpenMayaRender <span class="keyword">as</span> omr</span><br><span class="line"></span><br><span class="line"><span class="comment"># NOTE 如果裁剪区域超过原图范围则限制到原图的边界上</span></span><br><span class="line">width = <span class="number">400</span></span><br><span class="line">height = <span class="number">400</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># NOTE https://groups.google.com/forum/#!topic/python_inside_maya/Q9NuAd6Av20</span></span><br><span class="line">pixels = bytearray(width*height*<span class="number">4</span>)</span><br><span class="line"><span class="keyword">for</span> w <span class="keyword">in</span> range(width):</span><br><span class="line">    <span class="keyword">for</span> h <span class="keyword">in</span> range(height):</span><br><span class="line">        pos = (w+h*width)*<span class="number">4</span></span><br><span class="line">        <span class="comment"># NOTE 这里加数字代表当前像素下 RGBA 四个通道的值</span></span><br><span class="line">        pixels[pos+<span class="number">0</span>] = <span class="number">255</span></span><br><span class="line">        pixels[pos+<span class="number">1</span>] = <span class="number">255</span></span><br><span class="line">        pixels[pos+<span class="number">2</span>] = <span class="number">255</span></span><br><span class="line">        pixels[pos+<span class="number">3</span>] = <span class="number">255</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># NOTE 返回裁剪的 Image</span></span><br><span class="line">img = om.MImage()</span><br><span class="line">img.setPixels(pixels, width, height)</span><br><span class="line"></span><br><span class="line">DIR = os.path.dirname(__file__)</span><br><span class="line">img.writeToFile(os.path.join(DIR,<span class="string">"MImage.png"</span>), <span class="string">'png'</span>)</span><br></pre></td></tr></table></figure>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;MTexture 格式可以输出 exr 格式，这个和 MImage 不一样，用来定义 Maya 的纹理贴图。<br>&emsp;&emsp;这个对象无法像 MImage 一样进行实例化，需要借助 MTextureManager 来生成 MTexture 实例。<br>&emsp;&emsp;而且 OpenMaya1.0 的 API 已经不支持，只可以使用 2.0 的 API 进行获取。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;通过查C++文档的案例可以知道 MTextureManager 也需要通过 MRenderer 获取，无法直接实例化（属于单例模式？！）</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding:utf-8</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> unicode_literals,division,print_function</span><br><span class="line"></span><br><span class="line">__author__ =  <span class="string">'timmyliang'</span></span><br><span class="line">__email__ =  <span class="string">'820472580@qq.com'</span></span><br><span class="line">__date__ = <span class="string">'2020-05-24 10:35:32'</span></span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">MTexture 不支持 OpenMaya 1.0</span></span><br><span class="line"><span class="string">MTexture 无法实例化</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">MTexture 比起 MImage 可以输出 exr 格式</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> maya.api.OpenMaya <span class="keyword">as</span> om</span><br><span class="line"><span class="keyword">import</span> maya.api.OpenMayaUI <span class="keyword">as</span> omui</span><br><span class="line"><span class="keyword">import</span> maya.api.OpenMayaRender <span class="keyword">as</span> omr</span><br><span class="line"></span><br><span class="line">manager = omr.MRenderer.getTextureManager()</span><br><span class="line"><span class="keyword">print</span> (dir(manager))</span><br><span class="line">path_list = manager.imagePaths()</span><br><span class="line"></span><br><span class="line"><span class="comment"># NOTE ----------------------------------------------------------------</span></span><br><span class="line"><span class="comment"># NOTE 读取本地图片</span></span><br><span class="line"><span class="comment"># NOTE ----------------------------------------------------------------</span></span><br><span class="line">DIR = os.path.dirname(__file__)</span><br><span class="line">file_name = os.path.join(DIR,<span class="string">"test7.exr"</span>)</span><br><span class="line"></span><br><span class="line">texture = manager.acquireTexture(file_name)</span><br><span class="line"><span class="comment"># print ("bytesPerPixel",texture.bytesPerPixel())</span></span><br><span class="line"></span><br><span class="line">pixel,rowPitch,total = texture.rawData()</span><br><span class="line">ptr = ctypes.cast(pixel.__long__(), ctypes.POINTER(ctypes.c_char))</span><br><span class="line">pixels = ctypes.string_at(ptr, total)</span><br><span class="line">height = int(total/rowPitch)</span><br><span class="line">width = int(rowPitch/<span class="number">4</span>)</span><br><span class="line"><span class="comment"># texture.freeRawData(pixel)</span></span><br><span class="line"><span class="comment"># print(height,total,width)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pixels = range(width*height*<span class="number">4</span>)</span><br><span class="line"><span class="keyword">for</span> w <span class="keyword">in</span> range(width):</span><br><span class="line">    <span class="keyword">for</span> h <span class="keyword">in</span> range(height):</span><br><span class="line">        pos = (w+h*width)*<span class="number">4</span></span><br><span class="line">        <span class="comment"># NOTE 这里加数字代表当前像素下 RGBA 四个通道的值</span></span><br><span class="line">        pixels[pos+<span class="number">0</span>] = <span class="number">255</span></span><br><span class="line">        pixels[pos+<span class="number">1</span>] = <span class="number">1</span></span><br><span class="line">        pixels[pos+<span class="number">2</span>] = <span class="number">1</span></span><br><span class="line">        pixels[pos+<span class="number">3</span>] = <span class="number">255</span></span><br><span class="line"></span><br><span class="line">img = om.MImage()</span><br><span class="line">img.setPixels(pixels, width, height)</span><br><span class="line">img.writeToFile(os.path.join(DIR,<span class="string">"MImage.png"</span>), <span class="string">'png'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># NOTE 无法执行 update 修改像素数据 _(:з」∠)_</span></span><br><span class="line">texture.update(pixels,<span class="keyword">False</span>,rowPitch)</span><br><span class="line">manager.saveTexture(texture,os.path.join(DIR,<span class="string">"MTexture.exr"</span>))</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;MTexture 没有研究出如何通过 Python 修改像素数据，我用上面的代码可以修改 MImage 的像素却修改不了 MTexture 的像素（输出的图片为黑色）</p>
+</blockquote>
+<h2 id="OpenEXR-库输出"><a href="#OpenEXR-库输出" class="headerlink" title="OpenEXR 库输出"></a>OpenEXR 库输出</h2><blockquote>
+<p>&emsp;&emsp;鉴于上面的 MTexture 无法操作的原因，我只好退而求其次，用外部的 Python 库来进行修改。<br>&emsp;&emsp;反正可以通过 PyInstaller 打包然后用 Maya 的 Python 外调 exe 来实现 exr 数据输出。<br>&emsp;&emsp;网上查了一下 Python 有 OpenEXR 的库。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;第一步安装就出现了问题，安装提示缺少了头文件，windows 平台安装失败。<br>&emsp;&emsp;网上搜了一下，提到 Linux 系统安装 libopenexr-dev 的系统库之后才可以正常安装。<br>&emsp;&emsp;救救 windows 平台吧 o(╥﹏╥)o</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;后来再 stack overflow 上找到了相关问题的回答 <a href="https://stackoverflow.com/questions/45588103/install-openexr-for-python-with-pip-on-windows" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;评论下面推荐使用 <a href="https://www.lfd.uci.edu/~gohlke/pythonlibs/" target="_blank" rel="noopener">https://www.lfd.uci.edu/~gohlke/pythonlibs/</a> 这个文章下载 build 的二进制 wheel 进行安装<br>&emsp;&emsp;然而坑爹的情况出现了。<br>&emsp;&emsp;我使用 QQ浏览器 点击链接下载居然跳转到 404 目录，我以为是网站出问题了。<br>&emsp;&emsp;继续找其他网站的 build 版本，无果，之后网上搜了一下这个网站 404 的问题，没想到居然是 浏览器 的锅。<br>&emsp;&emsp;使用 Chrome 浏览器就可以正常下载了<em>(:з」∠)</em></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;好不容易才终于可以正常安装 OpenEXR 这个库了，尝试过在 Maya 安装，果然转完之后无法执行 dll 。<br>&emsp;&emsp;所以转而去到外部的 Python 进行安装。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;后续流程就是 Maya 记录特效物体每一帧的每一个顶点的位置，然后输出 json 文件。<br>&emsp;&emsp;后续利用 OpenEXR 这个库读取 json 数据 生成 EXR 图片。<br>&emsp;&emsp;当时没有考虑到 Maya 的轴向和 Unreal 不一样，结果输出的 图片 信息看起来不对，放进引擎更加不对ε=(´ο｀*)))</p>
+</blockquote>
+<h2 id="Python-输出-exr"><a href="#Python-输出-exr" class="headerlink" title="Python 输出 exr"></a>Python 输出 exr</h2><blockquote>
+<p>&emsp;&emsp;因为上述的原因，这个 Max 插件导出转成 Maya 导出一直卡主。<br>&emsp;&emsp;后来我搜了一下有没有现成的 Maya 插件，没想到还真让我搜到了 Maya 版本的插件。<br>&emsp;&emsp;就在 Unreal 的官方论坛里面 <a href="https://forums.unrealengine.com/community/community-content-tools-and-tutorials/85150-vertexanimationtools-for-maya-wip-nearly-completed/page2" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;这个插件还在不断更新中，就在今天写文章之际还更新了一版。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;既然上面输出 Exr 碰到那么多问题，这个插件到底是怎么做到 Exr 的输出呢？<br>&emsp;&emsp;当我翻阅它的代码时候，我惊呆了，居然使用了 纯 Python 二进制输出方案。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding:utf-8</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> division,print_function</span><br><span class="line"></span><br><span class="line">__author__ =  <span class="string">'timmyliang'</span></span><br><span class="line">__email__ =  <span class="string">'820472580@qq.com'</span></span><br><span class="line">__date__ = <span class="string">'2020-05-25 21:12:22'</span></span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">https://www.openexr.com/documentation/openexrfilelayout.pdf</span></span><br><span class="line"><span class="string">https://www.openexr.com/documentation/TechnicalIntroduction.pdf</span></span><br><span class="line"><span class="string">根据 OpenEXR 规范通过 Python struct 输出二进制</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Written by user "Styler" on Tech-Artists</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="keyword">import</span> binascii</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> math <span class="keyword">import</span> copysign, frexp, isinf, isnan, trunc</span><br><span class="line"></span><br><span class="line">NEGATIVE_INFINITY = <span class="string">b'\x00\xfc'</span></span><br><span class="line">POSITIVE_INFINITY = <span class="string">b'\x00\x7c'</span></span><br><span class="line">POSITIVE_ZERO = <span class="string">b'\x00\x00'</span></span><br><span class="line">NEGATIVE_ZERO = <span class="string">b'\x00\x80'</span></span><br><span class="line"><span class="comment"># exp=2**5-1 and significand non-zero</span></span><br><span class="line">EXAMPLE_NAN = struct.pack(<span class="string">'&lt;H'</span>, (<span class="number">0b11111</span> &lt;&lt; <span class="number">10</span>) | <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dump_to_exr_rgb16uncomp</span><span class="params">(height, width, data, filename)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    :param height: Height of image</span></span><br><span class="line"><span class="string">    :param width: Width of image</span></span><br><span class="line"><span class="string">    :param data: A sequence (list/tuple) of float point values in format [r, g, b, r, g, b ...]</span></span><br><span class="line"><span class="string">    :param filename: filename for output</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">make_chlist_value</span><span class="params">(name, typ, linear=<span class="number">0</span>, samx=<span class="number">1</span>, samy=<span class="number">1</span>)</span>:</span></span><br><span class="line">        <span class="comment"># NOTE 定义好了 chlist 输出格式 https://www.openexr.com/documentation/openexrfilelayout.pdf#page=14 </span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">''</span>.join([</span><br><span class="line">            <span class="comment"># NOTE https://www.openexr.com/documentation/TechnicalIntroduction.pdf#page=7 </span></span><br><span class="line">            <span class="comment"># NOTE 包含 名称 和 类型</span></span><br><span class="line">            name, <span class="string">'\x00'</span>,</span><br><span class="line">            struct.pack(<span class="string">'I'</span>, typ),</span><br><span class="line">            struct.pack(<span class="string">'B'</span>, linear),</span><br><span class="line">            <span class="string">'\x00\x00\x00'</span>,             <span class="comment"># reserved</span></span><br><span class="line">            <span class="comment"># NOTE RGBA 图片 为 1</span></span><br><span class="line">            struct.pack(<span class="string">'I'</span>, samx),</span><br><span class="line">            struct.pack(<span class="string">'I'</span>, samy)])</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">make_attr</span><span class="params">(name, typ, size, value)</span>:</span></span><br><span class="line">        <span class="comment"># NOTE Attribute Layout https://www.openexr.com/documentation/openexrfilelayout.pdf#page=8 </span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">''</span>.join([</span><br><span class="line">            name, <span class="string">'\x00'</span>,</span><br><span class="line">            typ, <span class="string">'\x00'</span>,</span><br><span class="line">            struct.pack(<span class="string">'I'</span>, size),</span><br><span class="line">            value])</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">binary16</span><span class="params">(f)</span>:</span></span><br><span class="line">        <span class="comment"># NOTE IEEE 754-2008 https://stackoverflow.com/questions/31464022/</span></span><br><span class="line">        <span class="comment"># NOTE https://gist.github.com/zed/59a413ae2ed4141d2037</span></span><br><span class="line">        <span class="string">"""Convert Python float to IEEE 754-2008 (binary16) format.</span></span><br><span class="line"><span class="string">        https://en.wikipedia.org/wiki/Half-precision_floating-point_format</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="keyword">if</span> isnan(f):</span><br><span class="line">            <span class="keyword">return</span> EXAMPLE_NAN</span><br><span class="line"></span><br><span class="line">        sign = copysign(<span class="number">1</span>, f) &lt; <span class="number">0</span></span><br><span class="line">        <span class="keyword">if</span> isinf(f):</span><br><span class="line">            <span class="keyword">return</span> NEGATIVE_INFINITY <span class="keyword">if</span> sign <span class="keyword">else</span> POSITIVE_INFINITY</span><br><span class="line"></span><br><span class="line">        <span class="comment">#           1bit        10bits             5bits</span></span><br><span class="line">        <span class="comment"># f = (-1)**sign * (1 + f16 / 2**10) * 2**(e16 - 15)</span></span><br><span class="line">        <span class="comment"># f = (m * 2)                        * 2**(e - 1)</span></span><br><span class="line">        m, e = frexp(f)</span><br><span class="line">        <span class="keyword">assert</span> <span class="keyword">not</span> (isnan(m) <span class="keyword">or</span> isinf(m))</span><br><span class="line">        <span class="keyword">if</span> e == <span class="number">0</span> <span class="keyword">and</span> m == <span class="number">0</span>:  <span class="comment"># zero</span></span><br><span class="line">            <span class="keyword">return</span> NEGATIVE_ZERO <span class="keyword">if</span> sign <span class="keyword">else</span> POSITIVE_ZERO</span><br><span class="line"></span><br><span class="line">        f16 = trunc((<span class="number">2</span> * abs(m) - <span class="number">1</span>) * <span class="number">2</span>**<span class="number">10</span>)  <span class="comment"># XXX round toward zero</span></span><br><span class="line">        <span class="keyword">assert</span> <span class="number">0</span> &lt;= f16 &lt; <span class="number">2</span>**<span class="number">10</span></span><br><span class="line">        e16 = e + <span class="number">14</span></span><br><span class="line">        <span class="keyword">if</span> e16 &lt;= <span class="number">0</span>:  <span class="comment"># subnormal</span></span><br><span class="line">            <span class="comment"># f = (-1)**sign * fraction / 2**10 * 2**(-14)</span></span><br><span class="line">            f16 = int(<span class="number">2</span>**<span class="number">14</span> * <span class="number">2</span>**<span class="number">10</span> * abs(f) + <span class="number">.5</span>)  <span class="comment"># XXX round</span></span><br><span class="line">            e16 = <span class="number">0</span></span><br><span class="line">        <span class="keyword">elif</span> e16 &gt;= <span class="number">0b11111</span>:  <span class="comment"># infinite</span></span><br><span class="line">            <span class="keyword">return</span> NEGATIVE_INFINITY <span class="keyword">if</span> sign <span class="keyword">else</span> POSITIVE_INFINITY</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># normalized value</span></span><br><span class="line">            <span class="keyword">assert</span> <span class="number">0b00001</span> &lt;= e16 &lt; <span class="number">0b11111</span>, (f, sign, e16, f16)</span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        http://blogs.perl.org/users/rurban/2012/09/reading-binary-floating-point-numbers-numbers-part2.html</span></span><br><span class="line"><span class="string">        sign    1 bit  15</span></span><br><span class="line"><span class="string">        exp     5 bits 14-10     bias 15</span></span><br><span class="line"><span class="string">        frac   10 bits 9-0</span></span><br><span class="line"><span class="string">        (-1)**sign * (1 + fraction / 2**10) * 2**(exp - 15)</span></span><br><span class="line"><span class="string">        +-+-----[1]+----------[0]+ # little endian</span></span><br><span class="line"><span class="string">        |S| exp    |    fraction |</span></span><br><span class="line"><span class="string">        +-+--------+-------------+</span></span><br><span class="line"><span class="string">        |1|&lt;---5--&gt;|&lt;---10bits--&gt;|</span></span><br><span class="line"><span class="string">        &lt;--------16 bits---------&gt;</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="keyword">return</span> (sign &lt;&lt; <span class="number">15</span>) | (e16 &lt;&lt; <span class="number">10</span>) | f16</span><br><span class="line">        <span class="comment"># return struct.pack('&lt;H', (sign &lt;&lt; 15) | (e16 &lt;&lt; 10) | f16)</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pack_half</span><span class="params">(value)</span>:</span></span><br><span class="line">        <span class="comment"># NOTE 将传入的 浮点数 转换为 half 类型</span></span><br><span class="line">        <span class="comment"># NOTE 参考文章 https://akaedu.github.io/book/ch14s04.html</span></span><br><span class="line">        F16_EXPONENT_BITS = <span class="number">0x1F</span></span><br><span class="line">        F16_EXPONENT_SHIFT = <span class="number">10</span></span><br><span class="line">        F16_EXPONENT_BIAS = <span class="number">15</span></span><br><span class="line">        F16_MANTISSA_BITS = <span class="number">0x3ff</span></span><br><span class="line">        F16_MANTISSA_SHIFT = (<span class="number">23</span> - F16_EXPONENT_SHIFT)</span><br><span class="line">        F16_MAX_EXPONENT = (F16_EXPONENT_BITS &lt;&lt; F16_EXPONENT_SHIFT)</span><br><span class="line"></span><br><span class="line">        a = struct.pack(<span class="string">'&gt;f'</span>, value)</span><br><span class="line">        b = binascii.hexlify(a)</span><br><span class="line"></span><br><span class="line">        f32 = int(b, <span class="number">16</span>)</span><br><span class="line">        f16 = <span class="number">0</span></span><br><span class="line">        sign = (f32 &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0x8000</span></span><br><span class="line">        exponent = ((f32 &gt;&gt; <span class="number">23</span>) &amp; <span class="number">0xff</span>) - <span class="number">127</span> </span><br><span class="line">        mantissa = f32 &amp; <span class="number">0x007fffff</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> exponent == <span class="number">128</span>:</span><br><span class="line">            f16 = sign | F16_MAX_EXPONENT</span><br><span class="line">            <span class="keyword">if</span> mantissa:</span><br><span class="line">                f16 |= (mantissa &amp; F16_MANTISSA_BITS)</span><br><span class="line">        <span class="keyword">elif</span> exponent &gt; <span class="number">15</span>:</span><br><span class="line">            f16 = sign | F16_MAX_EXPONENT</span><br><span class="line">        <span class="keyword">elif</span> exponent &gt; <span class="number">-15</span>:</span><br><span class="line">            exponent += F16_EXPONENT_BIAS</span><br><span class="line">            mantissa &gt;&gt;= F16_MANTISSA_SHIFT</span><br><span class="line">            f16 = sign | exponent &lt;&lt; F16_EXPONENT_SHIFT | mantissa</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            f16 = sign</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> f16</span><br><span class="line"></span><br><span class="line">    depth = <span class="number">3</span></span><br><span class="line">    <span class="comment"># NOTE https://www.openexr.com/documentation/openexrfilelayout.pdf#page=6 第 5 - 6 页有描述</span></span><br><span class="line">    <span class="comment"># NOTE \x76\x2f\x31\x01 固定数据 10 进制为 20000630 | 用来区分 OpenEXR 格式</span></span><br><span class="line">    <span class="comment"># NOTE \x02\x00\x00\x00 这四个数据为 Version Field  | \x02 表示 2.0 版本 </span></span><br><span class="line">    fdata = [<span class="string">'\x76\x2f\x31\x01\x02\x00\x00\x00'</span>]  <span class="comment"># magic and version</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> width*height*depth != len(data):</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">'Data length does not fit with image size'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># build header</span></span><br><span class="line">    <span class="comment"># NOTE https://www.openexr.com/documentation/openexrfilelayout.pdf#page=8</span></span><br><span class="line">    <span class="comment"># NOTE 定义属性通道描述</span></span><br><span class="line">    channels = <span class="string">'%s\x00'</span> % <span class="string">''</span>.join([make_chlist_value(name, typ) <span class="keyword">for</span> name, typ <span class="keyword">in</span> ((<span class="string">'R'</span>, <span class="number">1</span>), (<span class="string">'G'</span>, <span class="number">1</span>), (<span class="string">'B'</span>, <span class="number">1</span>))])</span><br><span class="line">    fdata.append(make_attr(<span class="string">'channels'</span>, <span class="string">'chlist'</span>, <span class="number">18</span>*depth+<span class="number">1</span>, channels))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># NOTE https://www.openexr.com/documentation/openexrfilelayout.pdf#page=15</span></span><br><span class="line">    fdata.append(make_attr(<span class="string">'compression'</span>, <span class="string">'compression'</span>, <span class="number">1</span>, <span class="string">'\x00'</span>))  <span class="comment"># 0 - uncompressed</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># NOTE https://www.openexr.com/documentation/openexrfilelayout.pdf#page=14</span></span><br><span class="line">    <span class="comment"># NOTE box2i 包含 4 个 int | int 占用 4 个字节 | 前面 '\x00'*8 表示 0 , 0</span></span><br><span class="line">    windata = <span class="string">''</span>.join([<span class="string">'\x00'</span>*<span class="number">8</span>, struct.pack(<span class="string">'i'</span>, width<span class="number">-1</span>), struct.pack(<span class="string">'i'</span>, height<span class="number">-1</span>)])</span><br><span class="line">    fdata.append(make_attr(<span class="string">'dataWindow'</span>, <span class="string">'box2i'</span>, <span class="number">16</span>, windata))</span><br><span class="line">    fdata.append(make_attr(<span class="string">'displayWindow'</span>, <span class="string">'box2i'</span>, <span class="number">16</span>, windata))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># NOTE https://www.openexr.com/documentation/openexrfilelayout.pdf#page=15</span></span><br><span class="line">    fdata.append(make_attr(<span class="string">'lineOrder'</span>, <span class="string">'lineOrder'</span>, <span class="number">1</span>, <span class="string">'\x00'</span>))     <span class="comment"># inc y</span></span><br><span class="line">    <span class="comment"># NOTE https://www.openexr.com/documentation/openexrfilelayout.pdf#page=8</span></span><br><span class="line">    fdata.append(make_attr(<span class="string">'pixelAspectRatio'</span>, <span class="string">'float'</span>, <span class="number">4</span>, struct.pack(<span class="string">'f'</span>, <span class="number">1.0</span>)))</span><br><span class="line">    fdata.append(make_attr(<span class="string">'screenWindowCenter'</span>, <span class="string">'v2f'</span>, <span class="number">8</span>, struct.pack(<span class="string">'ff'</span>, <span class="number">0</span>, <span class="number">0</span>)))</span><br><span class="line">    fdata.append(make_attr(<span class="string">'screenWindowWidth'</span>, <span class="string">'float'</span>, <span class="number">4</span>, struct.pack(<span class="string">'f'</span>, <span class="number">1</span>)))</span><br><span class="line">    fdata.append(<span class="string">'\x00'</span>)  <span class="comment"># end of the header</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># NOTE https://www.openexr.com/documentation/openexrfilelayout.pdf#page=10</span></span><br><span class="line">    <span class="comment"># NOTE 计算 offset Tables | offset Tables 用来读取像素的映射表</span></span><br><span class="line">    <span class="comment"># NOTE offsetChunk 使用 unsigned long 类型 占 8 个字节 </span></span><br><span class="line">    <span class="comment"># NOTE 添加了 height 个 offsetChunk 数据(所以 + height*8)</span></span><br><span class="line">    <span class="comment"># calc lines offset</span></span><br><span class="line">    offtab_size = sum([len(x) <span class="keyword">for</span> x <span class="keyword">in</span> fdata]) + height*<span class="number">8</span></span><br><span class="line">    <span class="comment"># NOTE 每个单元格像素包含 RGB 三个通道 depth | 2 代表 half 类型的大小(float 为 4 字节, half 为 2 字节)</span></span><br><span class="line">    <span class="comment"># NOTE 前面加 8 是因为 每行开始需要有 起始结束的描述数据 | 两个 int 类型共占 8 个字节 </span></span><br><span class="line">    <span class="comment"># NOTE https://www.openexr.com/documentation/TechnicalIntroduction.pdf#page=13</span></span><br><span class="line">    line_size = <span class="number">8</span> + width*<span class="number">2</span>*depth</span><br><span class="line">    <span class="comment"># fill offsets table</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(height):</span><br><span class="line">        fdata.append(struct.pack(<span class="string">'Q'</span>, offtab_size + i*line_size))</span><br><span class="line"></span><br><span class="line">    data_size = struct.pack(<span class="string">'I'</span>, width*<span class="number">2</span>*depth)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># NOTE Scan Lines</span></span><br><span class="line">    <span class="comment"># add data by scanlines</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> xrange(height):</span><br><span class="line">        <span class="comment"># NOTE 起始和结束的行描述数据</span></span><br><span class="line">        line = [struct.pack(<span class="string">'i'</span>, j), data_size]</span><br><span class="line">        n = j*width*depth</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> xrange(depth):</span><br><span class="line">            <span class="comment"># NOTE 读取传入的像素数据 转换为 half 类型</span></span><br><span class="line">            chdata = [binary16(data[n+x+i]) <span class="keyword">for</span> x <span class="keyword">in</span> xrange(<span class="number">0</span>, width*depth, depth)]</span><br><span class="line">            <span class="comment"># NOTE 使用 short 类型的长度代指 half 占用的空间</span></span><br><span class="line">            line.append(struct.pack(<span class="string">'%sH'</span> % len(chdata), *chdata))</span><br><span class="line">        fdata.append(<span class="string">''</span>.join(line))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># write to file</span></span><br><span class="line">    dirname = os.path.dirname(filename)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(dirname):</span><br><span class="line">        os.makedirs(dirname)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> open(filename, <span class="string">'wb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(<span class="string">''</span>.join(fdata))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># NOTE 测试输出 400 * 400 蓝色的 exr 图片</span></span><br><span class="line">    width = <span class="number">10</span></span><br><span class="line">    height = <span class="number">10</span></span><br><span class="line">    pixels = range(width*height*<span class="number">3</span>)</span><br><span class="line">    <span class="keyword">for</span> w <span class="keyword">in</span> range(width):</span><br><span class="line">        <span class="keyword">for</span> h <span class="keyword">in</span> range(height):</span><br><span class="line">            pos = (w+h*width)*<span class="number">3</span></span><br><span class="line">            <span class="comment"># NOTE RGB 的顺序是反过来的</span></span><br><span class="line">            pixels[pos+<span class="number">2</span>] = <span class="number">0.0</span></span><br><span class="line">            pixels[pos+<span class="number">1</span>] = <span class="number">0.0</span></span><br><span class="line">            pixels[pos+<span class="number">0</span>] = <span class="number">255.0</span></span><br><span class="line">    </span><br><span class="line">    DIR = os.path.dirname(__file__)</span><br><span class="line">    file_name = os.path.join(DIR,<span class="string">"test.exr"</span>)</span><br><span class="line">    dump_to_exr_rgb16uncomp(width,height,pixels,file_name)</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/FXTD-ODYSSEY/MayaScript/blob/master/misc/python_exr/EXR_Dumper.py" target="_blank" rel="noopener">github地址</a></p>
+<blockquote>
+<p>&emsp;&emsp;这个文件如何输出 exr 我进行了进一步的研究，代码的注释都在上面。<br>&emsp;&emsp;主要通过 struct 模块进行 二进制 的操作，根据 OpenExr 提供的操作文档给文件添加相应二进制信息。<br>&emsp;&emsp;其中比较厉害的操作是通过 python 创建 half 类型的二进制数据，需要通过 bitwise 位运算实现，目前还没有完全弄懂原理。<br>&emsp;&emsp;在 Stack Overflow 上找到了不同打包 half 类型的方案 <a href="https://stackoverflow.com/questions/31464022/" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;其中 binary16 的代码虽然写法不一样，但是可以得到上面 pack_half 函数的效果，原理同样还没有完全搞清楚。<br>&emsp;&emsp;根据 <a href="https://akaedu.github.io/book/ch14s04.html" target="_blank" rel="noopener">https://akaedu.github.io/book/ch14s04.html</a> 上面对浮点数的描述。<br>&emsp;&emsp;half 类型的浮点数应该是通过科学计数法记录数据的，因此计算和转换的时候会有误差<br>&emsp;&emsp;有时间再进一步研究 浮点数 转换， Exr 的输出原理基本就是这样。</p>
+</blockquote>
+<h2 id="顶点动画输出"><a href="#顶点动画输出" class="headerlink" title="顶点动画输出"></a>顶点动画输出</h2><blockquote>
+<p>&emsp;&emsp;搞了这么久我们貌似将主题给搞偏了，虽然 输出 EXR 格式花了大部分的研究时间，其实我们的根本目标是输出 Maya 的顶点动画。<br>&emsp;&emsp;还有很重要的一步没有做，如何将 Maya 的模型动画输出来。<br>&emsp;&emsp;其实 Unreal 论坛的脚本也有很详细的操作。<br>&emsp;&emsp;主要利用了 Maya 的 snapShot 命令生成时间内的模型 快照。<br>&emsp;&emsp;不过我拿几个月前的老版本处理会有 Bug ，直接输出在运动路径的模型的快照是固定不动的。<br>&emsp;&emsp;后面我将 snapShot 的操作改为逐帧处理即可，就是输出效率大大降低。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;有了快照信息就有了模型再运动时间内的顶点位置数据，然后将这些数据打包整理到 EXR 的 RGB 通道上就完成了顶点动画信息的转移。<br>&emsp;&emsp;最后只需要输出动画模型的 FBX 即可。<br>&emsp;&emsp;这种处理方式也是有问题的，只支持一些小模型的动画，如果模型点数太多超过 8K 贴图，就无法正常输出了。（我没有测试过，是 Unreal 论坛的老哥自己说的）</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>&emsp;&emsp;本来想搞 顶点动画 的，没想到却花了大量时间研究 EXR 的 binary 数据输出了。<br>&emsp;&emsp;最后有没有搞清楚 half 类型是如何输出的，倒是发现纯 Python 也可以输出类似 EXR 这样复杂的数据。<br>&emsp;&emsp;Python 的功能果然很强大，这次又开阔了我的眼界。</p>
+</blockquote>
+
+        
+      </div>
+
+      
+    </div>
+
+    
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/posts/5c00f85e.html">Maya 输出顶点动画到引擎</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 智伤帝 的个人博客">智伤帝</a></p>
+        <p><span>发布时间:</span>2020年05月25日 - 20时45分</p>
+        <p><span>最后更新:</span>2020年05月27日 - 00时19分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/posts/5c00f85e.html" title="Maya 输出顶点动画到引擎">https://blog.l0v0.com/posts/5c00f85e.html</a>
+            <span class="copy-path" data-clipboard-text="原文: https://blog.l0v0.com/posts/5c00f85e.html　　作者: 智伤帝" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <!-- <script src="/js/clipboard.min.js"></script> -->
+            <!-- <script> var clipboard = new Clipboard('.copy-path');</script> -->
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+
+        
+
+     
+        <div class="page-reward">
+          <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang">赏</a></p>
+          <div class="hide_box"></div>
+          <div class="shang_box">
+            <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+            <div class="shang_tit">
+              <p>纯属好玩</p>
+            </div>
+            <div class="shang_payimg">
+              <img src="/img/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+            </div>
+              <div class="pay_explain">扫码打赏，你说多少就多少</div>
+            <div class="shang_payselect">
+              
+                <div class="pay_item checked" data-id="alipay">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/alipay.png" alt="支付宝" /></span>
+                </div>
+              
+              
+                <div class="pay_item" data-id="wechat">
+                  <span class="radiobox"></span>
+                  <span class="pay_logo"><img src="/img/weixin.png" alt="微信" /></span>
+                </div>
+              
+            </div>
+            <div class="shang_info">
+              <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+        </div>
+
+        <script type="text/javascript">
+          $(".pay_item").click(function(){
+            $(this).addClass('checked').siblings('.pay_item').removeClass('checked');
+            var dataid=$(this).attr('data-id');
+            $(".shang_payimg img").attr("src","/img/"+dataid+"img.jpg");
+            if(dataid=="alipay")
+            $(".shang_payimg").css("border-color","#4094c7");
+            else
+            $(".shang_payimg").css("border-color","#22aa3b");
+            $("#shang_pay_txt").text(dataid=="alipay"?"支付宝":"微信");
+          });
+          function dashangToggle(){
+
+            $(".hide_box").fadeToggle();
+            $(".shang_box").fadeToggle();
+          }
+        </script>
+      
+
+
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/posts/27d5d78d.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Maya SiShelf 插件改良
+        
+      </div>
+    </a>
+  
+  
+    <a href="/posts/77ed9d8.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Maya 根据贴图在模型表面散列物体</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+    
+</article>
+
+<div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#输出-exr-通过-shader-驱动顶点"><span class="toc-number">1.</span> <span class="toc-text">输出 exr 通过 shader 驱动顶点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OpenMaya-输出-exr"><span class="toc-number">1.2.</span> <span class="toc-text">OpenMaya 输出 exr</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OpenEXR-库输出"><span class="toc-number">1.3.</span> <span class="toc-text">OpenEXR 库输出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Python-输出-exr"><span class="toc-number">1.4.</span> <span class="toc-text">Python 输出 exr</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#顶点动画输出"><span class="toc-number">1.5.</span> <span class="toc-text">顶点动画输出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">1.6.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
+</div>
+<style>
+    .left-col .switch-btn {
+        display: none;
+    }
+    .left-col .switch-area {
+        display: none;
+    }
+</style>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<!-- <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script> -->
+<script src="https://cdn.bootcss.com/require.js/2.3.6/require.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+            $(".switch-btn, .switch-area").fadeOut(300);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+            $(".switch-btn, .switch-area").fadeIn(500);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+        $(".switch-btn, .switch-area").show();
+    }
+</script>
+
+    <style>
+        .toc {
+            white-space: nowrap;
+            overflow-x: hidden;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            $(".toc li a").mouseover(function() {
+                var title = $(this).attr('href');
+                $(this).attr("title", title);
+            });
+        })
+    </script>
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+
+<!-- <section id="comments">
+<link rel="stylesheet" href="/css/gitment.min.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  id: 'Maya 输出顶点动画到引擎', // 可选。默认为 location.href
+  owner: 'FXTD-odyssey',
+  repo: 'FXTD-odyssey.github.io',
+  oauth: {
+    client_id: '355e44f722e24963b9dd',
+    client_secret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+  },
+})
+gitment.render('comments')
+</script>
+</section> -->
+
+
+
+<section id="comments">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.5.0/gitalk.min.css" rel="stylesheet">
+  <div class="gitalk" style="width:90%;margin:auto;">
+    <div id="gitalk-container"></div>
+    <script type="text/javascript">
+      require(["https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.5.0/gitalk.min.js","https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.10.0/js/md5.min.js"], function (Gitalk,md5) {
+
+        const gitalk = new Gitalk({
+          clientID: '355e44f722e24963b9dd',
+          clientSecret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+          repo: 'FXTD-odyssey.github.io',
+          owner: 'FXTD-odyssey',
+          admin: ['FXTD-odyssey'],
+          id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+
+      });
+    </script>
+  </div>
+</section>
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a  href="/posts/27d5d78d.html" title="上一篇: Maya SiShelf 插件改良">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a  href="/posts/77ed9d8.html" title="下一篇: Maya 根据贴图在模型表面散列物体">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/posts/27d5d78d.html">Maya SiShelf 插件改良</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5c00f85e.html">Maya 输出顶点动画到引擎</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/77ed9d8.html">Maya 根据贴图在模型表面散列物体</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/79818906.html">Maya HumanIK 动画重定向</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d50b3a73.html">Maya 法线获取归纳</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/cbe510e2.html">Python - Tkinter Windows 磁盘映射工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4de57da5.html">Maya 模型掰直处理</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/fa091109.html">Maya 影视绑定 转 游戏绑定</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5e43c76c.html">Maya 模型拓扑变动检查</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/12108ee7.html">Python unicode_literal 坑爹记录</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/946c38e7.html">Maya Standalone 提取</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/84ce2047.html">Arnold 风格化渲染研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/64ea31cc.html">Maya MGTools&animBot 动画插件研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4ad87fc3.html">Unreal 导入 FBX 选项事项</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/595dd86f.html">Python future-fstring库 原理解析</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/864bfe61.html">Maya Reference Edit 属性清理</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/204db704.html">Maya插件 - collapsableShelf</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d2b44b01.html">Python DCC 嵌入 浏览器 探索</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/a91a4c58.html">VScode 结合git的全面使用流程（下）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/94ffdbdf.html">VScode 结合git的全面使用流程（上）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/67e3cff5.html">Python 函数传参验证探索</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/a7c99667.html">Maya 奇怪的Callback报错</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/19ce97d6.html">Maya 内置图标探索</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/18de3838.html">Maya插件 - CommandLauncher</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/471f7aaa.html">安卓手机效率提升指南（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/fc7c2790.html">安卓手机效率提升指南（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f862fce.html">Maya2017 材质面板打开报错空白</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/53fbd124.html">Maya 中文乱码坑</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/e3ab7e13.html">Maya 模块安装探讨</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6f5d3bd5.html">Maya 语言切换</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/3c1dd960.html">私有云搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/513460b.html">Maya 法线解锁进阶</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/fcc8e205.html">Windows 效率提升指南</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/aa6ded84.html">Maya Qt 多线程提升交互体验</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/13258e66.html">Maya插件 - mpdb - Maya Python Debugger</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/614e755e.html">VScode - Setting Sync 配置同步之坑</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4120b797.html">Maya 轴心移动研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/66c5da7.html">Python pdb 调试模块研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/83897e45.html">Overlapper 动画插件研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/842747c9.html">Maya 代码管理</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ddafb500.html">Maya轮廓挤出研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b70d8b0c.html">3dsMax FBX导出工具进阶版</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/716eb47e.html">Maya2017 大纲列表显示 Bug</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/53edd78c.html">【转载】 「原力动画」全面开放自研新技术，希望助力中国动画行业发展</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4cc5c02.html">Maya 法线解锁</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f4dcd89b.html">3dsMax FBX导出工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/fc4346ec.html">Maya 次级控制器跟随方案</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5486e619.html">【转载】 加速Maya开启与关闭的方法 | Adu Blog</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7cc09d5d.html">VScode - 全面使用攻略（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/31de3e0f.html">VScode - 全面使用攻略（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1947fed4.html">VScode - 全面使用攻略（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/26180f28.html">观看笔记 - AboutCG - Maya API 编程教学 for TD</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4c52085.html">Hexo博客优化之路（十） - 置顶文章 | 代码注释颜色区分 | 评论自动初始化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/intro.html">【置顶】 智伤帝 | 博客全面指引</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/8bb6468c.html">Maya Arnold 渲染设置崩溃</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/efd57a69.html">Autodesk Genuine Service 破解无效解决方案</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/216efd3e.html">校招之路</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c8c0ddca.html">一灯问卷小程序 开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/21ad06c1.html">【回忆录】 - 我的大三</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/63f190cc.html">【回忆录】 - 我的大二</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5871be65.html">【回忆录】 - 我的大一</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/40745d4d.html">【回忆录】 - 我的高中</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4d164b82.html">VScode - MayaPy插件开发总结</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/9915f9db.html">学习笔记 Unreal 官方 - Water Pack Overview</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/99ca25ca.html">学习笔记 水材质制作 Unlocking the Unreal Engine Material Editor</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/11d100be.html">学习笔记 Udemy - Unlocking the Unreal Engine Material Editor</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c476f94c.html">学习笔记 Pluralsight - Unreal Engine 4 Materials Fundamentals</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d58573f8.html">学习笔记 Packt Publishing - Unreal Engine 4 - The Complete Beginner's Course</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/54f0044c.html">学习笔记 Lynda - Unreal Essential Training</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b5d3f6ab.html">Maya BlendShape 中间值获取</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/a1569efd.html">Maya Python 视锥可视工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c45f3e57.html">node.js 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f449d28f.html">node.js 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/284524f6.html">Vue 坑爹记录</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f6cd0ecb.html">Maya Python RBF工具开发研究</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c38bc3c2.html">Navicat连接远程数据库</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/372dc2f3.html">Vue 学习之路（十）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b21fe737.html">Vue 学习之路（九）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c8d2c668.html">Vue 学习之路（八）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/3fb9ee2b.html">Vue 学习之路（七）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/edb999b4.html">Vue 学习之路（六）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/88b7d26d.html">Vue 学习之路（五）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/e729172a.html">Vue 学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50040e4f.html">Vue 学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1d1aad1d.html">Vue 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2d0c41c5.html">Vue 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4e9ee1dc.html">观看笔记 - Maya 100 招 - 第四十一招到第五十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/410ea085.html">观看笔记 - Maya 100 招 - 第三十一招到第四十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/9ab1cd0e.html">观看笔记 - Maya 100 招 - 第二十一招到第三十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d81d7e23.html">Shader学习之路(六)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/41123651.html">Shader学习之路(五)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/47b9612c.html">Shader学习之路(四)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/671aaad8.html">Shader学习之路(三)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2a04098a.html">Shader学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1a12e552.html">Shader学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/df0a441f.html">观看笔记 - Maya 100 招 - 第十一招到第二十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/23e3cff.html">观看笔记 - Maya 100 招 - 第一招到第十招</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/77c88c0d.html">Hexo博客优化之路（九） - 服务器配置 | 博客部署</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ccad2d76.html">PHP Laravel框架试水</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/b1b98494.html">Unity - 场景漫游课程设计</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/712b664b.html">Python - Python Qt 开发教程(7)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6830570a.html">Python - Python Qt 开发教程(6)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/431d04c9.html">Python - Python Qt 开发教程(5)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5fce3fcb.html">Maya C++ 多核性能测试</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5a063588.html">Python - Python Qt 开发教程(4)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2e0af969.html">Python - Python Qt 开发教程 扩展说明</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1547a34f.html">Python - Python Qt 开发教程(3)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c5c920e.html">Python - Python Qt 开发教程(2)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/2c06616b.html">Python - Python Qt 开发教程(1)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f0a58164.html">Maya C++ MEL语句 性能测试 & 插件开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/bb58a66.html">【总结】-2019年3月、4月回顾-5月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/404240a4.html">Maya Python Publish 检查功能开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6f4e3164.html">【总结】 2019年2月回顾 | 3月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/237316ce.html">Maya Python - Publish工具开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/de2ca4c2.html">React - React 两日游有感</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/d8bf85b3.html">观看笔记 - Pluralsight React:The Big Picture</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/642ecb99.html">【总结】 2019年1月回顾 | 2月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f6caaeeb.html">Maya Python - 镜头路线管理器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/332f70b.html">Maya Ziva 设置参考</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/f62b6398.html">OpenMaya - VertexConstraint插件开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/41495e54.html">Maya Python - 外包检查工具开发</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50d67130.html">Maya Python - TSM镜像工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4c4a3e97.html">【总结】 2018年12月回顾 | 1月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/e3d81e44.html">Maya Ziva 初步探索</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/c5dbea3.html">Python - CHR_Encrypter CHR文件加密器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/dc7fc7b9.html">Maya Python - 藤蔓生长快速绑定工具</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ce6b2154.html">Maya Python - ALembic导入导出助手</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/568b8654.html">【总结】 2018年11月回顾 | 12月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/57d6cbdb.html">华强方特 实习 第一周</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7c31db18.html">python - PLB downloader 开发完成</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4323d1ae.html">【总结】 2018年10月回顾 | 11月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ccdac3f3.html">Python - 用 PyQt 写 Pluralsight 下载器</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/ef451c1b.html">观看笔记 - PyQt &  Qt Designer 三套教程</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5b9053f9.html">Python - 用 PyQt 写爬虫界面</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7d4ea2e3.html">Python爬虫 -  抓取 青年之声 数据</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/19cb914e.html">Maya Python  - 自动生成序号插件</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/8150782b.html">Houdini - 计算模型体积 过滤问题模型</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/8150782b.html">Houdini - 计算模型体积 过滤问题模型</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/68d818a2.html">观看笔记 - Creating an Animated Paper Folding Effect in Maya</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/5c26d29c.html">观看笔记 - Python For Maya Artist Friendly Programming</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/13d1de85.html">观看笔记 - Pluralsight - Python for Maya Fundamentals</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/fe733535.html">【总结】 2018年9月回顾 | 10月学习计划</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/59506.html">Hexo博客优化之路（八） - Gitment换成Gittalk | SEO优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/17676.html">数字媒体技术专业网站 - 搭建感想</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/53349.html">VScode - 实现Maya-python代码快速提示</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50174.html">观看笔记 - Pluralsight - Houdini VEX Fundamentals</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/3087.html">VisualStudioCode 编辑器安利</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/21898.html">Houdini VDB 将CAD图纸转成实体模型</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/15486.html">观看笔记 - Pluralsight - Houdini SOP Solver</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/57520.html">Three.js - EditorContrl 添加区域限制</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/33613.html">浅谈优越感</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/988.html">MEL - 选点成盒插件</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/52737.html"> MEL - 面片自动匹配插件（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/19450.html">MEL - 面片自动匹配插件（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/35846.html">Three.js -通过JQuery处理脚本异步加载</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24831.html">Three.js -动态加载相关的js</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/59091.html">Three.js - postprocessing 后期处理</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/4257.html">至2018级数字媒体技术新生</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/56108.html">Hexo博客优化之路（七）- 代码块进阶优化&分类优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/1905.html">MEL 随机大小插件</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50883.html">Hexo博客优化之路(六) - 本地搜索优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/51575.html">Hexo博客优化之路（五）- 代码块优化</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/50589.html">Three.js - 用最小面数生成立体的物体</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/39119.html">Hexo博客优化之路（四）- fancybox 图片跳转问题</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/59323.html">数据结构大作业回顾</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/37850.html">Hexo博客优化之路（三）- 正则表达式 清除markdown中的HTML标签</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/35734.html">Hexo博客优化之路（二）- 前端添加图片水印方案</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/20763.html">Hexo博客优化之路（一）- 博客瘦身方法</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/60230.html">Houdini-学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/12961.html">Three.js - 学习之路（五）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/61471.html">Three.js - 学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/34183.html">Houdini-学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/40670.html">Three.js - 学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/37543.html">Three.js - 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/33144.html">Three.js - 房产信息线上浏览Demo</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/733.html">Three.js - 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24239.html">Three.js-学习之路（零）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/35326.html">Houdini-学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6532.html">Houdini-学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6507.html">bootstrap 学习感悟</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/6250.html">渔村苏维埃政府旧址-数字博物馆</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24028.html">PyMel 学习之路（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/30435.html">Photogrammetry-学习之路（四）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/33086.html">Photogrammetry 学习之路（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/63727.html">Hexo个人博客搭建遇到的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/36167.html">Photogrammetry 学习之路（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/24208.html">Houdini-学习之路(零)</a></li><li class="post-list-item"><a class="post-list-link" href="/posts/7485.html">Photogrammetry 学习之路（一）</a></li></ul>
+    
+<!-- <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script> -->
+<script src="https://cdn.bootcss.com/require.js/2.3.6/require.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+
+    <script>
+        $(".post-list").addClass("toc-article");
+        // $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#toc, .switch-btn, .switch-area").toggle();
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+                $(".switch-btn, .switch-area").fadeToggle(300);
+            }
+        })
+    </script>
+
+
+
+
+<script>
+        
+</script>
+
+
+<script>
+  if ($(".highlight").length > 0) {//判断代码块是否存在
+    $(".highlight").each(function (index) {//遍历代码块
+      let btnDiv = $('<div></div>');
+      $(this).prepend(btnDiv);
+
+      let scope = this;
+      btnDiv.css('position', 'absolute');
+
+      $(window).load(function () {//确保其他东西加载完成才执行
+        btnDiv.css('top', $(scope).position().top + 12);
+        btnDiv.css('right', '2em');
+      });
+
+      $(window).resize(function () {//当浏览器大小变化时
+        setTimeout(function () {
+          btnDiv.css('top', $(scope).position().top + 12);
+          btnDiv.css('right', '2em');
+        }, 100);
+      });
+
+      //用于复制代码按钮
+      $(scope).find('.code').addClass("code" + index);
+
+      //复制按钮
+      let copyBtn = $("<button type='button' class='btn btn-primary' id='copyBtn" + index + "'data-clipboard-action='copy' data-clipboard-target='.code" + index + "'>复制</button>");
+      $(btnDiv).prepend(copyBtn);
+
+
+      //识别Vex
+      if ($(this).attr('data-lang') == 'vex') {
+
+        let VEXBtn = $("<button type='button' class='btn btn-primary' id='VEXBtn" + index + "'>VEX原生样式</button>");
+        $(btnDiv).prepend(VEXBtn);
+
+        let VEXBtnCheck = false;
+        let scope = this;
+
+        $(scope).find('.built_in').removeClass('built_in').addClass("VEX_built_in");
+        $(scope).find('.string').removeClass('string').addClass("VEX_string");
+        $(scope).find('.operator').removeClass('operator').addClass("VEX_operator");
+        $(scope).find('.number').removeClass('number').addClass("VEX_number");
+        $(scope).find('.command').removeClass('command').addClass("VEX_command");
+        $(scope).find('.comment').removeClass('comment').addClass("VEX_comment");
+        $(scope).find('.id').removeClass('id').addClass("VEX_id");
+
+        $('#VEXBtn' + index).click(function () {
+          if (VEXBtnCheck) {
+            $(this).text('VEX原生样式');
+            VEXBtnCheck = false;
+            $(scope).find('.built_in').removeClass('built_in').addClass("VEX_built_in");
+            $(scope).find('.string').removeClass('string').addClass("VEX_string");
+            $(scope).find('.operator').removeClass('operator').addClass("VEX_operator");
+            $(scope).find('.number').removeClass('number').addClass("VEX_number");
+            $(scope).find('.command').removeClass('command').addClass("VEX_command");
+            $(scope).find('.comment').removeClass('comment').addClass("VEX_comment");
+            $(scope).find('.id').removeClass('id').addClass("VEX_id");
+          } else {
+            $(this).text('自定义样式');
+            VEXBtnCheck = true;
+            $(scope).find('.VEX_built_in').removeClass('VEX_built_in').addClass("built_in");
+            $(scope).find('.VEX_string').removeClass('VEX_string').addClass("string");
+            $(scope).find('.VEX_operator').removeClass('VEX_operator').addClass("operator");
+            $(scope).find('.VEX_number').removeClass('VEX_number').addClass("number");
+            $(scope).find('.VEX_command').removeClass('VEX_command').addClass("command");
+            $(scope).find('.VEX_comment').removeClass('VEX_comment').addClass("comment");
+            $(scope).find('.VEX_id').removeClass('VEX_id').addClass("id");
+          }
+
+        });
+      }
+
+      //识别MEL
+      if ($(this).attr('data-lang') == 'mel') {
+        let melBtn = $("<button type='button' class='btn btn-primary' id='melBtn" + index + "'>MEL原生样式</button>");
+        $(btnDiv).prepend(melBtn);
+
+        let melBtnCheck = false;
+        let scope = this;
+
+        $(scope).find('.keyword').removeClass('keyword').addClass("mel_keyword");
+        $(scope).find('.string').removeClass('string').addClass("mel_string");
+        $(scope).find('.number').removeClass('number').addClass("mel_number");
+
+        $(scope).find('.command').removeClass('command').addClass("mel_command");
+        $(scope).find('.operator').removeClass('operator').addClass("mel_operator");
+
+        $('#melBtn' + index).click(function () {
+          if (melBtnCheck) {
+            $(this).text('MEL原生样式');
+            melBtnCheck = false;
+            $(scope).find('.keyword').removeClass('keyword').addClass("mel_keyword");
+            $(scope).find('.string').removeClass('string').addClass("mel_string");
+            $(scope).find('.number').removeClass('number').addClass("mel_number");
+
+            $(scope).find('.command').removeClass('command').addClass("mel_command");
+            $(scope).find('.operator').removeClass('operator').addClass("mel_operator");
+          } else {
+            $(this).text('自定义样式');
+            melBtnCheck = true;
+            $(scope).find('.mel_keyword').removeClass('mel_keyword').addClass("keyword");
+            $(scope).find('.mel_string').removeClass('mel_string').addClass("string");
+            $(scope).find('.mel_number').removeClass('mel_number').addClass("number");
+            $(scope).find('.mel_command').removeClass('mel_command').addClass("command");
+            $(scope).find('.mel_operator').removeClass('mel_operator').addClass("operator");
+          }
+        });
+      }
+    })
+  }
+</script>
+
+<script>
+
+  function codeAutoResize() {
+
+    if ($(".highlight").length > 0) {//判断代码块是否存在
+      $(".highlight").each(function (index) {//遍历代码块
+        let codeWidth;
+        let parentWidth = $(this).css('width');//获取代码块的宽度
+        let childWidth = $(this).children('table').css('width');//获取代码的宽度
+        if (parseInt(parentWidth) < parseInt(childWidth)) {//转成整数比较宽度大小
+          codeWidth = childWidth;
+        } else {
+          codeWidth = parentWidth;
+        }
+        $(this).children('style').remove();//清理style标签
+        $(this).addClass("resize" + index);//添加class名
+        $(this).append("<style>.highlight.resize" + index + "::before{width:" + codeWidth + "}</style>");
+      });
+    }
+  }
+
+  setInterval(function () {
+    codeAutoResize();//初始化
+  }, 500);
+
+
+  $(window).resize(function () {
+    codeAutoResize();//改变尺寸的时候执行
+  });
+
+  // NOTE 单个链接自动居中
+  $(".article-entry>p").find("a").each(function() {
+    $(this).parent().css('text-align','center')
+  })
+</script></div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2020 智伤帝
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo &nbsp;&nbsp;</a><a href="https://github.com/maochunguang" target="_blank">Blog</a> by 智伤帝
+            </div>
+        </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<!-- <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script> -->
+<script src="https://cdn.bootcss.com/require.js/2.3.6/require.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 1;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'xxxxx', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "//hm.baidu.com/hm.js?xxxxxx";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+<div class="scroll" id="scroll">
+    <a href="javascript:;"><i class="fa fa-arrow-up"></i></a>
+    <!-- <a href="#comments"><i class="fa fa-comments-o"></i></a> -->
+    <a href="javascript:;"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    var $top = $('.fa-arrow-up');
+    var $bottom = $('.fa-arrow-down');
+
+    $top.on('click', function () {
+
+      $('body').velocity('scroll');
+    });
+    $bottom.on('click', function () {
+
+      $('#footer').velocity('scroll');
+    });
+
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+  </div>
+  
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+    </script>
+    
+</body>
+</html>
