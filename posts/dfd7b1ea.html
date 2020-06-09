@@ -8,42 +8,26 @@
   
   
   
-  <title>Vue 学习之路（九） | 智伤帝的个人博客</title>
+  <title>Maya 命令 自定义触发 &amp; Mel 源码获取 | 智伤帝的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="慕课网 - 制作去哪儿网 案例教程 上半部分">
-<meta name="keywords" content="前端,Vue,JavaScript">
+  <meta name="description" content="将 Maya 操作命令制作成 工具架 或 快捷键 触发">
+<meta name="keywords" content="Maya">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Vue 学习之路（九）">
-<meta property="og:url" content="https://blog.l0v0.com/posts/b21fe737.html">
+<meta property="og:title" content="Maya 命令 自定义触发 &amp; Mel 源码获取">
+<meta property="og:url" content="https://blog.l0v0.com/posts/dfd7b1ea.html">
 <meta property="og:site_name" content="智伤帝的个人博客">
-<meta property="og:description" content="慕课网 - 制作去哪儿网 案例教程 上半部分">
+<meta property="og:description" content="将 Maya 操作命令制作成 工具架 或 快捷键 触发">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/01.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/02.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/03.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/04.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/05.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/06.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/07.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/08.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/09.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/10.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/11.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/12.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/13.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/14.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/15.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/16.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/17.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/18.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/19.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/20.png">
-<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/21.png">
-<meta property="og:updated_time" content="2019-11-07T13:28:22.896Z">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Maya_Echo_Command/01.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Maya_Echo_Command/02.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Maya_Echo_Command/03.png">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Maya_Echo_Command/04.gif">
+<meta property="og:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Maya_Echo_Command/05.png">
+<meta property="og:updated_time" content="2020-06-09T12:54:28.244Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Vue 学习之路（九）">
-<meta name="twitter:description" content="慕课网 - 制作去哪儿网 案例教程 上半部分">
-<meta name="twitter:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/01.png">
+<meta name="twitter:title" content="Maya 命令 自定义触发 &amp; Mel 源码获取">
+<meta name="twitter:description" content="将 Maya 操作命令制作成 工具架 或 快捷键 触发">
+<meta name="twitter:image" content="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Maya_Echo_Command/01.png">
   
   
     <link rel="icon" href="/img/favicon.png">
@@ -692,7 +676,7 @@
         </header>
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-fontend/vue/9_Vue - 学习之路（九）" class="article article-type-post" itemscope
+      <div class="body-wrap"><article id="post-CG/Maya/Log/Maya 命令 自定义触发 &amp; Mel 源码获取" class="article article-type-post" itemscope
   itemprop="blogPost">
 
   <div class="article-inner">
@@ -704,7 +688,7 @@
       
   
     <h1 class="article-title" itemprop="name">
-      Vue 学习之路（九）
+      Maya 命令 自定义触发 &amp; Mel 源码获取
     </h1>
   
 
@@ -713,19 +697,19 @@
     <div class="article-info article-info-post">
       
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/前端/">前端</a><a class="article-category-link" href="/categories/前端/Vue/">Vue</a><a class="article-category-link" href="/categories/前端/Vue/Vue学习之路/">Vue学习之路</a>
+    <a class="article-category-link" href="/categories/Maya/">Maya</a><a class="article-category-link" href="/categories/Maya/CG-Programming/">CG Programming</a>
     </div>
 
 
       
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Maya/">Maya</a></li></ul>
     </div>
 
       
       <div class="article-meta">
-        <a href="/posts/b21fe737.html" class="article-date">
-      <time datetime="2019-07-03T00:31:17.000Z" itemprop="datePublished">2019-07-03</time>
+        <a href="/posts/dfd7b1ea.html" class="article-date">
+      <time datetime="2020-06-09T08:23:33.000Z" itemprop="datePublished">2020-06-09</time>
 </a>
       </div>
       
@@ -736,91 +720,77 @@
       <div class="article-entry" itemprop="articleBody">
         
         
-        <h1 id="慕课网-制作去哪儿网-案例教程-上半部分"><a href="#慕课网-制作去哪儿网-案例教程-上半部分" class="headerlink" title="慕课网 - 制作去哪儿网 案例教程 上半部分"></a>慕课网 - 制作去哪儿网 案例教程 上半部分</h1><a id="more"></a>
+        <h1 id="将-Maya-操作命令制作成-工具架-或-快捷键-触发"><a href="#将-Maya-操作命令制作成-工具架-或-快捷键-触发" class="headerlink" title="将 Maya 操作命令制作成 工具架 或 快捷键 触发"></a>将 Maya 操作命令制作成 工具架 或 快捷键 触发</h1><a id="more"></a>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
-<p>&emsp;&emsp;尚硅谷的Vue教程已经做完了，原本打算去看<a href="https://www.bilibili.com/video/av53141006" target="_blank" rel="noopener">Vue Cli3.0全栈项目之资金管理系统带权限教程</a><br>&emsp;&emsp;奈何 node.js 还没有学习，教程提到要有一定的基础，所以我打算先把这个教程放一放。<br>&emsp;&emsp;然后又找了一个 Vue 教程，打算再重新过一遍基础，也可以发现一些新的 Vue 知识。</p>
+<p>&emsp;&emsp;其实这部分的内容，很早之前我就通过看 DT 的教程掌握了，毕竟操作很基础，之前甚至都没有想到要写文章进行总结说明。<br>&emsp;&emsp;最近美术制作人员又出现了自定义触发命令的需求问题，于是就有了写这篇文章的动力。<br>&emsp;&emsp;这个技巧对于美术制作人员来说非常有用，懂了这个，就可以将 Maya 大部分的功能提取出来，按照自己的喜好进行触发。</p>
 </blockquote>
-<h2 id="input输入"><a href="#input输入" class="headerlink" title="input输入"></a>input输入</h2><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/01.png" alt="input key"></p>
-<p><span style="text-align:center; display:grid"><a href="http://vue.l0v0.com/Qunar_App_Development/basic/1_input输入清空.html" target="_blank" rel="noopener">input输入</a></span></p>
-<blockquote>
-<p>&emsp;&emsp;在Vue中 使用条件渲染来切换 input 的输入<br>&emsp;&emsp;如果 input 没有指定key值，那么切换的输入框会继承之前输入框中的内容</p>
-</blockquote>
-<h2 id="组件使用细节"><a href="#组件使用细节" class="headerlink" title="组件使用细节"></a>组件使用细节</h2><p><span style="text-align:center; display:grid"><a href="http://vue.l0v0.com/Qunar_App_Development/basic/2_组件使用细节.html" target="_blank" rel="noopener">组件使用细节</a></span></p>
-<blockquote>
-<p>&emsp;&emsp;使用 is 属性可以根据Vue的组件过滤放到相应位置。<br>&emsp;&emsp;如果直接使用组件标签，可能会导致无法放到HTML正确的位置上</p>
+<p>类似的教程可以参考我很早之前上传的教程 <a href="https://www.bilibili.com/video/BV1bs411h7gN" target="_blank" rel="noopener">【Maya成神】maya100招+【中文字幕】10种可以提升你们Maya制作效率的方法</a><br>还有 DT 的 Maya 入门教程有提到命令提取的操作</p>
+<h2 id="获取操作命令"><a href="#获取操作命令" class="headerlink" title="获取操作命令"></a>获取操作命令</h2><blockquote>
+<p>&emsp;&emsp;Maya 的代码编辑器上有一个非常优秀的设计，对于学习 Maya 编程来说可谓极度有用的功能，那就是代码编辑器的命令回显。<br>&emsp;&emsp;通过命令回显，如果是搞程序的可以进一步深挖 Mel 命令源码，分析 Maya 命令背后的操作，如果不懂程序的美术制作人员也可以直接复制命令进行使用。<br>&emsp;&emsp;大部分回显是 mel 命令的，只有极个别的情况返回的是 python 代码，因此美术人员基本可以默认所有的回显代码都是 mel 操作。</p>
 </blockquote>
 <blockquote>
-<p>&emsp;&emsp;Vue 比较起 JQ 插件，更加注重数据的处理，而非 DOM 的处理。<br>&emsp;&emsp;这样有利于节省大量的代码，也让运行效率大大提升。<br>&emsp;&emsp;尽管Vue不推荐操作DOM，但是在一些复杂的场景中，还是需要有对 DOM 进行处理的功能<br>&emsp;&emsp;在 HTML 标签中嵌入 ref 属性，就可以通过 Vue实例下的 $ref 获取到相关的 DOM 元素。<br>&emsp;&emsp;DOM元素如果是Vue组件则获取到了组件的引用，可以获取到组件内部的数据。</p>
+<p>&emsp;&emsp;默认打开的 Maya 右下角可以打开代码编辑器。<br>&emsp;&emsp;关于代码编辑器各个按钮的含义，可以参照<a href="http://help.autodesk.com/view/MAYAUL/2019/CHS/?guid=GUID-7C861047-C7E0-4780-ACB5-752CD22AB02E" target="_blank" rel="noopener">官方中文文档</a></p>
 </blockquote>
-<h2 id="父子组件传值"><a href="#父子组件传值" class="headerlink" title="父子组件传值"></a>父子组件传值</h2><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/02.png" alt="父子组件传值"></p>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Maya_Echo_Command/01.png" alt="alt"></p>
 <blockquote>
-<p>&emsp;&emsp;父子组件传值其实很类似于函数传参。<br>&emsp;&emsp;也提供了参数的校验器方便Debug<br>&emsp;&emsp;如果没有传参，但是在父组件的调用上写了一些特殊的属性，会自动添加到子组件上。</p>
+<p>&emsp;&emsp;在 Maya 里面进行的大部分操作，比如上图的新建一个球体，都是可以看到 代码编辑器 返回执行的 Mel 命令代码。<br>&emsp;&emsp;你可以复制上面的 mel 命令到代码编辑器下面执行，从而生成一个球。</p>
 </blockquote>
-<h2 id="插槽"><a href="#插槽" class="headerlink" title="插槽"></a>插槽</h2><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/03.png" alt="Slot"><br><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/04.png" alt="Slot"></p>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Maya_Echo_Command/02.png" alt="alt"></p>
 <blockquote>
-<p>&emsp;&emsp;通过slot的方式可以再父组件中嵌入Html传到子组件当中</p>
+<p>&emsp;&emsp;你可以复制上面的 mel 命令到代码编辑器下面执行，从而生成一个球。</p>
 </blockquote>
-<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/05.png" alt="Slot"></p>
-<blockquote>
-<p>&emsp;&emsp;可以设置默认的插槽内容</p>
+<h3 id="生成工具架"><a href="#生成工具架" class="headerlink" title="生成工具架"></a>生成工具架</h3><blockquote>
+<p>&emsp;&emsp;完成上面一步，恭喜你，你已经完成了最基本的功能提取了。<br>&emsp;&emsp;要实现将代码放到 Maya 工具架其实非常简单，只需要选中代码，然后用鼠标中间拖拽代码到工具架上。</p>
 </blockquote>
-<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/06.png" alt="Slot"></p>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Maya_Echo_Command/03.png" alt="alt"></p>
 <blockquote>
-<p>&emsp;&emsp;可以通过制定插槽形成映射关系，从而显示对应的内容</p>
+<p>&emsp;&emsp;这样就可以生成一个 Maya Mel 命令的图标，点击图标就可以生成一个球。</p>
 </blockquote>
-<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/07.png" alt="Slot"></p>
+<h3 id="添加快捷键"><a href="#添加快捷键" class="headerlink" title="添加快捷键"></a>添加快捷键</h3><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Maya_Echo_Command/04.gif" alt="alt"></p>
 <blockquote>
-<p>&emsp;&emsp;作用域传值<br>&emsp;&emsp;template 的 slot-scope 可以接受插槽返回的值</p>
+<p>&emsp;&emsp;快捷键操作可以通过上面的菜单，打开热键编辑器。<br>&emsp;&emsp;然后新建一个命令，选择 Mel 命令，然后将 Mel 命令拷贝进去。<br>&emsp;&emsp;可以生成一个 runTimeCommand ， 这样就可以搜索 runTimeCommand 找到刚才输入名称的命令来输入自定义的快捷键了。</p>
 </blockquote>
-<h2 id="动态组件"><a href="#动态组件" class="headerlink" title="动态组件"></a>动态组件</h2><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/08.png" alt="is"></p>
 <blockquote>
-<p>&emsp;&emsp;通过传递 is 判断type变量中的内容，从而切换不同组件</p>
+<p>&emsp;&emsp;后续就和正常添加快捷键的操作一样。</p>
 </blockquote>
-<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/09.png" alt="v-once"></p>
-<blockquote>
-<p>&emsp;&emsp;在组件的切换过程中，vue需要创建新的组件，然后再将旧的组件删除<br>&emsp;&emsp;这个过程会消耗一定的资源。<br>&emsp;&emsp;使用 v-once属性 可以直接将数据存储到内存中，下次调用直接从内存中取值，效率更高。</p>
+<h3 id="制作标记菜单快速调用"><a href="#制作标记菜单快速调用" class="headerlink" title="制作标记菜单快速调用"></a>制作标记菜单快速调用</h3><blockquote>
+<p>&emsp;&emsp;请参考教程 <a href="https://www.bilibili.com/video/BV1bs411h7gN?p=8" target="_blank" rel="noopener">10种可以提升你们Maya制作效率的方法 第8集</a></p>
 </blockquote>
-<h2 id="Vue-CSS3-动画过渡"><a href="#Vue-CSS3-动画过渡" class="headerlink" title="Vue CSS3 动画过渡"></a>Vue CSS3 动画过渡</h2><p><span style="text-align:center; display:grid"><a href="http://vue.l0v0.com/Qunar_App_Development/basic/3_Vue动画.html" target="_blank" rel="noopener">动画过渡</a></span></p>
-<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/10.png" alt="CSS3 动画过渡"></p>
-<blockquote>
-<p>&emsp;&emsp;Vue通过添加class的方式来实现动画效果<br>&emsp;&emsp;上图就是自动添加 class 的流程<br>&emsp;&emsp;因此要实现过渡，需要定义 CSS 这些 class 切换的效果</p>
+<h3 id="获取技巧补充"><a href="#获取技巧补充" class="headerlink" title="获取技巧补充"></a>获取技巧补充</h3><blockquote>
+<p>&emsp;&emsp;有时候有些操作没有命令回显。<br>&emsp;&emsp;这个时候可以通过 撤销 命令获取到隐藏的 mel 代码。</p>
 </blockquote>
-<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/11.png" alt="CSS3 动画过渡"></p>
+<hr>
 <blockquote>
-<p>&emsp;&emsp;大概可以参考上述的写法<br>&emsp;&emsp; v-enter v-leave-to 静态<br>&emsp;&emsp; 带有 active 后缀 为 动态</p>
+<p>&emsp;&emsp;当然撤销的方法也并不是百试百灵的，因此终极的解决方式开启 <code>Echo All Commands</code> 的功能。</p>
 </blockquote>
-<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/12.png" alt="CSS3 动画过渡"></p>
+<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/CG/Maya/Log/Maya_Echo_Command/05.png" alt="alt"></p>
 <blockquote>
-<p>&emsp;&emsp;可以给transition命名，默认引用是 v- 开头，如果加了 name 怎会沿用 name- 开头<br>&emsp;&emsp;也可以添加 enter-active-class 和     来分别指定 CSS</p>
+<p>&emsp;&emsp;这个功能开启之后可以显示所有 Maya 调用的命令，基本任何的底层 mel 命令操作都显示出来了。<br>&emsp;&emsp;缺点就是大量的命令显示会将有用的信息淹没，这个需要将信息拿出来然后进行过滤处理。</p>
 </blockquote>
-<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/13.png" alt="animate.css"></p>
-<blockquote>
-<p>&emsp;&emsp;animate.css 指定动画效果 <a href="https://daneden.github.io/animate.css/" target="_blank" rel="noopener">官网参考</a><br>&emsp;&emsp;不用自己来写动画 CSS</p>
+<h2 id="如何获取操作命令源码"><a href="#如何获取操作命令源码" class="headerlink" title="如何获取操作命令源码"></a>如何获取操作命令源码</h2><blockquote>
+<p>&emsp;&emsp;<strong>这个部分和编程开发相关，如果是美术制作人员可以跳过</strong></p>
 </blockquote>
-<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/14.png" alt="animate.css"></p>
-<h2 id="Vue-js-动画过渡"><a href="#Vue-js-动画过渡" class="headerlink" title="Vue js 动画过渡"></a>Vue js 动画过渡</h2><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/15.png" alt="vue钩子"><br><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/16.png" alt="vue钩子"></p>
 <blockquote>
-<p>&emsp;&emsp;vue的transition提供了一些钩子可以触发相关的回调函数<br>&emsp;&emsp;有enter当然也有leave<br>&emsp;&emsp;通过 methods 定义对应的触发函数<br>&emsp;&emsp;运行中的函数会对带一个done参数来执行结束回调。</p>
+<p>&emsp;&emsp;通过命令回显可以获取到 Maya 内部执行的命令名称。<br>&emsp;&emsp;Maya 虽然是 闭源 的，我们看不到底层的 Qt 框架的 C++ 代码。<br>&emsp;&emsp;但是 Maya 自身开发的 Mel 语言代码层几乎可算是开源了。<br>&emsp;&emsp;具体的代码可以 Maya 安装目录的 <code>scripts</code> 文件夹下找到。 <a href="http://help.autodesk.com/view/MAYAUL/2019/CHS/?guid=GUID-984E3CBF-9784-4AF7-863F-984FA7D7AD93" target="_blank" rel="noopener">文档说明</a><br>&emsp;&emsp;基本上大部分的 UI 界面，以及 UI 别后的按钮操作都是用 Mel 命令写的， Mel 界面的底层其实调用的还是 Qt 框架。<br>&emsp;&emsp;只是为了兼容老版本的 Maya 的一些 Mel 代码界面，整个 Maya 底层有魔改过。（Maya 的上古版本貌似还不是使用 Qt）</p>
 </blockquote>
-<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/17.png" alt="velocity.js"></p>
 <blockquote>
-<p>&emsp;&emsp;velocity.js 是js的动画库，可以轻松实现各种动画过渡。 <a href="http://velocityjs.org/" target="_blank" rel="noopener">官网</a></p>
+<p>&emsp;&emsp;虽然只是 mel 命令开源，并没有开放 C++ 底层。<br>&emsp;&emsp;但是我觉得 Maya 的开放程度是相当之高的，基本上</p>
 </blockquote>
-<h2 id="Vue-多重动画"><a href="#Vue-多重动画" class="headerlink" title="Vue 多重动画"></a>Vue 多重动画</h2><p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/18.png" alt="mode"></p>
-<blockquote>
-<p>&emsp;&emsp;transition添加 mode 可以实现同时切换的效果</p>
+<h3 id="whatIs-命令详解"><a href="#whatIs-命令详解" class="headerlink" title="whatIs 命令详解"></a>whatIs 命令详解</h3><blockquote>
+<p>&emsp;&emsp;whatIs 命令只可以在 Mel 中使用，如果要在 Python 使用 whatIs 命令，可以加载官方提供的 Python API 编写的脚本。<br>&emsp;&emsp;文档里面是没有 whatIs 的 cmds 命令的，还有一种在 Python 运行的方法就是使用 mel.eval 的方式来运行。<br>&emsp;&emsp;通过 <code>whatIs</code> 这个内置的 Mel 命令查询回显命令的类型。 <a href="http://help.autodesk.com/cloudhelp/2018/ENU/Maya-Tech-Docs/Commands/whatIs.html" target="_blank" rel="noopener">whatIs 文档</a><br>&emsp;&emsp;文档里面的案例其实有命令显示的几种类型，我再补充了两种。</p>
 </blockquote>
-<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/19.png" alt="mode"></p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">whatIs</span> <span class="string">"sphere"</span>;</span><br><span class="line"><span class="comment">// Result: Command //</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">whatIs</span> <span class="string">"initToolBox"</span>;</span><br><span class="line"><span class="comment">// Result: Mel procedure found in: /u/mayauser/maya/scripts/initToolBox.mel //</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">whatIs</span> <span class="string">"kaosFieldTest"</span>;</span><br><span class="line"><span class="comment">// Result: Script found in: /u/mayauser/maya/scripts/kaosFieldTest.mel //</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">whatIs</span> <span class="string">"fdsafda"</span>;</span><br><span class="line"><span class="comment">// Result: Unknown //</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> $abc[<span class="number">42</span>];</span><br><span class="line"><span class="keyword">whatIs</span> <span class="string">"$abc"</span>;</span><br><span class="line"><span class="comment">// Result: int[] variable //</span></span><br><span class="line"></span><br><span class="line">$s=<span class="string">`pwd`</span>;</span><br><span class="line"><span class="keyword">whatIs</span> <span class="string">"$s"</span>;</span><br><span class="line"><span class="comment">// Result: string variable //</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">global</span> <span class="keyword">proc</span> MelProce()&#123;&#125;;</span><br><span class="line"><span class="keyword">whatIs</span> MelProce;</span><br><span class="line"><span class="comment">// Result: Mel procedure entered interactively. // </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">whatIs</span> CenterPivot;</span><br><span class="line"><span class="comment">// Result: Run Time Command // </span></span><br><span class="line"><span class="keyword">runTimeCommand</span> -q -c CenterPivot</span><br><span class="line"><span class="comment">// Result: xform -cpc //</span></span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>&emsp;&emsp;同样的方法可以实现组件间的切换</p>
+<p>&emsp;&emsp;返回 <code>Command</code> 类型表示是 Mel 命令，绝大多数的 Command 都可以查 Mel 命令文档可以得到详细的说明。<br>&emsp;&emsp;但是有些插件引入的 Mel 命令就需要通过名称查出它是什么插件引入的 Mel 命令，具体也可以在插件编辑器上查看插件引入了什么样的 Mel 命令和 节点。</p>
 </blockquote>
-<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/20.png" alt="transition-group"></p>
 <blockquote>
-<p>&emsp;&emsp;for循环添加动态效果可以使用 transition-grp 相当于给每个div单独添加了 transition</p>
+<p>&emsp;&emsp;<code>Mel procedure found in: /u/mayauser/maya/scripts/initToolBox.mel</code><br>&emsp;&emsp;返回 Mel procedure 会返回 mel 代码文件的路径，可以通过路径找到 mel 源码。<br>&emsp;&emsp;如果是动态的 mel 就看不到源码了。</p>
 </blockquote>
-<p><img src="https://blog-image-1257068932.cos.ap-guangzhou.myqcloud.com/Vue/Learning_9/21.png" alt="动画组件封装"></p>
 <blockquote>
-<p>&emsp;&emsp;可以将动画过渡效果封装到组件当中，那么每次调用相关的组件就有相应的动画效果了。</p>
+<p>&emsp;&emsp;返回 <code>Run Time Command</code> 类型可以通过 mel 命令 runTimeCommand 来获取嵌入的代码。</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>&emsp;&emsp;Maya 是相当开放的软件了，当我使用 Unreal Houdini 等等软件的时候，没有命令的回显，让我去做一些功能的自动化处理就非常麻烦。<br>&emsp;&emsp;而且 Maya 相对简单，对 美术制作人员 的交互体验非常友好。</p>
 </blockquote>
 
         
@@ -832,13 +802,13 @@
     
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/posts/b21fe737.html">Vue 学习之路（九）</a></p>
+        <p><span>本文标题:</span><a href="/posts/dfd7b1ea.html">Maya 命令 自定义触发 &amp; Mel 源码获取</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 智伤帝 的个人博客">智伤帝</a></p>
-        <p><span>发布时间:</span>2019年07月03日 - 08时31分</p>
-        <p><span>最后更新:</span>2019年11月07日 - 21时28分</p>
+        <p><span>发布时间:</span>2020年06月09日 - 16时23分</p>
+        <p><span>最后更新:</span>2020年06月09日 - 20时54分</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/posts/b21fe737.html" title="Vue 学习之路（九）">https://blog.l0v0.com/posts/b21fe737.html</a>
-            <span class="copy-path" data-clipboard-text="原文: https://blog.l0v0.com/posts/b21fe737.html　　作者: 智伤帝" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/posts/dfd7b1ea.html" title="Maya 命令 自定义触发 &amp; Mel 源码获取">https://blog.l0v0.com/posts/dfd7b1ea.html</a>
+            <span class="copy-path" data-clipboard-text="原文: https://blog.l0v0.com/posts/dfd7b1ea.html　　作者: 智伤帝" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <!-- <script src="/js/clipboard.min.js"></script> -->
             <!-- <script> var clipboard = new Clipboard('.copy-path');</script> -->
         </p>
@@ -907,18 +877,9 @@
 
 <nav id="article-nav">
   
-    <a href="/posts/372dc2f3.html" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          Vue 学习之路（十）
-        
-      </div>
-    </a>
   
-  
-    <a href="/posts/c8d2c668.html" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Vue 学习之路（八）</div>
+    <a href="/posts/a999f0c.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Unreal FBX 动画导入比对面板</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -929,7 +890,7 @@
 
 <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#慕课网-制作去哪儿网-案例教程-上半部分"><span class="toc-number">1.</span> <span class="toc-text">慕课网 - 制作去哪儿网 案例教程 上半部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#input输入"><span class="toc-number">1.2.</span> <span class="toc-text">input输入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#组件使用细节"><span class="toc-number">1.3.</span> <span class="toc-text">组件使用细节</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#父子组件传值"><span class="toc-number">1.4.</span> <span class="toc-text">父子组件传值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#插槽"><span class="toc-number">1.5.</span> <span class="toc-text">插槽</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#动态组件"><span class="toc-number">1.6.</span> <span class="toc-text">动态组件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vue-CSS3-动画过渡"><span class="toc-number">1.7.</span> <span class="toc-text">Vue CSS3 动画过渡</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vue-js-动画过渡"><span class="toc-number">1.8.</span> <span class="toc-text">Vue js 动画过渡</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vue-多重动画"><span class="toc-number">1.9.</span> <span class="toc-text">Vue 多重动画</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#将-Maya-操作命令制作成-工具架-或-快捷键-触发"><span class="toc-number">1.</span> <span class="toc-text">将 Maya 操作命令制作成 工具架 或 快捷键 触发</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#获取操作命令"><span class="toc-number">1.2.</span> <span class="toc-text">获取操作命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#生成工具架"><span class="toc-number">1.2.1.</span> <span class="toc-text">生成工具架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#添加快捷键"><span class="toc-number">1.2.2.</span> <span class="toc-text">添加快捷键</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#制作标记菜单快速调用"><span class="toc-number">1.2.3.</span> <span class="toc-text">制作标记菜单快速调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取技巧补充"><span class="toc-number">1.2.4.</span> <span class="toc-text">获取技巧补充</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何获取操作命令源码"><span class="toc-number">1.3.</span> <span class="toc-text">如何获取操作命令源码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#whatIs-命令详解"><span class="toc-number">1.3.1.</span> <span class="toc-text">whatIs 命令详解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">1.4.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
 </div>
 <style>
     .left-col .switch-btn {
@@ -1007,7 +968,7 @@
 <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script>
 var gitment = new Gitment({
-  id: 'Vue 学习之路（九）', // 可选。默认为 location.href
+  id: 'Maya 命令 自定义触发 &amp; Mel 源码获取', // 可选。默认为 location.href
   owner: 'FXTD-odyssey',
   repo: 'FXTD-odyssey.github.io',
   oauth: {
@@ -1050,13 +1011,11 @@ gitment.render('comments')
 
     <div class="scroll" id="post-nav-button">
         
-            <a  href="/posts/372dc2f3.html" title="上一篇: Vue 学习之路（十）">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a  href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
         
-            <a  href="/posts/c8d2c668.html" title="下一篇: Vue 学习之路（八）">
+            <a  href="/posts/a999f0c.html" title="下一篇: Unreal FBX 动画导入比对面板">
                 <i class="fa fa-angle-right"></i>
             </a>
         
