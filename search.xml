@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Maya 高效使用指南]]></title>
+    <url>%2Fposts%2F1c2d932.html</url>
+    <content type="text"><![CDATA[揭秘 Maya 的鲜为人知的功能 通用 File Path Editor 可以解决 Maya 各种贴图路径找不到的问题 ctrl+m &amp; ctrl+shift+m &amp; shift+m 隐藏菜单栏 alt+z alt+y 摄像机位置撤销 Maya 递增保存，备份保存 optimize scene size ctrl+shift 左键 添加菜单到工具架上 标记菜单 shift+右键 对象标记菜单 ctrl+右键 对象转换标记菜单 Q W E R+左键 选择标记菜单 alt+Q+左键 选择对象标记菜单 shift+Q+左键 选择对象标记菜单 A+左键 选择全部菜单删除历史 O+左键 选择标记菜单 U+左键 绘制标记菜单 右键图标菜单 文件打开图标 打开最近打开的文件 摄像机图标 切换摄像机 网格图标 右键菜单可以快速设置网格属性 隔离显示图标 右键菜单可以快速添加隔离显示的物体 首选项 文件选择窗口使用 os native 可以配合 listary 发挥打开文件的最大效率 Viewport 2.0 选择 DirectX11 渲染 ， 否则 DX11 材质不起作用 Remember Size And Position 勾选 undo infinity autosave 选择 按住 Tab 键可以进行拖拽选择 + - 可以调整操纵杆大小 Q 键选择模式不会受到控制杆的干扰 通道盒中键拖拽 ctrl 和 shift 以及 ctrl+shift 键可以调节数值精度 tweaker 可以不借助操纵杆 操作模型 开启摄像机模式选择 camera base selection 动画 曲线编辑器 按住 K 键 可以自由拖拽时间轴 , . 按键可以跳转前后关键帧 加上 alt 可以前后帧 alt+v 播放 alt+shift+v 可以跳转到开头]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>效率提升指南</category>
+      </categories>
+      <tags>
+        <tag>Maya</tag>
+        <tag>效率</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Windows 效率提升指南 （二）]]></title>
+    <url>%2Fposts%2Fccde0edd.html</url>
+    <content type="text"><![CDATA[超实用工具类软件推荐 前言 &emsp;&emsp;最近在 B站上找到了一个专注于提升电脑效率的网站，里面介绍很多东西也非常受用 B站 网站 &emsp;&emsp;上一句话是我半年前写下的，给自己挖了一个天坑。&emsp;&emsp;终于过了大半年，我开始回来填坑了，而且上一期总结的效率指南 文章链接 的使用基本已经融会贯通，&emsp;&emsp;好用的工具都是先发掘出来的，后续找到的工具都是一些细枝末节的优化。&emsp;&emsp;不过也可以提升不少的日常使用体验。 Seer &amp; QuickLookSeer 官网地址 QuickLook 官网地址 &emsp;&emsp;副标题提到的是两款定位相同的软件。&emsp;&emsp;都是将 MacOS 里按空格可以直接预览文件的功能移植到了 windows 上。&emsp;&emsp;其中 QuickLook 是开源免费的，我比较推荐，后来就将 Seer 卸载了。 &emsp;&emsp;原本 QtTabbar 也提供了文件预览的功能。&emsp;&emsp;不过这个功能非常不全面，比如文本预览以及一些 Office 办公文件的预览都是不支持的。&emsp;&emsp;这里 QuickLook 装上插件之后甚至可以预览 Obj 文件，也支持 PSD 等等文件的预览 &emsp;&emsp;使用体验也非常简单，无非就是选择文件然后按空格键就可以进行预览了。&emsp;&emsp;不需要预览可以再次敲空格。 TeraCopyTeraCopy 官网地址 &emsp;&emsp;比 windows 自带的复制更好用的复制软件。&emsp;&emsp;我自己也没有做过仔细的比较，网上大部分提到这个软件使用逐个文件复制的方案，面对零碎文件的复制速度更快。&emsp;&emsp;不过复制速度本质取决于硬盘，个人使用时间不长，感觉还行。 Mem ReductMem Reduct github地址 &emsp;&emsp;这个软件可以自动清理内存。&emsp;&emsp;个人觉得小巧可用，平时感受不到它的存在。&emsp;&emsp;我设了定时帮我清理内存，还挺好的。 PowerToysPowerToys github地址 &emsp;&emsp;微软官方出品&emsp;&emsp;使用 win + ~ 可以自定义 win10 窗口排列的区域&emsp;&emsp;按住shift键拖拽就可以显示定义好的窗口区域&emsp;&emsp;配合 win10 的虚拟桌面可以玩出很多花样。 &emsp;&emsp;另外提供带撤销的批量重命名文件工具&emsp;&emsp;只是功能比较普通。&emsp;&emsp;其他的一些功能因为我 win10 的版本不够新，就无法体验了。 Aquasnap &amp; TidyTabsAquasnap 官网地址 TidyTabs 官网地址 &emsp;&emsp;上面两个工具都是 nurgo-software 公司出品的软件，我觉得做得非常好。&emsp;&emsp;针对 windows 的窗口玩法，又玩出了新的高度。&emsp;&emsp;只不过这两个软件都要付费（有带限制的免费版），而且功能有点花里胡哨，不是刚需，我就不怎么用了。 f.luxf.lux 官网 &emsp;&emsp;很不错的自动调节屏幕亮度的软件，可以很好的保护眼睛。 Dism++Dism++ 官网地址 &emsp;&emsp;非常小巧且使用的 windows 工具，比起一些全家桶的清理还要厉害。&emsp;&emsp;集成了很多 windows 的黑科技功能，比如系统备份。 Sao UtilsSao Utils 官网地址 &emsp;&emsp;实现华丽高端大气上档次的 3D 菜单，默认通过 左右键同时下拉 启动。&emsp;&emsp;提供雨滴桌面类似的桌面挂件。&emsp;&emsp;体验感觉过于花里胡哨，菜单有冗余的动画效果，不过的确是装逼神器。&emsp;&emsp;我日常还是不怎么使用， Listary 之类的实用性工具更深得我心。 RocketDock &amp; 软媒桌面RocketDock 官网地址 软媒 官网地址 &emsp;&emsp;两个都实现了类似 Mac 的任务栏效果，但是无法和 win10 的任务栏深度结合，只能当个启动器。&emsp;&emsp;软媒是国产软件，有点流氓，要使用必须的装他们的全家桶套装，不过网上也有一些提取出来的独立程序。&emsp;&emsp;个人觉得和 Sao Utils 一样可以用来装逼，但是实际使用还不如 Listary 启动来得方便。&emsp;&emsp;曾经有用过一段时间，最后还是觉得后台程序太多了，我就放弃了。 SpaceSnifferSpaceSniffer 官网地址 &emsp;&emsp;超级小巧，功能又非常直观的文件大小查看器。&emsp;&emsp;通常清理 C 盘我都用它。 DeskPins &amp; pinwinDeskPins 官网地址 pinwin github地址 &emsp;&emsp;两个相似的窗口置顶神器。&emsp;&emsp;其实窗口置顶很多软件都可以实现， WGesture 或者 Capslock+ 都有相关的功能。&emsp;&emsp;缺点就是置顶功能无法可视化，而这两个工具可以给置顶的窗口添加个提示图标。&emsp;&emsp;DeskPins 是很老牌的置顶工具了。&emsp;&emsp;而 pinwin 是参考 DeskPins 做的，更加简洁，针对性很强，很好用。 7+ TaskBar tweaker &amp; TrayS7+ TaskBar tweaker github地址7+ TaskBar tweaker 官网地址 TrayS gitee地址 &emsp;&emsp;这个工具拓展了 windows 任务栏，而 TrayS 可以美化任务栏，让我的任务栏锦上添花。 &emsp;&emsp;上面是 7+ TaskBar tweaker 我自己的配置。&emsp;&emsp;在任务栏 滚动可以切换没有最小化的窗口。&emsp;&emsp;任务栏中键 可以快速静音&emsp;&emsp;任务栏双击 可以轻松切换任务栏的隐藏&emsp;&emsp;任务栏通知 可以通过滚动调节音量 | 和 quicker 的功能又重叠 &emsp;&emsp;TrayS 可以实现图标居中以及一些系统信息的显示，还能让任务栏透明，关键是还非常小巧，占用极小。 总结 &emsp;&emsp;以上就是我收集的一部分非常好用的小工具合集。&emsp;&emsp;大家可以各取所需。]]></content>
+      <categories>
+        <category>总结</category>
+        <category>效率提升指南</category>
+      </categories>
+      <tags>
+        <tag>Windows</tag>
+        <tag>效率</tag>
+        <tag>软件</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Windows 效率提升总结]]></title>
+    <url>%2Fposts%2F82cd243a.html</url>
+    <content type="text"><![CDATA[几个月来效率软件使用心得汇总 前言 &emsp;&emsp;经过了几个月的使用洗礼，总算是可以总结一些非常好用的效率软件使用经验了。 效率软件经验总结 Listary 收藏常用的路径 Listary Ctrl+G 切换路径 Listary Ctrl+Shift+c 复制路径 Listary Maya 打开窗口改用 os native QtTabbar 批量重命名文件 Quicker 快速关闭程序 Quicker 打开映射盘符的真实路径 Quicker 朗诵日语 Ditto 记录不同的路径进行切换 WGesture 常用手势 Capslock+ 个人魔改 中文标点输入 Windows快捷操作 操作参考 Ctrl+Shift+Esc 开启任务管理器 Win+e 打开 文件资源管理器 Win+d 显示桌面 Win+x 快捷菜单 Win+v Win10 自带的粘贴历史 Win+s Win10 自带的全局搜索 Win+Shift+S Win10 自带的截屏软件 Win++ &amp; Win+- 放大镜 Win+; Win10 自带颜文字菜单 alt+d 文件资源管理器定位到地址栏 路径上输入 cmd 打开命令行并定位到当前路径 .gitignore 这种文件在 Windows 平台的命名方法 鼠标中键 或 Shift左键 开启更多程序 Win+r 运行 固定 Windows 程序 shell 命令打开系统内置路径 %env% 打开环境变量路径 命令行操作 cd dir rename copy start ping ipconfig where 命令查找程序位置 sbust 映射网络地址 net 连接网络路径 taskkill 杀死进程 &emsp;&emsp;上面就是总结归纳的常用操作。 效率软件经验总结Listary 收藏常用的路径 &emsp;&emsp;Listary 在文件浏览器中键可以打开它的菜单。&emsp;&emsp;菜单里面可以添加一些文件夹的收藏，下次可以快速定位到我们需要文件路径去。 &emsp;&emsp;点击菜单的右上角添加按钮即可快速添加当前打开的路径。&emsp;&emsp;添加的菜单可以在 Listary 的设置里面进行修改，可以加入分割线和子菜单。 Listary Ctrl+G 切换路径 &emsp;&emsp;Listary 的打开窗口有非常便捷的操作，通过快捷键 Ctrl+G 可以快速切换到当前 文件浏览器 打开的路径上。 Listary Ctrl+Shift+c 复制路径 &emsp;&emsp;Listary 和 QtTabbar 都提供了 Ctrl+Shift+c 复制选中文件路径的功能。&emsp;&emsp;这样就可以通过 Maya 快速打开文件，而不需要复制文件的父目录，然后双击目录下的 maya 文件了。 Listary Maya 打开窗口改用 os native &emsp;&emsp;默认的 Maya 打开窗口是 Maya 自己写的提要统一 UI 文件浏览器。&emsp;&emsp;好处就是跨平台 UI 统一了，导出 FBX 之类的文件的时候，右侧还可以直接控制导出的属性。&emsp;&emsp;OS native 其实没啥缺点的，反而没有 Listary 加持，找文件会变得很辛苦。 &emsp;&emsp;考虑到导入导出基本都是用工具定好规范进行处理的，因此这点牺牲不算什么，但是接入 Listary 可以让 Maya 打开文件的效率提升很多。&emsp;&emsp;而且某位大大说过， Maya 这个打开窗口有时候会导致 Maya 读取文件卡死，还是系统打开窗口比较靠谱。 &emsp;&emsp;如图所示，进入首选项，将窗口风格选择为 OS native 就可以调用系统内置的打开窗口了。&emsp;&emsp;调用系统内置的打开窗口可以调用了 Listary 来快速定位要打开的文件。 &emsp;&emsp;也可以利用 Listary 的收藏夹来进行文件跳转。&emsp;&emsp;只不过 Maya 里面会有 BUG ，别的窗口会自动盖住当前的窗口，这个时候需要 alt+Tab 切换一下就好了。&emsp;&emsp;这里面也可以利用 Ctrl+G 跳转到当前打开的文件夹路径，打开文件会更方便。 QtTabbar 批量重命名文件 &emsp;&emsp;QtTabbar 内置批量重命名文件的功能，虽然功能比较简单，但是足够应付大多数批量重命名的情况。 Quicker 快速关闭程序 &emsp;&emsp;Quicker 可以获取到程序的 pid ，通过 pid 可以通过 windows 命令 taskkill 来强行关闭进程。 &emsp;&emsp;这样关闭 Maya 速度最快，虽然这样所有的首选项都不会保存下来。&emsp;&emsp;在应对卡死的 Maya 的时候，就不需要在 任务管理器 里面找无响应的进程了。&emsp;&emsp;有时候开了好几个Maya，任务管理器也无法分辨哪个是哪个，这种方法就可以直接结束掉我们想要的进程。&emsp;&emsp;杀进程的动作可以参考 quicker 官网的。 &emsp;&emsp;我的动作是我自己稍微修改过的， {context} 是 pid 进程的变量 1taskkill /pid &#123;context&#125; -f -t &emsp;&emsp;-f 指定强制终止进程&emsp;&emsp;-t 终止指定的进程和由它启动的子进程 打开映射盘符的真实路径 &emsp;&emsp;这边利用 windows subst 的命令来映射虚拟盘符。&emsp;&emsp;这样可以实现本地的不同路径通过 虚拟盘符 实现路径统一。 &emsp;&emsp;关于盘符映射工具，我之前通过 Tkinter Gui 打包了一个 windows 平台的映射工具 文章 &emsp;&emsp;但是这种路径会导致 SVN 无法正确索引导致右键菜单的更新按钮不在。&emsp;&emsp;之前的处理方案是需要在映射的路径上重新 checkout SVN的对应目录，从而生成一个 .svn 目录，这样右键更新就恢复了。&emsp;&emsp;如果 SVN 目录过于庞杂，这种操作就会比较麻烦，所以我想退而求其次，直接打开原始的路径。&emsp;&emsp;于是我通过 Quicker 做了一个自动跳转到真实路径的操作。 &emsp;&emsp;这个动作已经上传到 Quicker 官网。&emsp;&emsp;实现原理基本是超 Stack Overflow 回答的 https://stackoverflow.com/questions/1299814&emsp;&emsp;只是将路径修改为 Quicker 获取到的当前目录的路径 Quicker 朗诵日语 &emsp;&emsp;有时候看日语文章的时候，这个功能对我来说还是非常有用的。&emsp;&emsp;虽然我也自学了 50音图，但是看文字的速度还是太慢了，看文字也是读出来才能理解意思。如果可以直接朗读出日语的文章，我大部分的内容都可以听得懂，而且比起机翻更加亲切一点。 &emsp;&emsp;朗读文字的方法也可以参考 Quicker 官网上的一些动作。&emsp;&emsp;基本原理其实不难，通过 vbs 向百度翻译发送朗读语言的请求，然后通过 vbs 的 Stream 将生成的语音文件下载下来并进行播放。&emsp;&emsp;这个过程完全后台执行，我感觉非常好。 Ditto 记录不同的路径进行切换 &emsp;&emsp;有时候 Maya 需要打开的文件路径在好几个不同的文件夹里面。&emsp;&emsp;这个时候每次打开文件都要人工选择一大堆路径才可以找到正确的文件。&emsp;&emsp;通过 Ditto 的快捷键历史就可以省去重复找文件的麻烦。 &emsp;&emsp;如果比较常用的路径也可以通过 Ditto 将路径收藏起来&emsp;&emsp;通过 Ctrl+G 可以打开 Ditto 的收藏夹 WGesture 常用手势 ←↑ Home ←↓ End ← 后退 → 前进 ↓→ 关闭 ↓← 退出 &emsp;&emsp;最常用的手势有上面几个&emsp;&emsp;Home 和 End 浏览网页的时候可以快速去到顶部，特别是搜索引擎的搜索栏总是在顶部，可以快速回到网页上面进行搜索。&emsp;&emsp;后退 前进 通常在浏览文件的时候使用，&emsp;&emsp;关闭和退出通常在删除网页标签，文件标签的时候很常用。 Capslock+ 个人魔改 中文标点输入Capslock+ 个人魔改 github 仓库 &emsp;&emsp;这个操作是当时看网上一篇关于 AHK 解决中文标点输入的文章学到的，于是我将它的功能融合到 魔改的 Capslock+ 工具里面了。&emsp;&emsp;简单的意思就是将 打字法 的中文标点输入取消，然后通过 AHK 实现 HotString ，两个英文标点自动替换为中文标点。&emsp;&emsp;我觉得这个操作用起来真的很舒服，敲代码的时候再也不会因为敲错中文标点报错了。 Windows快捷操作 &emsp;&emsp;windows10 现在内置了很多功能，可以通过各种 win 加快捷键来触发。&emsp;&emsp;尽管 win10 内置的和第三方软件还是有很大差距，但是如果在一台全新的 win10 电脑上。&emsp;&emsp;无论是截图、粘贴历史还是快速搜索，win10内置的功能都有不错的暂用方案。 &emsp;&emsp;并且 windows 的放大镜还是很不错的，演讲屏幕太小的时候可以通过 放大镜 来辅助。 路径上输入 cmd 打开命令行并定位到当前路径 &emsp;&emsp;在当前路径打开命令行有两个方法。&emsp;&emsp;一种是在路径输入上输入 cmd 。 &emsp;&emsp;还有一种方法是按住 shift 右键。&emsp;&emsp;菜单上会多出在 命令行打开 ，不过这个功能在 win10 被修改为用 PowerShell 打开了。&emsp;&emsp;要修改回来需要修改注册表 ， 参考文章 .gitignore 这种文件在 Windows 平台的命名方法 &emsp;&emsp;这种文件在 VScode 可以直接命名&emsp;&emsp;但是再 windows 下的资源浏览器，你是无法命名一个只有后缀无名称的文件的&emsp;&emsp;这个时候需要命名为 .gitignore. 就可以命名了。 鼠标中键 或 Shift左键 开启更多程序 &emsp;&emsp;有时候运行了一个 Maya ，还想运行更多的 Maya 。&emsp;&emsp;过去的操作需要右键 Maya 的任务栏图标，然后选择 Maya 进行运行。&emsp;&emsp;其实可以直接对任务栏图标进行鼠标中间或者 shift+鼠标左键 就可以运行一个程序的副本了。 Win+r 运行 &emsp;&emsp;win+r 开启 windows 的启动窗口。&emsp;&emsp;这个窗口执行的命令类似于 cmd 窗口中执行 start&emsp;&emsp;通常支持启动添加到环境变量路径的程序，比如输入 cmd regedit 之类的可以启动相关的 exe 程序&emsp;&emsp;可以启动程序可以参考 链接 &emsp;&emsp;不过除了这些方法之外，还可以根据注册表里面的记录特殊打开一些内置的路径。&emsp;&emsp;比如通过 shell:startup 可以打开开机启动目录， shell:recycleBinFolder 可以打开回收站 链接参考&emsp;&emsp;另外 windows 的系统设置也有一套快捷打开路径 链接参考&emsp;&emsp;包括一些系统级的应用也可以通过特殊 ms- 前缀来启动 ， 比如 ms-actioncenter: &emsp;&emsp;经过我后面查找我发现有些启动可以在注册表里面找到对应记录的关系。shell: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptionsms- : HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\PackageRepository\Extensions\Windows.protocol &emsp;&emsp;最后运行窗口还支持 环境变量 存储的路径，比如可以通过 %SYSTEMDRIVE% 打开系统安装磁盘，也支持通过环境变量的路径拼接 链接参考 命令行操作 &emsp;&emsp;命令行操作其实没有什么好说的，属于 bat 批处理的范畴。命令文档可以参考 ss64.com &emsp;&emsp;比较重要的命令就是 where ，类似 mel 语言的 whatIs 命令（应该说 mel 语言就是参考它的），可以查询到命令的路径。&emsp;&emsp;有些很多命令的背后其实是运行 exe 实现的。&emsp;&emsp;另外 /? 非常重要，大部分的命令不懂都可以加这个后缀来查看帮助。 总结 &emsp;&emsp;以上就是 windows 这几个月使用总结的一些效率提升的操作。&emsp;&emsp;最近疯狂折腾，还要出一期 效率工具总结， 希望对大家有用。]]></content>
+      <categories>
+        <category>总结</category>
+        <category>效率提升指南</category>
+      </categories>
+      <tags>
+        <tag>Windows</tag>
+        <tag>效率</tag>
+        <tag>软件</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[AHK - 实现软件自动安装]]></title>
     <url>%2Fposts%2Ff6bbf3ad.html</url>
     <content type="text"><![CDATA[autohotkey 实现软件自动安装流程 前言 &emsp;&emsp;数个月前我整理一套 windows 平台的效率工具，文章链接&emsp;&emsp;里面总结的软件操作，再经过了我几个月的运用，已经熟练地应用到我的日常工作当中了。&emsp;&emsp;只是软件的数量有点多，手动安装起来还是挺麻烦的。&emsp;&emsp;这个月初就开始筹备实现这些软件的自动化安装了，花了不少时间，也踩了一些坑。 &emsp;&emsp;github 仓库地址 踩坑前奏 &emsp;&emsp;最初的时候，我打算是用 bat 批处理来实现软件的自动化安装。&emsp;&emsp;因为经过我简单的网上搜索，我了解到，很多软件的安装包都有提供静默安装的选项，那么这些流程完全可以通过一个简单的 bat 批处理脚本实现自动化安装。&emsp;&emsp;但是，我发现有些软件并没有那么好弄，比如 PotPlayer 是需要解压再进行安装的，因此没有提供静默安装的功能。&emsp;&emsp;QtTabbar 1038 版本可以静默安装，但是升级包 1040 版本无法静默安装。 &emsp;&emsp;考虑到上述的诸多情况，我必须要实现 自动化 操作点击才可以。&emsp;&emsp;于是乎，我打算利用 Python 来实现自动化流程。&emsp;&emsp;一开始没有想到 autohotkey 这个自动化编程工具，因为一直想着 python 的 subprocess 可以调用命令行，通过 tkinter 开发界面。&emsp;&emsp;考虑到python 自动化操作 windows ，可以用的库也有不少。&emsp;&emsp;比较知名的库是 pywinauto 和 pyautogui &emsp;&emsp;pyautogui 是跨平台的自动化包，但是大部分通过截图识别来定位鼠标位置实现自动化，因此运行效率比较低。&emsp;&emsp;具体可以参考 Stack Overflow 里面 pywinatuo 作者提供的回复 链接&emsp;&emsp;pywinatuo 的优点是调用了 windows 的 API 获取窗口的信息，在这些信息基础上实现窗体匹配。&emsp;&emsp;因此后面我就采用了 pywinatuo 来实现我的自动化安装流程。 pywinatuo 开发 &emsp;&emsp;于是我开始踩坑 pywinauto 实现界面的自动化触发。&emsp;&emsp;开发的过程感受到诸多和 ahk 相同的地方。 &emsp;&emsp;我首先从 QTTabBar 安装入手，QTTabBar 的启动比较坑，完成安装之后，还需要点到下拉菜单来启动。 &emsp;&emsp;通过敲击 alt 可以让 win10 显示出快捷键，通过快捷键的方式可以实现自动化的操作。 1234567891011121314151617181920212223242526272829303132333435import timefrom pywinauto.application import Applicationfrom pywinauto import Desktop, keyboarddef main(): new_win = False for win in Desktop(backend="uia").windows(): if win.class_name() == "CabinetWClass": break else: new_win = True app = Application(backend="uia").start('explorer.exe') win = Desktop(backend="uia").window(class_name="CabinetWClass") win.set_focus() # NOTE 开启 QTTabBar keyboard.send_keys("&#123;VK_MENU&#125;") keyboard.send_keys("&#123;V&#125;") time.sleep(0.5) keyboard.send_keys("&#123;Y&#125;") keyboard.send_keys("&#123;DOWN&#125;") keyboard.send_keys("&#123;DOWN&#125;") keyboard.send_keys("&#123;DOWN&#125;") keyboard.send_keys("&#123;ENTER&#125;") if new_win: win.close()if __name__ == "__main__": main() &emsp;&emsp;通过看文档和网上查资料，总算是知道怎么在 pywinauto 里面获取到打开的 explorer 窗口。 &emsp;&emsp;CabinetWClass 这个参数是通过 pywinauto 的 print_control_identifiers 获取 - 文档&emsp;&emsp;print_control_identifiers 会打印出当前窗口下所有的组件信息。&emsp;&emsp;从中我发现 explorer 这个大窗口类就是 CabinetWClass&emsp;&emsp;通过这个方法可以直接获取到 explorer 打开的窗口。 &emsp;&emsp;然后通过 send_keys 发送键盘的命令实现自动化操作。 &emsp;&emsp;好不容易实现 python 的自动化， Tkinter 界面也尝试弄了些 checkbox 来进行软件安装的选择。&emsp;&emsp;后续测试了一下 pyinstaller 打包程序，这一打包就直接原地炸了。&emsp;&emsp;pywinauto 打包出来的 exe 居然有 200+ M&emsp;&emsp;这个大小和 numpy 打包有得一拼了(:з」∠) &emsp;&emsp;所以我果断放弃了这个方案了，网上稍微又查了查，才发现原来还有 autohotkey 的方案。 autohotkey 开发界面 &emsp;&emsp;以前用 tkinter 开发界面的时候，就有提过 tkinter 打包的界面稍微还是有点大，如果用 ahk 可以压缩得更小。Python - Tkinter Windows 磁盘映射工具&emsp;&emsp;关于 ahk 的认识，我基本上是从 capslock+ 魔改的时候认识的 github仓库&emsp;&emsp;所以我并没有真正开发过 ahk 界面。&emsp;&emsp;不过我这一次的界面开发需求其实很简单，只需要开发几个 checkbox 界面即可。 &emsp;&emsp;不过开发 ahk 界面果然还是非常不习惯。&emsp;&emsp;这个东西和 tkinter 一样也有同样的问题，没有 Qt 的 Layout 的概念。&emsp;&emsp;所以界面的长宽位置大小都是固定的，窗口也无法进行缩放。 &emsp;&emsp;不过，考虑到 ahk 超级小的大小，还是太香了，委曲求全可还行。 注 : 也有可能我对 ahk 还了解不深(:з」∠) &emsp;&emsp;后面在 ahk 中文网 上了解到了 中文最强 IDE ， 河许人出品。 链接&emsp;&emsp;这个工具可以实现类似 QtDesigner 的界面拖拽的效果。&emsp;&emsp;不过界面修改起来很麻烦，人工修改代码需要断开界面的链接 ε=(´ο｀*)))&emsp;&emsp;用起来有诸多不爽的地方。 &emsp;&emsp;界面开发其实倒还好说，官方文档也非常全面，和 mel 文档有得一拼，每个命令都有个小案例，学习起来非常便利。&emsp;&emsp;最大的难点就是如何获取 checkbox 的状态。&emsp;&emsp;在组件的长宽后面加上 v 开发的变量名，可以绑定一个状态变量进去。&emsp;&emsp;后续触发 Gui, Submit ,NoHide 之后就可以让这些变量获取到 checkbox 的状态。 123456789101112131415161718192021222324252627282930Gui Add, GroupBox, x10 y6 w120 h205, 效率软件Gui Add, CheckBox, x20 y23 w100 h25 +Checked vListary, ListaryGui Add, CheckBox, y+5 w100 h25 +Checked vQTTabBar, QTTabBarGui Add, CheckBox, y+5 w100 h25 +Checked vDitto, DittoGui Add, CheckBox, y+5 w100 h25 vWGesture, WGestureGui Add, CheckBox, y+5 w100 h25 vQuicker, QuickerGui Add, CheckBox, y+5 w100 h25 vTencentDesktop, 腾讯桌面管理Gui Add, GroupBox, x135 y6 w120 h49, 代码编辑器Gui Add, CheckBox, x143 y24 w102 h23 +Checked vVScode, VScodeGui Add, GroupBox, x135 y66 w120 h80, 截取软件Gui Add, CheckBox, x143 y86 w107 h23 +Checked vSnipaste, SnipasteGui Add, CheckBox, x143 y115 w107 h23 +Checked vScreenToGif, ScreenToGifGui Add, GroupBox, x135 y153 w120 h58, 播放器Gui Add, CheckBox, x143 y176 w102 h23 +Checked vPotPlayer, Pot PlayerGui Add, Button, x8 y222 w248 h23, 自动安装Gui +AlwaysOnTopGui Show , w260 h252 , 自动安装 - 界面ReturnGuiEscape:GuiClose: ExitAppButton自动安装: Gui, Submit ,NoHide SetTitleMatchMode, 1 ; 软件安装流程 ... ExitApp &emsp;&emsp;+Checked 添加标记可以让 checkbox 保持勾选的状态。 autohotkey 自动化安装流程 &emsp;&emsp;大部分的安装的可以静默安装来完成。&emsp;&emsp;需要特殊处理有的 QtTabbar 和 PotPlayer ， 还有 msi 同时安装会导致冲突。 QtTabbar 自动化安装 &emsp;&emsp;这个工具安装可谓是花费了我好多时间。&emsp;&emsp;因为插件安装完成之后并没有进行启动，而这个插件启动的方式又比较隐秘，参考上面的截图。&emsp;&emsp;启动需要点击下拉菜单实现。&emsp;&emsp;如果不将启动流程自动化，反而会比较让人困惑。 &emsp;&emsp;后面又在网上找到了中文语言的配置文件，于是又想实现自动加载语言配置的功能。&emsp;&emsp;通过查 QtTabbar 的官方网站提供的文档&emsp;&emsp;我发现 QtTabbar 的架构还是非常灵活的。&emsp;&emsp;最重要的是还支持 Scripting ，可以通过 windows 的 Active Scripting 来调用 QtTabbar 的 API。 文档&emsp;&emsp;支持 windows 平台的 VBScript 和 JScript。&emsp;&emsp;官方提供的的案例都是 JScript 写的。&emsp;&emsp;我查了一下微软官方关于 JScript 的描述，直接惊呆了。&emsp;&emsp;JScript 是根据 ECAMscript 3.0 的标准做的脚本语言（其实就是 JavaScript ， 只不过版本过于过时）&emsp;&emsp;感觉回到10多年前的 IE 时代，那个时候 JScript 可以通过调用 ActiveXObject 实现对 windows API 的调用。 &emsp;&emsp;至于如何通过 JScript 来操作 QtTabbar ，官网提供了很详细的文档 API文档&emsp;&emsp;还包括一些简单的调用案例&emsp;&emsp;可以通过脚本来制作一些 QtTabbar 的命令按钮，实现文件操作的自动化。 &emsp;&emsp;通过这个脚本操作可以实现很多细微操作，因为命令行调用 explorer 只能开启一个新的窗口，如果要新建一个 Tab 还是得用脚本实现。&emsp;&emsp;JScript 的执行可以调用 windows 自带的 cscript 来执行 百度百科 1234567891011121314151617181920212223C:\Users\timmyliang&gt;where cscriptC:\Windows\System32\cscript.exeC:\Users\timmyliang&gt;cscriptMicrosoft (R) Windows Script Host Version 5.812版权所有(C) Microsoft Corporation。保留所有权利。用法：CScript scriptname.extension [option...] [arguments...]选项： //B 批模式：不显示脚本错误及提示信息 //D 启用 Active Debugging //E:engine 使用执行脚本的引擎 //H:CScript 将默认的脚本宿主改为 CScript.exe //H:WScript 将默认的脚本宿主改为 WScript.exe （默认） //I 交互模式（默认，与 //B 相对) //Job:xxxx 执行一个 WSF 工作 //Logo 显示徽标（默认） //Nologo 不显示徽标：执行时不显示标志 //S 为该用户保存当前命令行选项 //T:nn 超时设定秒：允许脚本运行的最长时间 //X 在调试器中执行脚本 //U 用 Unicode 表示来自控制台的重定向 I/O &emsp;&emsp;cscript 是 System32 目录下的一个 exe ，可以用来执行 JScript 和 VBScript&emsp;&emsp;我还是比较喜欢使用 JScript ， js 毕竟也写过一段时间了。&emsp;&emsp;只可惜基于 ES3 标准，很多 ES6 的写法都不支持。 &emsp;&emsp;原本打算通过脚本后台来实现 QtTabbar 的自启动的。&emsp;&emsp;为此还专门用 procmon 来监听查看 QtTabbar 的文件输入输出流。&emsp;&emsp;尽管发现了 QtTabbar 进行了很多 注册表的 写入写出 操作。&emsp;&emsp;但是单纯修改注册表并不能实现 QtTabbar 多标签的自启动。&emsp;&emsp;后来还是看了 QtTabbar 的官方文档，找到了 ShowToolbar 的命令可以实现这个效果。&emsp;&emsp;我在自己的电脑上测试得很完美。&emsp;&emsp;然而当我走安装流程的时候，发现脚本并不起作用。&emsp;&emsp;ShowToolbar 命令需要有 Tab 窗口开启才可以实现调用。&emsp;&emsp;但是如果还没有开启多标签页面的话，无法获取到打开的标签的实例，根本就无法调用这个方法。 &emsp;&emsp;最后无奈，只能还是采用之前 python 自动化弄过的 快捷键操作实现 开启。&emsp;&emsp;自动化开启有可能因为用户操作等问题，导致开启不成功。这个自动操作的体验也不是太友好，但是没有更好的方法了。 &emsp;&emsp;后来找到汉化语言 xml 配置，于是想将 汉化 添加上。&emsp;&emsp;只要通过快捷键开启 QTTabBar 之后，就可以愉快地使用 JScript API 了。&emsp;&emsp;于是我又查了文档，并没有直接加载 语言设置 的功能，但是可以通过加载 全局设置 功能间接加载 语言设置。&emsp;&emsp;全局设置可以通过 QTTabBar 的设置界面进行导出。 &emsp;&emsp;API 文档 通过 Import 命令可以加载 xml 配置。&emsp;&emsp;但是 xml 的配置只能是个绝对路径。&emsp;&emsp;因此我需要实现 JScript 的文件拷贝和读写功能，实现对路径的替换。 123456789101112131415161718192021222324252627282930313233343536var shell = new ActiveXObject("wscript.shell");var qs = new ActiveXObject("QTTabBarLib.Scripting");var fso = new ActiveXObject("Scripting.FileSystemObject");var DIR = fso.GetAbsolutePathName(".")var APPDATA = shell.ExpandEnvironmentStrings("%APPDATA%")var xml = fso.BuildPath(DIR, "*.xml")fso.CopyFile(xml, APPDATA)var config = fso.BuildPath(DIR, "config.xml")// NOTE https://language-and-engineering.hatenablog.jp/entry/20090203/p1var stream = new ActiveXObject("ADODB.Stream");stream.CharSet = "utf-8";stream.Type = 2;stream.Open();stream.LoadFromFile(config)var config_xml = stream.ReadText(-1)stream.Close()var target_config = fso.BuildPath(APPDATA, "config.xml")var stream = new ActiveXObject("ADODB.Stream");stream.Type = 2;stream.charset = "utf-8";stream.Open();stream.WriteText(config_xml.replace("&#123;&#123;QTTabBar&#125;&#125;",APPDATA),1);stream.SaveToFile( target_config, 2 );stream.Close();qs.CloseAllWindows()var SYSTEMDRIVE = shell.ExpandEnvironmentStrings("%SYSTEMDRIVE%")wnd = qs.open(SYSTEMDRIVE)// NOTE 导入中文设定wnd.InvokeCommand("Import",target_config) &emsp;&emsp;通过 FileSystemObject 无法处理 utf-8 的文件。&emsp;&emsp;因此需要用 ADODB.Stream 来读写 utf-8 的 xml 配置&emsp;&emsp;这里通过 JScript 直接将文件拷贝到 APPDATA 的目录下，这个目录一般不需要管理员权限。 &emsp;&emsp;安装流程见上图，缺点就是敲快捷键的时候，如果遇到用户操作或者过于卡顿会导致启动失败。 PotPlayer 安装 &emsp;&emsp;QTTabbar 是最为艰难的了，后续这些问题都不算太大的问题。&emsp;&emsp;PotPlayer 的安装包没有提供静默安装的方案，安装包需要经过解压才可以执行安装。&emsp;&emsp;这个基本上利用 AHK 的按键自动化点击即可。 &emsp;&emsp;其中的难点就是要实现窗口等待。 12345678910111213141516171819202122232425262728293031323334353637; PotPlayer 安装操作install_PotPlayer()&#123; install_path := A_ScriptDir "\software\PotPlayerSetup64-200512-ads.exe" ; 判断安装包是否存在 if !FileExist(install_path)&#123; MsgBox, "PotPlayerSetup64-200512-ads.exe not exists" return &#125; ToolTip, 解压 PotPlayer 安装包 install_cmd := install_path Run, %install_cmd% WinWait, Installer Language, , 3 SendInput,&#123;Enter&#125; ; ControlClick, OK , Installer Language Sleep, 2000 WinWait, PotPlayer-64 bit 安装 SendInput,&#123;Enter&#125; SendInput,&#123;Enter&#125; SendInput,&#123;Enter&#125; Loop, 10 &#123; Sleep, 200 ControlClick, 安装 , PotPlayer-64 bit 安装 &#125; ; ; 等待 关闭 按钮激活 ; Sleep, 2000 while (WinExist(PotPlayer-64 bit 安装)) &#123; ToolTip, 等待 PotPlayer 安装 Sleep, 500 ; ControlGet, button_enable, Visible ,, ClassNN Button2 ControlClick, 关闭 , PotPlayer-64 bit 安装 &#125;&#125; &emsp;&emsp;点击安装按钮有时候会卡主，所以弄了个循环10次进行点击。&emsp;&emsp;后续进入安装流程，定期点击 关闭 按钮直到窗口关闭为止。 Snipaste 安装 &emsp;&emsp;Snipaste 只提供了压缩包的便捷安装版本。&emsp;&emsp;因此自动安装需要用过 ahk 实现压缩包的解压&emsp;&emsp;还好 ahk官方论坛上有提供解决方案。&emsp;&emsp;也是通过调用 windows 的 API 实现的。 1234567891011121314151617Unz(sZip, sUnz)&#123; fso := ComObjCreate("Scripting.FileSystemObject") If Not fso.FolderExists(sUnz) ;http://www.autohotkey.com/forum/viewtopic.php?p=402574 fso.CreateFolder(sUnz) psh := ComObjCreate("Shell.Application") zippedItems := psh.Namespace( sZip ).items().count psh.Namespace( sUnz ).CopyHere( psh.Namespace( sZip ).items, 4|16 ) Loop &#123; sleep 50 unzippedItems := psh.Namespace( sUnz ).items().count ToolTip Unzipping in progress.. IfEqual,zippedItems,%unzippedItems% break &#125; ToolTip&#125; &emsp;&emsp;解压之后再执行 Snipaste.exe 启动 msi 处理 &emsp;&emsp;msi安装如果同时启动 /passive 安装会跳过只保留一个。&emsp;&emsp;因此加入死循环来检测是否 msiexec.exe 在运行 1234567891011121314151617181920install_Quicker()&#123; install_path := A_ScriptDir "\software\Quicker.x64.1.8.0.0.msi" ; 判断安装包是否存在 if !FileExist(install_path)&#123; MsgBox, "Quicker.x64.1.8.0.0.msi not exists" return &#125; install_cmd := install_path " /passive" Run, %install_cmd% Loop &#123; ToolTip, 安装 Quicker sleep 500 result := WinExist("ahk_exe msiexec.exe") if (!result)&#123; break &#125; &#125;&#125; 总结 &emsp;&emsp;这次尝试了 ahk 的图形化编程，打包之后的程序大小只有 1M+ ，真的非常小巧。&emsp;&emsp;自动化安装流程有一定的安装失败几率，这个可能因电脑而异。]]></content>
@@ -9,8 +50,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>Windows</tag>
+        <tag>效率</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -379,8 +420,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>android</tag>
         <tag>效率</tag>
+        <tag>android</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -393,8 +434,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>android</tag>
         <tag>效率</tag>
+        <tag>android</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -492,8 +533,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>Windows</tag>
+        <tag>效率</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -776,8 +817,8 @@
       </categories>
       <tags>
         <tag>Maya</tag>
-        <tag>Arnold</tag>
         <tag>Autodesk</tag>
+        <tag>Arnold</tag>
       </tags>
   </entry>
   <entry>
@@ -790,8 +831,8 @@
       </categories>
       <tags>
         <tag>Maya</tag>
-        <tag>Arnold</tag>
         <tag>Autodesk</tag>
+        <tag>Arnold</tag>
       </tags>
   </entry>
   <entry>
@@ -2120,8 +2161,8 @@
       </categories>
       <tags>
         <tag>Houdini</tag>
-        <tag>sop</tag>
         <tag>pluralsight</tag>
+        <tag>sop</tag>
       </tags>
   </entry>
   <entry>
@@ -2401,8 +2442,8 @@
       </categories>
       <tags>
         <tag>Houdini</tag>
-        <tag>zplus</tag>
         <tag>sop</tag>
+        <tag>zplus</tag>
       </tags>
   </entry>
   <entry>
@@ -2444,8 +2485,8 @@
       </categories>
       <tags>
         <tag>Houdini</tag>
-        <tag>zplus</tag>
         <tag>sop</tag>
+        <tag>zplus</tag>
       </tags>
   </entry>
   <entry>
@@ -2529,8 +2570,8 @@
       </categories>
       <tags>
         <tag>Houdini</tag>
-        <tag>zplus</tag>
         <tag>sop</tag>
+        <tag>zplus</tag>
       </tags>
   </entry>
   <entry>
@@ -2543,8 +2584,8 @@
       </categories>
       <tags>
         <tag>Houdini</tag>
-        <tag>zplus</tag>
         <tag>sop</tag>
+        <tag>zplus</tag>
       </tags>
   </entry>
   <entry>
