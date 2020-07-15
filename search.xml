@@ -1,6 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Unreal Python 结合 C++ 开发蓝图库插件]]></title>
+    <url>%2Fposts%2Fc6f4bf5b.html</url>
+    <content type="text"><![CDATA[C++ 开发的蓝图暴露给 Python 进行调用 前言 &emsp;&emsp;上个月的这个时候我写了一篇文章关于如何嵌入 PySide 调用 Qt 的 GUI 开发。 链接&emsp;&emsp;Python 虽然很好，但是有些功能，并没有从 C++ 里面暴露出来。&emsp;&emsp;这种情况就需要通过 C++ 的蓝图开发来将这部分的功能进行暴露。&emsp;&emsp;这样 Python 基本上可以做任何 Unreal 的事情。 &emsp;&emsp;如何开发蓝图库也基本可以参照上篇文章提到的 Unreal Python 教程。 链接 为什么需要开发 C++ 蓝图 &emsp;&emsp;上面的视频链接有很详细如何通过 Unreal C++ API 开发一个 Unreal 的蓝图，暴露给 Python 调用。&emsp;&emsp;Unreal 的 Python 插件其实已经将 Unreal 内置的所有蓝图暴露给了 Python。&emsp;&emsp;因此 蓝图 能够做到的事情， Python 是绝对可以做到的。&emsp;&emsp;而且经过一个多月的使用来看， Python 的 API 文档做得比 蓝图 的 文档要好很多。&emsp;&emsp;有时候直接查 Python 的 API 反而更有效率，甚至会发现一些其他插件所引入的蓝图。 &emsp;&emsp;那么 Python 相较于 蓝图 的有什么异同？&emsp;&emsp;我目前的使用感受来看，除了失去图形节点编程的可视化之外，基本上碾压蓝图，当然运行效率上没有测试过。&emsp;&emsp;蓝图 和 Python 的定位有很大的不一样。&emsp;&emsp;蓝图可以作为游戏运行逻辑的一部分， Python 只能当做编辑器的自动化工具。（Python 效率太低了，运行脚本宁愿用 lua 调 C++） &emsp;&emsp;蓝图自身有它的优缺点，效率比不过 C++ 链接&emsp;&emsp;但是图形化编程，对于非 coding 人员很友好，而且一些简单的逻辑也比较直观。&emsp;&emsp;但是复杂蓝图的连线还是太让人劝退了。 &emsp;&emsp;Python 对于像我这种工具向开发的我来说太过友好了，毕竟很多 DCC 都使用 Python 。&emsp;&emsp;Unreal 的 Python 插件大部分是对 蓝图 的分装，基本上蓝图有的功能都可以通过 Python 来调。&emsp;&emsp;同时 Python 还可以实现一些神奇的功能，比如说通过 Python 开发一个蓝图节点 ，调用 Python 的第三方库诸如 PySide 包，或者调用系统的 cmd 或者 shell 命令。&emsp;&emsp;因此从引擎的提升来说， Python 的确在这方面更胜一筹，复杂逻辑通过代码看也比较直观。 &emsp;&emsp;当然很明显， 蓝图不能实现的引擎操作，基本上也不用指望 Python 能够调用什么 API 来实现了。&emsp;&emsp;这种情况下就需要 C++ 来扩展蓝图，实现 Python 调用。 C++ 开发蓝图库插件 &emsp;&emsp;我们目前的需求并不是开发游戏调用的蓝图，因此我们可以开发一个蓝图库插件。&emsp;&emsp;这样可以轻易将这些蓝图迁移到不同的项目里面去。 &emsp;&emsp;Unreal 搭建蓝图库开发其实并不难，按照官方的指引去做即可。&emsp;&emsp;首先需要创建一个 C++ 工程，如果是蓝图工程是无法写 C++ 代码的。&emsp;&emsp;然后打开插件面板，选择 New Plugin &emsp;&emsp;然后引擎就会自动创建一个基础插件的模板出来。&emsp;&emsp;后续就是在这个基础模板上调用 C++ 的 API 实现一些特殊的功能。 unreal C++ 插件注意事项 &emsp;&emsp;插件的默认结构是 .uplugin 文件加 Resource 和 Source 文件夹。&emsp;&emsp;uplugin 就是一个 Json 配置，配置了插件在引擎的插件列表的显示，以及加载方式。&emsp;&emsp;Resource 存放插件显示的图标。&emsp;&emsp;Source 存放的是 C++ 源码了。 &emsp;&emsp;前面两个不需要太过关注，重点的 Source 文件夹的东西。&emsp;&emsp;里面会有 .Build.cs 文件以及 Public 和 Private 文件夹。&emsp;&emsp;`.Build.cs`是 C# 代码，通过虚幻的 Reflect 机制生成 Intermediate 的中间代码用来编译生成 dll。&emsp;&emsp;Public 默认存放头文件&emsp;&emsp;Private 默认存放cpp源码 &emsp;&emsp;引用了引擎内部的一些库，需要在 build.cs 文件里面添加上。&emsp;&emsp;否则编译的时候回报某些类型无法识别的错误。&emsp;&emsp;试过排查这种小错误花了我大半天。 &emsp;&emsp;前面两个部分是添加路径的，用来缩短头文件索引的路径长度。&emsp;&emsp;后面的 Private 和 Public Module 则是最重要的索引头文件的，必须要在这里配置才能在 c++ 里面调用。&emsp;&emsp;这里怎么填写可以参考引擎 Source 源码下的文件夹名称。 &emsp;&emsp;cs 里面配置就可以找 Source 源码的一些头文件进行引用了。&emsp;&emsp;因为虚幻开源了，所以内部 Private 和 Public 没有什么区别，也可能是我的 C++ 造诣还不够。 &emsp;&emsp;配置头文件就可以愉快地使用官方提供的一些 C++ 了。 C++ 实现 Add Component 蓝图功能 &emsp;&emsp;这个功能看似非常简单，奈何 Python 就是实现不了。 &emsp;&emsp;就是给现有 Actor 添加新的 Component 组件而已。&emsp;&emsp;但是查了 API 文档，即便使用 Attach 相关的方法，也无法新的 Component 添加到 Actor 上。&emsp;&emsp;应该说 Python 的操作没有问题， Component 也加上了，可以通过 Python 获取到，但是 Component 没有注册，无法在 UI 上显示出来。 &emsp;&emsp;经过我查阅大量网上的资料之后，只在论坛上找到了一个通过 C++ 实现的方案。 链接&emsp;&emsp;这段代码里面有很关键的 RegisterComponent 的操作。&emsp;&emsp;而这些操作并没有暴露到 Python 或者说 蓝图 里面。&emsp;&emsp;当然这个添加 Component 的方法估计也和 Unreal 的机制有关，我对 Unreal 引擎还不是很熟，就不做无关的揣测了。 &emsp;&emsp;Python 的文档在 Actor 的部分有所涉及。&emsp;&emsp;不过这个问题就非常蛋疼，&emsp;&emsp;unreal.EditorLevelLibrary.get_all_level_actors_components 可以获取所有注册的 Component&emsp;&emsp;Actor 也可以删除现有的 Component ，偏偏无法添加新的 Component &emsp;&emsp;C++ 的部分我简化了上面回答的代码。&emsp;&emsp;如果没有传入具体的 Component 类型就返回 None 给 Python 就好了。 1234567891011121314151617181920212223242526272829UActorComponent* URedArtToolkitBPLibrary::AddComponent(AActor* a, USceneComponent *future_parent, FName name, UClass* NewComponentClass)&#123; UActorComponent* retComponent = nullptr; if (NewComponentClass) &#123; UActorComponent* NewComponent = NewObject&lt;UActorComponent&gt;(a, NewComponentClass, name); FTransform CmpTransform;// = dup_source-&gt;GetComponentToWorld(); //NewComponent-&gt;AttachToComponent(sc, FAttachmentTransformRules::KeepWorldTransform); // Do Scene Attachment if this new Comnponent is a USceneComponent if (USceneComponent* NewSceneComponent = Cast&lt;USceneComponent&gt;(NewComponent)) &#123; if (future_parent != 0) NewSceneComponent-&gt;AttachToComponent(future_parent, FAttachmentTransformRules::KeepWorldTransform); else NewSceneComponent-&gt;AttachToComponent(a-&gt;GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform); NewSceneComponent-&gt;SetComponentToWorld(CmpTransform); &#125; a-&gt;AddInstanceComponent(NewComponent); NewComponent-&gt;OnComponentCreated(); NewComponent-&gt;RegisterComponent(); a-&gt;RerunConstructionScripts(); retComponent = NewComponent; &#125; return retComponent;&#125; &emsp;&emsp;头文件怎么去 #include ，我基本就是用 VScode 搜索引擎源码，查找头文件的位置，然后逐个添加。 &emsp;&emsp;C++有点麻烦的地方就是 cpp 代码写完之后还要将函数注册到 头文件 里面&emsp;&emsp;不过基本上复制 cpp 的函数第一行就可以了，只需要把 :: 前面的类名删除掉而已。 &emsp;&emsp;下面就是点击 VS 上面的 本地 windows 调试，编译插件并启动项目。 &emsp;&emsp;我用 VS2017 编译经常遇到 clxx.dll 命令行过长 的错误。&emsp;&emsp;网上了查了要将项目的编译改为 Release 版本，或者升级到 VS2019 才可以解决。（网上查到这个是 VS 的 BUG） &emsp;&emsp;后来我是随便将一些 Intermediate 文件夹删除，然后重新调用 UnrealHeaderTool 生成反射代码就不会有这个编译报错了。&emsp;&emsp;完成到这里基本可以参照老外的教程，使用 Python 可以在 unreal 库下找到刚才蓝图扩展的类的，类下面就由刚才扩展的 函数 了。&emsp;&emsp;行数名称自动将 C++ 的驼峰转为 Python pep8 规范的 sneak 写法。 C++ 蓝图获取当前 Sequencer 选择的元素 &emsp;&emsp;上面介绍了 C++ 的编写的流程，就不再追溯，这里着重看蓝图的实现。&emsp;&emsp;我最近有一个需求是要获取当前打开的 Sequencer 里面的元素，然后进行 FBX 导出。&emsp;&emsp;但是查遍了 Unreal 的 Python 文档也没有找到这个方法。&emsp;&emsp;对了这里记录一个天坑，之前被坑惨了的。&emsp;&emsp;Unreal Python 的老外教程里面也记录一些使用 Sequencer 处理的 Python 方案。&emsp;&emsp;但是我发现到我调用这些 API 的时候， Unreal 居然报错找不到这些 API。&emsp;&emsp;然后我就以为是我当前 Unreal 版本出 BUG 了，或者是官方删除了这个功能。&emsp;&emsp;后来折腾了好久之后才发现，我没有开启 Sequencer Scripting 插件，所以那些调用蓝图没有加载(:з」∠)&emsp;&emsp;我当时还不知道 Python 调用的就是蓝图， 踩了这个坑才有了深刻的认识。 &emsp;&emsp;回到这里要实现的功能，我查了 C++ 相关的问题，总算是找到了一个比较可靠的回复。 链接&emsp;&emsp;于是我就抄了这里的代码。 &emsp;&emsp;不过上面的代码有点旧，其中 IAssetEditorInstance AssetEditor = UAssetEditorSubsystem().FindEditorForAsset(LevelSeq, true); 编译会报错&emsp;&emsp;修改为 IAssetEditorInstance AssetEditor = GEditor-&gt;GetEditorSubsystem()-&gt;FindEditorForAsset(LevelSeq, true); 解决问题。 &emsp;&emsp;经过修改之后上面的代码可以获取到当前 Sequencer 打开的 LevelSequence&emsp;&emsp;原理也不复杂，就是遍历项目所有的 LevelSequence 然后找到那个开启了 Editor 的 LevelSequence&emsp;&emsp;然后在从这个 LevelSequence 里获取 Editor 再从 Editor 获取 Sequencer。 &emsp;&emsp;虽然这个遍历有点不太合理，但是我在测试的项目上还是很奏效的。&emsp;&emsp;但是当我将代码编译放到我们正在开发的项目上之后，出现了大问题。&emsp;&emsp;项目有大量的 LevelSequence ，遍历需要很长的时间，并且遍历之后大量的材质启动了编译，导致电脑很卡。 &emsp;&emsp;于是我又查了一下 C++ API 文档，发现有个很有用的函数 GetAllEditedAssets。&emsp;&emsp;这个函数可以获取当前打开在编辑器里面的 Assets ，能打开的 Asset 肯定就那么几个。&emsp;&emsp;这样找 Editor 的速度可就快多了。 123456789101112131415161718ULevelSequence* URedArtToolkitBPLibrary::GetFocusSequence()&#123; UAssetEditorSubsystem* sub = GEditor-&gt;GetEditorSubsystem&lt;UAssetEditorSubsystem&gt;(); TArray &lt;UObject*&gt; assets = sub-&gt;GetAllEditedAssets(); for (UObject* asset : assets) &#123; IAssetEditorInstance* AssetEditor = sub-&gt;FindEditorForAsset(asset, false); FLevelSequenceEditorToolkit* LevelSequenceEditor = (FLevelSequenceEditorToolkit*)AssetEditor; if (LevelSequenceEditor != nullptr) &#123; ULevelSequence* LevelSeq = Cast&lt;ULevelSequence&gt;(asset); return LevelSeq; &#125; &#125; return nullptr;&#125; &emsp;&emsp;上面只是找 LevelSequence ，还需要找当前 LevelSequence 里面选择的元素。&emsp;&emsp;好在 Sequencer 提供了 GetSelectedObjects 的方法&emsp;&emsp;通过 LevelSequence 可以获取到 Sequencer 1234567891011121314TArray&lt;FGuid&gt; URedArtToolkitBPLibrary::GetFocusBindings(ULevelSequence* LevelSeq)&#123; IAssetEditorInstance* AssetEditor = GEditor-&gt;GetEditorSubsystem&lt;UAssetEditorSubsystem&gt;()-&gt;FindEditorForAsset(LevelSeq, false); FLevelSequenceEditorToolkit* LevelSequenceEditor = (FLevelSequenceEditorToolkit*)AssetEditor; TArray&lt;FGuid&gt; SelectedGuid; if (LevelSequenceEditor != nullptr) &#123; ISequencer* Sequencer = LevelSequenceEditor-&gt;GetSequencer().Get(); Sequencer-&gt;GetSelectedObjects(SelectedGuid); return SelectedGuid; &#125; return SelectedGuid;&#125; &emsp;&emsp;这样获取返回的是 Guid ， Python 有 Guid 类。&emsp;&emsp;可以通过 LevelSequence 的 get_bindings 方法获取 sequence 相关的 binding&emsp;&emsp;再调用 get_id 方法获取 guid ，然后通过 C++ 的蓝图将获取到的 id 筛选一遍。 12345# NOTE 获取当前 Sequencer 中的 LevelSequencesequence = unreal.RedArtToolkitBPLibrary.get_focus_sequence()# NOTE 获取当前 Sequencer 中选中的 Bindingsid_list = unreal.RedArtToolkitBPLibrary.get_focus_bindings(sequence)bindings_list = [binding for binding in sequence.get_bindings() if binding.get_id() in id_list] &emsp;&emsp;这样就获取到了当前选择的 SequencerBindingProxy 类。&emsp;&emsp;通过 unreal.SequencerTools.export_fbx 就可以将选择的元素导出 FBX 了。 12345678910111213141516171819202122232425262728293031323334import unrealfrom Qt import QtCore, QtWidgets, QtGuidef alert(msg=u"msg", title=u"警告", button_text=u"确定"): # NOTE 生成 Qt 警告窗口 msg_box = QtWidgets.QMessageBox() msg_box.setIcon(QtWidgets.QMessageBox.Warning) msg_box.setWindowTitle(title) msg_box.setText(msg) msg_box.addButton(button_text, QtWidgets.QMessageBox.AcceptRole) unreal.parent_external_window_to_slate(msg_box.winId()) msg_box.exec_()def unreal_export_fbx(fbx_file): # NOTE 获取当前 Sequencer 中的 LevelSequence sequence = unreal.RedArtToolkitBPLibrary.get_focus_sequence() if not sequence: alert(u"请打开定序器") return # NOTE 获取当前 Sequencer 中选中的 Bindings id_list = unreal.RedArtToolkitBPLibrary.get_focus_bindings(sequence) bindings_list = [binding for binding in sequence.get_bindings() if binding.get_id() in id_list] if bindings_list: # NOTE 导出 FBX 文件 option = unreal.FbxExportOption() option.set_editor_property("collision",False) world = unreal.EditorLevelLibrary.get_editor_world() unreal.SequencerTools.export_fbx(world,sequence,bindings_list,option,fbx_file) else: # NOTE 生成 Qt 警告窗口 alert(u"请选择定序器的元素进行 FBX 导出") return &emsp;&emsp;上面就是完整的示例代码。&emsp;&emsp;当然导出的 FBX 是带动画的，还需要将动画处理成带 蒙皮骨骼 的 FBX 。&emsp;&emsp;这个操作我是通过 FBX Python SDK 实现的。&emsp;&emsp;官方的 ExportScene01 包含了蒙皮创建，关键帧处理等等的操作，绝大部分的代码可以照抄。&emsp;&emsp;这里蒙皮转换的需求很简单，因此稍微修改一下就可以用了。&emsp;&emsp;处理完成之后将 FBX 输出到临时目录，然后用 Python 调 windows 命令打开路径。 总结 &emsp;&emsp;其实调用 C++ API 并不难，这种程度的操作还没有修改到 Unreal 的底层，很多机制也没有用到，我作为个外行还是可以应付的。&emsp;&emsp;而且 Unreal C++ 本身做了很多工作，比如实现了 垃圾回收，含有智能指针，都降低了开发难度（同时增加了学习的难度） &emsp;&emsp;Unreal 开发比较难受的地方时教程文档各方面都不全， Unity 文档还有代码示例，Unreal 因为开源，基本上就是让你直接看源码(:з」∠)&emsp;&emsp;有时候遇到的一些奇奇怪怪的问题还找不到任何网上的提问，就很难受了。 &emsp;&emsp;最后引擎编译非常耗时，如果要搞这一块的研究，一定一定要配台好电脑。]]></content>
+      <categories>
+        <category>Unreal</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>C++</tag>
+        <tag>Unreal</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[MG-PickerStudio 使用推荐]]></title>
+    <url>%2Fposts%2F115d5490.html</url>
+    <content type="text"><![CDATA[您好, 这里需要密码. 3e49d988fa4bcf1b348db72bc3ffbcc78f00bcff1ebae988a8f5b46f3e5c4cef4f603aa9c6be8923040323a8160b7c0e692031a22804fdae6ae1cbc772ee5f2657c4cc05bb366ed227a1e8f500533f376ca988e05bcb24b1f80214ceb87582419149c8346680e36b5ff62766b0e74cac5689d8063204c1142e1562418578a416b3f1a3f9408ef52c901e065bae524c97bb793228fa6f6ff270a409fd3d8e88cb701f48f9dff4fccb86524444ab624ece1354c4bb5573f29549648d664fb78b97a6a90691898cb24cb1e9b1f018907f4bbc5837f4fe8daa369863e6f5a46af483ccf4766dbd6b816a466857becf8b4904554b1ec5aade21b9b9efff4c8b4d46c2df67e0b3efd8b43ffd637e1b5bada44c81bf1da31f03106aba352c7c8de8fbbaac70c73b4ca00a6a25af4ee379d2ed10f50cd45edf1b59bce01334a746e2442fc83437f628a7188685327700796ec4285f877e9078c0f09c97ac5589d5b755811b3cfe6a0d547905c704028f1447b6ca6c13ce8a73a11b54409c2e1bab30e00532340b56383cf011b52e509a840ca5d160530bad8d84b025f9a154490a30efaf1b9f73b4becc01e9350dc95df4f8d539548bb1e56f3c4051db42aca3e37e66dc12c4fdab1a9f06d30a01c6063bcad6854acf6410886808d5af4de94c11796af148592ea939776095da1593b32dd72a3c89b7e4cc4152d1b77c35385c8401de61d263a83fa1f690522bc638e3278957334d29f20bf71e1c4a5a560ead23f8a777c62acbc58b27d8df3e6088d9bfaab1dfe9ac05f357ac0671857440d9758c1afadb9ace1f71679b82486708d1ab7d4392cd62b404f403a6c127b17d5ff3272618873d960ab7cbf91b69317ceb67b9891e31804687bfa7fd532b28d48ea5cabe59cb258f62db4e661f398ee0c59d7bfd971221e658af67f6b41708fdabe4becfb3b0c5f6d803481ba30ccbc6c65fe51383679fc9dcd2f02da9523ce19eef4ee0e2501e55ab3d14d53dc58ba24f22e7627e42fd1030221384425fd8309adcd613df2f3b8338574d793a9f9dc19dcf67abfdff45a6627cf731ad9526c8ac13dc31e35275440af3e3a69298650beb6ed372bf4b86f7ca6737906a2b723d8b7f2f3403a7f54d9bac756098a7aa2d5ec8d009b611f9b89b8cf7e740c9ef8fc3c7d4a40e4f8825de5af8d94eb003e7fa1d023050f06f4547c2b54d97415e65b10d924adb065fa91079a82c1f6dc2bf849145684f711111f27c604aee3d1d35b82eb20c09d42cc7a2084f47fdfade74f4a8d5fbd2551f2297f1934357467b7243c163b94b11a6e41432e2ec20f1893cc672595b268eda515f836a65021ec0bfe4b373c4d6cf29983df0970512de245eb8be0343a13fd7624e801c15a086ef753066b63a814501c3eec9fe4a763e4b576b5d164a593d8e79375c717ddbda09ecad2335f2d842cdb287a95bfd3dbe282f3c8d9c1bbb84476ab5e4c1f08ab610d06f172c464aad4af0df21c44eccb9fd6906254c02cac937dc408fabaa726a8a95683d1de38be7ae8c744e14b06d0bf92047a8136526cca6a7bf4617cf3643c4093095507c6599dc5866105e582b97d9d814de8f8482a817db2769738bbb69d5a8095243833798c18e57a9e5c7f04d368a490edf1e579bfdbeb2120c6b54b601b2ae3ad5a6fb0e045cc3b31e80701bfc8d6c847c398fdba18ac3943caeef5b7840472af5b93e914fad89aa0cb58267069e1face586afe35a14821564d5d8fb8a7092b96dfc8cb9e4050e3b52df5c4acfbd803d4ce7d51e40fbb64db9fc1db335f3c817007bebae284e8d103a8dce6771f817b39abdf164ce3ee2bfb8c98e7d40323f013ecc0ad330eae5171a090444925345b6017266becc6fed40bd8d32876d0d61519125d81df69298fcb0325fdcda14bad31d3731e7cc92deb72c715ad2f63ad4ad0a7dd933ca77fa318d0e1c580cef8e7e2ce14c6c8023c4129f8d366f18436c53fc1a3c595f695c0a7b6fdd31a9514d53674f479233c3d1e4911eb2dbe2a17138266d58d7c2c391fa497d77a625c3c674c5aea67eb26ff7ea757cdec2c72fae0f503807c5b238ca665306627563fd7d2f08952864534675ad18915b909573a7beaa215e2f4d9e9106a1d9d3937a6165dc6b16753d6f5678f1f1c22faf60f12e80e1881c8836e446b3fa7934a01beee0d41753f29678c23a4e0390dcfa23b8884b24129ddd526cc4fefd3618a24d4d301250dcc1bb5b63dd7cee79fecc485bd28ab776d99be85856df17c3d0c3ccdba3679210a459f07c117134e61ab217504774e795de12a882e352e84dedc22216c35abaea3ed342c67901fb4ee0b767d53e7ecbe66e61d91c929eb8089c85c1290e1966ef3678c026e31d1e8757a6c7229d61159b26feaf3da71fd73557dc71ae156b54662246163f01db7fdd6f136bdc08acc5694a8885cd035ee956164e740aad961d0fc4719aace0befd8bef3ef574e568aa4b504e950c799d0d40d94a500510f035f2a7d2c2130dbc89f22e0d170d2600ac7a0875b013a99b02e741850befc092892a921f5bb4cdc3d26491621cb9468e923a77e8cc6d9ad9be6c9b61db3a9c1cb2a03780f5743e08b73885cc23683fb4c24be64148b7abeb6cdc735fe3247417c8673573b1e7e5f1c37c45d198c2afa2567355f8ffe7bb3ba049a1f29fc19e57a3eebe720106bd6dc1c89e7e6ea65d3c81c1c831557bb51e694fd74140d517ec436db38172d43dd066242d1deb4421769ed70d4af54c1420c20e16b349661832b12fc920131cf4dc0b4a24c47554fde2d5dc7636dbbccbff7d0f755205a98d03f6b97d9b6e258d3dd672295a630ca8e1dfcacb1b7c4af2eb19d992057da02ac39ecfed47a2317acf6b99134af8d5650c5b64bc3e493e58add21c2a0901fe85913d39784d968371c390c55d7a60031177854c0adbaccb745b68a0225b9493809d1e1dd9d066d144d94a7d082a4739eace74ba91bf08cbe78eeba8f19b4ec06b15f70ed49ea482598dba73f670f418e0787b8f53c8b566e61af7f941a800d21c805e475e1f7258711b50446292b4abfcc95b458657aa03a3b6eaf17cf3255607877b8d64d7f66b24d9cdec6b035c8e041d4a3d24410111b0f0fe9201b7f4fc4f77985ad051bdc3ebb24a74c429ec7053ea4df385c80f92e649ae7496e83a19f5b2723e53523aa8d4ca5854198b34fbb6d0820376ab2cb54fc606ee3eab170ec546ef7e6d1229f806394a81d445ecca1c794aa71d34ffc3bd8722185c97159d4062aeec04fbe885789f6dd4bd7c63bb7f3a921a61a583fed93d51414f34cfe02a4416a2caba7c0a7970ed896880344e7bd9125b3c0faa83b7d68d0237e6983899644c8dbad2bc58791b8c2a803d580b2f3c644ed3e20a351b97ed37d4939d25aa376af13637c574828ac0e788fe1674f28d4ab98c6e57aeca3706bb01a62428da139651b3edc2974c30def6d0dd5ba3d4c846e571b10bef0d30d6b1fff2b629d7d75fa0bf9061914e5d00832036dcbf04ab47633e15270a690dcaeb67e31251db7140a479e587b863ae6c7deaa974bdee80237533fac1c6dd8738a4241879e6c6147ce29511740329d3923e28c37229e121fd523b1562e7dade3bb1bda0826fc4559b983844a071a95abfec00ff33686451736fbdbc9e1f5f93164488a749fd0356d61b0f60dc42ba78335f34d2ccd992a3b3242476bd762d415f6a94d4fa6ef824b95754ab40c130f42298cfcfbd7d8efc26fe9ed330fdee6ea589ec58881fd74cfe3b8d047d31974716e5fc0de3fa236144bbe81c1e6743909d149515c31c65951e45610f0d999c1208b558dfd3689502c2059f1b54e90601928b1523e41a1d4958326463213cbb8e96753ee6f309eaa5b7856cd29019fa53200c2b4713d801ffb59518f6c85cbf31ea3fe715d3f5c96e64ab0fe261ccc533f8b86e8883de4a2c4f9e3b2bb9b5ea06c2334640dd0117ef1d1484182e70cbf303034f0305921b8127e5a14b40bb272d9441a2be44393aa83d4c35a044c2f38e125f33a67d1467b2bac1f748e736a0136cb40d2c1d27073ca7f63a21ceb9d859d4af45c79c2aa0f1bbaa20b289f3568eca692b7eeeb2177543f34ff5fd0a70eb0d056d8f7255d40c8fef02f16f8276599dda372afda5b09761728418608918541957b7ed5efcc931056c690168018f48bc249cde0826bcd5412b81fafc6fc4816482ff1803996363efded009a992bfa63c989c3a209f1059e692f43eb8dc691ea178d566bd9ac2a252ebf13fce642b58b5dc686c47d47e0a183b4ad592384edfa5ae33e2dabf531aceff3cf23250d53e951786476498edc09516e1c13687ac28d32f933f740d10d36452b14ef06dfd4ec2c9760b009ba7f8c7a7e574f1a2b99696eda21041b06f09f8c39ea84c0175a6bcc81c81f5140a67090764ecc0566b4c3c5cfde6ffa5a92deeb02b15583bea7f320f144f58aba54135297cc83f3aead9bf4cf9d016c959f74647d3bec3d1f957dae6bd2eb143f1cb56f8092776b4cdea1a4e6c4002132b080d54a6447542939352aa40aa0fe52beb888dbaf7c18a21ee5b7061d6a19451c1058f6205761b17c8d65a91cf51fd161ee7062662e03457ce44da2b5276103680b06f8d56b7a5fb4f3a1749e2d9f62360bdb4ec735702f655e67a95cbcce2db51a5073952cbef3cfa1d5504327d7a9de434b3c62dfd4672ca3a21383e6cbd9793b19f50f5865873b36f6002aa5a51c51426db76666a42a1165b5fef2b34e6d68ff97565ad52215f288f53c37a952af79597d03e0bcf928a65db8de3ca187c024691a94e7397cda4c282046c00b413f8487b69bf9c9c24057ea8b4c72e050be5556c66bf931d63a45b49deae71d9574d0ef97ae6c91b07b997dedee56641e0cae8f425ea17804bc4093a400c1817833cde883c27fd527169a719ce9664c38b85f6cf2640ad68253afe76a98c6004028c6b460694c812459eebb65d740ad12b4c1665d9985ce0b7b6b80978ed86fec7f1552a64212febf29203e1f4a63072e2a8561e942dd3d79534bd1da772d231c625fe52f2e40900bd51bfb2ba07b95e489e77337ad201012b43b940dccc8861c90d44cd6f58aeefce81fc4b0e444fb38584003e972f7e537d4d6af5e482271d2e184cae49c35ae6d668cec7940fdb88ec0565abdf3a795d8cb7b1c0241afe1eb2cfb844aeb1391c7b2b4541a4786c648d9c4e80185cb139e76fcf16cdf8b87cb2a32e4754541ef69ed34cf81dfebca5593d2ec3b2fc6d03170d048d8f8e3ab107df67590061573d5c93371cc58a5bce9d17d808a879c1a303c391d2d2b8ac1a8c6880a66b31a28b75a2a63d4ac5cfa82b03b70617f39b8766169c63fdf79569cb167f3d53f5b28bdeb7e0dbf58295cc9a683aeacf72f9599e4a2ff96c3aafa7792527a44d2d07bb4c5a9d1077157b2206d131ffc2b9ac4d3f2a17b00b093874f700f18784c809aafd5c4ff1d584891b09d70b0b1e6618f787ef964ed4b20602880610d8481c15bdc83efeba9910c44a49541cb41ac9a26743fefc88bee46a858a6b15707cb3d6aa4e8ff499ffbe3938d4d7b0086422c376b6fcd29d8dfc3ab7d6d4ee2e346eb6fe79c26f0f3aa4f5da9998a7a86c700e09b5a0a45295b5d77d46d7e588d9e4152086e629352633d2b5403f411f04630beebea767517df72bd172ee0e24071c1d9c8075a7344cede7528521be15194d243f133723e547917dc885c2b65ee9d53830403cfdbba9a95721b3f15399b75babd55061966ad129cc9e6b580d80a0adfeab012a108184fff2fefbeceb49b0bad5f756f6d44be4b84b41c101aa6e46b5571d8ee4327d897e7e8bc268b0ca5fe66d2f3ceb74cba88447149f86f76bd55e11e09176a49fa5f69eca4c333f8d5d1d9998c238c99207a0ff73e828f8f414ed3926b2becbfaed82aa69e9942a842d2e234670878cb57a894c1630177ac8e7abb07b641960d9efbdb9d61d754a1e54f5ce3ba75d158f7b53c222985a018e5b8f1d809c564e267ba62e32cad11041559e8f68794347b46cf132ba38122516ded465b9196247aca7daf23e00d395858009422799ae1a8a0dbaa4c4124fe10467c7a63f2eba96924ecf34c21e37d708ee31a34e2b77778bf6ffd3792fbdf937e931ec1c92ded8c26bf4ad4ed1383d7475f71d0bbefaba5eb45b8b770eb43c1db87d8e937358e06eb58b6231948fcecd2be794f369e5ac97d2f5a42f388aac706105d6337b3eacefc86937b7faf9b10f0a2ea8e5189eb06c0279fce4e589b544048477830456f81f3c7aae83e548c49a245a904099f2b826c2827b7ff326ae4b62d4319407a6947b0259e58d56c8472a3421ac1393500bb74ce1089c34e7a9e1ea7174ec2561a40dd87f2df7a457a35d888d66ae785cc682817dc6b95387f00014c03ec669603a0ec7d4cc73121c1674b05bb982008871bd698fe56d8f764cb337055e243bf646c1a9e20f7469d2dc4c7c3729844741e4401a18ccaf945e0bbf4e035445ae9abf4836f82decdaccf05b66fc0cfbe1d15624dfdb3c358d66d5730b93558480549d4d6c07d196a1acd2c39451edb82f889c329be693c5709780000a48857de43dc895e637a9a3e0c424d359ae6cb6dedcf9f46c4f2f7cba0cbed9a9357367b4209eeaef308a0f92d3f97498cb334b6d3fc2a78cb9c0ebd8e8c26866daa5ed19d55d4f6f8089d27240f47abbc2ca0469a9905c43324c670b282c7676f785f09b7318349aa2580728b01d0e27d508fd7c9d787460ca0a88a13b3c64ad8f2bea27b9a3e7846fa37027836d1e771ae84b8d54931781c2ae1f9d6a947d5318a4e512e3cedc5f005bc318e21e08a064939b25de41fbb270a699fc7ce0ca0eb1b8799bf16b0c1abbb613013713b9a441636ddbe8503691fb2b968a638075c99fa607b6ffe8ba909d5aafae6ed6c1cb1f15853449efc3ac555808f1ea915c78b79f89a1d66df1eb69b1c73cabc3715097d6e271672eeda22892bc4bf8bbd9dcd3cbf1f56b1ce47859d8e1429fc718bf64a24aabd5837c1b4b0727c3bf6dac5b0514464ab858755db12879303bf11727bfb3004fcfd8388705a10210f8735c98287b9c2292709b049c75d836cafeb78f479f33cfb81b9f07f5631db61e4613a82947cf7ef62bd499b173bc25b1c2b1fdd5812ae2f1a293b2c76d61ffe663db2fc535460c191e4a3d57d78a1cb1f4510e2a2490363ceb85ff5c99d8b5784e1083e10aca1e543197e45e7a1a618a21b0c83a122acab20b7c29ce9054cf1a4aa1d3dccbbcd429eb95d825739d9f104ae02f6c94389d565e7cac6b162efd5e5c68ddbadab20ff9542b638e4e24060da70528c0a47bdca7d9da9088132ad1f1635a632631219d69e5f3a12282dd86370a775e0c6ce868b1cfa5bd78fec3088a14444d35f2fce48bf4fbd77544a7de37d26e02bbfd912ec516da38a4e067589d52b085f69e62f596563baad151df9daeefad6a1ffd596eea8d51d0970b365fc00ee03b8036e0071e1a923374a0def670f175642f1d6bee613f923a61278f6151a86e683e4fcb92d5faf36240378be897f016ccaf247c44ea699a9d3c12ea7afc8e07c161bbdecb966e553448d1d4a38e707517f102f18cd7c773ade419faa2aad9b230741b45f0b9e1ecaf0ce58e0cadfa168f90cd59b300fce40f88d0735ae53033c6e4c5c427603db30d387a0169b7b276e46abc70775bb1e2c0f76b731bd14624dc68f9e16618fc41e62812af53bbe9c78dc892a261fdda95f15190d389725e25d3bdee697e207357a873b6b1c7134cdded84f1de5c9a920e347b3f9c3660d0a386500774f953d232f6bfb8d9c69447a8ef5e840d8539961faf6e334d7c78e279559e7f6398470db81ba1c1e5ecf7272990cdf5e8a26a7a37ccb3f8867d010b1e8d7ed2eafa95a3ded61971cb97a98c202640fec9ad33ffbfce2e37961b34a584b15d02e7e9f86dde89cb3136ef9cf2c6e92616e4d3fe795c38ea7af06b5b272c6fe4933087a0f229d4553dc58297263ee0cacbf3dcee278fd44bb75e6f13a5f95aa05eaa2f3481d3c06641277738a2c51d3d7991e23569c26b20d713a5e9ad0b7271d58eb48024b32f649efb3118d0a9f37bf416746540af12f3b2ded12d37c5e4fca7c29d20f4ddbd31c32b5395bbc6d008ca078763d93c57a6a40720d9ae3f776a9f194aa08214de69fca126ed54ad2c6b5d02bac18366918fc9a54cea536b87d0787974595e81fbb50681f7c0ebfa7a2ec3f5d03253814236fddb8742c6d9c801f6a0c5a4855f720660bfc2ff06133879c35b60244d21a99997a4ea26a8d1e601f4b33f57b340a04cdb2edd0e8ea6e01fee495f30c256452698a70057be64936c43a5fd0b6c46931d8ae4faa8bb20a5fe43f414a13ca238ff6da65a243366e64dd9d87f050e42d714349a2817fe099070f97812c212a3e3525642da7a54a86b6681659b010c5743161c6a8454fbb4bfa89f3a11076ed97bdf042927711f5db1c98a303a6e23a6a1a85c6d0f7d5d85e246c2c3b1673f770902e0b1ad303b46332d4cf6a2cb41d9efb4f11e5bef9d050f176320ccda1939da554abe8b6e19d8b454ca5e938ed0eee9254bd6a533de5b8ce8a2d0a287a16696c94f7d6ce542cb40f775e1a84429027f0dfce061e50962fcf031e7cef4ff72e52d65fa44da116d0d33e3678aff4d2c48114d91b02220e6d2412bd9e010852c4619a88f901c5bc46cc5a3810dfcb1c1fb022f66c3516857a135a30a05437fd5fc33cafb37d22afe6cdd3a04a2a1ef3dc0ccc820eeed1f7216178c18e88127fd75c078ae129336f426ac7ce10a8262fe58fdf2536957ca71fb0794454e87856ad022939102eb3ea3a30de387de428497b2522027e0f47b6c796f2ca2b27233b5b5ca95569ed1d07011c3871151efafdc4e410d65397c4c581e6e81bbf06c0d3fa5bea39deb2a722ea6b1522c030746ce610ac5efdf88f0726b57209a5c8774948c5c9fa973f7310881018a72c81c04279766b93d8f898019896188aa0764531ac6308180ac423460f9e2f7332f3795eaf8ea10f540065826e1da089e7815a8feff71ef282ec9716c077d49c21529c0a9c1ea821a1684c376ecf100ea31b16e2bc2d7cbc82fd66da875c875e2d2a7f66dcc8d872fde2da3f8b62044a3c47bad4b6e9b44167deba12edd38e621a5e7364ce25f7c4812731524295b0df704466670e714dd7559546ff3015c30eba61742191aea8c22339ab61a8db720b71dd75009f107654e71f2ca7670758f39df26378dc3c6f9822d135a4657799069ff343dc0b2d1b14a2a7001f4006ca48db0f2aaede18a971dd555e3783f346ffea562349d77cbadea252af375091a9a0c09d5c0cbfa6d21769ff7185108ebc3523ef259adf5ac1a033d1ac91db059df8a783dab62eab55fe0256558479ddb1314e10195904fdd2e94ac565d7489740870ecbd794db4d22d5da098996fc218bb419d155a74af8525152c9f42539b8b1c94457fe1081fe17e64df0ba750016a84ec983bb468a67d187aa1a78dd8368e4ea8f7b265957159ccf481bab684bab3e8e944aae2f23c58cbe72456ecfe662a84504c2eef814b9ca2f6b6df1e2be4a5c3ef8897e6fa77437db860ab54c2a0334766edfaf64108794f067b80009359a315e53d5cea91b567b07bbdc71456665127d1a981b708e29fc147e95deb8dc75457d8cc761a709c702810f38285eed241318dfc92cd49526857d5fa7d1ca8b545d9fcaa3005c3bd092cb94be8fdd2a8b4fdd42d0d3381faa8747f22d1b47d81a298327beb2a63b6d03abca76cd76fd705509944d37e16c8d5b987d4b1171e3bf0ae7735af541eee25fe080fcc2a17445c3d20ac37e06e81504596643e89c0ace0c91c60740a161f2fc81c334e9d40d0af2aff3f35cd51c9faf512adc0bfab170f1f355e577ecab70d82713a7dade7639427ad420d46fba178ef85567785799a4a7a6d1b1a5c83f72ea777ac010f870ff47884f417958a7d7c96f1ef9a50ea6f221a8028044f3b1baae2c2a92272eace6fbd4ef7460f3a87a2f38fe93eb134dedfa5d5a47be7e004a779ddce474e223226b700924d0764b58be30725bc7e339ad84c4c3c4fc476d4e52b8cd122888dfd6501492feabe21566109c2ec748902563e67c52e6246059276d25d22fbb5b10710885851c9e4ae728b040e06778eff96ba0d4b1bda288976604c77e90f4868f036ef93de549f007c41a23e202b26e7ac5399f35c2ebf4beebfeaa8040544d2e6021036d9c4ef28d8247210345b3a3a33e2a3001c49faf97ddec945e8643294638542d2316cdc70eaf3a5c44345adfbdcf8d5b6c55eeb38300c609951a37665df27ed62e967527b4c8937ddbd268cec0b20f61b9b101d973545bed4cae99d34189f588a8d162807e1e985a9d1386cc3bb256f9b9c8f5e3c098623ab09241249585db569a3ce72c385e8e011bad8428806f05c6912f82b488ffd59de2ce971dbf4a01f0ffda360457a29795ae57d3210445ea049c3c8f08d8635c75a459157458e28d424d27eed84a9126147979c6cfcb860545acaff14f732b28b3b0a73f5a1b5d38503636ee5b1f3f375b16aa22df858c24820ccab36f8d4a91a24a865bf9bd4dddc787f84c11281fab49404cd28adfae8fd47435313bf3575d1b42c12ea752c320de4a79dcc141cb9d0826b37ed55a7d9cac52ed690595c9305ba8963e7c38f78f25503d04cb99c06cd39e34bf6e8c5518361709215e2a92c40153519caca682444f8aaa42141e3209f705231170c52705511fce20d66a3d24ca58ffe8d567b7867b46537db828e86cd9cb6c2fead20e3a6a51d46f844782626174079d4a4a96b286701f42f81b7ad93d439469239480642bc0af3f29c046e40d260c4b9eab9675a4de06a2100abb776185cb1e9fc36d8c01415a41a210eaf410a53f4ce7769acab6dc70d6006200c760f96bedfacf629bfcd50bdd83dceea25c48b5beea468b7910f950f666906ce19b69eea317d981723eae31eac3bf1f6d8ff69763c33bbfd727e9d59b6ef7f0dc954572356736d5ea88e57d6beadfa9ced81eafc685ac932334e4c4cae1d4ff1cb978ba91feeb6d7873d65643278d6acb9c3543afef62931b0cf76d641b728e0c958da82dc76fdc1338673c9d36af5fe9a2c24c44bcb800a8e142fbb0e550a472295c686fa9a86e4fc563d6accdaafdaa6e51cdfa788f5de7501cb53d9374fa60b21cf4901ede561b660058a412c47c412dfa0b3b0dd76688aef406b911e5e175502817e9b3b4eda03f9672144963f089b677c04e4c2e656b59378b0791f49905856e230b56cbaa1a2efc809c02f706ccb4b93bdbb2d173f9a6b9167c0bb856cf7dbb5d00421c466fbb644681284e8c040cb64afa0ac1226f4a8d7e933d5c2e588ebcd91d9317a6f5159a5bb16bd41650f33d0410304746e06d46edaed7ff079aa0fb6a9901382d348ff863c3872d796391b72bdc0ea20f7a9babc0e1ef26a1c2bdc09fae2c5bb39a03bfe092bf86da713530f070e9f4acc24776b8ff9c2fcb47dd8f48ddf3a539f9adc15cae6bfdb1ad11a736156cbc56af0ec5bdc17e4860ab502a205a923eb20b3d96cdeee6efb91ec96f19a478ef385ebf495acf90da7b14dbd4c54eadc488da628840e6bb326c56f34720d1c3141f17506ac457e80beaaee5d5aa5d20d9f5f8147666fa0c4e01b3e7867d93d5697f2fce5dad4c33176acb9e15c73658009cf0c83ad2d6f4187e3eb57900d6dd31c0d4fce95015cba7a084b94ee9287c979760e425a63a08d8b99ede6deaa97827e1d210b94ca61fef404c8e2c33f7cae4e4eb81f97bb3a27cb30cb0665ab4a1f5da2b04196b455a08a4786ff7c23564881398cc113280634ac52bcff23d7bfc1af030ac1f37dc774df60f7c0988b46008906d94bc342aadf4c843378ce814c31635053024ae35b17b4d163c26488b9f871a82651fc7e6b77448690b6a00cda59a1260ff6e9be93213007c31b049f3ccf986aa9ae97e4733232c5692290ef637a427cf4a3658a4bdcb927be1e3451f0c07fe6841bd555397c962faf6049a69906b36ebe3bafa1809c48dcf4dc646812641d5224c6dc93e6bac1decdc798ab6a87359aafed60df7fa881107ea3f263233ff6112e879da42689a6e12e338d2d1484df72aed0c94fd7ddff62399dcda22fdeabe5c66a39a941010ecb40fe038813443d8ca82035dd25be698f4b566124b7130cb8609f1fbb955b656c8708ae7e6e1047a5b0e6da31424a44202d90f0df974e88bd02ba21024da928f76eafb06a7f07f5367742ae05cbd09e1add8617b9db8c9a72781102dd1bd58eb04238cc88dafc2d55489eb8ecdf260106daf435ef1a803c289a9842f2e9c1543e63b95afe8adbf9bcac4ebaa90590b9bd0960d1de08c6ec5a1f2999323ad73e69d2ac427f582b219eb959a0e84bd80061ed518a73ce092b753f08bcea622241500c12b76c8652434fa7bcd214640adcd9742f6cba743d72cbb3715489d4c9da32c3b06ff6ee70aa3619d4e475b483ac44fec08a3a6c5a6980c8f5eb0fab3ffde53ad88791764ec53eb79d0398d440f5a9b565fdaac75a667953bf5d5c1f24e840d413bed8e286d0fa0699a23363de8a848917126ff8621a0a02778c4da9ede5e3af1fb42d75290ed93dbcbfd43ddf4287d8e0e2ff72c8d116e67f9c5dd16031dcffb563755273bc27024c96203ec7b2376196fb30097b13d93dc8ef8b795e5fecf85d133af6a5ef200a419e5a54575aee8e2eb69d1e0929d7f5b09094bd041af123d0047ec86857a82354de92a423d6cb807fec8e46cf9c0ad9e734e48cf579cf129cdb8382debdf94d08f52e861463e7479d7e92e16201934c3be666ab030c5b6e811a98b8b5e591b1bf4f96f843326194c8716e351ad6e000a618216e076d175868c56fa9fb99cf862028de46fd8f705df225302552965d3f01e28f55cced0f40713a963c294a0e29aa1c2af5a17dfb381356f5a1a5563c82607b97811b1cb20ee6556dfbefea9eee90358e379f7710ed6085cef89e16201a1801fbaf3a0bc9b01a2abc641c5b43e4b94b8daf972242f619039283a8310d7142f6745d6cc532a066ab93f7777cb6e97be9028c0a5379cf189b729e32cdb2f5ee173e22daab4c4559c5468e5de791dd8efbae862edcd5ed16b38b58d79f035ed7aedd518bd5999a596f8f30eddc1f539a377e698d3cc6b37def0ad940b4707ab9dccf8782b18e0b541e785e60c8727bb2fdaeecef965e5c53649b8088bdeac8987420a7f0e8e0f333202adf702aa176433623f1cd888719fe2c701745e71dd728658e8cccee4e88a5643bdb46243615e00cc6f87573bb12b6034697a096797eee98dec1bea904af34c57e39b01b5795b885b73389ea2814915e03db15a82f40415468104831c1438b279bfd0cb4c65b2b986af7c11f8f8eab9e6b1c911570640a91fbeedba6fa32c296e7642c4d69c8eaf8f2a9f9c6a8ef8abb4c3b5d8c2f763175c6a319ab7d861b5e0fc90ae98f80f66226aff2df2d53ea4db13c1d27dde499692631bbbdf31398aa1cb432be29927f0ecf40d6c03e93c5cde15cc65f4bd865d1216ce45ab332aba4229c8270a89ee5cade71849d1bbddde9bd0c9cb7bc9fa389a33ccc5a1682430319dd0139a48ed6424690e57240a98931fa87f3d36a8286347321cd41c5cc546889e6f569f24c3b5edf0ed6dbcf20310c57abe3e5636c1ff85868ca59bffacadb67171950cc2f123deee138193317534723d841a9fe3ae89e6a7bcb5f20623204c0ad914a53bd43d068d01212550b382dc1d037b296369a4e41209170f69fce30ab80840ca048007e1e8c846b8545bc97719374c9e14eea16fbb36f24c5b404d70462e38600318f9dca4f7453b3a8d953bc0344124a6071fe2ca5a2b40216ea72dd8c5fe547e791945c17cc60c0b28b979ae8c37abb122488a94519fee31ec92b568da7c256f1fa3c688bf8a5d9150d9f60d92ed9772ddea3b5fc14cbbaa21cb9b9e64998868368627918a177df5159864137da398e975f551c9345c32bb414e0f027991fafd12a4595fdc638b38bfef79cf44abd0b9efaa7d70c5b495431bb078a57ebf45c9d4f96f7bae37a5ca9785fd00023a5987e75e0fb341a07758ba4bd27abf7ac66d8cb1fcf383d640f027bc68ccd25485a187eef760fbc2393c7de435ddff98233edea5d1f5027b014a901b1ce3d27721f55e29ecf6efb67b64e91ecb4c907d7a27d4bfe8496c2907300dcd58607697b86585d9201f91e9ffcf11825b6c6752f49377ea0a9959654c6d2638e1bf149318a269736c3f324bf6821fe84117cd63a99379bd48b22a7ae10a284383da6d0d205c88630fbabb8a040955bcd4f5547a1c297ec9affd02620a4e827cd24e61e1ee7dc0b535526a3a2f5836bce4d6f4c989168c9cec71a0a348798dd34ed8186640595e5d62e60156f38925fdd9bece8d13040c44b9dd6e0e0717d743e19f4473a311785776fa1a69908392e1953fb1f371544e3eb4ddd9cadecaadbcb518b5ea367470884f07749a0e7ddab3f9c35a95dee000ee1f6320440ec78ce0a96311bdec96efc2499f6c3f107d8e5e3379dc03fcdb9a1d71c36c6473143a251efe7d25e2693f8f0887fd96e0397cc10ec3502e9b1e2e2929f7d1d7d379b8558448899b79414af53ed84fd98885faab00259173b3f04d2b4b75b40f09f5bdd049ad9bc1a0adf6d8a07310ba3d9f5eaade89a304cd32c2e08b42a22e8962097f7d714874097c8c1a139a7afb862c359a7b326960509ce10042b6d2edec0eef466e2cd389687841eaf99b55384543e3aa93d0eec54a2f9052464dd12bdef0ee3ce4f913b6457aea3f9146390980b9652d8cd192923ddd69ed67a2d3a1913d7195fe31c73819ba83148501dcd37b7095c0c54f2236b20]]></content>
+      <categories>
+        <category>Maya</category>
+        <category>CG Programming</category>
+        <category>Python</category>
+        <category>Rigging</category>
+      </categories>
+      <tags>
+        <tag>Maya</tag>
+        <tag>Python</tag>
+        <tag>Rigging</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Maya 高效使用指南]]></title>
     <url>%2Fposts%2F1c2d932.html</url>
     <content type="text"><![CDATA[揭秘 Maya 的鲜为人知的功能 通用 File Path Editor 可以解决 Maya 各种贴图路径找不到的问题 ctrl+m &amp; ctrl+shift+m &amp; shift+m 隐藏菜单栏 alt+z alt+y 摄像机位置撤销 Maya 递增保存，备份保存 optimize scene size ctrl+shift 左键 添加菜单到工具架上 标记菜单 shift+右键 对象标记菜单 ctrl+右键 对象转换标记菜单 Q W E R+左键 选择标记菜单 alt+Q+左键 选择对象标记菜单 shift+Q+左键 选择对象标记菜单 A+左键 选择全部菜单删除历史 O+左键 选择标记菜单 U+左键 绘制标记菜单 右键图标菜单 文件打开图标 打开最近打开的文件 摄像机图标 切换摄像机 网格图标 右键菜单可以快速设置网格属性 隔离显示图标 右键菜单可以快速添加隔离显示的物体 首选项 文件选择窗口使用 os native 可以配合 listary 发挥打开文件的最大效率 Viewport 2.0 选择 DirectX11 渲染 ， 否则 DX11 材质不起作用 Remember Size And Position 勾选 undo infinity autosave 选择 按住 Tab 键可以进行拖拽选择 + - 可以调整操纵杆大小 Q 键选择模式不会受到控制杆的干扰 通道盒中键拖拽 ctrl 和 shift 以及 ctrl+shift 键可以调节数值精度 tweaker 可以不借助操纵杆 操作模型 开启摄像机模式选择 camera base selection 动画 曲线编辑器 按住 K 键 可以自由拖拽时间轴 , . 按键可以跳转前后关键帧 加上 alt 可以前后帧 alt+v 播放 alt+shift+v 可以跳转到开头]]></content>
@@ -648,8 +677,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>3dsMax</tag>
         <tag>Python</tag>
+        <tag>3dsMax</tag>
       </tags>
   </entry>
   <entry>
@@ -702,8 +731,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>3dsMax</tag>
         <tag>Python</tag>
+        <tag>3dsMax</tag>
       </tags>
   </entry>
   <entry>
@@ -935,9 +964,9 @@
         <category>VScode</category>
       </categories>
       <tags>
+        <tag>Maya</tag>
         <tag>VScode</tag>
         <tag>编辑器</tag>
-        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1052,9 +1081,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1066,9 +1095,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1683,8 +1712,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -1697,8 +1726,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -1968,8 +1997,8 @@
         <category>Python</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>Python</tag>
+        <tag>前端</tag>
       </tags>
   </entry>
   <entry>
@@ -1984,19 +2013,6 @@
       <tags>
         <tag>Maya</tag>
         <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Houdini - 计算模型体积 过滤问题模型]]></title>
-    <url>%2Fposts%2F8150782b.html</url>
-    <content type="text"><![CDATA[批量遍历模型 过滤体积小的部分 前言 &emsp;&emsp;最近花城汇项目又遇到了小小的问题（拖到现在，面目全无）&emsp;&emsp;3dsMax挤出的盒子并不是全部都是盒子，有部分只是面片，如何检测出这些多余的部分呢？&emsp;&emsp;我想了一下，想起了Houdini的measure节点，直接计算模型体积进行过滤就OK了 measure节点 &emsp;&emsp;然而事情并没有我想象的那么顺利。&emsp;&emsp;我们这边的模型是一堆box&emsp;&emsp;如果直接连接measure节点，会根据模型上的每个面进行体积计算 &emsp;&emsp;我需要的是对单个模型进行计算。&emsp;&emsp;然而如此循环遍历单个模型呢？&emsp;&emsp;我最开始是想用类似破碎的方案，直接加入assemble节点打包，&emsp;&emsp;循环遍历所有的物体。&emsp;&emsp;然而这样根本就计算不出体积。 &emsp;&emsp;因此我想到所有的box都丢进循环中&emsp;&emsp;最开始也不知道怎么操作，测试了一下就是弄好出来了&emsp;&emsp;添加connective节点将所有的模型面编号统一输出一个class属性，Houdini 16.5 的foreach节点自带相关操作了。 &emsp;&emsp;后面就是怎么计算体积了&emsp;&emsp;毕竟总不能去计算每一个面&emsp;&emsp;这里我想起了voronoi的时候的isoOffset节点&emsp;&emsp;通过那个节点可以将模型转成雾&emsp;&emsp;如此一来就可以计算体积了 &emsp;&emsp;但是这样输出没有模型&emsp;&emsp;过滤就没办法操作&emsp;&emsp;于是我想到使用attribute transfer将体积属性传递给原模型&emsp;&emsp;最后再用delete节点对模型进行过滤，就可以找到box模型中有问题的部分。 总结 &emsp;&emsp;其实很简单的操作，本来还想着用Maya Python实现的，想到Houdini Measure节点就懒得写了。&emsp;&emsp;最后发现Houdini的坑也不少。&emsp;&emsp;不过目前也攻克了。&emsp;&emsp;后面我找了一下，发现Maya可以使用 computePolysetVolume 命令计算体积&emsp;&emsp;但是这个命令只能用MEL执行&emsp;&emsp;于是又在网上查了一下，原来Python也可以执行MEL，那就不必担心。链接 2018-10-12 根据面数过滤模型 &emsp;&emsp;关于寻找问题模型的方法，又有了新的思路&emsp;&emsp;鉴于问题模型一般都是一个到两个面的面片，我可以计算片面数对模型进行过滤。&emsp;&emsp;思路是很清晰的，但是我却被 connective 节点生成的class属性给难住了。&emsp;&emsp;我是希望通过计算class数字相同的情况出现的次数，如果出现次数比较少，就进行过滤。&emsp;&emsp;但是这个操作非常难以实现，最主要的原因在于 wrangle 节点&emsp;&emsp;wrangle 中的primitive遍历会注意遍历每一个面片执行wrangle中的代码&emsp;&emsp;这样根本就没有办法将相关的变量累加起来。&emsp;&emsp;于是在这个死循环中写了很多无谓的代码进行测试。 &emsp;&emsp;最后我发现，用foreach节点可以有效地将所有的模型分离出来。&emsp;&emsp;这样只要直接根据面数过滤相关的模型即可。]]></content>
-      <categories>
-        <category>Houdini</category>
-      </categories>
-      <tags>
-        <tag>Houdini</tag>
-        <tag>模型</tag>
-        <tag>体积</tag>
       </tags>
   </entry>
   <entry>
@@ -2105,9 +2121,9 @@
         <category>VScode</category>
       </categories>
       <tags>
+        <tag>Maya</tag>
         <tag>VScode</tag>
         <tag>编辑器</tag>
-        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2161,8 +2177,8 @@
       </categories>
       <tags>
         <tag>Houdini</tag>
-        <tag>pluralsight</tag>
         <tag>sop</tag>
+        <tag>pluralsight</tag>
       </tags>
   </entry>
   <entry>
@@ -2442,8 +2458,8 @@
       </categories>
       <tags>
         <tag>Houdini</tag>
-        <tag>sop</tag>
         <tag>zplus</tag>
+        <tag>sop</tag>
       </tags>
   </entry>
   <entry>
@@ -2485,8 +2501,8 @@
       </categories>
       <tags>
         <tag>Houdini</tag>
-        <tag>sop</tag>
         <tag>zplus</tag>
+        <tag>sop</tag>
       </tags>
   </entry>
   <entry>
@@ -2570,8 +2586,8 @@
       </categories>
       <tags>
         <tag>Houdini</tag>
-        <tag>sop</tag>
         <tag>zplus</tag>
+        <tag>sop</tag>
       </tags>
   </entry>
   <entry>
@@ -2584,8 +2600,8 @@
       </categories>
       <tags>
         <tag>Houdini</tag>
-        <tag>sop</tag>
         <tag>zplus</tag>
+        <tag>sop</tag>
       </tags>
   </entry>
   <entry>
@@ -2653,8 +2669,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>学习笔记</tag>
         <tag>拍照指南</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
   <entry>
@@ -2706,8 +2722,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>前期基本流程</tag>
         <tag>学习笔记</tag>
+        <tag>前期基本流程</tag>
       </tags>
   </entry>
 </search>
