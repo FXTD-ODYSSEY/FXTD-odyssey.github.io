@@ -1,0 +1,11 @@
+#recent-posts > .recent-post-item >.recent-post-info > .content {
+    display: -webkit-box;
+    overflow: hidden;
+    margin-top: 0.3rem;
+    word-break: break-word;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
