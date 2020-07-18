@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[Unreal Python Sequencer 批量渲染总结]]></title>
     <url>%2Fposts%2F2f3a9b95.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;最近我的学弟找我咨询关于 Unreal Sequencer 渲染输出的问题。&emsp;&emsp;之前没有折腾过这个一块，于是就跟进了一下，顺便学习 Sequencer 的序列输出。 手动操作 &emsp;&emsp;在自动化操作渲染之前，需要先搞清楚怎么手动进行渲染的。]]></content>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;最近我的学弟找我咨询关于 Unreal Sequencer 渲染输出的问题。&emsp;&emsp;之前没有折腾过这个一块，于是就跟进了一下，顺便学习 Sequencer 的序列输出。 &emsp;&emsp;另外最近另一个师弟也研究了差不多的问题，发了一篇 B站专栏 ， 在这里推荐一下 链接 手动操作 &emsp;&emsp;在自动化操作渲染之前，需要先搞清楚怎么手动操作 Sequencer 进行渲染。 &emsp;&emsp;其实操作起来不难，打开 Unreal 的定序器，点击上面的 Render 图标打开 Render Movie Setting&emsp;&emsp;然后配置好渲染设置就可以点击渲染，就可以将影片批量渲染出来。 自动化操作 &emsp;&emsp;下面就是将手动操作转为 Python 的自动操作。&emsp;&emsp;具体的操作脚本其实可以参考官方的脚本，在官方 SequencerScripting 插件里面有渲染相关的 Python 脚本。&emsp;&emsp;安装了 Unreal 引擎之后可以根据地址查找 \Engine\Plugins\MovieScene\SequencerScripting\Content\Python&emsp;&emsp;sequencer_examples 就有输出的 Python 代码，不需要自己查文档研究怎么搭建代码。&emsp;&emsp;参照 render_sequence_to_movie 的代码即可输出。 &emsp;&emsp;其中比较坑的点在于 OnRenderMovieStopped 的 delegate&emsp;&emsp;接入 Python 回调需要一个 global 函数才可以，否则执行完成的回调函数不会触发。&emsp;&emsp;官方的案例是放到最外层执行的，如果不凑巧回调函数写在函数里面，就需要利用 global 关键字解决这个问题。 &emsp;&emsp;官方案例还没能实现一个需求，就是批量将不同 Sequence 同时渲染出来。&emsp;&emsp;然而 render_movie 这个函数是不阻塞的，如果使用 for 循环会一直把所有的 render_movie 持续执行。&emsp;&emsp;所以这里进行渲染需要通过回调来实现逐个渲染的调用。 Python 代码123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110111112113114115# -*- coding: utf-8 -*-"""渲染 sequencer 的画面选择 LevelSequence 批量进行渲染"""from __future__ import divisionfrom __future__ import print_functionfrom __future__ import absolute_import__author__ = 'timmyliang'__email__ = '820472580@qq.com'__date__ = '2020-07-14 21:57:32'import unrealimport osimport subprocessfrom functools import partialdef alert(msg): unreal.SystemLibrary.print_string(None,msg,text_color=[255,255,255,255])def render(sequence_list,i,output_directory="C:/render",output_format="&#123;sequence&#125;"): # NOTE 如果超出数组则退出执行 if i &gt;= len(sequence_list): # NOTE 输出完成 打开输出文件夹的路径 subprocess.call(["start","",output_directory], creationflags=0x08000000,shell=True) return # NOTE 获取当前渲染序号下的 LevelSequence sequence = sequence_list[i] # NOTE 配置渲染参数 settings = unreal.MovieSceneCaptureSettings() path = unreal.DirectoryPath(output_directory) settings.set_editor_property("output_directory",path) settings.set_editor_property("output_format",output_format) settings.set_editor_property("overwrite_existing",True) settings.set_editor_property("game_mode_override",None) settings.set_editor_property("use_relative_frame_numbers",False) settings.set_editor_property("handle_frames",0) settings.set_editor_property("zero_pad_frame_numbers",4) settings.set_editor_property("use_custom_frame_rate",True) settings.set_editor_property("custom_frame_rate",unreal.FrameRate(24, 1)) # NOTE 渲染大小 w,h = 1280,720 settings.set_editor_property("resolution",unreal.CaptureResolution(w,h)) settings.set_editor_property("enable_texture_streaming",False) settings.set_editor_property("cinematic_engine_scalability",True) settings.set_editor_property("cinematic_mode",True) settings.set_editor_property("allow_movement",False) settings.set_editor_property("allow_turning",False) settings.set_editor_property("show_player",False) settings.set_editor_property("show_hud",False) # NOTE 设置默认的自动渲染参数 option = unreal.AutomatedLevelSequenceCapture() option.set_editor_property("use_separate_process",False) option.set_editor_property("close_editor_when_capture_starts",False) option.set_editor_property("additional_command_line_arguments","-NOSCREENMESSAGES") option.set_editor_property("inherited_command_line_arguments","") option.set_editor_property("use_custom_start_frame",False) option.set_editor_property("use_custom_end_frame",False) option.set_editor_property("warm_up_frame_count",0.0) option.set_editor_property("delay_before_warm_up",0) option.set_editor_property("delay_before_shot_warm_up",0.0) option.set_editor_property("write_edit_decision_list",True) # option.set_editor_property("custom_start_frame",unreal.FrameNumber(0)) # option.set_editor_property("custom_end_frame",unreal.FrameNumber(0)) option.set_editor_property("settings",settings) option.set_editor_property("level_sequence_asset",unreal.SoftObjectPath(sequence.get_path_name())) # NOTE 设置自定义渲染参数 option.set_image_capture_protocol_type(unreal.CompositionGraphCaptureProtocol) protocol = option.get_image_capture_protocol() # NOTE 这里设置 Base Color 渲染 Base Color 通道，可以根据输出的 UI 设置数组名称 passes = unreal.CompositionGraphCapturePasses(["Base Color"]) protocol.set_editor_property("include_render_passes",passes) # protocol.set_editor_property("compression_quality",100) # NOTE 设置全局变量才起作用！ global on_finished_callback on_finished_callback = unreal.OnRenderMovieStopped( lambda s:render(sequence_list,i+1,output_directory,output_format)) unreal.SequencerTools.render_movie(option,on_finished_callback) def main(output_directory="C:/render",output_format="&#123;sequence&#125;"): # NOTE 获取当前选择的 LevelSequence sequence_list = [asset for asset in unreal.EditorUtilityLibrary.get_selected_assets() if isinstance(asset,unreal.LevelSequence)] if not sequence_list: alert(u"请选择一个 LevelSequence") return if not os.access(output_directory, os.W_OK): alert(u"当前输出路径非法") return elif os.path.exists(output_directory): # NOTE 路径不存在则创建文件夹 os.makedirs(output_directory) elif os.path.isfile(output_directory): # NOTE 如果传入文件路径则获取目录 output_directory = os.path.dirname(output_directory) render(sequence_list,0,output_directory,output_format)if __name__ == "__main__": main() &emsp;&emsp;选择 Sequencer 执行上面的脚本，就可以自动批量输出 Sequencer 了。 总结 &emsp;&emsp;理论上 Python 调用蓝图方法做到的功能， 蓝图应该也可以做到的。&emsp;&emsp;但是经过我的测试，我发现 蓝图 的 get_image_capture_protocol 返回值是 基类。&emsp;&emsp;导致无法获取 CompositionGraphCaptureProtocol 这个类&emsp;&emsp;也就无法设置 include_render_passes 的值了，这样导致蓝图输出会将所有通道输出，而不能实现单一通道的输出。 &emsp;&emsp;另外这一次没有制作 GUI ，我还在纠结使用 Qt 还是 Unreal 原生的界面。&emsp;&emsp;Unreal使用 Editor Utility 创建的 UI 是二进制 uasset ，无法向前兼容 Unreal 版本。&emsp;&emsp;UI的功能响应上也没有 Qt 成熟。&emsp;&emsp;但是无论如何，Unreal 的 UMG 是原生体验，嵌入样式各方面都比较舒服的。&emsp;&emsp;虽然 Qt 可以写一套 Qss 来解决样式问题，但是在 Unreal 中实现 Dock 目前还是无解。]]></content>
       <categories>
         <category>游戏开发</category>
         <category>Unreal</category>
@@ -30,7 +30,7 @@
   <entry>
     <title><![CDATA[Unreal Python 结合 C++ 开发蓝图库插件]]></title>
     <url>%2Fposts%2Fc6f4bf5b.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;上个月的这个时候我写了一篇文章关于如何嵌入 PySide 调用 Qt 的 GUI 开发。 链接&emsp;&emsp;Python 虽然很好，但是有些功能，并没有从 C++ 里面暴露出来。&emsp;&emsp;这种情况就需要通过 C++ 的蓝图开发来将这部分的功能进行暴露。&emsp;&emsp;这样 Python 基本上可以做任何 Unreal 的事情。 &emsp;&emsp;如何开发蓝图库也基本可以参照上篇文章提到的 Unreal Python 教程。 链接 为什么需要开发 C++ 蓝图 &emsp;&emsp;上面的视频链接有很详细如何通过 Unreal C++ API 开发一个 Unreal 的蓝图，暴露给 Python 调用。&emsp;&emsp;Unreal 的 Python 插件其实已经将 Unreal 内置的所有蓝图暴露给了 Python。&emsp;&emsp;因此 蓝图 能够做到的事情， Python 是绝对可以做到的。&emsp;&emsp;而且经过一个多月的使用来看， Python 的 API 文档做得比 蓝图 的 文档要好很多。&emsp;&emsp;有时候直接查 Python 的 API 反而更有效率，甚至会发现一些其他插件所引入的蓝图。 &emsp;&emsp;那么 Python 相较于 蓝图 的有什么异同？&emsp;&emsp;我目前的使用感受来看，除了失去图形节点编程的可视化之外，基本上碾压蓝图，当然运行效率上没有测试过。&emsp;&emsp;蓝图 和 Python 的定位有很大的不一样。&emsp;&emsp;蓝图可以作为游戏运行逻辑的一部分， Python 只能当做编辑器的自动化工具。（Python 效率太低了，运行脚本宁愿用 lua 调 C++） &emsp;&emsp;蓝图自身有它的优缺点，效率比不过 C++ 链接&emsp;&emsp;但是图形化编程，对于非 coding 人员很友好，而且一些简单的逻辑也比较直观。&emsp;&emsp;但是复杂蓝图的连线还是太让人劝退了。 &emsp;&emsp;Python 对于像我这种工具向开发的 TA 来说太友好了，毕竟很多 DCC 都使用 Python 。&emsp;&emsp;Unreal 的 Python 插件大部分是对 蓝图 的分装，基本上蓝图有的功能都可以通过 Python 来调。&emsp;&emsp;同时 Python 还可以实现一些神奇的功能，比如说通过 Python 开发一个蓝图节点 ，调用 Python 的第三方库诸如 PySide 包，或者调用系统的 cmd 或者 shell 命令。&emsp;&emsp;因此从引擎的提升来说， Python 的确在这方面更胜一筹，复杂逻辑通过代码看也比较直观。 &emsp;&emsp;当然很明显， 蓝图不能实现的引擎操作，基本上也不用指望 Python 能够调用什么 API 来实现了。&emsp;&emsp;这种情况下就需要 C++ 来扩展蓝图，实现 Python 调用。 C++ 开发蓝图库插件 &emsp;&emsp;我们目前的需求并不是开发游戏调用的蓝图，因此我们可以开发一个蓝图库插件。&emsp;&emsp;这样可以轻易将这些蓝图迁移到不同的项目里面去。 &emsp;&emsp;Unreal 搭建蓝图库开发其实并不难，按照官方的指引去做即可。&emsp;&emsp;首先需要创建一个 C++ 工程，如果是蓝图工程是无法写 C++ 代码的。&emsp;&emsp;然后打开插件面板，选择 New Plugin &emsp;&emsp;然后引擎就会自动创建一个基础插件的模板出来。&emsp;&emsp;后续就是在这个基础模板上调用 C++ 的 API 实现一些特殊的功能。 unreal C++ 插件注意事项 &emsp;&emsp;插件的默认结构是 .uplugin 文件加 Resource 和 Source 文件夹。&emsp;&emsp;uplugin 就是一个 Json 配置，配置了插件在引擎的插件列表的显示，以及加载方式。&emsp;&emsp;Resource 存放插件显示的图标。&emsp;&emsp;Source 存放的是 C++ 源码了。 &emsp;&emsp;前面两个不需要太过关注，重点的 Source 文件夹的东西。&emsp;&emsp;里面会有 .Build.cs 文件以及 Public 和 Private 文件夹。&emsp;&emsp;`.Build.cs`是 C# 代码，通过虚幻的 Reflect 机制生成 Intermediate 的中间代码用来编译生成 dll。&emsp;&emsp;Public 默认存放头文件&emsp;&emsp;Private 默认存放cpp源码 &emsp;&emsp;引用了引擎内部的一些库，需要在 build.cs 文件里面添加上。&emsp;&emsp;否则编译的时候回报某些类型无法识别的错误。&emsp;&emsp;试过排查这种小错误花了我大半天。 &emsp;&emsp;前面两个部分是添加路径的，用来缩短头文件索引的路径长度。&emsp;&emsp;后面的 Private 和 Public Module 则是最重要的索引头文件的，必须要在这里配置才能在 c++ 里面调用。&emsp;&emsp;这里怎么填写可以参考引擎 Source 源码下的文件夹名称。 &emsp;&emsp;cs 里面配置就可以找 Source 源码的一些头文件进行引用了。&emsp;&emsp;因为虚幻开源了，所以内部 Private 和 Public 没有什么区别，也可能是我的 C++ 造诣还不够。 &emsp;&emsp;配置头文件就可以愉快地使用官方提供的一些 C++ 了。 C++ 实现 Add Component 蓝图功能 &emsp;&emsp;这个功能看似非常简单，奈何 Python 就是实现不了。 &emsp;&emsp;就是给现有 Actor 添加新的 Component 组件而已。&emsp;&emsp;但是查了 API 文档，即便使用 Attach 相关的方法，也无法新的 Component 添加到 Actor 上。&emsp;&emsp;应该说 Python 的操作没有问题， Component 也加上了，可以通过 Python 获取到，但是 Component 没有注册，无法在 UI 上显示出来。 &emsp;&emsp;经过我查阅大量网上的资料之后，只在论坛上找到了一个通过 C++ 实现的方案。 链接&emsp;&emsp;这段代码里面有很关键的 RegisterComponent 的操作。&emsp;&emsp;而这些操作并没有暴露到 Python 或者说 蓝图 里面。&emsp;&emsp;当然这个添加 Component 的方法估计也和 Unreal 的机制有关，我对 Unreal 引擎还不是很熟，就不做无关的揣测了。 &emsp;&emsp;Python 的文档在 Actor 的部分有所涉及。&emsp;&emsp;不过这个问题就非常蛋疼，&emsp;&emsp;unreal.EditorLevelLibrary.get_all_level_actors_components 可以获取所有注册的 Component&emsp;&emsp;Actor 也可以删除现有的 Component ，偏偏无法添加新的 Component &emsp;&emsp;C++ 的部分我简化了上面回答的代码。&emsp;&emsp;如果没有传入具体的 Component 类型就返回 None 给 Python 就好了。 1234567891011121314151617181920212223242526272829UActorComponent* URedArtToolkitBPLibrary::AddComponent(AActor* a, USceneComponent *future_parent, FName name, UClass* NewComponentClass)&#123; UActorComponent* retComponent = nullptr; if (NewComponentClass) &#123; UActorComponent* NewComponent = NewObject&lt;UActorComponent&gt;(a, NewComponentClass, name); FTransform CmpTransform;// = dup_source-&gt;GetComponentToWorld(); //NewComponent-&gt;AttachToComponent(sc, FAttachmentTransformRules::KeepWorldTransform); // Do Scene Attachment if this new Comnponent is a USceneComponent if (USceneComponent* NewSceneComponent = Cast&lt;USceneComponent&gt;(NewComponent)) &#123; if (future_parent != 0) NewSceneComponent-&gt;AttachToComponent(future_parent, FAttachmentTransformRules::KeepWorldTransform); else NewSceneComponent-&gt;AttachToComponent(a-&gt;GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform); NewSceneComponent-&gt;SetComponentToWorld(CmpTransform); &#125; a-&gt;AddInstanceComponent(NewComponent); NewComponent-&gt;OnComponentCreated(); NewComponent-&gt;RegisterComponent(); a-&gt;RerunConstructionScripts(); retComponent = NewComponent; &#125; return retComponent;&#125; &emsp;&emsp;头文件怎么去 #include ，我基本就是用 VScode 搜索引擎源码，查找头文件的位置，然后逐个添加。 &emsp;&emsp;C++有点麻烦的地方就是 cpp 代码写完之后还要将函数注册到 头文件 里面&emsp;&emsp;不过基本上复制 cpp 的函数第一行就可以了，只需要把 :: 前面的类名删除掉而已。 &emsp;&emsp;下面就是点击 VS 上面的 本地 windows 调试，编译插件并启动项目。 &emsp;&emsp;我用 VS2017 编译经常遇到 clxx.dll 命令行过长 的错误。&emsp;&emsp;网上了查了要将项目的编译改为 Release 版本，或者升级到 VS2019 才可以解决。（网上查到这个是 VS 的 BUG） &emsp;&emsp;后来我是随便将一些 Intermediate 文件夹删除，然后重新调用 UnrealHeaderTool 生成反射代码就不会有这个编译报错了。&emsp;&emsp;完成到这里基本可以参照老外的教程，使用 Python 可以在 unreal 库下找到刚才蓝图扩展的类的，类下面就由刚才扩展的 函数 了。&emsp;&emsp;行数名称自动将 C++ 的驼峰转为 Python pep8 规范的 sneak 写法。 C++ 蓝图获取当前 Sequencer 选择的元素 &emsp;&emsp;上面介绍了 C++ 的编写的流程，就不再追溯，这里着重看蓝图的实现。&emsp;&emsp;我最近有一个需求是要获取当前打开的 Sequencer 里面的元素，然后进行 FBX 导出。&emsp;&emsp;但是查遍了 Unreal 的 Python 文档也没有找到这个方法。&emsp;&emsp;对了这里记录一个天坑，之前被坑惨了的。&emsp;&emsp;Unreal Python 的老外教程里面也记录一些使用 Sequencer 处理的 Python 方案。&emsp;&emsp;但是我发现到我调用这些 API 的时候， Unreal 居然报错找不到这些 API。&emsp;&emsp;然后我就以为是我当前 Unreal 版本出 BUG 了，或者是官方删除了这个功能。&emsp;&emsp;后来折腾了好久之后才发现，我没有开启 Sequencer Scripting 插件，所以那些调用蓝图没有加载(:з」∠)&emsp;&emsp;我当时还不知道 Python 调用的就是蓝图， 踩了这个坑才有了深刻的认识。 &emsp;&emsp;回到这里要实现的功能，我查了 C++ 相关的问题，总算是找到了一个比较可靠的回复。 链接&emsp;&emsp;于是我就抄了这里的代码。 &emsp;&emsp;不过上面的代码有点旧，其中 IAssetEditorInstance AssetEditor = UAssetEditorSubsystem().FindEditorForAsset(LevelSeq, true); 编译会报错&emsp;&emsp;修改为 IAssetEditorInstance AssetEditor = GEditor-&gt;GetEditorSubsystem()-&gt;FindEditorForAsset(LevelSeq, true); 解决问题。 &emsp;&emsp;经过修改之后上面的代码可以获取到当前 Sequencer 打开的 LevelSequence&emsp;&emsp;原理也不复杂，就是遍历项目所有的 LevelSequence 然后找到那个开启了 Editor 的 LevelSequence&emsp;&emsp;然后在从这个 LevelSequence 里获取 Editor 再从 Editor 获取 Sequencer。 &emsp;&emsp;虽然这个遍历有点不太合理，但是我在测试的项目上还是很奏效的。&emsp;&emsp;但是当我将代码编译放到我们正在开发的项目上之后，出现了大问题。&emsp;&emsp;项目有大量的 LevelSequence ，遍历需要很长的时间，并且遍历之后大量的材质启动了编译，导致电脑很卡。 &emsp;&emsp;于是我又查了一下 C++ API 文档，发现有个很有用的函数 GetAllEditedAssets。&emsp;&emsp;这个函数可以获取当前打开在编辑器里面的 Assets ，能打开的 Asset 肯定就那么几个。&emsp;&emsp;这样找 Editor 的速度可就快多了。 123456789101112131415161718ULevelSequence* URedArtToolkitBPLibrary::GetFocusSequence()&#123; UAssetEditorSubsystem* sub = GEditor-&gt;GetEditorSubsystem&lt;UAssetEditorSubsystem&gt;(); TArray &lt;UObject*&gt; assets = sub-&gt;GetAllEditedAssets(); for (UObject* asset : assets) &#123; IAssetEditorInstance* AssetEditor = sub-&gt;FindEditorForAsset(asset, false); FLevelSequenceEditorToolkit* LevelSequenceEditor = (FLevelSequenceEditorToolkit*)AssetEditor; if (LevelSequenceEditor != nullptr) &#123; ULevelSequence* LevelSeq = Cast&lt;ULevelSequence&gt;(asset); return LevelSeq; &#125; &#125; return nullptr;&#125; &emsp;&emsp;上面只是找 LevelSequence ，还需要找当前 LevelSequence 里面选择的元素。&emsp;&emsp;好在 Sequencer 提供了 GetSelectedObjects 的方法&emsp;&emsp;通过 LevelSequence 可以获取到 Sequencer 1234567891011121314TArray&lt;FGuid&gt; URedArtToolkitBPLibrary::GetFocusBindings(ULevelSequence* LevelSeq)&#123; IAssetEditorInstance* AssetEditor = GEditor-&gt;GetEditorSubsystem&lt;UAssetEditorSubsystem&gt;()-&gt;FindEditorForAsset(LevelSeq, false); FLevelSequenceEditorToolkit* LevelSequenceEditor = (FLevelSequenceEditorToolkit*)AssetEditor; TArray&lt;FGuid&gt; SelectedGuid; if (LevelSequenceEditor != nullptr) &#123; ISequencer* Sequencer = LevelSequenceEditor-&gt;GetSequencer().Get(); Sequencer-&gt;GetSelectedObjects(SelectedGuid); return SelectedGuid; &#125; return SelectedGuid;&#125; &emsp;&emsp;这样获取返回的是 Guid ， Python 有 Guid 类。&emsp;&emsp;可以通过 LevelSequence 的 get_bindings 方法获取 sequence 相关的 binding&emsp;&emsp;再调用 get_id 方法获取 guid ，然后通过 C++ 的蓝图将获取到的 id 筛选一遍。 12345# NOTE 获取当前 Sequencer 中的 LevelSequencesequence = unreal.RedArtToolkitBPLibrary.get_focus_sequence()# NOTE 获取当前 Sequencer 中选中的 Bindingsid_list = unreal.RedArtToolkitBPLibrary.get_focus_bindings(sequence)bindings_list = [binding for binding in sequence.get_bindings() if binding.get_id() in id_list] &emsp;&emsp;这样就获取到了当前选择的 SequencerBindingProxy 类。&emsp;&emsp;通过 unreal.SequencerTools.export_fbx 就可以将选择的元素导出 FBX 了。 12345678910111213141516171819202122232425262728293031323334import unrealfrom Qt import QtCore, QtWidgets, QtGuidef alert(msg=u"msg", title=u"警告", button_text=u"确定"): # NOTE 生成 Qt 警告窗口 msg_box = QtWidgets.QMessageBox() msg_box.setIcon(QtWidgets.QMessageBox.Warning) msg_box.setWindowTitle(title) msg_box.setText(msg) msg_box.addButton(button_text, QtWidgets.QMessageBox.AcceptRole) unreal.parent_external_window_to_slate(msg_box.winId()) msg_box.exec_()def unreal_export_fbx(fbx_file): # NOTE 获取当前 Sequencer 中的 LevelSequence sequence = unreal.RedArtToolkitBPLibrary.get_focus_sequence() if not sequence: alert(u"请打开定序器") return # NOTE 获取当前 Sequencer 中选中的 Bindings id_list = unreal.RedArtToolkitBPLibrary.get_focus_bindings(sequence) bindings_list = [binding for binding in sequence.get_bindings() if binding.get_id() in id_list] if bindings_list: # NOTE 导出 FBX 文件 option = unreal.FbxExportOption() option.set_editor_property("collision",False) world = unreal.EditorLevelLibrary.get_editor_world() unreal.SequencerTools.export_fbx(world,sequence,bindings_list,option,fbx_file) else: # NOTE 生成 Qt 警告窗口 alert(u"请选择定序器的元素进行 FBX 导出") return &emsp;&emsp;上面就是完整的示例代码。&emsp;&emsp;当然导出的 FBX 是带动画的，还需要将动画处理成带 蒙皮骨骼 的 FBX 。&emsp;&emsp;这个操作我是通过 FBX Python SDK 实现的。&emsp;&emsp;官方的 ExportScene01 包含了蒙皮创建，关键帧处理等等的操作，绝大部分的代码可以照抄。&emsp;&emsp;这里蒙皮转换的需求很简单，因此稍微修改一下就可以用了。&emsp;&emsp;处理完成之后将 FBX 输出到临时目录，然后用 Python 调 windows 命令打开路径。 总结 &emsp;&emsp;其实调用 C++ API 并不难，这种程度的操作还没有修改到 Unreal 的底层，很多机制也没有用到，我作为个外行还是可以应付的。&emsp;&emsp;而且 Unreal C++ 本身做了很多工作，比如实现了 垃圾回收，含有智能指针，都降低了开发难度（同时增加了学习的难度） &emsp;&emsp;Unreal 开发比较难受的地方时教程文档各方面都不全， Unity 文档还有代码示例，Unreal 因为开源，基本上就是让你直接看源码(:з」∠)&emsp;&emsp;有时候遇到的一些奇奇怪怪的问题还找不到任何网上的提问，就很难受了。 &emsp;&emsp;最后引擎编译非常耗时，如果要搞这一块的研究，一定一定要配台好电脑。]]></content>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;上个月的这个时候我写了一篇文章关于如何嵌入 PySide 调用 Qt 的 GUI 开发。 链接&emsp;&emsp;Python 虽然很好，但是有些功能，并没有从 C++ 里面暴露出来。&emsp;&emsp;这种情况就需要通过 C++ 的蓝图开发来将这部分的功能进行暴露。&emsp;&emsp;这样 Python 基本上可以做任何 Unreal 的事情。 &emsp;&emsp;如何开发蓝图库也基本可以参照上篇文章提到的 Unreal Python 教程。 链接 为什么需要开发 C++ 蓝图 &emsp;&emsp;上面的视频链接有很详细如何通过 Unreal C++ API 开发一个 Unreal 的蓝图，暴露给 Python 调用。&emsp;&emsp;Unreal 的 Python 插件其实已经将 Unreal 内置的所有蓝图暴露给了 Python。&emsp;&emsp;因此 蓝图 能够做到的事情， Python 是绝对可以做到的。&emsp;&emsp;而且经过一个多月的使用来看， Python 的 API 文档做得比 蓝图 的 文档要好很多。&emsp;&emsp;有时候直接查 Python 的 API 反而更有效率，甚至会发现一些其他插件所引入的蓝图。 &emsp;&emsp;那么 Python 相较于 蓝图 的有什么异同？&emsp;&emsp;我目前的使用感受来看，除了失去图形节点编程的可视化之外，基本上碾压蓝图，当然运行效率上没有测试过。&emsp;&emsp;蓝图 和 Python 的定位有很大的不一样。&emsp;&emsp;蓝图可以作为游戏运行逻辑的一部分， Python 只能当做编辑器的自动化工具。（Python 效率太低了，运行脚本宁愿用 lua 调 C++） &emsp;&emsp;蓝图自身有它的优缺点，效率比不过 C++ 链接&emsp;&emsp;但是图形化编程，对于非 coding 人员很友好，而且一些简单的逻辑也比较直观。&emsp;&emsp;但是复杂蓝图的连线还是太让人劝退了。 &emsp;&emsp;Python 对于像我这种工具向开发的 TA 来说太友好了，毕竟很多 DCC 都使用 Python 。&emsp;&emsp;Unreal 的 Python 插件大部分是对 蓝图 的分装，基本上蓝图有的功能都可以通过 Python 来调。&emsp;&emsp;同时 Python 还可以实现一些神奇的功能，比如说通过 Python 开发一个蓝图节点 ，调用 Python 的第三方库诸如 PySide 包，或者调用系统的 cmd 或者 shell 命令。&emsp;&emsp;因此从引擎的提升来说， Python 的确在这方面更胜一筹，复杂逻辑通过代码看也比较直观。 &emsp;&emsp;当然很明显， 蓝图不能实现的引擎操作，基本上也不用指望 Python 能够调用什么 API 来实现了。&emsp;&emsp;这种情况下就需要 C++ 来扩展蓝图，实现 Python 调用。 C++ 开发蓝图库插件 &emsp;&emsp;我们目前的需求并不是开发游戏调用的蓝图，因此我们可以开发一个蓝图库插件。&emsp;&emsp;这样可以轻易将这些蓝图迁移到不同的项目里面去。 &emsp;&emsp;Unreal 搭建蓝图库开发其实并不难，按照官方的指引去做即可。&emsp;&emsp;首先需要创建一个 C++ 工程，如果是蓝图工程是无法写 C++ 代码的。&emsp;&emsp;然后打开插件面板，选择 New Plugin &emsp;&emsp;然后引擎就会自动创建一个基础插件的模板出来。&emsp;&emsp;后续就是在这个基础模板上调用 C++ 的 API 实现一些特殊的功能。 unreal C++ 插件注意事项 &emsp;&emsp;插件的默认结构是 .uplugin 文件加 Resource 和 Source 文件夹。&emsp;&emsp;uplugin 就是一个 Json 配置，配置了插件在引擎的插件列表的显示，以及加载方式。&emsp;&emsp;Resource 存放插件显示的图标。&emsp;&emsp;Source 存放的是 C++ 源码了。 &emsp;&emsp;前面两个不需要太过关注，重点的 Source 文件夹的东西。&emsp;&emsp;里面会有 .Build.cs 文件以及 Public 和 Private 文件夹。&emsp;&emsp;`.Build.cs`是 C# 代码，通过虚幻的 Reflect 机制生成 Intermediate 的中间代码用来编译生成 dll。&emsp;&emsp;Public 默认存放头文件&emsp;&emsp;Private 默认存放cpp源码 &emsp;&emsp;引用了引擎内部的一些库，需要在 build.cs 文件里面添加上。&emsp;&emsp;否则编译的时候回报某些类型无法识别的错误。&emsp;&emsp;试过排查这种小错误花了我大半天。 &emsp;&emsp;前面两个部分是添加路径的，用来缩短头文件索引的路径长度。&emsp;&emsp;后面的 Private 和 Public Module 则是最重要的索引头文件的，必须要在这里配置才能在 c++ 里面调用。&emsp;&emsp;这里怎么填写可以参考引擎 Source 源码下的文件夹名称。 &emsp;&emsp;cs 里面配置就可以找 Source 源码的一些头文件进行引用了。&emsp;&emsp;因为虚幻开源了，所以内部 Private 和 Public 没有什么区别，也可能是我的 C++ 造诣还不够。 &emsp;&emsp;配置头文件就可以愉快地使用官方提供的一些 C++ 了。 C++ 实现 Add Component 蓝图功能 &emsp;&emsp;这个功能看似非常简单，奈何 Python 就是实现不了。 &emsp;&emsp;就是给现有 Actor 添加新的 Component 组件而已。&emsp;&emsp;但是查了 API 文档，即便使用 Attach 相关的方法，也无法新的 Component 添加到 Actor 上。&emsp;&emsp;应该说 Python 的操作没有问题， Component 也加上了，可以通过 Python 获取到，但是 Component 没有注册，无法在 UI 上显示出来。 &emsp;&emsp;经过我查阅大量网上的资料之后，只在论坛上找到了一个通过 C++ 实现的方案。 链接&emsp;&emsp;这段代码里面有很关键的 RegisterComponent 的操作。&emsp;&emsp;而这些操作并没有暴露到 Python 或者说 蓝图 里面。&emsp;&emsp;当然这个添加 Component 的方法估计也和 Unreal 的机制有关，我对 Unreal 引擎还不是很熟，就不做无关的揣测了。 &emsp;&emsp;Python 的文档在 Actor 的部分有所涉及。&emsp;&emsp;不过这个问题就非常蛋疼，&emsp;&emsp;unreal.EditorLevelLibrary.get_all_level_actors_components 可以获取所有注册的 Component&emsp;&emsp;Actor 也可以删除现有的 Component ，偏偏无法添加新的 Component &emsp;&emsp;C++ 的部分我简化了上面回答的代码。&emsp;&emsp;如果没有传入具体的 Component 类型就返回 None 给 Python 就好了。 1234567891011121314151617181920212223242526272829UActorComponent* URedArtToolkitBPLibrary::AddComponent(AActor* a, USceneComponent *future_parent, FName name, UClass* NewComponentClass)&#123; UActorComponent* retComponent = nullptr; if (NewComponentClass) &#123; UActorComponent* NewComponent = NewObject&lt;UActorComponent&gt;(a, NewComponentClass, name); FTransform CmpTransform;// = dup_source-&gt;GetComponentToWorld(); //NewComponent-&gt;AttachToComponent(sc, FAttachmentTransformRules::KeepWorldTransform); // Do Scene Attachment if this new Comnponent is a USceneComponent if (USceneComponent* NewSceneComponent = Cast&lt;USceneComponent&gt;(NewComponent)) &#123; if (future_parent != 0) NewSceneComponent-&gt;AttachToComponent(future_parent, FAttachmentTransformRules::KeepWorldTransform); else NewSceneComponent-&gt;AttachToComponent(a-&gt;GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform); NewSceneComponent-&gt;SetComponentToWorld(CmpTransform); &#125; a-&gt;AddInstanceComponent(NewComponent); NewComponent-&gt;OnComponentCreated(); NewComponent-&gt;RegisterComponent(); a-&gt;RerunConstructionScripts(); retComponent = NewComponent; &#125; return retComponent;&#125; &emsp;&emsp;头文件怎么去 #include ，我基本就是用 VScode 搜索引擎源码，查找头文件的位置，然后逐个添加。 &emsp;&emsp;C++有点麻烦的地方就是 cpp 代码写完之后还要将函数注册到 头文件 里面&emsp;&emsp;不过基本上复制 cpp 的函数第一行就可以了，只需要把 :: 前面的类名删除掉而已。 &emsp;&emsp;下面就是点击 VS 上面的 本地 windows 调试，编译插件并启动项目。 &emsp;&emsp;我用 VS2017 编译经常遇到 clxx.dll 命令行过长 的错误。&emsp;&emsp;网上了查了要将项目的编译改为 Release 版本，或者升级到 VS2019 才可以解决。（网上查到这个是 VS 的 BUG） &emsp;&emsp;后来我是随便将一些 Intermediate 文件夹删除，然后重新调用 UnrealHeaderTool 生成反射代码就不会有这个编译报错了。&emsp;&emsp;完成到这里基本可以参照老外的教程，使用 Python 可以在 unreal 库下找到刚才蓝图扩展的类的，类下面就由刚才扩展的 函数 了。&emsp;&emsp;行数名称自动将 C++ 的驼峰转为 Python pep8 规范的 sneak 写法。 C++ 蓝图获取当前 Sequencer 选择的元素 &emsp;&emsp;上面介绍了 C++ 的编写的流程，就不再追溯，这里着重看蓝图的实现。&emsp;&emsp;我最近有一个需求是要获取当前打开的 Sequencer 里面的元素，然后进行 FBX 导出。&emsp;&emsp;但是查遍了 Unreal 的 Python 文档也没有找到这个方法。&emsp;&emsp;对了这里记录一个天坑，之前被坑惨了的。&emsp;&emsp;Unreal Python 的老外教程里面也记录一些使用 Sequencer 处理的 Python 方案。&emsp;&emsp;但是我发现到我调用这些 API 的时候， Unreal 居然报错找不到这些 API。&emsp;&emsp;然后我就以为是我当前 Unreal 版本出 BUG 了，或者是官方删除了这个功能。&emsp;&emsp;后来折腾了好久之后才发现，我没有开启 Sequencer Scripting 插件，所以那些调用蓝图没有加载(:з」∠)&emsp;&emsp;我当时还不知道 Python 调用的就是蓝图， 踩了这个坑才有了深刻的认识。 &emsp;&emsp;回到这里要实现的功能，我查了 C++ 相关的问题，总算是找到了一个比较可靠的回复。 链接&emsp;&emsp;于是我就抄了这里的代码。 &emsp;&emsp;不过上面的代码有点旧，其中 IAssetEditorInstance AssetEditor = UAssetEditorSubsystem().FindEditorForAsset(LevelSeq, true); 编译会报错&emsp;&emsp;修改为 IAssetEditorInstance AssetEditor = GEditor-&gt;GetEditorSubsystem()-&gt;FindEditorForAsset(LevelSeq, true); 解决问题。 &emsp;&emsp;经过修改之后上面的代码可以获取到当前 Sequencer 打开的 LevelSequence&emsp;&emsp;原理也不复杂，就是遍历项目所有的 LevelSequence 然后找到那个开启了 Editor 的 LevelSequence&emsp;&emsp;然后在从这个 LevelSequence 里获取 Editor 再从 Editor 获取 Sequencer。 &emsp;&emsp;虽然这个遍历有点不太合理，但是我在测试的项目上还是很奏效的。&emsp;&emsp;但是当我将代码编译放到我们正在开发的项目上之后，出现了大问题。&emsp;&emsp;项目有大量的 LevelSequence ，遍历需要很长的时间，并且遍历之后大量的材质启动了编译，导致电脑很卡。 &emsp;&emsp;于是我又查了一下 C++ API 文档，发现有个很有用的函数 GetAllEditedAssets。&emsp;&emsp;这个函数可以获取当前打开在编辑器里面的 Assets ，能打开的 Asset 肯定就那么几个。&emsp;&emsp;这样找 Editor 的速度可就快多了。 123456789101112131415161718ULevelSequence* URedArtToolkitBPLibrary::GetFocusSequence()&#123; UAssetEditorSubsystem* sub = GEditor-&gt;GetEditorSubsystem&lt;UAssetEditorSubsystem&gt;(); TArray &lt;UObject*&gt; assets = sub-&gt;GetAllEditedAssets(); for (UObject* asset : assets) &#123; IAssetEditorInstance* AssetEditor = sub-&gt;FindEditorForAsset(asset, false); FLevelSequenceEditorToolkit* LevelSequenceEditor = (FLevelSequenceEditorToolkit*)AssetEditor; if (LevelSequenceEditor != nullptr) &#123; ULevelSequence* LevelSeq = Cast&lt;ULevelSequence&gt;(asset); return LevelSeq; &#125; &#125; return nullptr;&#125; &emsp;&emsp;上面只是找 LevelSequence ，还需要找当前 LevelSequence 里面选择的元素。&emsp;&emsp;好在 Sequencer 提供了 GetSelectedObjects 的方法&emsp;&emsp;通过 LevelSequence 可以获取到 Sequencer 1234567891011121314TArray&lt;FGuid&gt; URedArtToolkitBPLibrary::GetFocusBindings(ULevelSequence* LevelSeq)&#123; IAssetEditorInstance* AssetEditor = GEditor-&gt;GetEditorSubsystem&lt;UAssetEditorSubsystem&gt;()-&gt;FindEditorForAsset(LevelSeq, false); FLevelSequenceEditorToolkit* LevelSequenceEditor = (FLevelSequenceEditorToolkit*)AssetEditor; TArray&lt;FGuid&gt; SelectedGuid; if (LevelSequenceEditor != nullptr) &#123; ISequencer* Sequencer = LevelSequenceEditor-&gt;GetSequencer().Get(); Sequencer-&gt;GetSelectedObjects(SelectedGuid); return SelectedGuid; &#125; return SelectedGuid;&#125; &emsp;&emsp;这样获取返回的是 Guid ， Python 有 Guid 类。&emsp;&emsp;可以通过 LevelSequence 的 get_bindings 方法获取 sequence 相关的 binding&emsp;&emsp;再调用 get_id 方法获取 guid ，然后通过 C++ 的蓝图将获取到的 id 筛选一遍。 12345# NOTE 获取当前 Sequencer 中的 LevelSequencesequence = unreal.RedArtToolkitBPLibrary.get_focus_sequence()# NOTE 获取当前 Sequencer 中选中的 Bindingsid_list = unreal.RedArtToolkitBPLibrary.get_focus_bindings(sequence)bindings_list = [binding for binding in sequence.get_bindings() if binding.get_id() in id_list] &emsp;&emsp;这样就获取到了当前选择的 SequencerBindingProxy 类。&emsp;&emsp;通过 unreal.SequencerTools.export_fbx 就可以将选择的元素导出 FBX 了。 123456789101112131415161718192021222324252627282930313233import unrealfrom Qt import QtCore, QtWidgets, QtGuidef alert(msg=u"msg", title=u"警告", button_text=u"确定"): # NOTE 生成 Qt 警告窗口 msg_box = QtWidgets.QMessageBox() msg_box.setIcon(QtWidgets.QMessageBox.Warning) msg_box.setWindowTitle(title) msg_box.setText(msg) msg_box.addButton(button_text, QtWidgets.QMessageBox.AcceptRole) unreal.parent_external_window_to_slate(msg_box.winId()) msg_box.exec_()def unreal_export_fbx(fbx_file): # NOTE 获取当前 Sequencer 中的 LevelSequence sequence = unreal.RedArtToolkitBPLibrary.get_focus_sequence() if not sequence: alert(u"请打开定序器") return # NOTE 获取当前 Sequencer 中选中的 Bindings id_list = unreal.RedArtToolkitBPLibrary.get_focus_bindings(sequence) bindings_list = [binding for binding in sequence.get_bindings() if binding.get_id() in id_list] if bindings_list: # NOTE 导出 FBX 文件 option = unreal.FbxExportOption() option.set_editor_property("collision",False) world = unreal.EditorLevelLibrary.get_editor_world() unreal.SequencerTools.export_fbx(world,sequence,bindings_list,option,fbx_file) else: alert(u"请选择定序器的元素进行 FBX 导出") return &emsp;&emsp;上面就是完整的示例代码。&emsp;&emsp;当然导出的 FBX 是带动画的，还需要将动画处理成带 蒙皮骨骼 的 FBX 。&emsp;&emsp;这个操作我是通过 FBX Python SDK 实现的。&emsp;&emsp;官方的 ExportScene01 包含了蒙皮创建，关键帧处理等等的操作，绝大部分的代码可以照抄。&emsp;&emsp;这里蒙皮转换的需求很简单，因此稍微修改一下就可以用了。&emsp;&emsp;处理完成之后将 FBX 输出到临时目录，然后用 Python 调 windows 命令打开路径。 总结 &emsp;&emsp;其实调用 C++ API 并不难，这种程度的操作还没有修改到 Unreal 的底层，很多机制也没有用到，我作为个外行还是可以应付的。&emsp;&emsp;而且 Unreal C++ 本身做了很多工作，比如实现了 垃圾回收，含有智能指针，都降低了开发难度（同时增加了学习的难度） &emsp;&emsp;Unreal 开发比较难受的地方时教程文档各方面都不全， Unity 文档还有代码示例，Unreal 因为开源，基本上就是让你直接看源码(:з」∠)&emsp;&emsp;有时候遇到的一些奇奇怪怪的问题还找不到任何网上的提问，就很难受了。 &emsp;&emsp;最后引擎编译非常耗时，如果要搞这一块的研究，一定一定要配台好电脑。]]></content>
       <categories>
         <category>游戏开发</category>
         <category>Unreal</category>
@@ -50,8 +50,8 @@
         <category>神秘研究</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -142,8 +142,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -184,8 +184,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -197,8 +197,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Game</tag>
       </tags>
   </entry>
@@ -211,8 +211,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>OpenMaya</tag>
       </tags>
   </entry>
@@ -225,8 +225,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>重定向</tag>
         <tag>HumanIK</tag>
       </tags>
@@ -240,8 +240,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>法线</tag>
       </tags>
   </entry>
@@ -278,8 +278,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Game</tag>
       </tags>
   </entry>
@@ -292,8 +292,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -316,8 +316,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -340,8 +340,8 @@
         <category>神秘研究</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -378,8 +378,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>reference</tag>
       </tags>
   </entry>
@@ -392,8 +392,8 @@
         <category>Maya插件开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -456,8 +456,8 @@
         <category>Maya疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -469,8 +469,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -482,8 +482,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -521,8 +521,8 @@
         <category>Maya疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -534,8 +534,8 @@
         <category>Maya疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -547,8 +547,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -560,8 +560,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -586,8 +586,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -612,8 +612,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -625,8 +625,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -650,8 +650,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -674,8 +674,8 @@
         <category>Maya 插件分析</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -687,8 +687,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Git</tag>
       </tags>
   </entry>
@@ -701,8 +701,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -726,8 +726,8 @@
         <category>Maya疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -750,8 +750,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -775,8 +775,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -858,12 +858,6 @@
     <title><![CDATA[【置顶】 智伤帝 | 博客全面指引]]></title>
     <url>%2Fposts%2Fintro.html</url>
     <content type="text"><![CDATA[欢迎来到我的个人博客 前言 &emsp;&emsp;很高兴可以在这里与你相遇。&emsp;&emsp;这个博客是从 2018 年中旬开始了我的更新之路,至今已经有 年了&emsp;&emsp;目前依然怀揣着巨大的热情和努力在自己的这片小天地间记录变化。 &emsp;&emsp;本篇文章将会不定期更新干货，望大家能够受益。 // NOTE 计算博客维系至今的时间 let curr_date = new Date(); curr_year = curr_date.getFullYear(); curr_month = curr_date.getMonth(); curr = curr_year + curr_month/12 - 2018.5; $(".year").text(curr.toFixed(2)) $(".year").css({"color":"orange"}) 使用指引 &emsp;&emsp;我的博客是基于前端 Hexo 静态博客框架技术搭建的。&emsp;&emsp;可以在不依赖服务器的情况下实现博客的分类和搜索。 &emsp;&emsp;博客分左边侧边栏和右边的文章罗列。&emsp;&emsp;左侧已经将一些相关主题的文章系列整理排列在此。 &emsp;&emsp;扩展图标下面有更多选项可以选择。 点击标签 点击分类 点击归档 点击友情链接 点击搜索 注：搜索需要下载搜索索引的文件，随着我的博客内容越来越多，这个文件也越来越大，因此需要等待一段时间的加载。 手机端页面 推荐指引 2019-11-12友情链接 &emsp;&emsp;博客侧边栏上的友情链接我多年遇到问题的时候搜索答案积累下来的链接&emsp;&emsp;特别推荐其中的一些博客&emsp;&emsp;因为目前我自己主研 Maya ，所以推荐 Maya 为主，请见谅~ 【Maya】 一半君的总结纸 &emsp;&emsp;一半君的总结纸 博客里面也有一堆大神的链接，我自己也没有验证过，也就不重复推荐了。&emsp;&emsp;从博客里面的文章记录来看 一半君 也是老前辈了。&emsp;&emsp;另外博客里面翻译的 How-to 系列真的帮助很大，虽然年代久远，但是Maya的架构真的没有太大变化，完全可用。 【Maya】 Autokdesk ADN 官方博客 &emsp;&emsp;Autokdesk ADN 官方博客 这个博客是自动桌官方技术人员的博客。&emsp;&emsp;可以说里面的内容是最权威最官方。&emsp;&emsp;另外博客里很多大佬都是中国人（也可能是华人），希望国人的自研架构能早日面世^_^ 个人精选 PYTHON QT 开发教程 &emsp;&emsp;这个系列教程是我自己花了一个月时间的准备筹划所编写出来的 Qt for Python 教程系列&emsp;&emsp;从零到进阶的开发路线，当然由于后续时间紧凑，也没有弄得非常复杂，后期结合Maya等DCC软件的案例太少。&emsp;&emsp;目前计划重置这个系列的教程，后续将推出视频版，预计将在今年内上线。&emsp;&emsp;作为粉丝的你，记得催更了。 HEXO博客搭建历程 &emsp;&emsp;这个系列记录了我博客的各种变迁与升级&emsp;&emsp;不忘初心，砥砺前行。 观看笔记 - Python For Maya Artist Friendly Programming &emsp;&emsp;最用心的教程记录，当时初学 Python Qt ， 连 Maya API 用起来也艰难得很。&emsp;&emsp;这里面记录了自己很多心路历程，推荐给大家。 公众号推荐 &emsp;&emsp;下面就是我推荐的一些公众号二维码，各位客官如果有兴趣可以扫一下。 我的个人公众号 公众号未必和博客同步更新，但是可以肯定公众号的文章都来源于博客或者转载于其他有用的地方。 TD大佬的公众号，内容很棒，只可惜数量太少。 猫大牛逼，TD十戒真的强。 教程指引 有待补充。。。打算出一个系列的文章进行说明 博客说明 &emsp;&emsp;这个博客是基于 Hexo 的 black-blue 主题下进行修改的 （这个主题又是基于 SPFK 主题修改的(:з」∠)）&emsp;&emsp;修改的内容可以参考我 Hexo博客搭建历程系列 &emsp;&emsp;博客目前挂载在三个地方 FXTD-odyssey.github.io FXTD-odyssey.coding.me blog.l0v0.com &emsp;&emsp;这三个地方同步更新，互相备份。&emsp;&emsp; github.io 是借助 Github Pages 静态页面挂载的免费服务&emsp;&emsp; coding.me 是借助 Coding Pages 静态页面挂载的免费服务&emsp;&emsp; l0v0.com 是我的个人域名。 &emsp;&emsp;评论系统是基于 github issue 的 gittalk 实现的&emsp;&emsp;因此只有在 github.io 的域名下才可以正确评论，其他挂载服务使用 gittalk 会错误跳转到 github.io 的主页上，对此我也没有办法。 最后 &emsp;&emsp;我的干货分享到此结束了。&emsp;&emsp;大家如果还有什么建议，想要交流的，可以在下方留言。]]></content>
-      <categories>
-        <category>hexo</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
-      </tags>
   </entry>
   <entry>
     <title><![CDATA[Maya Arnold 渲染设置崩溃]]></title>
@@ -986,8 +980,8 @@
         <category>VScode</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>VScode</tag>
+        <tag>Maya</tag>
         <tag>编辑器</tag>
       </tags>
   </entry>
@@ -1001,8 +995,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>Unreal</tag>
         <tag>shader</tag>
+        <tag>Unreal</tag>
       </tags>
   </entry>
   <entry>
@@ -1015,8 +1009,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>Unreal</tag>
         <tag>shader</tag>
+        <tag>Unreal</tag>
       </tags>
   </entry>
   <entry>
@@ -1029,8 +1023,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>Unreal</tag>
         <tag>shader</tag>
+        <tag>Unreal</tag>
       </tags>
   </entry>
   <entry>
@@ -1043,8 +1037,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>Unreal</tag>
         <tag>shader</tag>
+        <tag>Unreal</tag>
       </tags>
   </entry>
   <entry>
@@ -1082,8 +1076,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>BlendShape</tag>
       </tags>
   </entry>
@@ -1095,8 +1089,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1108,9 +1102,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1122,9 +1116,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1150,8 +1144,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1306,7 +1300,7 @@
   <entry>
     <title><![CDATA[Vue 学习之路（一）]]></title>
     <url>%2Fposts%2F2d0c41c5.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;今年暑假，也算是我大学最后一个暑假了，我老早就打算趁这段时间重构去年开发的 数字媒体技术 网站，也是为下学期的动态网页打基础。&emsp;&emsp;之前一直都是在脑海里筹备，但是一直没有将行动落实到位。&emsp;&emsp;最近总算是逼迫自己行动起来了，打算想把前端的框架过一遍，之前学习了 PHP 的 Laravel 框架，学习的时候总是惦记着前端框架。&emsp;&emsp;再加上教程用的是 Laravel 5.4 ，还停留在结合 JQ 的时代，再加上前后端模板的高度耦合，让我越学就越烦。&emsp;&emsp;所以无论是暑假的网站重构还是下学期的动态网页数据库大作业，我都打算用 前端框架去做。&emsp;&emsp;然后又继续陷入了框架的选择而纠结。&emsp;&emsp;之前开发手机app的时候，也在 Flutter &amp; 原生Android &amp; React Native 上面纠结。&emsp;&emsp;最后我三个都学了，然而也只不过是浅尝辄止，然后还欠了一篇博客没写额(:з」∠)&emsp;&emsp;这一次我还是纠结，因为毕设我打算开发一个跨平台的 Todo 软件，兼顾 网站 、 APP 、 小程序。&emsp;&emsp;然后我就找到了国内开发的 uniapp框架，这个框架可以完美兼容以上的平台，而且是用 Vue 进行开发，学习成本较低。&emsp;&emsp;所以我最后就决定了 Vue 框架深入学习了，之前也看了一个 React 的入门教程，完全没有做总结的后果就是我基本忘光了 React 的知识点了(:з」∠)&emsp;&emsp;其实之前也写了一些看教程的记录，问题是后续没有进一步的学习，长时间的不使用也就忘得产不多了，虽然后面学习 React Native 还过了很多有用的 es6 语法，但是还是那句话，不用就会忘的。&emsp;&emsp;而且之前一直努力写PyQt的教程，耗费了不少时间额。&emsp;&emsp;总之，现在我就从零开始，以最快的速度过一遍 Vue 框架的核心技术。 &emsp;&emsp;这一次也不例外，也是从B站搜教程开始学习，搜集了如下几个教程(其实我以前很喜欢看英文教程来秀优越感，今年开始都看中文教程了，可以加速到3、4倍看，看得酸爽，入门来说也不比英文教程差) VUE核心技术-尚硅谷 Vue Cli3.0全栈项目之资金管理系统带权限教程 本文章结合VUE核心技术-尚硅谷的1-10集做的归纳总结。 Vue 基本使用 Vue官方教程&emsp;&emsp;Vue官方有教程可以参考&emsp;&emsp;上面就阐述搭建一个最简单的Vue效果的案例。&emsp;&emsp;我们只需要将HTML代码修改一下就可以实现很神奇的效果。 1234&lt;div id="app"&gt; &lt;input type="text" v-model="message" &gt; &lt;p&gt;Hello &#123;&#123;message&#125;&#125; &lt;/p&gt;&lt;/div&gt; 体验一下 &emsp;&emsp;这里 v-model 就是将 vue data 中的变量 message 绑定到了输入框当中&emsp;&emsp;{{message}} 用来显示变量数据 &emsp;&emsp;Vue的内核关系 DOM 为 HTML 树，即显示层 View ViewModel 是 Vue 内核，实现数据的监听和双向绑定 实现数据互相更新 Model 即为底层的数据 模板语法 核心代码 12345678910111213141516171819202122232425262728293031323334&lt;div id="app"&gt; &lt;h2&gt;1. 双大括号表达式&lt;/h2&gt; &lt;p&gt;&#123;&#123;msg&#125;&#125;&lt;/p&gt; &lt;p&gt;&#123;&#123;msg.toUpperCase()&#125;&#125;&lt;/p&gt; &lt;p v-text="link"&gt;&lt;/p&gt; &lt;p v-html="link"&gt;&lt;/p&gt; &lt;h2&gt;2. 指令一：强制数据绑定&lt;/h2&gt; &lt;img src="imgUrl"&gt; &lt;img v-bind:src="imgUrl"&gt; &lt;img :src="imgUrl"&gt; &lt;h2&gt;2. 指令二：绑定时间监听&lt;/h2&gt; &lt;button v-on:click="click"&gt;点击事件1&lt;/button&gt; &lt;button @click="click2(msg)"&gt;点击事件2&lt;/button&gt;&lt;/div&gt;&lt;script&gt; const vm = new Vue(&#123; el: '#app', data: &#123; msg: 'l0v0.com', link: '&lt;a href="https://blog.l0v0.com"&gt;blog.l0v0.com&lt;/a&gt;', imgUrl: 'https://cn.vuejs.org/images/logo.png', &#125;, methods: &#123; click() &#123; alert('点击事件1触发') &#125;, click2(content)&#123; alert(content) &#125; &#125; &#125;)&lt;/script&gt; 体验一下 双大括号表达式 Vue使用双括号表达式可以将 Vue 实例中data数据显示到页面上 双大括号里面支持js语句对变量进行操作 v-text 可以将变量输出 v-text 可以将变量以html的形式输出 强制数据绑定 在html的属性上加上 v-bind:属性值 就可以绑定 vue 的数据 可以简写为 :属性值 绑定时间监听 在html的属性上加上 v-on:事件属性值 就可以实现 vue 的方法监听触发 可以简写为 @事件属性值 vue中的事件给可以在实例参数中加入 methods 进行方法绑定 计算属性和监视 核心代码 123456789101112131415161718192021222324252627282930313233343536373839404142&lt;body&gt; &lt;div id="app"&gt; 姓：&lt;input type="text" placeholder="First Name" v-model="firstName"&gt;&lt;br&gt; 名：&lt;input type="text" placeholder="Last Name" v-model="lastName"&gt;&lt;br&gt; 姓名1：&lt;input type="text" placeholder="Full Name1" v-model="fullname1"&gt;&lt;br&gt; 姓名2：&lt;input type="text" placeholder="Full Name2" v-model="fullname2"&gt;&lt;br&gt; 姓名3：&lt;input type="text" placeholder="Full Name3" v-model="fullname3"&gt;&lt;br&gt; &lt;/div&gt;&lt;script&gt;vm = new Vue(&#123; el:'#app', data:&#123; firstName : 'A', lastName : 'B', &#125;, computed:&#123; fullname1 ()&#123; return this.firstName + " " + this.lastName &#125;, fullname3:&#123; get ()&#123; return this.firstName + ' ' + this.lastName &#125;, set (value)&#123; const names = value.split(' ') this.firstName = names[0] this.lastName = names[1] &#125; &#125; &#125;, watch : &#123; firstName: function(value)&#123; this.fullname2 = value + ' ' + this.lastName &#125;, lastName: function(value)&#123; this.fullname2 = this.firstName + ' ' + value &#125; &#125;&#125;)&lt;/script&gt; 体验一下 &emsp;&emsp;Vue采用MVVM，双向数据绑定的模型，当变量变化时，所有和采用变量相关信息的组件都会同步数据，非常方便。&emsp;&emsp;Vue 里面有几种方式可以监听数据实现动态更新 computed - 变量发生变化时触发 watch - 监听Html组件变化 computed &emsp;&emsp;computed的字典可以填入函数或者带get&amp;set方法的字典。传入的名称要和变量保持一致。&emsp;&emsp;直接填入函数的话，那么函数内调用的变量发生变化时，会触发函数修改 函数名相同的变量值。&emsp;&emsp;单向响应。 &emsp;&emsp;如果传入字典要写入 get 和 set 方法&emsp;&emsp;get方法获取数据，set会传入get获取的数据进行回调。&emsp;&emsp;双向响应。 watch &emsp;&emsp;可以监听数据，实现效果和 computed 效果差不多，不过只会改变受监视的对象而不考虑所有变量的变化情况。&emsp;&emsp;单向响应。 Class 与 style 绑定 核心代码 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051&lt;style&gt; .aClass&#123; color:red; &#125; .bClass&#123; color:blue; &#125; .cClass&#123; font-size:30px; &#125;&lt;/style&gt;&lt;body&gt; &lt;div id="demo"&gt; &lt;h2&gt;1. class 绑定 :class='xxx'&lt;/h2&gt; &lt;p class="cClass" :class="a"&gt;字符串&lt;/p&gt; &lt;p :class="&#123;aClass:isA,bClass:isB&#125;"&gt;对象&lt;/p&gt; &lt;p :class="['aClass','cClass']"&gt;数组&lt;/p&gt; &lt;h2&gt;2. style 绑定&lt;/h2&gt; &lt;p :style="&#123;color:activeColor,fontsize:fontSize + 'px'&#125;"&gt; style 样式&lt;/p&gt; &lt;button @click="update"&gt;class切换按钮&lt;/button&gt; &lt;/div&gt;&lt;/body&gt;&lt;script&gt; new Vue(&#123; el:"#demo", data:&#123; a:'aClass', isA:true, isB:false, activeColor:'red', fontSize:20, &#125;, methods:&#123; update()&#123; this.a = 'bClass' this.isA = this.isA === false ? true : false this.isB = this.isB === false ? true : false this.activeColor = 'green' this.fontSize = 50 &#125; &#125; &#125;)&lt;/script&gt; 体验一下 class 绑定 :class 实现类的绑定，可以 class &amp; :class 可以共存 :class 可以传入对象键值对，根据值的布尔数据来决定是否采用键 :class 可以传入数组，全部添加到class中 style 绑定 :style 可以实现样式绑定 使用方法类似于class绑定，不过传入的字符串为 js对象写法的 css 语句，支持使用 js 变量。 条件渲染 核心代码 1234567891011121314151617181920&lt;body&gt; &lt;div id="demo"&gt; &lt;p v-if="ok"&gt; 成功了&lt;/p&gt; &lt;p v-else&gt; 失败了&lt;/p&gt; &lt;p v-show="ok"&gt;表白成功&lt;/p&gt; &lt;p v-show="!ok"&gt;表白失败&lt;/p&gt; &lt;button @click="ok = !ok"&gt;切换&lt;/button&gt; &lt;/div&gt;&lt;/body&gt;&lt;script&gt;vm = new Vue(&#123; el:'#demo', data:&#123; ok : false, &#125;,&#125;)&lt;/script&gt; 体验一下 v-if 判断变量是否为真，真就显示，假则显示v-else v-else 依托 v-if 判断 v-show 和v-if一样，不需要 v-else，只关心自身的显示 列表渲染 核心代码 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748&lt;body&gt; &lt;div id="demo"&gt; &lt;h2&gt;测试：v-for 遍历数组&lt;/h2&gt; &lt;ul&gt; &lt;li v-for="(p,index) in persons" :key="index"&gt; &#123;&#123;index&#125;&#125; --- &#123;&#123;p.name&#125;&#125; --- &#123;&#123;p.age&#125;&#125; --- &lt;button @click="deleteData(index)"&gt;删除&lt;/button&gt; --- &lt;button @click="updateData(index,&#123;name:'test',age:22&#125;)"&gt;更新&lt;/button&gt; &lt;/li&gt; &lt;/ul&gt; &lt;h2&gt;测试：v-for 遍历对象&lt;/h2&gt; &lt;ul&gt; &lt;li v-for="(value,key) in persons[1]" :key="index"&gt; &#123;&#123;value&#125;&#125; --- &#123;&#123;key&#125;&#125; &lt;/li&gt; &lt;/ul&gt; &lt;/div&gt;&lt;script&gt;// Vue 的数组方法都是经过写了，实现界面更新vm = new Vue(&#123; el:'#demo', data:&#123; persons:[ &#123;name:"Tom",age:18&#125;, &#123;name:"Jack",age:16&#125;, &#123;name:"Bob",age:19&#125;, &#123;name:"Rose",age:17&#125;, &#123;name:"Tim",age:20&#125;, ] &#125;, methods:&#123; deleteData(index)&#123; this.persons.splice(index,1); &#125;, updateData(index,data)&#123; this.persons.splice(index,1,data); &#125; &#125;&#125;)&lt;/script&gt; 体验一下 注：刷新页面可以重置显示效果 v-for 遍历数组123&lt;li v-for="(p,index) in persons" :key="index"&gt; &#123;&#123;index&#125;&#125; --- &#123;&#123;p.name&#125;&#125; --- &#123;&#123;p.age&#125;&#125;&lt;/li&gt; &emsp;&emsp;使用方法挺容易理解的，和js的循环差不多，只是书写的形式变化了而已。&emsp;&emsp;v-for 传入循环的对象，另外这里也和react一样需要加上循环的 index 属性&emsp;&emsp;可能会有为什么需要加入index属性的疑问，可以参考一下别人写的文章&emsp;&emsp;主要是为了加入给循环的对象加入唯一标识，确保Vue可以获取并修改它。 使用数组的方法来修改数组 &emsp;&emsp;需要注意的是，Vue不可以直接修改数组以及对象的值，如: persons[inedx] = nexP&emsp;&emsp;因为Vue的监听是浅层的(深层监听非常耗费资源，而且没有必要)，因此数组内部的值发生修改的时候 Vue 无法更新页面的显示效果。&emsp;&emsp;不过变量已经改变了，只要触发Vue的更新函数就可以了，当然官方用了更好的解决方案。&emsp;&emsp;Vue官方在原生的数组操作函数上加上了内部的更新函数，实现了变异方法。&emsp;&emsp;因为接触过PyQt编程，这个太好理解了，就是继承原生的方法基础上，加入自己的自定义代码。也就如同教程说的，对原生方法进行了包装。&emsp;&emsp;如此一来，只要使用变异方法就不需要监听也可以触发更新效果。 列表过滤 &amp; 列表排序核心代码 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960&lt;body&gt; &lt;div id="demo"&gt; &lt;input type="text" v-model="searchName"&gt; &lt;ul&gt; &lt;li v-for="(p,index) in filterPersons" :key="index"&gt; &#123;&#123;index&#125;&#125; --- &#123;&#123;p.name&#125;&#125; --- &#123;&#123;p.age&#125;&#125; &lt;/li&gt; &lt;/ul&gt; &lt;button @click="setOrderType(0)"&gt;原本顺序&lt;/button&gt; &lt;button @click="setOrderType(1)"&gt;年龄升序&lt;/button&gt; &lt;button @click="setOrderType(2)"&gt;年龄降序&lt;/button&gt; &lt;/div&gt;&lt;/body&gt;&lt;script&gt;// Vue 的数组方法都是经过写了，实现界面更新vm = new Vue(&#123; el:'#demo', data:&#123; searchName: '', orderType:0,// 0代表原本，1代表升序，2代表降序 persons:[ &#123;name:"Tom",age:18&#125;, &#123;name:"Jack",age:16&#125;, &#123;name:"Bob",age:19&#125;, &#123;name:"Rose",age:17&#125;, &#123;name:"Tim",age:20&#125;, ] &#125;, methods:&#123; setOrderType(num)&#123; this.orderType = num; &#125; &#125;, computed:&#123; filterPersons(index)&#123; // 取出相关的数据 const &#123;searchName,persons,orderType&#125; = this // 对persons进行过滤 let fPersons = persons.filter(p =&gt; p.name.indexOf(searchName) !== -1) if(orderType !== 0)&#123; fPersons.sort(function(p1,p2)&#123; if(orderType === 2)&#123; return p2.age - p1.age &#125;else&#123; return p1.age - p2.age &#125; &#125;) &#125; return fPersons; &#125;, &#125;&#125;)&lt;/script&gt; 体验一下 通过 computed 函数方法的返回值来对 data 中的数组进行排序过滤 &emsp;&emsp;补充一下：computed主要写页面渲染相关的，methods 主要写触发调用相关的&emsp;&emsp;简单来说就是 点击按钮触发一类的事件全部交给 methods&emsp;&emsp;页面显示相关的方法 则交给 computed var ImgArray = []; $('button').each(function(){ if($(this).attr("id") == "processImg_btn"){ ImgArray.push($(this).parent().next()); $(this).parent().next().hide(); $(this).css('width','100%'); $(this).click(function(){ // Note 触发 resize 事件 window.dispatchEvent(new Event('resize')); $(this).parent().next().slideToggle(1000); }); } });]]></content>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;今年暑假，也算是我大学最后一个暑假了，我老早就打算趁这段时间重构去年开发的 数字媒体技术 网站，也是为下学期的动态网页打基础。&emsp;&emsp;之前一直都是在脑海里筹备，但是一直没有将行动落实到位。&emsp;&emsp;最近总算是逼迫自己行动起来了，打算想把前端的框架过一遍，之前学习了 PHP 的 Laravel 框架，学习的时候总是惦记着前端框架。&emsp;&emsp;再加上教程用的是 Laravel 5.4 ，还停留在结合 JQ 的时代，再加上前后端模板的高度耦合，让我越学就越烦。&emsp;&emsp;所以无论是暑假的网站重构还是下学期的动态网页数据库大作业，我都打算用 前端框架去做。&emsp;&emsp;然后又继续陷入了框架的选择而纠结。&emsp;&emsp;之前开发手机app的时候，也在 Flutter &amp; 原生Android &amp; React Native 上面纠结。&emsp;&emsp;最后我三个都学了，然而也只不过是浅尝辄止，然后还欠了一篇博客没写额(:з」∠)&emsp;&emsp;这一次我还是纠结，因为毕设我打算开发一个跨平台的 Todo 软件，兼顾 网站 、 APP 、 小程序。&emsp;&emsp;然后我就找到了国内开发的 uniapp框架，这个框架可以完美兼容以上的平台，而且是用 Vue 进行开发，学习成本较低。&emsp;&emsp;所以我最后就决定了 Vue 框架深入学习了，之前也看了一个 React 的入门教程，完全没有做总结的后果就是我基本忘光了 React 的知识点了(:з」∠)&emsp;&emsp;其实之前也写了一些看教程的记录，问题是后续没有进一步的学习，长时间的不使用也就忘得产不多了，虽然后面学习 React Native 还过了很多有用的 es6 语法，但是还是那句话，不用就会忘的。&emsp;&emsp;而且之前一直努力写PyQt的教程，耗费了不少时间额。&emsp;&emsp;总之，现在我就从零开始，以最快的速度过一遍 Vue 框架的核心技术。 &emsp;&emsp;这一次也不例外，也是从B站搜教程开始学习，搜集了如下几个教程(其实我以前很喜欢看英文教程来秀优越感，今年开始都看中文教程了，可以加速到3、4倍看，看得酸爽，入门来说也不比英文教程差) VUE核心技术-尚硅谷 Vue Cli3.0全栈项目之资金管理系统带权限教程 本文章结合VUE核心技术-尚硅谷的1-10集做的归纳总结。 Vue 基本使用 Vue官方教程&emsp;&emsp;Vue官方有教程可以参考&emsp;&emsp;上面就阐述搭建一个最简单的Vue效果的案例。&emsp;&emsp;我们只需要将HTML代码修改一下就可以实现很神奇的效果。 1234&lt;div id="app"&gt; &lt;input type="text" v-model="message" &gt; &lt;p&gt;Hello &#123;&#123;message&#125;&#125; &lt;/p&gt;&lt;/div&gt; 体验一下 &emsp;&emsp;这里 v-model 就是将 vue data 中的变量 message 绑定到了输入框当中&emsp;&emsp; 用来显示变量数据 &emsp;&emsp;Vue的内核关系 DOM 为 HTML 树，即显示层 View ViewModel 是 Vue 内核，实现数据的监听和双向绑定 实现数据互相更新 Model 即为底层的数据 模板语法 核心代码 12345678910111213141516171819202122232425262728293031323334&lt;div id="app"&gt; &lt;h2&gt;1. 双大括号表达式&lt;/h2&gt; &lt;p&gt;&#123;&#123;msg&#125;&#125;&lt;/p&gt; &lt;p&gt;&#123;&#123;msg.toUpperCase()&#125;&#125;&lt;/p&gt; &lt;p v-text="link"&gt;&lt;/p&gt; &lt;p v-html="link"&gt;&lt;/p&gt; &lt;h2&gt;2. 指令一：强制数据绑定&lt;/h2&gt; &lt;img src="imgUrl"&gt; &lt;img v-bind:src="imgUrl"&gt; &lt;img :src="imgUrl"&gt; &lt;h2&gt;2. 指令二：绑定时间监听&lt;/h2&gt; &lt;button v-on:click="click"&gt;点击事件1&lt;/button&gt; &lt;button @click="click2(msg)"&gt;点击事件2&lt;/button&gt;&lt;/div&gt;&lt;script&gt; const vm = new Vue(&#123; el: '#app', data: &#123; msg: 'l0v0.com', link: '&lt;a href="https://blog.l0v0.com"&gt;blog.l0v0.com&lt;/a&gt;', imgUrl: 'https://cn.vuejs.org/images/logo.png', &#125;, methods: &#123; click() &#123; alert('点击事件1触发') &#125;, click2(content)&#123; alert(content) &#125; &#125; &#125;)&lt;/script&gt; 体验一下 双大括号表达式 Vue使用双括号表达式可以将 Vue 实例中data数据显示到页面上 双大括号里面支持js语句对变量进行操作 v-text 可以将变量输出 v-text 可以将变量以html的形式输出 强制数据绑定 在html的属性上加上 v-bind:属性值 就可以绑定 vue 的数据 可以简写为 :属性值 绑定时间监听 在html的属性上加上 v-on:事件属性值 就可以实现 vue 的方法监听触发 可以简写为 @事件属性值 vue中的事件给可以在实例参数中加入 methods 进行方法绑定 计算属性和监视 核心代码 123456789101112131415161718192021222324252627282930313233343536373839404142&lt;body&gt; &lt;div id="app"&gt; 姓：&lt;input type="text" placeholder="First Name" v-model="firstName"&gt;&lt;br&gt; 名：&lt;input type="text" placeholder="Last Name" v-model="lastName"&gt;&lt;br&gt; 姓名1：&lt;input type="text" placeholder="Full Name1" v-model="fullname1"&gt;&lt;br&gt; 姓名2：&lt;input type="text" placeholder="Full Name2" v-model="fullname2"&gt;&lt;br&gt; 姓名3：&lt;input type="text" placeholder="Full Name3" v-model="fullname3"&gt;&lt;br&gt; &lt;/div&gt;&lt;script&gt;vm = new Vue(&#123; el:'#app', data:&#123; firstName : 'A', lastName : 'B', &#125;, computed:&#123; fullname1 ()&#123; return this.firstName + " " + this.lastName &#125;, fullname3:&#123; get ()&#123; return this.firstName + ' ' + this.lastName &#125;, set (value)&#123; const names = value.split(' ') this.firstName = names[0] this.lastName = names[1] &#125; &#125; &#125;, watch : &#123; firstName: function(value)&#123; this.fullname2 = value + ' ' + this.lastName &#125;, lastName: function(value)&#123; this.fullname2 = this.firstName + ' ' + value &#125; &#125;&#125;)&lt;/script&gt; 体验一下 &emsp;&emsp;Vue采用MVVM，双向数据绑定的模型，当变量变化时，所有和采用变量相关信息的组件都会同步数据，非常方便。&emsp;&emsp;Vue 里面有几种方式可以监听数据实现动态更新 computed - 变量发生变化时触发 watch - 监听Html组件变化 computed &emsp;&emsp;computed的字典可以填入函数或者带get&amp;set方法的字典。传入的名称要和变量保持一致。&emsp;&emsp;直接填入函数的话，那么函数内调用的变量发生变化时，会触发函数修改 函数名相同的变量值。&emsp;&emsp;单向响应。 &emsp;&emsp;如果传入字典要写入 get 和 set 方法&emsp;&emsp;get方法获取数据，set会传入get获取的数据进行回调。&emsp;&emsp;双向响应。 watch &emsp;&emsp;可以监听数据，实现效果和 computed 效果差不多，不过只会改变受监视的对象而不考虑所有变量的变化情况。&emsp;&emsp;单向响应。 Class 与 style 绑定 核心代码 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051&lt;style&gt; .aClass&#123; color:red; &#125; .bClass&#123; color:blue; &#125; .cClass&#123; font-size:30px; &#125;&lt;/style&gt;&lt;body&gt; &lt;div id="demo"&gt; &lt;h2&gt;1. class 绑定 :class='xxx'&lt;/h2&gt; &lt;p class="cClass" :class="a"&gt;字符串&lt;/p&gt; &lt;p :class="&#123;aClass:isA,bClass:isB&#125;"&gt;对象&lt;/p&gt; &lt;p :class="['aClass','cClass']"&gt;数组&lt;/p&gt; &lt;h2&gt;2. style 绑定&lt;/h2&gt; &lt;p :style="&#123;color:activeColor,fontsize:fontSize + 'px'&#125;"&gt; style 样式&lt;/p&gt; &lt;button @click="update"&gt;class切换按钮&lt;/button&gt; &lt;/div&gt;&lt;/body&gt;&lt;script&gt; new Vue(&#123; el:"#demo", data:&#123; a:'aClass', isA:true, isB:false, activeColor:'red', fontSize:20, &#125;, methods:&#123; update()&#123; this.a = 'bClass' this.isA = this.isA === false ? true : false this.isB = this.isB === false ? true : false this.activeColor = 'green' this.fontSize = 50 &#125; &#125; &#125;)&lt;/script&gt; 体验一下 class 绑定 :class 实现类的绑定，可以 class &amp; :class 可以共存 :class 可以传入对象键值对，根据值的布尔数据来决定是否采用键 :class 可以传入数组，全部添加到class中 style 绑定 :style 可以实现样式绑定 使用方法类似于class绑定，不过传入的字符串为 js对象写法的 css 语句，支持使用 js 变量。 条件渲染 核心代码 1234567891011121314151617181920&lt;body&gt; &lt;div id="demo"&gt; &lt;p v-if="ok"&gt; 成功了&lt;/p&gt; &lt;p v-else&gt; 失败了&lt;/p&gt; &lt;p v-show="ok"&gt;表白成功&lt;/p&gt; &lt;p v-show="!ok"&gt;表白失败&lt;/p&gt; &lt;button @click="ok = !ok"&gt;切换&lt;/button&gt; &lt;/div&gt;&lt;/body&gt;&lt;script&gt;vm = new Vue(&#123; el:'#demo', data:&#123; ok : false, &#125;,&#125;)&lt;/script&gt; 体验一下 v-if 判断变量是否为真，真就显示，假则显示v-else v-else 依托 v-if 判断 v-show 和v-if一样，不需要 v-else，只关心自身的显示 列表渲染 核心代码 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748&lt;body&gt; &lt;div id="demo"&gt; &lt;h2&gt;测试：v-for 遍历数组&lt;/h2&gt; &lt;ul&gt; &lt;li v-for="(p,index) in persons" :key="index"&gt; &#123;&#123;index&#125;&#125; --- &#123;&#123;p.name&#125;&#125; --- &#123;&#123;p.age&#125;&#125; --- &lt;button @click="deleteData(index)"&gt;删除&lt;/button&gt; --- &lt;button @click="updateData(index,&#123;name:'test',age:22&#125;)"&gt;更新&lt;/button&gt; &lt;/li&gt; &lt;/ul&gt; &lt;h2&gt;测试：v-for 遍历对象&lt;/h2&gt; &lt;ul&gt; &lt;li v-for="(value,key) in persons[1]" :key="index"&gt; &#123;&#123;value&#125;&#125; --- &#123;&#123;key&#125;&#125; &lt;/li&gt; &lt;/ul&gt; &lt;/div&gt;&lt;script&gt;// Vue 的数组方法都是经过写了，实现界面更新vm = new Vue(&#123; el:'#demo', data:&#123; persons:[ &#123;name:"Tom",age:18&#125;, &#123;name:"Jack",age:16&#125;, &#123;name:"Bob",age:19&#125;, &#123;name:"Rose",age:17&#125;, &#123;name:"Tim",age:20&#125;, ] &#125;, methods:&#123; deleteData(index)&#123; this.persons.splice(index,1); &#125;, updateData(index,data)&#123; this.persons.splice(index,1,data); &#125; &#125;&#125;)&lt;/script&gt; 体验一下 注：刷新页面可以重置显示效果 v-for 遍历数组123&lt;li v-for="(p,index) in persons" :key="index"&gt; &#123;&#123;index&#125;&#125; --- &#123;&#123;p.name&#125;&#125; --- &#123;&#123;p.age&#125;&#125;&lt;/li&gt; &emsp;&emsp;使用方法挺容易理解的，和js的循环差不多，只是书写的形式变化了而已。&emsp;&emsp;v-for 传入循环的对象，另外这里也和react一样需要加上循环的 index 属性&emsp;&emsp;可能会有为什么需要加入index属性的疑问，可以参考一下别人写的文章&emsp;&emsp;主要是为了加入给循环的对象加入唯一标识，确保Vue可以获取并修改它。 使用数组的方法来修改数组 &emsp;&emsp;需要注意的是，Vue不可以直接修改数组以及对象的值，如: persons[inedx] = nexP&emsp;&emsp;因为Vue的监听是浅层的(深层监听非常耗费资源，而且没有必要)，因此数组内部的值发生修改的时候 Vue 无法更新页面的显示效果。&emsp;&emsp;不过变量已经改变了，只要触发Vue的更新函数就可以了，当然官方用了更好的解决方案。&emsp;&emsp;Vue官方在原生的数组操作函数上加上了内部的更新函数，实现了变异方法。&emsp;&emsp;因为接触过PyQt编程，这个太好理解了，就是继承原生的方法基础上，加入自己的自定义代码。也就如同教程说的，对原生方法进行了包装。&emsp;&emsp;如此一来，只要使用变异方法就不需要监听也可以触发更新效果。 列表过滤 &amp; 列表排序核心代码 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960&lt;body&gt; &lt;div id="demo"&gt; &lt;input type="text" v-model="searchName"&gt; &lt;ul&gt; &lt;li v-for="(p,index) in filterPersons" :key="index"&gt; &#123;&#123;index&#125;&#125; --- &#123;&#123;p.name&#125;&#125; --- &#123;&#123;p.age&#125;&#125; &lt;/li&gt; &lt;/ul&gt; &lt;button @click="setOrderType(0)"&gt;原本顺序&lt;/button&gt; &lt;button @click="setOrderType(1)"&gt;年龄升序&lt;/button&gt; &lt;button @click="setOrderType(2)"&gt;年龄降序&lt;/button&gt; &lt;/div&gt;&lt;/body&gt;&lt;script&gt;// Vue 的数组方法都是经过写了，实现界面更新vm = new Vue(&#123; el:'#demo', data:&#123; searchName: '', orderType:0,// 0代表原本，1代表升序，2代表降序 persons:[ &#123;name:"Tom",age:18&#125;, &#123;name:"Jack",age:16&#125;, &#123;name:"Bob",age:19&#125;, &#123;name:"Rose",age:17&#125;, &#123;name:"Tim",age:20&#125;, ] &#125;, methods:&#123; setOrderType(num)&#123; this.orderType = num; &#125; &#125;, computed:&#123; filterPersons(index)&#123; // 取出相关的数据 const &#123;searchName,persons,orderType&#125; = this // 对persons进行过滤 let fPersons = persons.filter(p =&gt; p.name.indexOf(searchName) !== -1) if(orderType !== 0)&#123; fPersons.sort(function(p1,p2)&#123; if(orderType === 2)&#123; return p2.age - p1.age &#125;else&#123; return p1.age - p2.age &#125; &#125;) &#125; return fPersons; &#125;, &#125;&#125;)&lt;/script&gt; 体验一下 通过 computed 函数方法的返回值来对 data 中的数组进行排序过滤 &emsp;&emsp;补充一下：computed主要写页面渲染相关的，methods 主要写触发调用相关的&emsp;&emsp;简单来说就是 点击按钮触发一类的事件全部交给 methods&emsp;&emsp;页面显示相关的方法 则交给 computed var ImgArray = []; $('button').each(function(){ if($(this).attr("id") == "processImg_btn"){ ImgArray.push($(this).parent().next()); $(this).parent().next().hide(); $(this).css('width','100%'); $(this).click(function(){ // Note 触发 resize 事件 window.dispatchEvent(new Event('resize')); $(this).parent().next().slideToggle(1000); }); } });]]></content>
       <categories>
         <category>前端</category>
         <category>Vue</category>
@@ -1512,8 +1506,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1528,8 +1522,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1544,8 +1538,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1572,8 +1566,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1588,8 +1582,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1604,8 +1598,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1620,8 +1614,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1636,8 +1630,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1676,8 +1670,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1701,8 +1695,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1715,8 +1709,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -1729,8 +1723,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -1754,8 +1748,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1766,8 +1760,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1778,8 +1772,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1790,8 +1784,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1802,8 +1796,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1851,8 +1845,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1863,8 +1857,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1977,8 +1971,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1989,8 +1983,8 @@
         <category>Houdini</category>
       </categories>
       <tags>
-        <tag>Houdini</tag>
         <tag>模型</tag>
+        <tag>Houdini</tag>
         <tag>体积</tag>
       </tags>
   </entry>
@@ -2017,8 +2011,8 @@
         <category>Maya 开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2031,8 +2025,8 @@
         <category>Maya 开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2084,9 +2078,9 @@
         <category>VScode</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
-        <tag>Python</tag>
         <tag>VScode</tag>
+        <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2122,9 +2116,9 @@
       </categories>
       <tags>
         <tag>three.js</tag>
-        <tag>Houdini</tag>
         <tag>模型</tag>
         <tag>VDB</tag>
+        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2408,9 +2402,9 @@
         <category>Houdini</category>
       </categories>
       <tags>
+        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
-        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2450,9 +2444,9 @@
         <category>Houdini</category>
       </categories>
       <tags>
+        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
-        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2532,9 +2526,9 @@
         <category>Houdini</category>
       </categories>
       <tags>
+        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
-        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2545,9 +2539,9 @@
         <category>Houdini</category>
       </categories>
       <tags>
+        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
-        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2626,9 +2620,9 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>博客</tag>
         <tag>学习笔记</tag>
         <tag>Hexo</tag>
+        <tag>博客</tag>
       </tags>
   </entry>
   <entry>
@@ -2640,8 +2634,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>后期基本流程</tag>
         <tag>学习笔记</tag>
+        <tag>后期基本流程</tag>
       </tags>
   </entry>
   <entry>
@@ -2666,8 +2660,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>学习笔记</tag>
         <tag>前期基本流程</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
 </search>

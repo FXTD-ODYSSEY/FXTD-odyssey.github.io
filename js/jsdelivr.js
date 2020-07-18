@@ -1,4 +1,5 @@
 // 将图片路径改为 jsdelivr 的 cdn 路径
+
 var name = "FXTD-Odyssey";
 var repository = "FXTD-odyssey.github.io";
 if (document.domain != 'localhost') {
