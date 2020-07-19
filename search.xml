@@ -1,9 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Unreal Python Mesh Paint 顶点色绘制工具]]></title>
+    <url>%2Fposts%2Fbd6d2a61.html</url>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;Unreal 内置有顶点色绘制的功能，可以很方便的在引擎里面绘制颜色。&emsp;&emsp;但是这个功能有个小缺点就是依赖模型的顶点色，如果模型的面数很少的情况下，顶点色绘制就非常不方便了。&emsp;&emsp;那么能否在很少面数的情况下一样去驱动绘制呢？&emsp;&emsp;经过我的研究是完全 可以 实现的，而使用 Python 则更可以更进一步将流程自动化，艺术家只要关注绘制即可。 &emsp;&emsp;其实这个顶点色操作和 Unreal 自带的地形实现的贴图混合效果差不多，好处就是可以用任意的自定义模型。&emsp;&emsp;然后通过一个材质绘制 alpha ，然后最后将绘制效果 bake 成一张贴图。&emsp;&emsp;这样就可以实现任意模型贴图混合并且最后输出一张混合到一起完整贴图。 细分模型 &emsp;&emsp;通过上面的描述可以知道，第一步的绘制操作需要在引擎添加面数才能实现细微的控制。&emsp;&emsp;在引擎里面提高模型面数有两种方案。 Editable Mesh &emsp;&emsp;使用 Editable Mesh 需要开启插件 Editable Mesh 插件。 &emsp;&emsp;这个方案有个好处就是功能是基于蓝图实现的，因此可以完全基于 Python 实现调用。&emsp;&emsp;但是网上查了一轮，居然发现这个蓝图怎么用一点文档都没有。（开源就是那么任性）&emsp;&emsp;我经过一轮搜索好不容易搜到一个相关的问题，但是却没有任何人提供相关回答 链接&emsp;&emsp;最新的回答就是我自己了…… &emsp;&emsp;当时这个蓝图操作也是看着 Python 里面的 API 搭建出来的。&emsp;&emsp;各种函数都暴露到了 Python ，比起官方的 蓝图 API 还要清晰。&emsp;&emsp;所以简单摸索搭配一下就成了。 &emsp;&emsp;后来搜索模型细分相关的信息的时候，还是在论坛很深的地方找到了别人关于 Editable mesh 的研究成果 链接，其实也和我搭建的蓝图一样。&emsp;&emsp;新版本需要多加一个 commit 蓝图节点才能在视窗上看到实现的效果。 &emsp;&emsp;上面的蓝图只是我 Extrude 操作的演示， Editable Mesh 提供了 set_subdivision_count 和 tessellate_polygons 的方法。&emsp;&emsp;上面两个都可以实现增加细分的效果。&emsp;&emsp;设置 subdivision 和 Maya 的3键效果一样的，会将模型全部平滑。&emsp;&emsp;如果正方形面片，平滑了之后就变成了 圆形面片 了。&emsp;&emsp;另外这里需要注意，细分之后的结果是直接存储到 asset 里面的。&emsp;&emsp;如果直接拖基础方块到场景的话，引擎官方的方块 asset 会被细分，如果不甚保存了结果。&emsp;&emsp;那么恭喜你，你的基础方块永远都是细分过的高面数方块了(:з」∠) &emsp;&emsp;因为直接设置细分有平滑的问题，所以用 tessellate_polygons 加面的方案比较好，因为这里只想保持模型外轮廓不变的情况下加面数。 &emsp;&emsp;不过最后折腾了一圈之后，并没有采用 Editable Mesh 的方案。&emsp;&emsp;因为在我们项目的魔改引擎里测试很容易导致崩溃，非常不稳定。&emsp;&emsp;貌似官方版本的引擎会好好很多。&emsp;&emsp;鉴于这些问题，即便 Python 可以调用这些蓝图，也不得不放弃了这个方案。 Mesh Tool Remesh &emsp;&emsp;在引擎里面除了刚才提到的没什么人用的 Editable Mesh 之外。&emsp;&emsp;还有 Mesh Tool 这个官方力推的建模工具箱，里面提供了 Remesh 功能，同样可以实现细分效果。&emsp;&emsp;Remesh 也完美保证外轮廓不变，和 Houdini 的 Remesh 效果差不多，会重新拓扑成不规则的三角面。 &emsp;&emsp;使用 Mesh Tool 需要开启插件。 &emsp;&emsp;开启之后可以在 Mode 下面找到 Mesh Tool 工具集。&emsp;&emsp;选择 Deform 然后点击 Remesh 就可以细分模型了。 &emsp;&emsp;当然这里需要注意 Editable Mesh 同样的问题，这个修改会直接应用到当前 asset 里面。&emsp;&emsp;然而这个细分的资源只是用来临时通过顶点色绘制贴图的，因此我们这里复制一个新的模型并手动细分处理。&emsp;&emsp;通过 Mesh Tool 也可以让艺术家自己调节细分的程度，比起 Editable Mesh 的一步到位,没有多少可以调节的参数要好很多。 材质 Bake &emsp;&emsp;正如上面提到，这里绘制是需要一个 贴图 混合的材质。&emsp;&emsp;这个材质可以简单通过 lerp 节点实现。&emsp;&emsp;当然也可以搭建更为复杂的效果，比如说通过高度图实现更细微的贴图混合。 &emsp;&emsp;那么绘制完成之后，要怎么输出绘制的贴图呢？&emsp;&emsp;首先需要将材质 bake 成一个新的材质。&emsp;&emsp;这样可以将材质混合的贴图类似 PS 的图层合并一样 合并成一张贴图。 &emsp;&emsp;Bake 输出完成之后，会输出一个特殊的材质以及配到一张合并好的贴图。这个 材质 和 贴图 都在 Transient 临时目录里面&emsp;&emsp;如果是 Python 驱动的话，甚至连临时的文件都没有了，是一个动态 Texture2d 贴图。&emsp;&emsp;这个操作就类似你用 蓝图节点 import File as Texture2D 获取到 Texture2D 。 &emsp;&emsp;这个 Texture2D 完全没有 Asset 路径，也无法直接存储到 Unreal 的 Content Browser 里面。&emsp;&emsp;最后我的处理方法是将这张贴图导出通过 export to disk 方法将图片导出到本地。&emsp;&emsp;然后再通过 import asset tasks 将图片重新导入到 Content Browser 里面。 &emsp;&emsp;当然除了这种曲线救国的导出引擎在导入的方法之外，也可以用 RenderTarget 的方式将图片存储到 Content Browser。&emsp;&emsp;只是 Render Target 的处理要麻烦很多，需要通过 Python 搭建材质然后调用 Draw Material to Render Target 节点实现材质转纹理&emsp;&emsp;所以最后还不如做一次导出导入的操作流程。 &emsp;&emsp;完成贴图导出导入的流程基本就大功告成，后续就是清理掉之前生成的高模即可。 &emsp;&emsp;这里的操作和我们这边的材质属性直接挂钩，就不直接 post 程序代码，下面放出一些过程代码给大家参考。&emsp;&emsp;由于这里需要输出的是一张黑白的单通道纹理，所以 bake 的时候实际上是生成了一个 顶点色 连接的材质&emsp;&emsp;然后将顶点色的贴图 bake 出来，导出 TGA 贴图然后再导入会引擎。 （TGA 贴图在下个章节解释） 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475# NOTE 生成临时材质material = unreal.Material()unlit = unreal.MaterialShadingModel.MSM_UNLIT# NOTE 设置为 unlit 模式material.set_editor_property("shading_model", unlit)# NOTE 生成顶点色节点 位置为 0,0 vertex_color = unreal.MaterialEditingLibrary.create_material_expression( material,unreal.MaterialExpressionVertexColor)# NOTE 将顶点色节点的 R 通道和 emissive 属性相连emissive = unreal.MaterialProperty.MP_EMISSIVE_COLORunreal.MaterialEditingLibrary.connect_material_property(vertex_color, "R", emissive)# NOTE 编译材质unreal.MaterialEditingLibrary.recompile_material(material)# NOTE 将临时材质赋予到选择模型的 StatiMeshComponent 上static_comp.set_editor_property("override_materials",[material])# NOTE 设置 Bake 属性option = unreal.MaterialOptions()option.set_editor_property("use_mesh_data", True)properties = unreal.PropertyEntry()MP_EMISSIVE_COLOR = unreal.MaterialProperty.MP_EMISSIVE_COLORproperties.set_editor_property("property_", MP_EMISSIVE_COLOR)option.set_editor_property("properties", [properties])# NOTE 获取 Gui 上的输入的贴图大小x = self.Tex_Size_X_SP.value()y = self.Tex_Size_Y_SP.value()size = unreal.IntPoint(x, y)option.set_editor_property("texture_size", size)# NOTE 通过 Editor Tests 插件提供的蓝图 bake 出材质和贴图 unreal.EditorTestsUtilityLibrary.bake_materials_for_component( static_comp, option, unreal.MaterialMergeOptions())# NOTE 获取Bake出来的 材质 | 从材质上获取生成的目标贴图material = static_comp.get_editor_property("override_materials")[0]texture = material.get_texture_parameter_value("EmissiveColorTexture")# NOTE 导出 TGA 图片 | 方便 顶点色 导入asset_tool = unreal.AssetToolsHelpers.get_asset_tools()# NOTE 输出到临时路径上texture_path = os.path.join(tempfile.gettempdir(),"Unreal_temp",name+"_BakeTexture.tga")task = unreal.AssetExportTask()task.set_editor_property('automated', True)task.set_editor_property('filename', texture_path)task.set_editor_property('object', texture)task.set_editor_property('prompt', False)task.set_editor_property('exporter', unreal.TextureExporterTGA())check = unreal.Exporter.run_asset_export_task(task)if not check: alert(u"tga 图片生成失败") return# NOTE 等待贴图生成time.sleep(1)# NOTE https://forums.unrealengine.com/development-discussion/python-scripting/1608720-python-scripting-for-importing-custom-assets# NOTE 导入贴图task = unreal.AssetImportTask()task.set_editor_property('automated', True)task.set_editor_property('destination_name', name + '_BakeTexture')task.set_editor_property('destination_path', path)task.set_editor_property('filename', texture_path)task.set_editor_property('replace_existing', True)task.set_editor_property('save', True)asset_tool.import_asset_tasks([task])bake_path = path + "/" + name + '_BakeTexture'texture = unreal.EditorAssetLibrary.load_asset(bake_path) 顶点色绘制还原 &emsp;&emsp;本来是觉得这个纹理处理流程已经完美了，没想到在美术使用之后遇到了一个非常致命的问题。&emsp;&emsp;那就是贴图画得不好想要重新画该怎么办？ &emsp;&emsp;好在虚幻的顶点色绘制提供了重新导入顶点色纹理的方法。&emsp;&emsp;只不过模型在处理过程中已经将细分删除了，需要重新复制一个模型，然后细分，再然后导入之前导出的 黑白 纹理为顶点色即可。&emsp;&emsp;由于引擎只支持导入 TGA 纹理，所以上面导出的时候也将格式改为 TGA。 总结 &emsp;&emsp;这次贴图处理流程有些许模糊不清，主要原因是 Material 节点的连接上不是我做的。&emsp;&emsp;我负责写工具将流程自动化，并且对接这个特殊 Meterial 上的一些参数。&emsp;&emsp;以后有时间也得再好好研究一下 Unreal 的 Material 节点连接。]]></content>
+      <categories>
+        <category>游戏开发</category>
+        <category>Unreal</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Unreal</tag>
+        <tag>顶点色</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Qt PySide 内置图标]]></title>
+    <url>%2Fposts%2F3b9c0ad6.html</url>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;关于 Qt 内置的 图标 ，之前开发 Unreal FBX 导入导出面板的时候就已经研究过了。 链接&emsp;&emsp;但是当时没有系统整理这个图标的获取方法，最近又遇到类似的问题，就特别扩展延伸了一下。 内置图标查找 &emsp;&emsp;遇到问题，首先在网络上查找，可以在 Stack Overflow 上找到不错的回答 链接 &emsp;&emsp;链接里面提到的第一个回答是使用 theme 可以获取 gtk 的默认图标。&emsp;&emsp;但是这个操作在 windows 平台不起作用，我也不知道怎么在 windows 上实现。&emsp;&emsp;于是我参考了第二个回答，还是有所收获的， Qt 内置了72个图标（后面研究有些图标是不可用的）。&emsp;&emsp;基本可以满足大部分的需要了。 QStyle 获取内置图标 &emsp;&emsp;Qt 的内置图标可以在 PySide 的文档里面找到 链接 &emsp;&emsp;当初我开发 FBX 导入导出面板的时候还没有整理，所以要用什么图标只能看描述，然后一个一个图标测试。&emsp;&emsp;现在想着不如直接做个 Widget 将所有的图标罗列出来吧。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172# -*- coding: utf-8 -*-"""罗列 Qt 内置的图标"""from __future__ import divisionfrom __future__ import print_functionfrom __future__ import absolute_import__author__ = 'timmyliang'__email__ = '820472580@qq.com'__date__ = '2020-07-18 23:29:36'import osfrom functools import partialfrom PySide2 import QtCore, QtWidgets, QtGuiclass IconWidget(QtWidgets.QWidget): def __init__(self,parent=None): super(IconWidget, self).__init__(parent) DIR = os.path.dirname(__file__) layout = QtWidgets.QHBoxLayout() self.setLayout(layout) style = QtWidgets.QApplication.style() container = QtWidgets.QWidget() container.setLayout(QtWidgets.QVBoxLayout()) layout.addWidget(container) index = 0 for attr in dir(QtWidgets.QStyle): if not attr.startswith("SP_"): continue index += 1 ref = getattr(QtWidgets.QStyle,attr) # # NOTE 保存图片到本地 # pixmap = style.standardIcon(ref).pixmap(32,32) if attr == "SP_LineEditClearButton" else style.standardPixmap(ref) # icon_folder = os.path.join(DIR,"icon") # if not os.path.exists(icon_folder): # os.makedirs(icon_folder) # path = os.path.join(icon_folder,"%s.png" % attr) # pixmap.save(path,"png") icon = style.standardIcon(ref) button = QtWidgets.QPushButton() button.setIcon(icon) button.setText(attr) button.clicked.connect(partial(self.copy_text,"QtWidgets.QStyle.%s" % attr)) container.layout().addWidget(button) if index % 18 == 0: container = QtWidgets.QWidget() container.setLayout(QtWidgets.QVBoxLayout()) layout.addWidget(container) def copy_text(self,text): cb = QtWidgets.QApplication.clipboard() cb.clear(mode=cb.Clipboard ) cb.setText(text, mode=cb.Clipboard)def main(): app = QtWidgets.QApplication([]) widget = IconWidget() widget.show() app.exec_()if __name__ == "__main__": main() &emsp;&emsp;加了个贴心的小功能，点击图标自动复制图标的类名到剪切板里面。&emsp;&emsp;方便将中意的图标拿出来用。&emsp;&emsp;另外整理一份 md 文档列表，图标文件也已经上传到 github 上了。 github地址 总结 &emsp;&emsp;Qt 框架真的非常庞大，而且跨平台，功能强大。&emsp;&emsp;只可惜这个内置图标提供的数量比较少，当然如果不嫌麻烦，Qt也提供了和多方便的 API 来外部调用图标，满足各种需求。]]></content>
+      <categories>
+        <category>CG Programming</category>
+        <category>Qt</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Qt</tag>
+        <tag>PySide</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Unreal Python Sequencer 批量渲染总结]]></title>
     <url>%2Fposts%2F2f3a9b95.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;最近我的学弟找我咨询关于 Unreal Sequencer 渲染输出的问题。&emsp;&emsp;之前没有折腾过这个一块，于是就跟进了一下，顺便学习 Sequencer 的序列输出。 &emsp;&emsp;另外最近另一个师弟也研究了差不多的问题，发了一篇 B站专栏 ， 在这里推荐一下 链接 手动操作 &emsp;&emsp;在自动化操作渲染之前，需要先搞清楚怎么手动操作 Sequencer 进行渲染。 &emsp;&emsp;其实操作起来不难，打开 Unreal 的定序器，点击上面的 Render 图标打开 Render Movie Setting&emsp;&emsp;然后配置好渲染设置就可以点击渲染，就可以将影片批量渲染出来。 自动化操作 &emsp;&emsp;下面就是将手动操作转为 Python 的自动操作。&emsp;&emsp;具体的操作脚本其实可以参考官方的脚本，在官方 SequencerScripting 插件里面有渲染相关的 Python 脚本。&emsp;&emsp;安装了 Unreal 引擎之后可以根据地址查找 \Engine\Plugins\MovieScene\SequencerScripting\Content\Python&emsp;&emsp;sequencer_examples 就有输出的 Python 代码，不需要自己查文档研究怎么搭建代码。&emsp;&emsp;参照 render_sequence_to_movie 的代码即可输出。 &emsp;&emsp;其中比较坑的点在于 OnRenderMovieStopped 的 delegate&emsp;&emsp;接入 Python 回调需要一个 global 函数才可以，否则执行完成的回调函数不会触发。&emsp;&emsp;官方的案例是放到最外层执行的，如果不凑巧回调函数写在函数里面，就需要利用 global 关键字解决这个问题。 &emsp;&emsp;官方案例还没能实现一个需求，就是批量将不同 Sequence 同时渲染出来。&emsp;&emsp;然而 render_movie 这个函数是不阻塞的，如果使用 for 循环会一直把所有的 render_movie 持续执行。&emsp;&emsp;所以这里进行渲染需要通过回调来实现逐个渲染的调用。 Python 代码123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110111112113114115# -*- coding: utf-8 -*-"""渲染 sequencer 的画面选择 LevelSequence 批量进行渲染"""from __future__ import divisionfrom __future__ import print_functionfrom __future__ import absolute_import__author__ = 'timmyliang'__email__ = '820472580@qq.com'__date__ = '2020-07-14 21:57:32'import unrealimport osimport subprocessfrom functools import partialdef alert(msg): unreal.SystemLibrary.print_string(None,msg,text_color=[255,255,255,255])def render(sequence_list,i,output_directory="C:/render",output_format="&#123;sequence&#125;"): # NOTE 如果超出数组则退出执行 if i &gt;= len(sequence_list): # NOTE 输出完成 打开输出文件夹的路径 subprocess.call(["start","",output_directory], creationflags=0x08000000,shell=True) return # NOTE 获取当前渲染序号下的 LevelSequence sequence = sequence_list[i] # NOTE 配置渲染参数 settings = unreal.MovieSceneCaptureSettings() path = unreal.DirectoryPath(output_directory) settings.set_editor_property("output_directory",path) settings.set_editor_property("output_format",output_format) settings.set_editor_property("overwrite_existing",True) settings.set_editor_property("game_mode_override",None) settings.set_editor_property("use_relative_frame_numbers",False) settings.set_editor_property("handle_frames",0) settings.set_editor_property("zero_pad_frame_numbers",4) settings.set_editor_property("use_custom_frame_rate",True) settings.set_editor_property("custom_frame_rate",unreal.FrameRate(24, 1)) # NOTE 渲染大小 w,h = 1280,720 settings.set_editor_property("resolution",unreal.CaptureResolution(w,h)) settings.set_editor_property("enable_texture_streaming",False) settings.set_editor_property("cinematic_engine_scalability",True) settings.set_editor_property("cinematic_mode",True) settings.set_editor_property("allow_movement",False) settings.set_editor_property("allow_turning",False) settings.set_editor_property("show_player",False) settings.set_editor_property("show_hud",False) # NOTE 设置默认的自动渲染参数 option = unreal.AutomatedLevelSequenceCapture() option.set_editor_property("use_separate_process",False) option.set_editor_property("close_editor_when_capture_starts",False) option.set_editor_property("additional_command_line_arguments","-NOSCREENMESSAGES") option.set_editor_property("inherited_command_line_arguments","") option.set_editor_property("use_custom_start_frame",False) option.set_editor_property("use_custom_end_frame",False) option.set_editor_property("warm_up_frame_count",0.0) option.set_editor_property("delay_before_warm_up",0) option.set_editor_property("delay_before_shot_warm_up",0.0) option.set_editor_property("write_edit_decision_list",True) # option.set_editor_property("custom_start_frame",unreal.FrameNumber(0)) # option.set_editor_property("custom_end_frame",unreal.FrameNumber(0)) option.set_editor_property("settings",settings) option.set_editor_property("level_sequence_asset",unreal.SoftObjectPath(sequence.get_path_name())) # NOTE 设置自定义渲染参数 option.set_image_capture_protocol_type(unreal.CompositionGraphCaptureProtocol) protocol = option.get_image_capture_protocol() # NOTE 这里设置 Base Color 渲染 Base Color 通道，可以根据输出的 UI 设置数组名称 passes = unreal.CompositionGraphCapturePasses(["Base Color"]) protocol.set_editor_property("include_render_passes",passes) # protocol.set_editor_property("compression_quality",100) # NOTE 设置全局变量才起作用！ global on_finished_callback on_finished_callback = unreal.OnRenderMovieStopped( lambda s:render(sequence_list,i+1,output_directory,output_format)) unreal.SequencerTools.render_movie(option,on_finished_callback) def main(output_directory="C:/render",output_format="&#123;sequence&#125;"): # NOTE 获取当前选择的 LevelSequence sequence_list = [asset for asset in unreal.EditorUtilityLibrary.get_selected_assets() if isinstance(asset,unreal.LevelSequence)] if not sequence_list: alert(u"请选择一个 LevelSequence") return if not os.access(output_directory, os.W_OK): alert(u"当前输出路径非法") return elif os.path.exists(output_directory): # NOTE 路径不存在则创建文件夹 os.makedirs(output_directory) elif os.path.isfile(output_directory): # NOTE 如果传入文件路径则获取目录 output_directory = os.path.dirname(output_directory) render(sequence_list,0,output_directory,output_format)if __name__ == "__main__": main() &emsp;&emsp;选择 Sequencer 执行上面的脚本，就可以自动批量输出 Sequencer 了。 总结 &emsp;&emsp;理论上 Python 调用蓝图方法做到的功能， 蓝图应该也可以做到的。&emsp;&emsp;但是经过我的测试，我发现 蓝图 的 get_image_capture_protocol 返回值是 基类。&emsp;&emsp;导致无法获取 CompositionGraphCaptureProtocol 这个类&emsp;&emsp;也就无法设置 include_render_passes 的值了，这样导致蓝图输出会将所有通道输出，而不能实现单一通道的输出。 &emsp;&emsp;另外这一次没有制作 GUI ，我还在纠结使用 Qt 还是 Unreal 原生的界面。&emsp;&emsp;Unreal使用 Editor Utility 创建的 UI 是二进制 uasset ，无法向前兼容 Unreal 版本。&emsp;&emsp;UI的功能响应上也没有 Qt 成熟。&emsp;&emsp;但是无论如何，Unreal 的 UMG 是原生体验，嵌入样式各方面都比较舒服的。&emsp;&emsp;虽然 Qt 可以写一套 Qss 来解决样式问题，但是在 Unreal 中实现 Dock 目前还是无解。]]></content>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;最近我的学弟找我咨询关于 Unreal Sequencer 渲染输出的问题。&emsp;&emsp;之前没有折腾过这个一块，于是就跟进了一下，顺便学习 Sequencer 的序列输出。 &emsp;&emsp;另外最近另一个师弟也研究了差不多的问题，发了一篇 B站专栏 ， 在这里推荐一下 链接 手动操作 &emsp;&emsp;在自动化操作渲染之前，需要先搞清楚怎么手动操作 Sequencer 进行渲染。 &emsp;&emsp;其实操作起来不难，打开 Unreal 的定序器，点击上面的 Render 图标打开 Render Movie Setting&emsp;&emsp;然后配置好渲染设置就可以点击渲染，就可以将影片批量渲染出来。 自动化操作 &emsp;&emsp;下面就是将手动操作转为 Python 的自动操作。&emsp;&emsp;具体的操作脚本其实可以参考官方的脚本，在官方 SequencerScripting 插件里面有渲染相关的 Python 脚本。&emsp;&emsp;安装了 Unreal 引擎之后可以根据地址查找 \Engine\Plugins\MovieScene\SequencerScripting\Content\Python&emsp;&emsp;sequencer_examples 就有输出的 Python 代码，不需要自己查文档研究怎么搭建代码。&emsp;&emsp;参照 render_sequence_to_movie 的代码即可输出。 &emsp;&emsp;其中比较坑的点在于 OnRenderMovieStopped 的 delegate&emsp;&emsp;接入 Python 回调需要一个 global 函数才可以，否则执行完成的回调函数不会触发。&emsp;&emsp;官方的案例是放到最外层执行的，如果不凑巧回调函数写在函数里面，就需要利用 global 关键字解决这个问题。 &emsp;&emsp;官方案例还没能实现一个需求，就是批量将不同 Sequence 同时渲染出来。&emsp;&emsp;然而 render_movie 这个函数是不阻塞的，如果使用 for 循环会一直把所有的 render_movie 持续执行。&emsp;&emsp;所以这里进行渲染需要通过回调来实现逐个渲染的调用。 Python 代码123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110111112113114115# -*- coding: utf-8 -*-"""渲染 sequencer 的画面选择 LevelSequence 批量进行渲染"""from __future__ import divisionfrom __future__ import print_functionfrom __future__ import absolute_import__author__ = 'timmyliang'__email__ = '820472580@qq.com'__date__ = '2020-07-14 21:57:32'import unrealimport osimport subprocessfrom functools import partialdef alert(msg): unreal.SystemLibrary.print_string(None,msg,text_color=[255,255,255,255])def render(sequence_list,i,output_directory="C:/render",output_format="&#123;sequence&#125;"): # NOTE 如果超出数组则退出执行 if i &gt;= len(sequence_list): # NOTE 输出完成 打开输出文件夹的路径 subprocess.call(["start","",output_directory], creationflags=0x08000000,shell=True) return # NOTE 获取当前渲染序号下的 LevelSequence sequence = sequence_list[i] # NOTE 配置渲染参数 settings = unreal.MovieSceneCaptureSettings() path = unreal.DirectoryPath(output_directory) settings.set_editor_property("output_directory",path) settings.set_editor_property("output_format",output_format) settings.set_editor_property("overwrite_existing",True) settings.set_editor_property("game_mode_override",None) settings.set_editor_property("use_relative_frame_numbers",False) settings.set_editor_property("handle_frames",0) settings.set_editor_property("zero_pad_frame_numbers",4) settings.set_editor_property("use_custom_frame_rate",True) settings.set_editor_property("custom_frame_rate",unreal.FrameRate(24, 1)) # NOTE 渲染大小 w,h = 1280,720 settings.set_editor_property("resolution",unreal.CaptureResolution(w,h)) settings.set_editor_property("enable_texture_streaming",False) settings.set_editor_property("cinematic_engine_scalability",True) settings.set_editor_property("cinematic_mode",True) settings.set_editor_property("allow_movement",False) settings.set_editor_property("allow_turning",False) settings.set_editor_property("show_player",False) settings.set_editor_property("show_hud",False) # NOTE 设置默认的自动渲染参数 option = unreal.AutomatedLevelSequenceCapture() option.set_editor_property("use_separate_process",False) option.set_editor_property("close_editor_when_capture_starts",False) option.set_editor_property("additional_command_line_arguments","-NOSCREENMESSAGES") option.set_editor_property("inherited_command_line_arguments","") option.set_editor_property("use_custom_start_frame",False) option.set_editor_property("use_custom_end_frame",False) option.set_editor_property("warm_up_frame_count",0.0) option.set_editor_property("delay_before_warm_up",0) option.set_editor_property("delay_before_shot_warm_up",0.0) option.set_editor_property("write_edit_decision_list",True) # option.set_editor_property("custom_start_frame",unreal.FrameNumber(0)) # option.set_editor_property("custom_end_frame",unreal.FrameNumber(0)) option.set_editor_property("settings",settings) option.set_editor_property("level_sequence_asset",unreal.SoftObjectPath(sequence.get_path_name())) # NOTE 设置自定义渲染参数 option.set_image_capture_protocol_type(unreal.CompositionGraphCaptureProtocol) protocol = option.get_image_capture_protocol() # NOTE 这里设置 Base Color 渲染 Base Color 通道，可以根据输出的 UI 设置数组名称 passes = unreal.CompositionGraphCapturePasses(["Base Color"]) protocol.set_editor_property("include_render_passes",passes) # protocol.set_editor_property("compression_quality",100) # NOTE 设置全局变量才起作用！ global on_finished_callback on_finished_callback = unreal.OnRenderMovieStopped( lambda s:render(sequence_list,i+1,output_directory,output_format)) unreal.SequencerTools.render_movie(option,on_finished_callback) def main(output_directory="C:/render",output_format="&#123;sequence&#125;"): # NOTE 获取当前选择的 LevelSequence sequence_list = [asset for asset in unreal.EditorUtilityLibrary.get_selected_assets() if isinstance(asset,unreal.LevelSequence)] if not sequence_list: alert(u"请选择一个 LevelSequence") return if not os.access(output_directory, os.W_OK): alert(u"当前输出路径非法") return elif not os.path.exists(output_directory): # NOTE 路径不存在则创建文件夹 os.makedirs(output_directory) elif os.path.isfile(output_directory): # NOTE 如果传入文件路径则获取目录 output_directory = os.path.dirname(output_directory) render(sequence_list,0,output_directory,output_format)if __name__ == "__main__": main() &emsp;&emsp;选择 Sequencer 执行上面的脚本，就可以自动批量输出 Sequencer 了。 总结 &emsp;&emsp;理论上 Python 调用蓝图方法做到的功能， 蓝图应该也可以做到的。&emsp;&emsp;但是经过我的测试，我发现 蓝图 的 get_image_capture_protocol 返回值是 基类。&emsp;&emsp;导致无法获取 CompositionGraphCaptureProtocol 这个类&emsp;&emsp;也就无法设置 include_render_passes 的值了，这样导致蓝图输出会将所有通道输出，而不能实现单一通道的输出。 &emsp;&emsp;另外这一次没有制作 GUI ，我还在纠结使用 Qt 还是 Unreal 原生的界面。&emsp;&emsp;Unreal使用 Editor Utility 创建的 UI 是二进制 uasset ，无法向前兼容 Unreal 版本。&emsp;&emsp;UI的功能响应上也没有 Qt 成熟。&emsp;&emsp;但是无论如何，Unreal 的 UMG 是原生体验，嵌入样式各方面都比较舒服的。&emsp;&emsp;虽然 Qt 可以写一套 Qss 来解决样式问题，但是在 Unreal 中实现 Dock 目前还是无解。]]></content>
       <categories>
         <category>游戏开发</category>
         <category>Unreal</category>
@@ -23,8 +51,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>博客</tag>
         <tag>前端</tag>
+        <tag>博客</tag>
       </tags>
   </entry>
   <entry>
@@ -50,15 +78,15 @@
         <category>神秘研究</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
   <entry>
     <title><![CDATA[Maya 高效使用指南]]></title>
     <url>%2Fposts%2F1c2d932.html</url>
-    <content type="text"><![CDATA[通用 File Path Editor 可以解决 Maya 各种贴图路径找不到的问题 ctrl+m &amp; ctrl+shift+m &amp; shift+m 隐藏菜单栏 alt+z alt+y 摄像机位置撤销 Maya 递增保存，备份保存 optimize scene size ctrl+shift 左键 添加菜单到工具架上 标记菜单 shift+右键 对象标记菜单 ctrl+右键 对象转换标记菜单 Q W E R+左键 选择标记菜单 alt+Q+左键 选择对象标记菜单 shift+Q+左键 选择对象标记菜单 A+左键 选择全部菜单删除历史 O+左键 选择标记菜单 U+左键 绘制标记菜单 右键图标菜单 文件打开图标 打开最近打开的文件 摄像机图标 切换摄像机 网格图标 右键菜单可以快速设置网格属性 隔离显示图标 右键菜单可以快速添加隔离显示的物体 首选项 文件选择窗口使用 os native 可以配合 listary 发挥打开文件的最大效率 Viewport 2.0 选择 DirectX11 渲染 ， 否则 DX11 材质不起作用 Remember Size And Position 勾选 undo infinity autosave 选择 按住 Tab 键可以进行拖拽选择 + - 可以调整操纵杆大小 Q 键选择模式不会受到控制杆的干扰 通道盒中键拖拽 ctrl 和 shift 以及 ctrl+shift 键可以调节数值精度 tweaker 可以不借助操纵杆 操作模型 开启摄像机模式选择 camera base selection 动画 曲线编辑器 按住 K 键 可以自由拖拽时间轴 , . 按键可以跳转前后关键帧 加上 alt 可以前后帧 alt+v 播放 alt+shift+v 可以跳转到开头]]></content>
+    <content type="text"><![CDATA[通用 File Path Editor 可以解决 Maya 各种贴图路径找不到的问题 ctrl+m &amp; ctrl+shift+m &amp; shift+m 隐藏菜单栏 alt+z alt+y 摄像机位置撤销 Maya 递增保存，备份保存 optimize scene size ctrl+shift 左键 添加菜单到工具架上 标记菜单 shift+右键 对象标记菜单 ctrl+右键 对象转换标记菜单 Q W E R+左键 选择标记菜单 alt+Q+左键 选择对象标记菜单 shift+Q+左键 选择对象标记菜单 A+左键 选择全部菜单删除历史 O+左键 选择标记菜单 U+左键 绘制标记菜单 右键图标菜单 文件打开图标 打开最近打开的文件 摄像机图标 切换摄像机 网格图标 右键菜单可以快速设置网格属性 隔离显示图标 右键菜单可以快速添加隔离显示的物体 首选项 文件选择窗口使用 os native 可以配合 listary 发挥打开文件的最大效率 Viewport 2.0 选择 DirectX11 渲染 ， 否则 DX11 材质不起作用 Remember Size And Position 勾选 undo infinity autosave 选择 按住 Tab 键可以进行拖拽选择 + - 可以调整操纵杆大小 Q 键选择模式不会受到控制杆的干扰 通道盒中键拖拽 ctrl 和 shift 以及 ctrl+shift 键可以调节数值精度 tweaker 可以不借助操纵杆 操作模型 开启摄像机模式选择 camera base selection 动画 曲线编辑器 按住 K 键 可以自由拖拽时间轴 , . 按键可以跳转前后关键帧 加上 alt 可以前后帧 alt+v 播放 alt+shift+v 可以跳转到开头 快捷键网站]]></content>
       <categories>
         <category>CG Programming</category>
         <category>Maya 学习记录</category>
@@ -142,8 +170,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -184,8 +212,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -197,8 +225,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Game</tag>
       </tags>
   </entry>
@@ -211,8 +239,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>OpenMaya</tag>
       </tags>
   </entry>
@@ -225,8 +253,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>重定向</tag>
         <tag>HumanIK</tag>
       </tags>
@@ -240,8 +268,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>法线</tag>
       </tags>
   </entry>
@@ -278,8 +306,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Game</tag>
       </tags>
   </entry>
@@ -292,8 +320,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -316,8 +344,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -340,8 +368,8 @@
         <category>神秘研究</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -378,8 +406,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>reference</tag>
       </tags>
   </entry>
@@ -392,8 +420,8 @@
         <category>Maya插件开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -456,8 +484,8 @@
         <category>Maya疑难杂症</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -469,8 +497,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -482,8 +510,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -521,8 +549,8 @@
         <category>Maya疑难杂症</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -534,8 +562,8 @@
         <category>Maya疑难杂症</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -547,8 +575,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -560,8 +588,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -586,8 +614,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -612,8 +640,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -625,8 +653,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -650,8 +678,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -674,8 +702,8 @@
         <category>Maya 插件分析</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -687,8 +715,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Git</tag>
       </tags>
   </entry>
@@ -701,8 +729,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -726,8 +754,8 @@
         <category>Maya疑难杂症</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -750,8 +778,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -775,8 +803,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -850,8 +878,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>博客</tag>
         <tag>前端</tag>
+        <tag>博客</tag>
       </tags>
   </entry>
   <entry>
@@ -981,8 +1009,8 @@
       </categories>
       <tags>
         <tag>VScode</tag>
-        <tag>Maya</tag>
         <tag>编辑器</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1076,8 +1104,8 @@
         <category>Maya 学习记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>BlendShape</tag>
       </tags>
   </entry>
@@ -1089,8 +1117,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1144,8 +1172,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1465,8 +1493,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>博客</tag>
         <tag>前端</tag>
+        <tag>博客</tag>
         <tag>Linux</tag>
       </tags>
   </entry>
@@ -1506,8 +1534,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1522,8 +1550,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1538,8 +1566,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1566,8 +1594,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1582,8 +1610,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1598,8 +1626,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1614,8 +1642,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1630,8 +1658,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1670,8 +1698,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1695,8 +1723,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1748,8 +1776,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1760,8 +1788,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1772,8 +1800,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1784,8 +1812,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1796,8 +1824,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1845,8 +1873,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1857,8 +1885,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1971,8 +1999,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1983,8 +2011,8 @@
         <category>Houdini</category>
       </categories>
       <tags>
-        <tag>模型</tag>
         <tag>Houdini</tag>
+        <tag>模型</tag>
         <tag>体积</tag>
       </tags>
   </entry>
@@ -2011,8 +2039,8 @@
         <category>Maya 开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2025,8 +2053,8 @@
         <category>Maya 开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2052,8 +2080,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>博客</tag>
         <tag>前端</tag>
+        <tag>博客</tag>
         <tag>评论</tag>
       </tags>
   </entry>
@@ -2079,8 +2107,8 @@
       </categories>
       <tags>
         <tag>VScode</tag>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2116,9 +2144,9 @@
       </categories>
       <tags>
         <tag>three.js</tag>
+        <tag>Houdini</tag>
         <tag>模型</tag>
         <tag>VDB</tag>
-        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2265,8 +2293,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>博客</tag>
         <tag>前端</tag>
+        <tag>博客</tag>
         <tag>代码块</tag>
       </tags>
   </entry>
@@ -2292,8 +2320,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>博客</tag>
         <tag>前端</tag>
+        <tag>博客</tag>
         <tag>搜索</tag>
       </tags>
   </entry>
@@ -2306,8 +2334,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>博客</tag>
         <tag>前端</tag>
+        <tag>博客</tag>
         <tag>代码块</tag>
       </tags>
   </entry>
@@ -2334,8 +2362,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>博客</tag>
         <tag>前端</tag>
+        <tag>博客</tag>
         <tag>fancybox</tag>
       </tags>
   </entry>
@@ -2361,8 +2389,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>博客</tag>
         <tag>前端</tag>
+        <tag>博客</tag>
         <tag>正则表达式</tag>
       </tags>
   </entry>
@@ -2375,8 +2403,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>博客</tag>
         <tag>前端</tag>
+        <tag>博客</tag>
         <tag>图片水印</tag>
       </tags>
   </entry>
@@ -2389,8 +2417,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>博客</tag>
         <tag>前端</tag>
+        <tag>博客</tag>
         <tag>对象存储</tag>
       </tags>
   </entry>
@@ -2402,9 +2430,9 @@
         <category>Houdini</category>
       </categories>
       <tags>
-        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
+        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2444,9 +2472,9 @@
         <category>Houdini</category>
       </categories>
       <tags>
-        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
+        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2526,9 +2554,9 @@
         <category>Houdini</category>
       </categories>
       <tags>
-        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
+        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2539,9 +2567,9 @@
         <category>Houdini</category>
       </categories>
       <tags>
-        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
+        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2621,8 +2649,8 @@
       </categories>
       <tags>
         <tag>学习笔记</tag>
-        <tag>Hexo</tag>
         <tag>博客</tag>
+        <tag>Hexo</tag>
       </tags>
   </entry>
   <entry>
