@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Unreal PyToolkit 插件]]></title>
+    <url>%2Fposts%2F513f9ff.html</url>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;仓库已经提前搭建好了。 😁github地址😁&emsp;&emsp;最近一直在忙，没有把文章总结整理好。 &emsp;&emsp;这个是基于 C++ 蓝图开发的 Python 插件&emsp;&emsp;有一部分功能通过 C++ API 开发蓝图从而暴露到蓝图里面。&emsp;&emsp;进而可以实现 Python 调用 C++ API 操作 Unreal 底层。 &emsp;&emsp;使用官方 Python 插件扩展蓝图比起第三方 UnrealEnginePython 要更加方便。&emsp;&emsp;虽然现在官方的插件还不是很成熟，但是通过蓝图直接暴露 C++ API 的思路的确更加简单。&emsp;&emsp;UnrealEnginePython 里面写扩展还需要处理 Python 的 C++ 部分，对于纯 Unreal C++ 开发来说的确不太灵活。&emsp;&emsp;也难怪官方居然抛弃了相当成熟的第三方 Python 插件。 C++ 蓝图编写 &emsp;&emsp;其实蓝图编写我也是参照youtube 上的 unreal Python 教程学习的 youtube地址 B站地址 github地址&emsp;&emsp;我之前编写 FBX 动画导入对比面板的时候也有所提到 链接&emsp;&emsp;还有最近写的一篇文章也有比较详细的描述 Unreal Python 结合 C++ 开发蓝图库插件 &emsp;&emsp;看完教程，特别的需求就需要查论坛、查文档和查 Unreal 的 C++ 源码。&emsp;&emsp;在文档方面， Unreal 这的特别不行 😒&emsp;&emsp;不说 C++ 文档各种案例都没有，描述都是参数类型和极其简单的描述。&emsp;&emsp;文档的搜索还经常搜不到 API 信息， Python 的文档都比 C++ 强多了 🤷‍ &emsp;&emsp;一般首选查官方的 问答区 和 论坛&emsp;&emsp;关键字用 C++ 或者 blueprint 开头，然后加上具体需求的英文关键字。&emsp;&emsp;但是不要抱太好的期望，虚幻的社区也是不太活跃，有些问题有人问了，也没人回 🤦‍♂️ &emsp;&emsp;如果上述的方法没有收获，就只能采用比较麻烦的方案了。&emsp;&emsp;用 VScode 查引擎的 C++ 源码 。&emsp;&emsp;VScode 可以直接搜索到文件内容，但是如果匹配很多文件的话就只能一个一个找有用的信息。&emsp;&emsp;通常这种操作都比较麻烦，因为并不是所有的 API 函数都可以暴露到蓝图里面。&emsp;&emsp;有些没有 Unreal 宏设置的内部函数蓝图调用会无法编译通过，后来找来程序帮忙才知道这个原因，我还是太菜了😥&emsp;&emsp;并没有系统的学习 C++ ，Unreal 的 C++ 编程也还没深入看教程学习，最近一直围绕着 Python 开发解决问题😓&emsp;&emsp;倒是有查过 大象无形 工具书，但是很多要实现的需求里头并没有，以后找时间要系统地学习一下 大象无形 工具书。 Python Startup 脚本调用 &emsp;&emsp;虽然我 C++ 开发很一般，但是抄代码的能力总归还是有的。&emsp;&emsp;我想要实现 C++ 插件自动执行 Content 目录下的 initialize.py 脚本的效果。&emsp;&emsp;官方的 Python 插件提供了 Startup 脚本的方案。&emsp;&emsp;但是配置到官方的插件里并不好，配置拆散不是个事情。 &emsp;&emsp;于是我就参照 官方的 Python 插件实现自动加载 initialize.py 的效果。&emsp;&emsp;其实参照了源码真的不复杂。 &emsp;&emsp;就是插件启动的时候调用 Unreal 的 Ticker ，触发一次 Tick 之后就停止函数的执行而已。&emsp;&emsp;这样确保界面启动了之后再去执行相关的 Python 脚本，不容易导致错误。 1234567891011121314151617181920212223242526272829303132333435363738// Copyright Epic Games, Inc. All Rights Reserved.#include "PyToolkit.h"#define LOCTEXT_NAMESPACE "FPyToolkitModule"void FPyToolkitModule::StartupModule()&#123; // This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module // Initialize the tick handler TickHandle = FTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda([this](float DeltaTime) &#123; Tick(DeltaTime); return true; &#125;));&#125;void FPyToolkitModule::ShutdownModule()&#123; // This function may be called during shutdown to clean up your module. For modules that support dynamic reloading, // we call this function before unloading the module.&#125;void FPyToolkitModule::Tick(const float InDeltaTime) &#123; // 参考 Python 官方插件 | 引擎初始化完成之后 通过 tick 来初始化 initialize.py 脚本 if (!bHasTicked) &#123; bHasTicked = true; FString InitScript = TEXT("py \"") + FPaths::ProjectPluginsDir() / TEXT("PyToolkit/Content/initialize.py") + TEXT("\""); GEngine-&gt;Exec(NULL, InitScript.GetCharArray().GetData()); &#125;&#125;#undef LOCTEXT_NAMESPACEIMPLEMENT_MODULE(FPyToolkitModule, PyToolkit) &emsp;&emsp;如果不用 Tick 来触发而是直接用 GEngine-&gt;Exec 在插件的构造函数执行 Python 代码会直接报错的。 Python 环境配置和初始化 &emsp;&emsp;Content 目录下的 Python 目录默认会添加到 Python sys.path 里面&emsp;&emsp;Python 目录里面添加的依赖库如下: PySide FBX Python SDK dayu_widgets dayu_path singledispatch Qt.py &emsp;&emsp;上面是我在 Python 目录下添加的脚本库 initialize.py 脚本初始化 &emsp;&emsp;这个部分的代码也在 FBX 动画导入对比面板的文章里面有所提及。&emsp;&emsp;不过需要注意的是当时提到的 __QtAppTick__ 回调函数里面，其实不需要不断执行 QtWidgets.QApplication.processEvent&emsp;&emsp;加上表面上也不会对虚幻有什么实质的影响。&emsp;&emsp;不过这边的程序用了第三方的 imgui 来写虚幻的 UI&emsp;&emsp;结果发现如果加上这行 Qt 代码会导致 imgui 的 gui 组件无法聚焦 🤦‍♂️&emsp;&emsp;输入组件的焦点会被抢走。&emsp;&emsp;后面我注释掉那一句也没有对 Qt 的界面产生影响~ json 配置 Unreal 菜单 &emsp;&emsp;Unreal 官方论坛的解决方案&emsp;&emsp;在官方论坛可以查到关于 Python 生成菜单的方案。&emsp;&emsp;大佬贴心的贴出了可运行的代码，我的代码也是在这个基础上优化成 json 配置菜单的效果。 section - 配置分组 menu section - 设置分组 label - 配置显示名称 type - 配置 command 执行的类型 可以填写 python 和 command command - 根据 type 配置执行相应的命令 1234567891011121314151617181920212223242526272829303132333435363738394041&#123; "section":&#123; "Model":"建模", "Anim":"动画", "FX":"特效", "Render":"渲染", "Help":"帮助" &#125;, "menu":&#123; "Model_Tool" : &#123; "section": "Model", "label": "演示:模型处理工具(打印到屏幕)", "type": "PYTHON", "command": "unreal.SystemLibrary.print_string(None,'模型处理工具',text_color=[255,255,255,255])" &#125;, "Anim_Tool" : &#123; "section": "Anim", "label": "动画导入比较面板", "type": "COMMAND", "command": "py \"&#123;Content&#125;/Anim/FBXImporter/main.py\"" &#125;, "FX_Tool" : &#123; "section": "FX", "label": "Sequencer 导出选择元素动画为骨骼蒙皮", "type": "COMMAND", "command": "py \"&#123;Content&#125;/FX/sequencer_export_fbx.py\"" &#125;, "SequencerFBX" : &#123; "section": "Render", "label": "批量渲染 Sequencer 工具", "type": "COMMAND", "command": "py \"&#123;Content&#125;/Anim/sequencer_batch_render/render_tool.py\"" &#125;, "Document" : &#123; "section": "Help", "label": "帮助文档", "type": "PYTHON", "command": "import webbrowser;webbrowser.open_new_tab('https://github.com/FXTD-ODYSSEY/Unreal-PyToolkit')" &#125; &#125;&#125; &emsp;&emsp;这个是 json 配置部分，自动生成对应分组脚本的脚本。 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556type_map = &#123; "command": unreal.ToolMenuStringCommandType.COMMAND, "python": unreal.ToolMenuStringCommandType.PYTHON&#125;def read_menu_json(path): with open(path, 'r') as f: data = json.load(f, object_pairs_hook=OrderedDict, encoding='utf-8') menu_section_dict = data['section'] menu_entry_dict = data['menu'] for menu, data in menu_entry_dict.items(): data['type'] = type_map[data['type'].lower()] data['command'] = data['command'].format(Content=DIR) return menu_section_dict, menu_entry_dictdef create_menu(): # NOTE 读取 menu json 配置 menu_section_dict, menu_entry_dict = read_menu_json("%s/menu.json" % DIR) # NOTE https://forums.unrealengine.com/development-discussion/python-scripting/1767113-making-menus-in-py menus = unreal.ToolMenus.get() # NOTE 获取主界面的主菜单位置 main_menu = menus.find_menu("LevelEditor.MainMenu") if not main_menu: raise RuntimeError( "Failed to find the 'Main' menu. Something is wrong in the force!") # NOTE 添加一个下拉菜单 script_menu = main_menu.add_sub_menu( main_menu.get_name(), "PythonTools", "Tools", "PyToolkit") # NOTE 初始化下拉菜单的 Section 分组 for section, label in menu_section_dict.items(): script_menu.add_section(section, label) # NOTE 根据 json 来配置菜单显示的 Entry for menu, data in menu_entry_dict.items(): entry = unreal.ToolMenuEntry( name=menu, type=unreal.MultiBlockType.MENU_ENTRY, insert_position=unreal.ToolMenuInsert( "", unreal.ToolMenuInsertType.FIRST) ) entry.set_label(data.get('label', "untitle")) command = data.get('command', '') entry.set_string_command(data.get("type", 0), "", string=command) script_menu.add_menu_entry(data.get('section', ''), entry) # NOTE 刷新组件 menus.refresh_all_widgets() c++ 蓝图实现 RenderTargetCube 渲染出 TextureCube &emsp;&emsp;C++ 蓝图实现的功能在上次的 C++ 开发蓝图插件的总结里面有所提及 链接&emsp;&emsp;这里刚好遇到了一个 Python API 没有的需求，于是就再补充讲一讲。&emsp;&emsp;官方 API 提供了 RenderTarget 输出 Texture2D 的方法 链接 &emsp;&emsp;但是并没有提供 RenderTargetCube 输出 TextureCube 的方法&emsp;&emsp;但是既然后有 RenderTarget 的操作方法，其实就是输出 RenderTargetCube 基本没有太大区别。&emsp;&emsp;我这里的 C++ 代码就是抄引擎的源码然后稍微修改一下出来的。😜 1234567891011121314151617181920212223242526272829303132333435363738UTextureCube* UPyToolkitBPLibrary::RenderTargetCubeCreateStaticTextureCube(UTextureRenderTargetCube* RenderTarget, FString InName)&#123; FString Name; FString PackageName; IAssetTools&amp; AssetTools = FModuleManager::Get().LoadModuleChecked&lt;FAssetToolsModule&gt;("AssetTools").Get(); //Use asset name only if directories are specified, otherwise full path if (!InName.Contains(TEXT("/"))) &#123; FString AssetName = RenderTarget-&gt;GetOutermost()-&gt;GetName(); const FString SanitizedBasePackageName = UPackageTools::SanitizePackageName(AssetName); const FString PackagePath = FPackageName::GetLongPackagePath(SanitizedBasePackageName) + TEXT("/"); AssetTools.CreateUniqueAssetName(PackagePath, InName, PackageName, Name); &#125; else &#123; InName.RemoveFromStart(TEXT("/")); InName.RemoveFromStart(TEXT("Content/")); InName.StartsWith(TEXT("Game/")) == true ? InName.InsertAt(0, TEXT("/")) : InName.InsertAt(0, TEXT("/Game/")); AssetTools.CreateUniqueAssetName(InName, TEXT(""), PackageName, Name); &#125; UTextureCube* NewTex = nullptr; // create a static 2d texture NewTex = RenderTarget-&gt;ConstructTextureCube(CreatePackage(NULL, *PackageName), Name, RenderTarget-&gt;GetMaskedFlags() | RF_Public | RF_Standalone); if (NewTex != nullptr) &#123; // package needs saving NewTex-&gt;MarkPackageDirty(); // Notify the asset registry FAssetRegistryModule::AssetCreated(NewTex); &#125; return NewTex;&#125; &emsp;&emsp;基本上方法调用为 ConstructTextureCube 即可 总结 &emsp;&emsp;作为 TA ，开发 C++ 要牢记，我们只是大自然的搬运工。&emsp;&emsp;不要接引擎压根都没有的功能需求，这种功能开发通常需要交给程序去搞。&emsp;&emsp;我们的工作是将引擎的功能整合自动化。&emsp;&emsp;查源码虽然很麻烦，很绕，但是很多类用法可以参考源代码的 😎]]></content>
+      <categories>
+        <category>游戏开发</category>
+        <category>Unreal</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Unreal</tag>
+        <tag>插件</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Unreal Python Mesh Paint 顶点色绘制工具]]></title>
     <url>%2Fposts%2Fbd6d2a61.html</url>
     <content type="text"><![CDATA[前言 &emsp;&emsp;Unreal 内置有顶点色绘制的功能，可以很方便的在引擎里面绘制颜色。&emsp;&emsp;但是这个功能有个小缺点就是依赖模型的顶点色，如果模型的面数很少的情况下，顶点色绘制就非常不方便了。&emsp;&emsp;那么能否在很少面数的情况下一样去驱动绘制呢？&emsp;&emsp;经过我的研究是完全 可以 实现的，而使用 Python 则更可以更进一步将流程自动化，艺术家只要关注绘制即可。 &emsp;&emsp;其实这个顶点色操作和 Unreal 自带的地形实现的贴图混合效果差不多，好处就是可以用任意的自定义模型。&emsp;&emsp;然后通过一个材质绘制 alpha ，然后最后将绘制效果 bake 成一张贴图。&emsp;&emsp;这样就可以实现任意模型贴图混合并且最后输出一张混合到一起完整贴图。 细分模型 &emsp;&emsp;通过上面的描述可以知道，第一步的绘制操作需要在引擎添加面数才能实现细微的控制。&emsp;&emsp;在引擎里面提高模型面数有两种方案。 Editable Mesh &emsp;&emsp;使用 Editable Mesh 需要开启插件 Editable Mesh 插件。 &emsp;&emsp;这个方案有个好处就是功能是基于蓝图实现的，因此可以完全基于 Python 实现调用。&emsp;&emsp;但是网上查了一轮，居然发现这个蓝图怎么用一点文档都没有。（开源就是那么任性）&emsp;&emsp;我经过一轮搜索好不容易搜到一个相关的问题，但是却没有任何人提供相关回答 链接&emsp;&emsp;最新的回答就是我自己了…… &emsp;&emsp;当时这个蓝图操作也是看着 Python 里面的 API 搭建出来的。&emsp;&emsp;各种函数都暴露到了 Python ，比起官方的 蓝图 API 还要清晰。&emsp;&emsp;所以简单摸索搭配一下就成了。 &emsp;&emsp;后来搜索模型细分相关的信息的时候，还是在论坛很深的地方找到了别人关于 Editable mesh 的研究成果 链接，其实也和我搭建的蓝图一样。&emsp;&emsp;新版本需要多加一个 commit 蓝图节点才能在视窗上看到实现的效果。 &emsp;&emsp;上面的蓝图只是我 Extrude 操作的演示， Editable Mesh 提供了 set_subdivision_count 和 tessellate_polygons 的方法。&emsp;&emsp;上面两个都可以实现增加细分的效果。&emsp;&emsp;设置 subdivision 和 Maya 的3键效果一样的，会将模型全部平滑。&emsp;&emsp;如果正方形面片，平滑了之后就变成了 圆形面片 了。&emsp;&emsp;另外这里需要注意，细分之后的结果是直接存储到 asset 里面的。&emsp;&emsp;如果直接拖基础方块到场景的话，引擎官方的方块 asset 会被细分，如果不甚保存了结果。&emsp;&emsp;那么恭喜你，你的基础方块永远都是细分过的高面数方块了(:з」∠) &emsp;&emsp;因为直接设置细分有平滑的问题，所以用 tessellate_polygons 加面的方案比较好，因为这里只想保持模型外轮廓不变的情况下加面数。 &emsp;&emsp;不过最后折腾了一圈之后，并没有采用 Editable Mesh 的方案。&emsp;&emsp;因为在我们项目的魔改引擎里测试很容易导致崩溃，非常不稳定。&emsp;&emsp;貌似官方版本的引擎会好好很多。&emsp;&emsp;鉴于这些问题，即便 Python 可以调用这些蓝图，也不得不放弃了这个方案。 Mesh Tool Remesh &emsp;&emsp;在引擎里面除了刚才提到的没什么人用的 Editable Mesh 之外。&emsp;&emsp;还有 Mesh Tool 这个官方力推的建模工具箱，里面提供了 Remesh 功能，同样可以实现细分效果。&emsp;&emsp;Remesh 也完美保证外轮廓不变，和 Houdini 的 Remesh 效果差不多，会重新拓扑成不规则的三角面。 &emsp;&emsp;使用 Mesh Tool 需要开启插件。 &emsp;&emsp;开启之后可以在 Mode 下面找到 Mesh Tool 工具集。&emsp;&emsp;选择 Deform 然后点击 Remesh 就可以细分模型了。 &emsp;&emsp;当然这里需要注意 Editable Mesh 同样的问题，这个修改会直接应用到当前 asset 里面。&emsp;&emsp;然而这个细分的资源只是用来临时通过顶点色绘制贴图的，因此我们这里复制一个新的模型并手动细分处理。&emsp;&emsp;通过 Mesh Tool 也可以让艺术家自己调节细分的程度，比起 Editable Mesh 的一步到位,没有多少可以调节的参数要好很多。 材质 Bake &emsp;&emsp;正如上面提到，这里绘制是需要一个 贴图 混合的材质。&emsp;&emsp;这个材质可以简单通过 lerp 节点实现。&emsp;&emsp;当然也可以搭建更为复杂的效果，比如说通过高度图实现更细微的贴图混合。 &emsp;&emsp;那么绘制完成之后，要怎么输出绘制的贴图呢？&emsp;&emsp;首先需要将材质 bake 成一个新的材质。&emsp;&emsp;这样可以将材质混合的贴图类似 PS 的图层合并一样 合并成一张贴图。 &emsp;&emsp;Bake 输出完成之后，会输出一个特殊的材质以及配到一张合并好的贴图。这个 材质 和 贴图 都在 Transient 临时目录里面&emsp;&emsp;如果是 Python 驱动的话，甚至连临时的文件都没有了，是一个动态 Texture2d 贴图。&emsp;&emsp;这个操作就类似你用 蓝图节点 import File as Texture2D 获取到 Texture2D 。 &emsp;&emsp;这个 Texture2D 完全没有 Asset 路径，也无法直接存储到 Unreal 的 Content Browser 里面。&emsp;&emsp;最后我的处理方法是将这张贴图导出通过 export to disk 方法将图片导出到本地。&emsp;&emsp;然后再通过 import asset tasks 将图片重新导入到 Content Browser 里面。 &emsp;&emsp;当然除了这种曲线救国的导出引擎在导入的方法之外，也可以用 RenderTarget 的方式将图片存储到 Content Browser。&emsp;&emsp;只是 Render Target 的处理要麻烦很多，需要通过 Python 搭建材质然后调用 Draw Material to Render Target 节点实现材质转纹理&emsp;&emsp;所以最后还不如做一次导出导入的操作流程。 &emsp;&emsp;完成贴图导出导入的流程基本就大功告成，后续就是清理掉之前生成的高模即可。 &emsp;&emsp;这里的操作和我们这边的材质属性直接挂钩，就不直接 post 程序代码，下面放出一些过程代码给大家参考。&emsp;&emsp;由于这里需要输出的是一张黑白的单通道纹理，所以 bake 的时候实际上是生成了一个 顶点色 连接的材质&emsp;&emsp;然后将顶点色的贴图 bake 出来，导出 TGA 贴图然后再导入会引擎。 （TGA 贴图在下个章节解释） 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475# NOTE 生成临时材质material = unreal.Material()unlit = unreal.MaterialShadingModel.MSM_UNLIT# NOTE 设置为 unlit 模式material.set_editor_property("shading_model", unlit)# NOTE 生成顶点色节点 位置为 0,0 vertex_color = unreal.MaterialEditingLibrary.create_material_expression( material,unreal.MaterialExpressionVertexColor)# NOTE 将顶点色节点的 R 通道和 emissive 属性相连emissive = unreal.MaterialProperty.MP_EMISSIVE_COLORunreal.MaterialEditingLibrary.connect_material_property(vertex_color, "R", emissive)# NOTE 编译材质unreal.MaterialEditingLibrary.recompile_material(material)# NOTE 将临时材质赋予到选择模型的 StatiMeshComponent 上static_comp.set_editor_property("override_materials",[material])# NOTE 设置 Bake 属性option = unreal.MaterialOptions()option.set_editor_property("use_mesh_data", True)properties = unreal.PropertyEntry()MP_EMISSIVE_COLOR = unreal.MaterialProperty.MP_EMISSIVE_COLORproperties.set_editor_property("property_", MP_EMISSIVE_COLOR)option.set_editor_property("properties", [properties])# NOTE 获取 Gui 上的输入的贴图大小x = self.Tex_Size_X_SP.value()y = self.Tex_Size_Y_SP.value()size = unreal.IntPoint(x, y)option.set_editor_property("texture_size", size)# NOTE 通过 Editor Tests 插件提供的蓝图 bake 出材质和贴图 unreal.EditorTestsUtilityLibrary.bake_materials_for_component( static_comp, option, unreal.MaterialMergeOptions())# NOTE 获取Bake出来的 材质 | 从材质上获取生成的目标贴图material = static_comp.get_editor_property("override_materials")[0]texture = material.get_texture_parameter_value("EmissiveColorTexture")# NOTE 导出 TGA 图片 | 方便 顶点色 导入asset_tool = unreal.AssetToolsHelpers.get_asset_tools()# NOTE 输出到临时路径上texture_path = os.path.join(tempfile.gettempdir(),"Unreal_temp",name+"_BakeTexture.tga")task = unreal.AssetExportTask()task.set_editor_property('automated', True)task.set_editor_property('filename', texture_path)task.set_editor_property('object', texture)task.set_editor_property('prompt', False)task.set_editor_property('exporter', unreal.TextureExporterTGA())check = unreal.Exporter.run_asset_export_task(task)if not check: alert(u"tga 图片生成失败") return# NOTE 等待贴图生成time.sleep(1)# NOTE https://forums.unrealengine.com/development-discussion/python-scripting/1608720-python-scripting-for-importing-custom-assets# NOTE 导入贴图task = unreal.AssetImportTask()task.set_editor_property('automated', True)task.set_editor_property('destination_name', name + '_BakeTexture')task.set_editor_property('destination_path', path)task.set_editor_property('filename', texture_path)task.set_editor_property('replace_existing', True)task.set_editor_property('save', True)asset_tool.import_asset_tasks([task])bake_path = path + "/" + name + '_BakeTexture'texture = unreal.EditorAssetLibrary.load_asset(bake_path) 顶点色绘制还原 &emsp;&emsp;本来是觉得这个纹理处理流程已经完美了，没想到在美术使用之后遇到了一个非常致命的问题。&emsp;&emsp;那就是贴图画得不好想要重新画该怎么办？ &emsp;&emsp;好在虚幻的顶点色绘制提供了重新导入顶点色纹理的方法。&emsp;&emsp;只不过模型在处理过程中已经将细分删除了，需要重新复制一个模型，然后细分，再然后导入之前导出的 黑白 纹理为顶点色即可。&emsp;&emsp;由于引擎只支持导入 TGA 纹理，所以上面导出的时候也将格式改为 TGA。 总结 &emsp;&emsp;这次贴图处理流程有些许模糊不清，主要原因是 Material 节点的连接上不是我做的。&emsp;&emsp;我负责写工具将流程自动化，并且对接这个特殊 Meterial 上的一些参数。&emsp;&emsp;以后有时间也得再好好研究一下 Unreal 的 Material 节点连接。]]></content>
@@ -51,8 +65,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
       </tags>
   </entry>
   <entry>
@@ -104,8 +118,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -117,8 +131,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -130,8 +144,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -522,8 +536,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>android</tag>
+        <tag>效率</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -535,8 +549,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>android</tag>
+        <tag>效率</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -626,8 +640,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -878,8 +892,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
       </tags>
   </entry>
   <entry>
@@ -1008,9 +1022,9 @@
         <category>VScode</category>
       </categories>
       <tags>
+        <tag>Maya</tag>
         <tag>VScode</tag>
         <tag>编辑器</tag>
-        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1130,9 +1144,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1144,9 +1158,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1493,8 +1507,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>Linux</tag>
       </tags>
   </entry>
@@ -2080,8 +2094,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>评论</tag>
       </tags>
   </entry>
@@ -2106,9 +2120,9 @@
         <category>VScode</category>
       </categories>
       <tags>
-        <tag>VScode</tag>
         <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>VScode</tag>
       </tags>
   </entry>
   <entry>
@@ -2119,8 +2133,8 @@
         <category>Houdini</category>
       </categories>
       <tags>
-        <tag>Houdini</tag>
         <tag>pluralsight</tag>
+        <tag>Houdini</tag>
         <tag>VEX</tag>
       </tags>
   </entry>
@@ -2157,9 +2171,9 @@
         <category>Houdini</category>
       </categories>
       <tags>
-        <tag>Houdini</tag>
         <tag>pluralsight</tag>
         <tag>SOP</tag>
+        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2293,8 +2307,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>代码块</tag>
       </tags>
   </entry>
@@ -2320,8 +2334,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>搜索</tag>
       </tags>
   </entry>
@@ -2334,8 +2348,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>代码块</tag>
       </tags>
   </entry>
@@ -2362,8 +2376,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>fancybox</tag>
       </tags>
   </entry>
@@ -2389,8 +2403,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>正则表达式</tag>
       </tags>
   </entry>
@@ -2403,8 +2417,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>图片水印</tag>
       </tags>
   </entry>
@@ -2417,8 +2431,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>对象存储</tag>
       </tags>
   </entry>
@@ -2430,9 +2444,9 @@
         <category>Houdini</category>
       </categories>
       <tags>
+        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
-        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2472,9 +2486,9 @@
         <category>Houdini</category>
       </categories>
       <tags>
+        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
-        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2554,9 +2568,9 @@
         <category>Houdini</category>
       </categories>
       <tags>
+        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
-        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2567,9 +2581,9 @@
         <category>Houdini</category>
       </categories>
       <tags>
+        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
-        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2621,9 +2635,9 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>学习笔记</tag>
         <tag>标记</tag>
         <tag>遮罩</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
   <entry>
@@ -2649,8 +2663,8 @@
       </categories>
       <tags>
         <tag>学习笔记</tag>
-        <tag>博客</tag>
         <tag>Hexo</tag>
+        <tag>博客</tag>
       </tags>
   </entry>
   <entry>
@@ -2688,8 +2702,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>前期基本流程</tag>
         <tag>学习笔记</tag>
+        <tag>前期基本流程</tag>
       </tags>
   </entry>
 </search>
