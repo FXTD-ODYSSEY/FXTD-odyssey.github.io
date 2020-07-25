@@ -2,23 +2,31 @@
 var name = "FXTD-Odyssey";
 var repository = "FXTD-odyssey.github.io";
 var link;
-var src;
-if (document.domain != 'localhost')
-$("img").each(function () {
-    src = $(this).attr("data-src")
-    if (src && (src.startsWith("/post_img") || src.startsWith("/img"))) {
-        link = "//cdn.jsdelivr.net/gh/" + name + "/" + repository + src
-        $(this).attr("data-src", link)
+function changeImgUrl(that, src) {
+    link = "//cdn.jsdelivr.net/gh/" + name + "/" + repository + src
+    if (src.startsWith("/post_img") || src.startsWith("/img")) {
+        $(that).attr("data-src", link)
     }
-})
+    if (src.endsWith(".mp4")) {
+        $(that).replaceWith($('<video class="post_bg" src="' + link + '" autoplay="autoplay" loop="loop" style="width: 100%; height:100%;"></video>'));
+    }
+}
+function updateImg() {
+    if (document.domain != 'localhost')
+    $("img").each(function () {
+        src = $(this).attr("data-src")
+        if (src) {
+            changeImgUrl(this, src)
+        } else {
+            src = $(this).attr("src")
+            if (src)
+                changeImgUrl(this, src)
+        }
+    })
+}
 
-// NOTE 将封面视频转换为 video 标签
-$(".post_bg").each(function () {
-    var src = $(this).attr('data-src')
-    if (src.toString().endsWith(".mp4")) {
-        $(this).replaceWith($('<video class="post_bg" src="' + src + '" autoplay="autoplay" loop="loop" style="width: 100%; height:100%;"></video>'));
-    }
-})
+updateImg()
+// setInterval(updateImg, 1000);
 
 // Note 添加 comment 特殊样式
 $(".comment").each(function () {
