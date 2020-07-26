@@ -8,11 +8,12 @@ function changeImgUrl(that, src) {
         $(that).attr("data-src", link)
     }
     if (src.endsWith(".mp4")) {
-        $(that).replaceWith($('<video class="post_bg" src="' + link + '" autoplay="autoplay" loop="loop" style="width: 100%; height:100%;"></video>'));
+        // $(that).replaceWith($('<video class="post_bg" src="' + link + '" autoplay="autoplay" loop="loop" style="width: 100%; height:100%;"></video>'));
+        $(that).replaceWith($('<video class="post_bg" src="' + src + '" autoplay="autoplay" loop="loop" style="width: 100%; height:100%;"></video>'));
     }
 }
 function updateImg() {
-    if (document.domain != 'localhost')
+    // if (document.domain != 'localhost')
     $("img").each(function () {
         src = $(this).attr("data-src")
         if (src) {
