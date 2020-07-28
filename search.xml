@@ -17,7 +17,7 @@
   <entry>
     <title><![CDATA[Qt.py 代码补全修复]]></title>
     <url>%2Fposts%2Fdf750dd1.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;之前编写 Qt Designer 使用全攻略的时候，遇到 Qt.py 怎么配置自动提示的方案&emsp;&emsp;关于这个的配置，我去年写的文章，当时还是宣称无解，其实不然，目前已经找到两个解决方案。 TabNine Qt.py-stubs TabNine 全语言补全插件 &emsp;&emsp;这个插件我是在 youtube 上看大他们家的广告认识的。&emsp;&emsp;开启了插件之后虽然没有达到官方宣传的那么好用，但是因为是全语言，而且是人工智能自动补全。&emsp;&emsp;很多时候都非常可以定位到我想要的包，就是有时候我大小写不准确，补全的时候也会自动补全错误的大小写。 Qt.py-stubsQt.py-stubs &emsp;&emsp;这个仓库是我在 github 上找到的。&emsp;&emsp;需要配置一下 VScode python setting 的 autocomplete 路径 123"python.autoComplete.extraPaths": [ "G:\\PythonIntellisense",], &emsp;&emsp;配置好了路径之后，将 仓库的 Qt 文件夹放到配置的路径下。&emsp;&emsp;然后输入等 VScode 的 Python Language Server 预热完毕即可。&emsp;&emsp;基本的提示都很完善了。 总结 &emsp;&emsp;TabNine 我很久就开始用了，感觉自动补全还挺好的。]]></content>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;之前编写 Qt Designer 使用全攻略的时候，遇到 Qt.py 怎么配置自动提示的方案&emsp;&emsp;关于这个的配置，我去年写的文章，当时还是宣称无解，其实不然，目前已经找到两个解决方案。 TabNine Qt.py-stubs TabNine 全语言补全插件 &emsp;&emsp;这个插件我是在 youtube 上看大他们家的广告认识的。&emsp;&emsp;开启了插件之后虽然没有达到官方宣传的那么好用，但是因为是全语言，而且是人工智能自动补全。&emsp;&emsp;很多时候都非常可以定位到我想要的包，就是有时候我大小写不准确，补全的时候也会自动补全错误的大小写。 Qt.py-stubsQt.py-stubs &emsp;&emsp;这个仓库是我在 github 上找到的。&emsp;&emsp;需要配置一下 VScode python setting 的 autocomplete 路径 123"python.autoComplete.extraPaths": [ "G:\\PythonIntellisense",], &emsp;&emsp;配置好了路径之后，将 仓库的 Qt 文件夹放到配置的路径下。&emsp;&emsp;然后输入等 VScode 的 Python Language Server 预热完毕即可。&emsp;&emsp;基本的提示都很完善了。 总结 &emsp;&emsp;TabNine 我很久就开始用了，自动补全还挺好的。]]></content>
       <categories>
         <category>CG</category>
         <category>Qt</category>
@@ -26,8 +26,8 @@
       <tags>
         <tag>PyQt</tag>
         <tag>Qt</tag>
-        <tag>Qt Designer</tag>
         <tag>PySide</tag>
+        <tag>Qt Designer</tag>
       </tags>
   </entry>
   <entry>
@@ -42,8 +42,8 @@
       <tags>
         <tag>PyQt</tag>
         <tag>Qt</tag>
-        <tag>Qt Designer</tag>
         <tag>PySide</tag>
+        <tag>Qt Designer</tag>
       </tags>
   </entry>
   <entry>
@@ -112,8 +112,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
       </tags>
   </entry>
   <entry>
@@ -980,14 +980,14 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
       </tags>
   </entry>
   <entry>
     <title><![CDATA[【置顶】 智伤帝 | 博客全面指引]]></title>
     <url>%2Fposts%2Fintro.html</url>
-    <content type="text"><![CDATA[欢迎来到我的个人博客 前言 &emsp;&emsp;很高兴可以在这里与你相遇。&emsp;&emsp;这个博客是从 2018 年中旬开始了我的更新之路,至今已经有 年了&emsp;&emsp;目前依然怀揣着巨大的热情和努力在自己的这片小天地间记录变化。 &emsp;&emsp;本篇文章将会不定期更新干货，望大家能够受益。 // NOTE 计算博客维系至今的时间 let curr_date = new Date(); curr_year = curr_date.getFullYear(); curr_month = curr_date.getMonth(); curr = curr_year + curr_month/12 - 2018.5; $(".year").text(curr.toFixed(2)) $(".year").css({"color":"orange"}) 使用指引 &emsp;&emsp;我的博客是基于前端 Hexo 静态博客框架技术搭建的。&emsp;&emsp;可以在不依赖服务器的情况下实现博客的分类和搜索。 &emsp;&emsp;博客分左边侧边栏和右边的文章罗列。&emsp;&emsp;左侧已经将一些相关主题的文章系列整理排列在此。 &emsp;&emsp;扩展图标下面有更多选项可以选择。 点击标签 点击分类 点击归档 点击友情链接 点击搜索 注：搜索需要下载搜索索引的文件，随着我的博客内容越来越多，这个文件也越来越大，因此需要等待一段时间的加载。 手机端页面 推荐指引 2019-11-12友情链接 &emsp;&emsp;博客侧边栏上的友情链接我多年遇到问题的时候搜索答案积累下来的链接&emsp;&emsp;特别推荐其中的一些博客&emsp;&emsp;因为目前我自己主研 Maya ，所以推荐 Maya 为主，请见谅~ 【Maya】 一半君的总结纸 &emsp;&emsp;一半君的总结纸 博客里面也有一堆大神的链接，我自己也没有验证过，也就不重复推荐了。&emsp;&emsp;从博客里面的文章记录来看 一半君 也是老前辈了。&emsp;&emsp;另外博客里面翻译的 How-to 系列真的帮助很大，虽然年代久远，但是Maya的架构真的没有太大变化，完全可用。 【Maya】 Autokdesk ADN 官方博客 &emsp;&emsp;Autokdesk ADN 官方博客 这个博客是自动桌官方技术人员的博客。&emsp;&emsp;可以说里面的内容是最权威最官方。&emsp;&emsp;另外博客里很多大佬都是中国人（也可能是华人），希望国人的自研架构能早日面世^_^ 个人精选 PYTHON QT 开发教程 &emsp;&emsp;这个系列教程是我自己花了一个月时间的准备筹划所编写出来的 Qt for Python 教程系列&emsp;&emsp;从零到进阶的开发路线，当然由于后续时间紧凑，也没有弄得非常复杂，后期结合Maya等DCC软件的案例太少。&emsp;&emsp;目前计划重置这个系列的教程，后续将推出视频版，预计将在今年内上线。&emsp;&emsp;作为粉丝的你，记得催更了。 HEXO博客搭建历程 &emsp;&emsp;这个系列记录了我博客的各种变迁与升级&emsp;&emsp;不忘初心，砥砺前行。 观看笔记 - Python For Maya Artist Friendly Programming &emsp;&emsp;最用心的教程记录，当时初学 Python Qt ， 连 Maya API 用起来也艰难得很。&emsp;&emsp;这里面记录了自己很多心路历程，推荐给大家。 公众号推荐 &emsp;&emsp;下面就是我推荐的一些公众号二维码，各位客官如果有兴趣可以扫一下。 我的个人公众号 公众号未必和博客同步更新，但是可以肯定公众号的文章都来源于博客或者转载于其他有用的地方。 TD大佬的公众号，内容很棒，只可惜数量太少。 猫大牛逼，TD十戒真的强。 教程指引 有待补充。。。打算出一个系列的文章进行说明 博客说明 &emsp;&emsp;这个博客是基于 Hexo 的 black-blue 主题下进行修改的 （这个主题又是基于 SPFK 主题修改的(:з」∠)）&emsp;&emsp;修改的内容可以参考我 Hexo博客搭建历程系列 &emsp;&emsp;博客目前挂载在三个地方 FXTD-odyssey.github.io FXTD-odyssey.coding.me blog.l0v0.com &emsp;&emsp;这三个地方同步更新，互相备份。&emsp;&emsp; github.io 是借助 Github Pages 静态页面挂载的免费服务&emsp;&emsp; coding.me 是借助 Coding Pages 静态页面挂载的免费服务&emsp;&emsp; l0v0.com 是我的个人域名。 &emsp;&emsp;评论系统是基于 github issue 的 gittalk 实现的&emsp;&emsp;因此只有在 github.io 的域名下才可以正确评论，其他挂载服务使用 gittalk 会错误跳转到 github.io 的主页上，对此我也没有办法。 最后 &emsp;&emsp;我的干货分享到此结束了。&emsp;&emsp;大家如果还有什么建议，想要交流的，可以在下方留言。]]></content>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;很高兴可以在这里与你相遇。&emsp;&emsp;这个博客是从 2018 年中旬开始了我的更新之路,至今已经有 年了&emsp;&emsp;目前依然怀揣着巨大的热情和努力在自己的这片小天地间记录变化。 &emsp;&emsp;本篇文章将会不定期更新干货，望大家能够受益。 // NOTE 计算博客维系至今的时间 let curr_date = new Date(); curr_year = curr_date.getFullYear(); curr_month = curr_date.getMonth(); curr = curr_year + curr_month/12 - 2018.5; $(".year").text(curr.toFixed(2)) $(".year").css({"color":"orange"}) 使用指引 &emsp;&emsp;我的博客是基于前端 Hexo 静态博客框架技术搭建的。&emsp;&emsp;可以在不依赖服务器的情况下实现博客的分类和搜索。 &emsp;&emsp;博客分左边侧边栏和右边的文章罗列。&emsp;&emsp;左侧已经将一些相关主题的文章系列整理排列在此。 &emsp;&emsp;扩展图标下面有更多选项可以选择。 点击标签 点击分类 点击归档 点击友情链接 点击搜索 注：搜索需要下载搜索索引的文件，随着我的博客内容越来越多，这个文件也越来越大，因此需要等待一段时间的加载。 手机端页面 推荐指引 2019-11-12友情链接 &emsp;&emsp;博客侧边栏上的友情链接我多年遇到问题的时候搜索答案积累下来的链接&emsp;&emsp;特别推荐其中的一些博客&emsp;&emsp;因为目前我自己主研 Maya ，所以推荐 Maya 为主，请见谅~ 【Maya】 一半君的总结纸 &emsp;&emsp;一半君的总结纸 博客里面也有一堆大神的链接，我自己也没有验证过，也就不重复推荐了。&emsp;&emsp;从博客里面的文章记录来看 一半君 也是老前辈了。&emsp;&emsp;另外博客里面翻译的 How-to 系列真的帮助很大，虽然年代久远，但是Maya的架构真的没有太大变化，完全可用。 【Maya】 Autokdesk ADN 官方博客 &emsp;&emsp;Autokdesk ADN 官方博客 这个博客是自动桌官方技术人员的博客。&emsp;&emsp;可以说里面的内容是最权威最官方。&emsp;&emsp;另外博客里很多大佬都是中国人（也可能是华人），希望国人的自研架构能早日面世^_^ 个人精选 PYTHON QT 开发教程 &emsp;&emsp;这个系列教程是我自己花了一个月时间的准备筹划所编写出来的 Qt for Python 教程系列&emsp;&emsp;从零到进阶的开发路线，当然由于后续时间紧凑，也没有弄得非常复杂，后期结合Maya等DCC软件的案例太少。&emsp;&emsp;目前计划重置这个系列的教程，后续将推出视频版，预计将在今年内上线。&emsp;&emsp;作为粉丝的你，记得催更了。 HEXO博客搭建历程 &emsp;&emsp;这个系列记录了我博客的各种变迁与升级&emsp;&emsp;不忘初心，砥砺前行。 观看笔记 - Python For Maya Artist Friendly Programming &emsp;&emsp;最用心的教程记录，当时初学 Python Qt ， 连 Maya API 用起来也艰难得很。&emsp;&emsp;这里面记录了自己很多心路历程，推荐给大家。 公众号推荐 &emsp;&emsp;下面就是我推荐的一些公众号二维码，各位客官如果有兴趣可以扫一下。 我的个人公众号 公众号未必和博客同步更新，但是可以肯定公众号的文章都来源于博客或者转载于其他有用的地方。 TD大佬的公众号，内容很棒，只可惜数量太少。 猫大牛逼，TD十戒真的强。 教程指引 有待补充。。。打算出一个系列的文章进行说明 博客说明 &emsp;&emsp;这个博客是基于 Hexo 的 black-blue 主题下进行修改的 （这个主题又是基于 SPFK 主题修改的(:з」∠)）&emsp;&emsp;修改的内容可以参考我 Hexo博客搭建历程系列 &emsp;&emsp;博客目前挂载在三个地方 FXTD-odyssey.github.io FXTD-odyssey.coding.me blog.l0v0.com &emsp;&emsp;这三个地方同步更新，互相备份。&emsp;&emsp; github.io 是借助 Github Pages 静态页面挂载的免费服务&emsp;&emsp; coding.me 是借助 Coding Pages 静态页面挂载的免费服务&emsp;&emsp; l0v0.com 是我的个人域名。 &emsp;&emsp;评论系统是基于 github issue 的 gittalk 实现的&emsp;&emsp;因此只有在 github.io 的域名下才可以正确评论，其他挂载服务使用 gittalk 会错误跳转到 github.io 的主页上，对此我也没有办法。 最后 &emsp;&emsp;我的干货分享到此结束了。&emsp;&emsp;大家如果还有什么建议，想要交流的，可以在下方留言。]]></content>
   </entry>
   <entry>
     <title><![CDATA[Maya Arnold 渲染设置崩溃]]></title>
@@ -1609,8 +1609,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>Linux</tag>
       </tags>
   </entry>
@@ -2220,8 +2220,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>评论</tag>
       </tags>
   </entry>
@@ -2443,8 +2443,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>代码块</tag>
       </tags>
   </entry>
@@ -2471,8 +2471,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>搜索</tag>
       </tags>
   </entry>
@@ -2485,8 +2485,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>代码块</tag>
       </tags>
   </entry>
@@ -2513,8 +2513,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>fancybox</tag>
       </tags>
   </entry>
@@ -2541,8 +2541,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>正则表达式</tag>
       </tags>
   </entry>
@@ -2555,8 +2555,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>图片水印</tag>
       </tags>
   </entry>
@@ -2569,8 +2569,8 @@
         <category>Hexo</category>
       </categories>
       <tags>
-        <tag>前端</tag>
         <tag>博客</tag>
+        <tag>前端</tag>
         <tag>对象存储</tag>
       </tags>
   </entry>
@@ -2802,8 +2802,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>拍照指南</tag>
         <tag>学习笔记</tag>
+        <tag>拍照指南</tag>
       </tags>
   </entry>
   <entry>
@@ -2816,8 +2816,8 @@
       </categories>
       <tags>
         <tag>学习笔记</tag>
-        <tag>博客</tag>
         <tag>Hexo</tag>
+        <tag>博客</tag>
       </tags>
   </entry>
   <entry>
@@ -2858,8 +2858,8 @@
       </categories>
       <tags>
         <tag>Photogrammetry</tag>
-        <tag>学习笔记</tag>
         <tag>前期基本流程</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
 </search>
