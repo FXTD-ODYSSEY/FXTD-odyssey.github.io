@@ -70,9 +70,9 @@
     
       <category term="Qt" scheme="https://blog.l0v0.com/tags/Qt/"/>
     
-      <category term="PySide" scheme="https://blog.l0v0.com/tags/PySide/"/>
-    
       <category term="Qt Designer" scheme="https://blog.l0v0.com/tags/Qt-Designer/"/>
+    
+      <category term="PySide" scheme="https://blog.l0v0.com/tags/PySide/"/>
     
   </entry>
   
@@ -102,9 +102,9 @@
     
       <category term="Qt" scheme="https://blog.l0v0.com/tags/Qt/"/>
     
-      <category term="PySide" scheme="https://blog.l0v0.com/tags/PySide/"/>
-    
       <category term="Qt Designer" scheme="https://blog.l0v0.com/tags/Qt-Designer/"/>
+    
+      <category term="PySide" scheme="https://blog.l0v0.com/tags/PySide/"/>
     
   </entry>
   
@@ -242,9 +242,9 @@
       <category term="Hexo" scheme="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/Hexo/"/>
     
     
-      <category term="博客" scheme="https://blog.l0v0.com/tags/%E5%8D%9A%E5%AE%A2/"/>
-    
       <category term="前端" scheme="https://blog.l0v0.com/tags/%E5%89%8D%E7%AB%AF/"/>
+    
+      <category term="博客" scheme="https://blog.l0v0.com/tags/%E5%8D%9A%E5%AE%A2/"/>
     
   </entry>
   
