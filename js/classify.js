@@ -2,7 +2,8 @@ classifyclick = function(classify){
     var expan = $(classify).parent().parent().next();
     var temp = expan
     if(expan.css("display") == "none"){
-        $(classify).rotate({animateTo: -90})
+        $(classify).removeClass("fa-chevron-left")
+        $(classify).addClass("fa-chevron-down")
         expan.css('height', '');
         expan.css("display", "block");
         height = expan.height();
@@ -14,7 +15,8 @@ classifyclick = function(classify){
         }
     }
     else{
-        $(classify).rotate({animateTo: 0})
+        $(classify).removeClass("fa-chevron-down")
+        $(classify).addClass("fa-chevron-left")
         temp_classify = classify;
         height = expan.height();
         expan.animate({height: '0px'}, {complete: function() {$(temp_classify).parent().parent().next().css("display", "none");}});

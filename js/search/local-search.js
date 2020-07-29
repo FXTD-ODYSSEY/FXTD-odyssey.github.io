@@ -1,13 +1,13 @@
 $(function () {
   let loadFlag = false
-  $('a.social-icon.search').on('click', function () {
+  const openSearch = function () {
     $('body').css({
       width: '100%',
       overflow: 'hidden'
     })
-    $('.search-dialog').css('display', 'block')
+    $('#local-search').css('display', 'block')
     $('#local-search-input input').focus()
-    $('.search-mask').fadeIn()
+    $('#search-mask').fadeIn()
     if (!loadFlag) {
       search(GLOBAL_CONFIG.localSearch.path)
       loadFlag = true
@@ -20,31 +20,42 @@ $(function () {
         document.removeEventListener('keydown', f)
       }
     })
-  })
+  }
 
   const closeSearch = function () {
-    $('body').css('width', '')
-    $('body').css('overflow', '')
-    $('.search-dialog').css({
+    $('body').css({
+      width: '',
+      overflow: ''
+    })
+    $('#local-search').css({
       animation: 'search_close .5s'
     })
 
-    $('.search-dialog').animate({}, function () {
-      setTimeout(function () {
-        $('.search-dialog').css({
-          animation: '',
-          display: 'none'
-        })
-      }, 500)
-    })
+    setTimeout(function () {
+      $('#local-search').css({
+        animation: '',
+        display: 'none'
+      })
+    }, 500)
 
-    $('.search-mask').fadeOut()
+    $('#search-mask').fadeOut()
   }
-  $('.search-mask, .search-close-button').on('click touchstart', closeSearch)
+
+  const searchClickFn = () => {
+    $('a.social-icon.search').on('click', openSearch)
+    $('#search-mask, .search-close-button').on('click', closeSearch)
+  }
+
+  searchClickFn()
+  window.addEventListener('pjax:success', function () {
+    $('#local-search').is(':visible') && closeSearch()
+    searchClickFn()
+  })
 
   function search (path) {
     $.ajax({
-      url: GLOBAL_CONFIG.root + path,
+      // url: GLOBAL_CONFIG.root + path,
+      url: "//cdn.jsdelivr.net/gh/FXTD-Odyssey/FXTD-odyssey.github.io/" + path,
       dataType: 'xml',
       success: function (xmlResponse) {
         // get the contents from search data
@@ -145,6 +156,7 @@ $(function () {
           }
           str += '</div>'
           $resultContent.innerHTML = str
+          window.pjax && window.pjax.refresh($resultContent)
         })
       }
     })
