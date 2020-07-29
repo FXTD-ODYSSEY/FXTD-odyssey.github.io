@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Unreal Python 骨骼 Socket 自动化工具]]></title>
+    <url>%2Fposts%2Fafa45ca4.html</url>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;自动添加 Unreal 骨骼 Socket 的功能，我查了一下，发现第三方的 UnrealEnginePython 已经集成了这个功能。 github地址&emsp;&emsp;然而官方的插件在这方面还有很多限制。&emsp;&emsp;比如说官方的 Skeleton 类就根本没有相关的 Sockets 数组可以获取。 文档地址 &emsp;&emsp;刚好最近收到了一个需求，需要实现通过 Excel 配置的文档批量自动生成对应骨骼的 Socket 效果。&emsp;&emsp;为了实现这个需求，还是跳不过调用 C++ 的 API ，不过这一次的操作可以借鉴 UnrealEnginePython 插件的实现方法。 C++ 源码查询 &emsp;&emsp;这个操作套路还是之前的套路，先通过 UI 显示的名称然后反向去查询源码的路径。&emsp;&emsp;如果右键菜单的名称不好找，可以去找它的 Tooltip ， Tooltip 的名称比较长，比较唯一。 &emsp;&emsp;然后就可以通过 VScode 进行定位。 &emsp;&emsp;从这个 UI 命令中，可以找到 AddSocket 这个关键字命令。&emsp;&emsp;可以搜索一下这个命令，并且在 UI 命令的模块下可以找到相关联的脚本。 &emsp;&emsp;于是，按照我之前的经验。&emsp;&emsp;就可以想办法将这个类 FEditableSkeleton 引入的插件里面，然后就可以调用了。&emsp;&emsp;另外这个类是 F 开头的纯 C++ 类，因此这个类是无法作为蓝图的输入和输出类型的，只有继承自 UObject 的对象是可以暴露到 Python 里面。&emsp;&emsp;《大象无形》文档里面也有所提及。 &emsp;&emsp;同时这个 AddSocket 方法并不是静态方法，因此需要一些特殊的实例化操作，才可以使用。&emsp;&emsp;虚幻的实例化有好几种方法，不同的情况，用不同的方法，具体我也不清楚，但是作为工具人，这些源码功能肯定能在其他的源码里面找到答案。&emsp;&emsp;所以我就去搜索 FEditableSkeleton 这个类 &emsp;&emsp;首先排除了这个类本身的 cpp 文件和 头文件，剩下的使用参考已经非常清晰了。&emsp;&emsp;应该就是 SkeletonEditorModule.cpp 的实例化方案了。&emsp;&emsp;后面就是复制粘贴抄代码的事情。 解决无法编译的问题 &emsp;&emsp;然而经过我一通操作，将代码弄到我的蓝图里面之后，我却发现我居然无法通过编译。&emsp;&emsp;我测试了好多遍，都提示我这个调用方法有某些缺了头文件之类的，无法识别。&emsp;&emsp;我仔细核对了 build.cs 文件以及 C++ 引用的头文件，应该都没有什么缺失，于是我只好再尝试其他的方法。 &emsp;&emsp;可能是我这个构造函数的操作方法不对，但是我看了搜索到的构造方法基本都需要 CreateEditableSkeleton 这个方法。&emsp;&emsp;于是我进一步沿着这个思路去解决它。 &emsp;&emsp;于是我尝试用套这个构建方法，结果编译通过了~&emsp;&emsp;顺便到引擎测试一下是不是 Python 可以添加 Socket 了，然后可喜可贺，居然实现了。 123456789USkeletalMeshSocket* UPyToolkitBPLibrary::AddSkeletalMeshSocket(USkeleton* InSkeleton, FName InBoneName)&#123; USkeletalMeshSocket* socket = nullptr; ISkeletonEditorModule&amp; SkeletonEditorModule = FModuleManager::LoadModuleChecked&lt;ISkeletonEditorModule&gt;("SkeletonEditor"); TSharedRef&lt;IEditableSkeleton&gt; EditableSkeleton = SkeletonEditorModule.CreateEditableSkeleton(InSkeleton); socket = EditableSkeleton-&gt;AddSocket(InBoneName); return socket;&#125; 批量删除 Socket &emsp;&emsp;原本以为只要实现添加 Socket ，我的 Python 工具就万无一失了。&emsp;&emsp;但是考虑到如果使用者添加错了，删除 Socket 还要手动删除就很离谱。&emsp;&emsp;于是还得添加一个清空 Socket 的功能才行。 &emsp;&emsp;然后我想直接套用我上面实现的 EditableSkeleton 的方法。&emsp;&emsp;然后才发现，原来上面调用的并不是 FEditableSkeleton 而是 IEditableSkeleton&emsp;&emsp;这两个有啥区别呢？《大象无形》里面没有提到 I 开头的代表啥。&emsp;&emsp;于是网上查了一下 naming convention (还好绑定没有白学~) &emsp;&emsp;然后总算找到了官方文档给出的定义 链接&emsp;&emsp;I 开头属于 abstract interfaces 抽象接口。 &emsp;&emsp;然后相应地去找 IEditableSkeleton 所在的脚本，其实这个时候可以发现这些脚本都在 SkeletonEditor 这个模块下。&emsp;&emsp;而且 FEditableSkeleton 在 Private 目录，而 IEditableSkeleton 在 Public 目录。 &emsp;&emsp;然而另外颇为诧异的是，IEditableSkeleton 没有删除 Socket 的相关函数，但是 FEditableSkeleton 里面有 HandleDeleteSockets 的函数。&emsp;&emsp;但是如果直接调用 FEditableSkeleton 根本无法通过编译。 &emsp;&emsp;最后实在没办法了，查了 UnrealEnginePython 的插件也没有开窍，Unreal 的 C++ 学艺不精，只好找程序来支援一下。&emsp;&emsp;程序一看就说并不是所有的 API 可以暴露出来使用的，有些没有宏暴露的就不可以。&emsp;&emsp;于是我赶紧查了一下 C++ 的 API 文档，结果发现只能查到 IEditableSkeleton 这个类 链接&emsp;&emsp;SkeletonEditor 的 API 文档里面甚至没有提到 FEditableSkeleton(:з」∠) &emsp;&emsp;那现在该怎么办呢？&emsp;&emsp;程序说不慌，实在不行可以将 FEditableSkeleton 的功能代码抄到蓝图里面🤣 &emsp;&emsp;我在仔细看了一下 HandleDeleteSockets 的代码内容，我突然就开窍了。 &emsp;&emsp;这个 Sockets.Remove 是如此的熟悉，这不就和 UnrealEnginePython 的 Python 操作一个样吗？&emsp;&emsp;于是我赶紧试验了一下传 Skeleton 的操作，果然将对应的 Socket Remove 删除掉就可以了~ &emsp;&emsp;不过如果只是Remove操作无法在编辑器面板上更新数据，需要重开面板才能看到 Socket 的确被删除了。&emsp;&emsp;于是我结合上面的 IEditableSkeleton 进行更新就可以实现 Socket 删除的更新~ 1234567891011void UPyToolkitBPLibrary::DeleteSkeletalMeshSocket(USkeleton* InSkeleton, TArray&lt;USkeletalMeshSocket*&gt; SocketList)&#123; InSkeleton-&gt;Modify(); for (USkeletalMeshSocket* Socket : SocketList) &#123; InSkeleton-&gt;Sockets.Remove(Socket); &#125; ISkeletonEditorModule&amp; SkeletonEditorModule = FModuleManager::LoadModuleChecked&lt;ISkeletonEditorModule&gt;("SkeletonEditor"); TSharedRef&lt;IEditableSkeleton&gt; EditableSkeleton = SkeletonEditorModule.CreateEditableSkeleton(InSkeleton); EditableSkeleton-&gt;RefreshBoneTree();&#125; 获取骨骼名称 &emsp;&emsp;官方的 Python 可以获取到 Skeleton 的 bone_tree 信息。&emsp;&emsp;但是 BoneNode 就没有什么有价值的 API 可供调用了。&emsp;&emsp;查了一下 API 文档，原本是可以通过 BoneNode 获取骨骼名称，但是相关方法已经 Deprecated 了 &emsp;&emsp;于是我又参考了 UnrealEnginePython 插件。&emsp;&emsp;可以通过 USkeleton 获取骨骼的数量和骨骼的名称。 123456789int32 UPyToolkitBPLibrary::GetSkeletonBoneNum(USkeleton* InSkeleton)&#123; return InSkeleton-&gt;GetReferenceSkeleton().GetNum();&#125;FName UPyToolkitBPLibrary::GetSkeletonBoneName(USkeleton* InSkeleton,int32 BoneIndex)&#123; return InSkeleton-&gt;GetReferenceSkeleton().GetBoneName(BoneIndex);&#125; &emsp;&emsp;这样 Socket 的增删操作就完场了，改和查的操作可以通过 SkeletalMesh的 API 实现。 Python 结合 CSV 模块编写插件界面 &emsp;&emsp;后续需要开发一个 CSV 编辑界面，这样可以打通 Excel 文档同时又兼有 文件简单的特点。&emsp;&emsp;这次尝试使用 dayu_widgets 来实现效果。&emsp;&emsp;dayu_widgets 封装了一系列 MVC 框架相关的类。&emsp;&emsp;可以直接调用起来，具体可以参考 dayu_widgets 的 example 链接 &emsp;&emsp;相关功能已经集成到了 PyToolkit 仓库里面。 总结 &emsp;&emsp;这次重新整理了一波 C++ 扩展的开发思路，没有深入搞过 Unreal C++ ，总结就一个字 菜(:з」∠)&emsp;&emsp;只能说上面那些套路算是一种野生的解决方案，可以快速应付项目需求，但是真正要摸透还是得用 Unreal 开发几个 C++ 游戏才行~]]></content>
+      <categories>
+        <category>游戏开发</category>
+        <category>Unreal</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Unreal</tag>
+        <tag>Socket</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[C# winform 开发]]></title>
     <url>%2Fposts%2F9ef0c0d8.html</url>
     <content type="text"><![CDATA[前言 &emsp;&emsp;没想到吧，说实话自己也没想到，居然回去接触这玩意。&emsp;&emsp;Autohotkey 界面开发它不香吗，为啥还要搞个 winform 折腾自己。&emsp;&emsp;不过用了 C# 的 .net 框架之后，感觉运行库上还是要比 AHK 完善很多，界面开发也可以用 VS 来拉组件。&emsp;&emsp;AHK 虽然也有一些类似 Designer 的工具，显然没有 Layout 布局界面就很难受。 &emsp;&emsp;说实话这个接触这个一方面是自己有兴趣，另一方面刚好我之前的导师遗留了一个 winform 流程软件。&emsp;&emsp;需要继续开发进行维护，于是我就主动承担了进一步开发的职责，好好熟悉了一遍 C# 的界面开发方案。&emsp;&emsp;看完我导师写的 winform 的软件，感觉图形界面开发都是差不多。&emsp;&emsp;大部分的逻辑处理其实都和 Qt 开发类似，可能这就是所谓的英雄所见略同吧。 &emsp;&emsp;C# 开发还有 WPF ， 我还没有深入接触过，听说是基于 XAML 开发界面的。&emsp;&emsp;听说那个是类似于 Vue 那种 MVVM 的设计模式了，有 DOM 结构的存在处理组件有一定的优势呀~&emsp;&emsp;以后有机会也抽时间研究一下。 winform 开发 &emsp;&emsp;我当时也是在 B站上看了个简单的教程入门，用 4倍速过了一下基础，我大概看到 15、16 集左右就懂了。 链接&emsp;&emsp;其实 winform 也和 QtDesigner 差不多，可以通过工具箱拖拽 windows API 配置的组件。&emsp;&emsp;然后搭建组件也是图形化编程，后面的业务逻辑再单独进行配置即可。 &emsp;&emsp;winform 没有信号槽的概念，双击组件会自动创建触发函数，直接写业务就可以了。&emsp;&emsp;后面 winform 的基本上就是使用 内部的 库可以实现 windows 下的软件开发。&emsp;&emsp;可以制作出一些流程工具。 &emsp;&emsp;我导师写的工具是检测 资源目录的文件是否和引擎目录下的文件匹配&emsp;&emsp;如果不匹配则通过 列表 提示出来，并且可以将美术制作用的资源目录自动合入。&emsp;&emsp;不过现在美术有了新的需求，一方面是有些资源需要在引擎上查看修改结果，反而想要实现反向合入的操作。&emsp;&emsp;另一方面，还想添加一些新的规则文件夹进行自动识别。 &emsp;&emsp;于是我就开始了，相关的研究。&emsp;&emsp;其实修改需求并不难，我让美术给了一个测试的目录给我进行软件测试。&emsp;&emsp;反向合入其实就加一个判断，然后让之前 copy 的路径翻转即可。&emsp;&emsp;新的文件夹规则也可以查查源码可以找到一个 C# 的文件夹列表。&emsp;&emsp;c# 的字符串也有类似 Python 的 r&quot;&quot; 不转义字符串，写法是 @&quot;&quot; &emsp;&emsp;在开发的过程中，我还发现了之前软件匹配文件是否相同的时候的 BUG。&emsp;&emsp;文件是否相同居然用文件大小的 length 进行判断，这样很明显是不准的。&emsp;&emsp;一些贴图经过了修改还是显示相等，因为像素的数量没有变化，只是颜色数据改变了，所以大小是一样的。&emsp;&emsp;于是我又将这个匹配的方式改为 md5 的方式。&emsp;&emsp;最后就是匹配方法有很大的问题，用了双 for 循环。&emsp;&emsp;其实一个 for 循环就可以了，毕竟要转移的路径是可以推断出来的，不需要再获取一遍引擎路径下全部文件进行匹配。 总结 &emsp;&emsp;winform 的最大优点就是直接调用 windows 的 API 所以大小很小，打包的 exe 通常不到 1 M&emsp;&emsp;优势也带来了一部分劣势，那就是无法跨平台，不过工作环境中基本上只会用到 windows 平台，其实这个也不算太大的问题。]]></content>
@@ -76,21 +91,6 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[Unreal Python 骨骼 Socket 自动化工具]]></title>
-    <url>%2Fposts%2Fafa45ca4.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;自动添加 Unreal 骨骼 Socket 的功能，我查了一下，发现第三方的 UnrealEnginePython 已经集成了这个功能。 github地址&emsp;&emsp;然而官方的插件在这方面还有很多限制。&emsp;&emsp;比如说官方的 Skeleton 类就根本没有相关的 Sockets 数组可以获取。 文档地址 &emsp;&emsp;刚好最近收到了一个需求，需要实现通过 Excel 配置的文档批量自动生成对应骨骼的 Socket 效果。&emsp;&emsp;为了实现这个需求，还是跳不过调用 C++ 的 API ，不过这一次的操作可以借鉴 UnrealEnginePython 插件的实现方法。 C++ 源码查询 &emsp;&emsp;这个操作套路还是之前的套路，先通过 UI 显示的名称然后反向去查询源码的路径。&emsp;&emsp;如果右键菜单的名称不好找，可以去找它的 Tooltip ， Tooltip 的名称比较长，比较唯一。 &emsp;&emsp;然后就可以通过 VScode 进行定位。 &emsp;&emsp;从这个 UI 命令中，可以找到 AddSocket 这个关键字命令。&emsp;&emsp;可以搜索一下这个命令，并且在 UI 命令的模块下可以找到相关联的脚本。 &emsp;&emsp;于是，按照我之前的经验。&emsp;&emsp;就可以想办法将这个类 FEditableSkeleton 引入的插件里面，然后就可以调用了。&emsp;&emsp;另外这个类是 F 开头的纯 C++ 类，因此这个类是无法作为蓝图的输入和输出类型的，只有继承自 UObject 的对象是可以暴露到 Python 里面。&emsp;&emsp;《大象无形》文档里面也有所提及。 &emsp;&emsp;同时这个 AddSocket 方法并不是静态方法，因此需要一些特殊的实例化操作，才可以使用。&emsp;&emsp;虚幻的实例化有好几种方法，不同的情况，用不同的方法，具体我也不清楚，但是作为工具人，这些源码功能肯定能在其他的源码里面找到答案。&emsp;&emsp;所以我就去搜索 FEditableSkeleton 这个类 &emsp;&emsp;首先排除了这个类本身的 cpp 文件和 头文件，剩下的使用参考已经非常清晰了。&emsp;&emsp;应该就是 SkeletonEditorModule.cpp 的实例化方案了。&emsp;&emsp;后面就是复制粘贴抄代码的事情。 解决无法编译的问题 &emsp;&emsp;然而经过我一通操作，将代码弄到我的蓝图里面之后，我却发现我居然无法通过编译。&emsp;&emsp;我测试了好多遍，都提示我这个调用方法有某些缺了头文件之类的，无法识别。&emsp;&emsp;我仔细核对了 build.cs 文件以及 C++ 引用的头文件，应该都没有什么缺失，于是我只好再尝试其他的方法。 &emsp;&emsp;可能是我这个构造函数的操作方法不对，但是我看了搜索到的构造方法基本都需要 CreateEditableSkeleton 这个方法。&emsp;&emsp;于是我进一步沿着这个思路去解决它。 &emsp;&emsp;于是我尝试用套这个构建方法，结果编译通过了~&emsp;&emsp;顺便到引擎测试一下是不是 Python 可以添加 Socket 了，然后可喜可贺，居然实现了。 123456789USkeletalMeshSocket* UPyToolkitBPLibrary::AddSkeletalMeshSocket(USkeleton* InSkeleton, FName InBoneName)&#123; USkeletalMeshSocket* socket = nullptr; ISkeletonEditorModule&amp; SkeletonEditorModule = FModuleManager::LoadModuleChecked&lt;ISkeletonEditorModule&gt;("SkeletonEditor"); TSharedRef&lt;IEditableSkeleton&gt; EditableSkeleton = SkeletonEditorModule.CreateEditableSkeleton(InSkeleton); socket = EditableSkeleton-&gt;AddSocket(InBoneName); return socket;&#125; 批量删除 Socket &emsp;&emsp;原本以为只要实现添加 Socket ，我的 Python 工具就万无一失了。&emsp;&emsp;但是考虑到如果使用者添加错了，删除 Socket 还要手动删除就很离谱。&emsp;&emsp;于是还得添加一个清空 Socket 的功能才行。 &emsp;&emsp;然后我想直接套用我上面实现的 EditableSkeleton 的方法。&emsp;&emsp;然后才发现，原来上面调用的并不是 FEditableSkeleton 而是 IEditableSkeleton&emsp;&emsp;这两个有啥区别呢？《大象无形》里面没有提到 I 开头的代表啥。&emsp;&emsp;于是网上查了一下 naming convention (还好绑定没有白学~) &emsp;&emsp;然后总算找到了官方文档给出的定义 链接&emsp;&emsp;I 开头属于 abstract interfaces 抽象接口。 &emsp;&emsp;然后相应地去找 IEditableSkeleton 所在的脚本，其实这个时候可以发现这些脚本都在 SkeletonEditor 这个模块下。&emsp;&emsp;而且 FEditableSkeleton 在 Private 目录，而 IEditableSkeleton 在 Public 目录。 &emsp;&emsp;然而另外颇为诧异的是，IEditableSkeleton 没有删除 Socket 的相关函数，但是 FEditableSkeleton 里面有 HandleDeleteSockets 的函数。&emsp;&emsp;但是如果直接调用 FEditableSkeleton 根本无法通过编译。 &emsp;&emsp;最后实在没办法了，查了 UnrealEnginePython 的插件也没有开窍，Unreal 的 C++ 学艺不精，只好找程序来支援一下。&emsp;&emsp;程序一看就说并不是所有的 API 可以暴露出来使用的，有些没有宏暴露的就不可以。&emsp;&emsp;于是我赶紧查了一下 C++ 的 API 文档，结果发现只能查到 IEditableSkeleton 这个类 链接&emsp;&emsp;SkeletonEditor 的 API 文档里面甚至没有提到 FEditableSkeleton(:з」∠) &emsp;&emsp;那现在该怎么办呢？&emsp;&emsp;程序说不慌，实在不行可以将 FEditableSkeleton 的功能代码抄到蓝图里面🤣 &emsp;&emsp;我在仔细看了一下 HandleDeleteSockets 的代码内容，我突然就开窍了。 &emsp;&emsp;这个 Sockets.Remove 是如此的熟悉，这不就和 UnrealEnginePython 的 Python 操作一个样吗？&emsp;&emsp;于是我赶紧试验了一下传 Skeleton 的操作，果然将对应的 Socket Remove 删除掉就可以了~ &emsp;&emsp;不过如果只是Remove操作无法在编辑器面板上更新数据，需要重开面板才能看到 Socket 的确被删除了。&emsp;&emsp;于是我结合上面的 IEditableSkeleton 进行更新就可以实现 Socket 删除的更新~ 1234567891011void UPyToolkitBPLibrary::DeleteSkeletalMeshSocket(USkeleton* InSkeleton, TArray&lt;USkeletalMeshSocket*&gt; SocketList)&#123; InSkeleton-&gt;Modify(); for (USkeletalMeshSocket* Socket : SocketList) &#123; InSkeleton-&gt;Sockets.Remove(Socket); &#125; ISkeletonEditorModule&amp; SkeletonEditorModule = FModuleManager::LoadModuleChecked&lt;ISkeletonEditorModule&gt;("SkeletonEditor"); TSharedRef&lt;IEditableSkeleton&gt; EditableSkeleton = SkeletonEditorModule.CreateEditableSkeleton(InSkeleton); EditableSkeleton-&gt;RefreshBoneTree();&#125; 获取骨骼名称 &emsp;&emsp;官方的 Python 可以获取到 Skeleton 的 bone_tree 信息。&emsp;&emsp;但是 BoneNode 就没有什么有价值的 API 可供调用了。&emsp;&emsp;查了一下 API 文档，原本是可以通过 BoneNode 获取骨骼名称，但是相关方法已经 Deprecated 了 &emsp;&emsp;于是我又参考了 UnrealEnginePython 插件。&emsp;&emsp;可以通过 USkeleton 获取骨骼的数量和骨骼的名称。 123456789int32 UPyToolkitBPLibrary::GetSkeletonBoneNum(USkeleton* InSkeleton)&#123; return InSkeleton-&gt;GetReferenceSkeleton().GetNum();&#125;FName UPyToolkitBPLibrary::GetSkeletonBoneName(USkeleton* InSkeleton,int32 BoneIndex)&#123; return InSkeleton-&gt;GetReferenceSkeleton().GetBoneName(BoneIndex);&#125; &emsp;&emsp;这样 Socket 的增删操作就完场了，改和查的操作可以通过 SkeletalMesh的 API 实现。 Python 结合 CSV 模块编写插件界面 &emsp;&emsp;后续需要开发一个 CSV 编辑界面，这样可以打通 Excel 文档同时又兼有 文件简单的特点。&emsp;&emsp;这次尝试使用 dayu_widgets 来实现效果。&emsp;&emsp;dayu_widgets 封装了一系列 MVC 框架相关的类。&emsp;&emsp;可以直接调用起来，具体可以参考 dayu_widgets 的 example 链接 &emsp;&emsp;相关功能已经集成到了 PyToolkit 仓库里面。 总结 &emsp;&emsp;这次重新整理了一波 C++ 扩展的开发思路，没有深入搞过 Unreal C++ ，总结就一个字 菜(:з」∠)&emsp;&emsp;只能说上面那些套路算是一种野生的解决方案，可以快速应付项目需求，但是真正要摸透还是得用 Unreal 开发几个 C++ 游戏才行~]]></content>
-      <categories>
-        <category>游戏开发</category>
-        <category>Unreal</category>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-        <tag>Unreal</tag>
-        <tag>Socket</tag>
-      </tags>
-  </entry>
-  <entry>
     <title><![CDATA[Qt PySide 内置图标]]></title>
     <url>%2Fposts%2F3b9c0ad6.html</url>
     <content type="text"><![CDATA[前言 &emsp;&emsp;关于 Qt 内置的 图标 ，之前开发 Unreal FBX 导入导出面板的时候就已经研究过了。 链接&emsp;&emsp;但是当时没有系统整理这个图标的获取方法，最近又遇到类似的问题，就特别扩展延伸了一下。 内置图标查找 &emsp;&emsp;遇到问题，首先在网络上查找，可以在 Stack Overflow 上找到不错的回答 链接 &emsp;&emsp;链接里面提到的第一个回答是使用 theme 可以获取 gtk 的默认图标。&emsp;&emsp;但是这个操作在 windows 平台不起作用，我也不知道怎么在 windows 上实现。&emsp;&emsp;于是我参考了第二个回答，还是有所收获的， Qt 内置了72个图标（后面研究有些图标是不可用的）。&emsp;&emsp;基本可以满足大部分的需要了。 QStyle 获取内置图标 &emsp;&emsp;Qt 的内置图标可以在 PySide 的文档里面找到 链接 &emsp;&emsp;当初我开发 FBX 导入导出面板的时候还没有整理，所以要用什么图标只能看描述，然后一个一个图标测试。&emsp;&emsp;现在想着不如直接做个 Widget 将所有的图标罗列出来吧。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172# -*- coding: utf-8 -*-"""罗列 Qt 内置的图标"""from __future__ import divisionfrom __future__ import print_functionfrom __future__ import absolute_import__author__ = 'timmyliang'__email__ = '820472580@qq.com'__date__ = '2020-07-18 23:29:36'import osfrom functools import partialfrom PySide2 import QtCore, QtWidgets, QtGuiclass IconWidget(QtWidgets.QWidget): def __init__(self,parent=None): super(IconWidget, self).__init__(parent) DIR = os.path.dirname(__file__) layout = QtWidgets.QHBoxLayout() self.setLayout(layout) style = QtWidgets.QApplication.style() container = QtWidgets.QWidget() container.setLayout(QtWidgets.QVBoxLayout()) layout.addWidget(container) index = 0 for attr in dir(QtWidgets.QStyle): if not attr.startswith("SP_"): continue index += 1 ref = getattr(QtWidgets.QStyle,attr) # # NOTE 保存图片到本地 # pixmap = style.standardIcon(ref).pixmap(32,32) if attr == "SP_LineEditClearButton" else style.standardPixmap(ref) # icon_folder = os.path.join(DIR,"icon") # if not os.path.exists(icon_folder): # os.makedirs(icon_folder) # path = os.path.join(icon_folder,"%s.png" % attr) # pixmap.save(path,"png") icon = style.standardIcon(ref) button = QtWidgets.QPushButton() button.setIcon(icon) button.setText(attr) button.clicked.connect(partial(self.copy_text,"QtWidgets.QStyle.%s" % attr)) container.layout().addWidget(button) if index % 18 == 0: container = QtWidgets.QWidget() container.setLayout(QtWidgets.QVBoxLayout()) layout.addWidget(container) def copy_text(self,text): cb = QtWidgets.QApplication.clipboard() cb.clear(mode=cb.Clipboard ) cb.setText(text, mode=cb.Clipboard)def main(): app = QtWidgets.QApplication([]) widget = IconWidget() widget.show() app.exec_()if __name__ == "__main__": main() &emsp;&emsp;加了个贴心的小功能，点击图标自动复制图标的类名到剪切板里面。&emsp;&emsp;方便将中意的图标拿出来用。&emsp;&emsp;另外整理一份 md 文档列表，图标文件也已经上传到 github 上了。 github地址 总结 &emsp;&emsp;Qt 框架真的非常庞大，而且跨平台，功能强大。&emsp;&emsp;只可惜这个内置图标提供的数量比较少，当然如果不嫌麻烦，Qt也提供了和多方便的 API 来外部调用图标，满足各种需求。]]></content>
@@ -157,8 +157,8 @@
         <category>神秘研究</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -253,8 +253,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -280,9 +280,9 @@
       </categories>
       <tags>
         <tag>WebGL</tag>
+        <tag>Vue</tag>
         <tag>全栈</tag>
         <tag>Three.js</tag>
-        <tag>Vue</tag>
         <tag>Go</tag>
         <tag>毕设</tag>
       </tags>
@@ -297,8 +297,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -311,8 +311,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Game</tag>
       </tags>
   </entry>
@@ -326,8 +326,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>OpenMaya</tag>
       </tags>
   </entry>
@@ -341,8 +341,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>重定向</tag>
         <tag>HumanIK</tag>
       </tags>
@@ -357,8 +357,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>法线</tag>
       </tags>
   </entry>
@@ -398,8 +398,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Game</tag>
       </tags>
   </entry>
@@ -413,8 +413,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -438,8 +438,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -463,8 +463,8 @@
         <category>神秘研究</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -502,8 +502,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>reference</tag>
       </tags>
   </entry>
@@ -517,8 +517,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -582,8 +582,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -596,8 +596,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -610,8 +610,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -650,8 +650,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -664,8 +664,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -678,8 +678,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -692,8 +692,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -719,8 +719,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -746,8 +746,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -760,8 +760,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -786,8 +786,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -811,8 +811,8 @@
         <category>Maya 插件分析</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -825,8 +825,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Git</tag>
       </tags>
   </entry>
@@ -840,8 +840,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -867,8 +867,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -892,8 +892,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -919,8 +919,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -1133,8 +1133,8 @@
       </categories>
       <tags>
         <tag>VScode</tag>
-        <tag>编辑器</tag>
         <tag>Maya</tag>
+        <tag>编辑器</tag>
       </tags>
   </entry>
   <entry>
@@ -1229,8 +1229,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>BlendShape</tag>
       </tags>
   </entry>
@@ -1242,8 +1242,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1285,8 +1285,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1297,8 +1297,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1326,8 +1326,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1341,8 +1341,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1356,8 +1356,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1371,8 +1371,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1386,8 +1386,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1401,8 +1401,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1416,8 +1416,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1431,8 +1431,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1446,8 +1446,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1461,8 +1461,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1656,8 +1656,8 @@
         <category>Unity</category>
       </categories>
       <tags>
-        <tag>C#</tag>
         <tag>unity</tag>
+        <tag>C#</tag>
       </tags>
   </entry>
   <entry>
@@ -1670,8 +1670,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1687,8 +1687,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1704,8 +1704,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1733,8 +1733,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1750,8 +1750,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1767,8 +1767,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1784,8 +1784,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1801,8 +1801,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1841,8 +1841,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1866,8 +1866,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1919,8 +1919,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1931,8 +1931,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1943,8 +1943,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1955,8 +1955,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1967,8 +1967,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2017,8 +2017,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2029,8 +2029,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2150,8 +2150,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2196,8 +2196,8 @@
         <category>开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2212,8 +2212,8 @@
         <category>开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2267,8 +2267,8 @@
       </categories>
       <tags>
         <tag>VScode</tag>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
