@@ -5,7 +5,7 @@ var link;
 function changeImgUrl(that, src) {
     link = "//cdn.jsdelivr.net/gh/" + name + "/" + repository + src
     if (src.startsWith("/post_img") || src.startsWith("/img")) {
-        $(that).attr("data-src", link)
+        $(that).attr("data-lazy-src", link)
     }
     if (src.endsWith(".mp4")) {
         // $(that).replaceWith($('<video class="post_bg" src="' + link + '" autoplay="autoplay" loop="loop" style="width: 100%; height:100%;"></video>'));
@@ -15,7 +15,7 @@ function changeImgUrl(that, src) {
 function updateImg() {
     // if (document.domain != 'localhost')
     $("img").each(function () {
-        src = $(this).attr("data-src")
+        src = $(this).attr("data-lazy-src")
         if (src) {
             changeImgUrl(this, src)
         } else {

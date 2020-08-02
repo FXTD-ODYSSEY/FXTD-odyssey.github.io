@@ -2112,23 +2112,23 @@ blockquote footer cite:before {
 #aside_content .card-archives ul.card-archive-list > .card-archive-list-item,
 #aside_content .card-categories ul.card-category-list > .card-category-list-item {
   padding: 0.15rem 1rem;
-  width: 100%;
-  color: var(--font-color);
-  -webkit-transition: all 0.4s;
-  -moz-transition: all 0.4s;
-  -o-transition: all 0.4s;
-  -ms-transition: all 0.4s;
-  transition: all 0.4s;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  transition: all 0.5s;
 }
 #aside_content .card-archives ul.card-archive-list > .card-archive-list-item:hover,
 #aside_content .card-categories ul.card-category-list > .card-category-list-item:hover {
   padding: 0.15rem 0.85rem;
-  background-color: var(--text-bg-hover);
+  background-color: #49b1f5;
 }
-#aside_content a {
+#aside_content .card-archives ul.card-archive-list > .card-archive-list-item a,
+#aside_content .card-categories ul.card-category-list > .card-category-list-item a {
   color: #4c4948;
 }
-#aside_content a span {
+#aside_content .card-archives ul.card-archive-list > .card-archive-list-item a span,
+#aside_content .card-categories ul.card-category-list > .card-category-list-item a span {
   display: inline-block;
   overflow: hidden;
   vertical-align: bottom;
@@ -2136,14 +2136,17 @@ blockquote footer cite:before {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-#aside_content a span:first-child {
+#aside_content .card-archives ul.card-archive-list > .card-archive-list-item a span:first-child,
+#aside_content .card-categories ul.card-category-list > .card-category-list-item a span:first-child {
   width: 80%;
 }
-#aside_content a span:last-child {
+#aside_content .card-archives ul.card-archive-list > .card-archive-list-item a span:last-child,
+#aside_content .card-categories ul.card-category-list > .card-category-list-item a span:last-child {
   width: 20%;
   text-align: right;
 }
-#aside_content.more span {
+#aside_content .card-archives ul.card-archive-list > .card-archive-list-item.more span,
+#aside_content .card-categories ul.card-category-list > .card-category-list-item.more span {
   padding-right: 0.3rem;
   width: auto !important;
   -webkit-transition: 0.5s;
@@ -2152,7 +2155,8 @@ blockquote footer cite:before {
   -ms-transition: 0.5s;
   transition: 0.5s;
 }
-#aside_content.more:hover span {
+#aside_content .card-archives ul.card-archive-list > .card-archive-list-item.more:hover span,
+#aside_content .card-categories ul.card-category-list > .card-category-list-item.more:hover span {
   padding-right: 0.6rem;
 }
 #aside_content .card-categories ul .card-category-list-name {
