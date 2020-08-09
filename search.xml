@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[8_Unreal Python 警告提示窗口优化]]></title>
-    <url>%2Fposts%2F534db3d0.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;最近折腾 Unreal Python 工具开发，又遇到了一些问题。&emsp;&emsp;工具开发经常需要提供一些弹窗来提示用户。&emsp;&emsp;但是因为 Unreal 的 Qt 环境和 Maya 之类的纯 Qt 软件有很大的出入，所以是不能互相兼容的。 QMessageBox 的优化 &emsp;&emsp;这就导致过去常用的 QMessageBox.warning 的操作方式不太可行。&emsp;&emsp;因为有时候需要在完全没有 Qt 窗口的环境下弹出窗口。&emsp;&emsp;后面我发现可以即便没有运行的 QWidget 也可以通过 QApplication.desktop() 的方式获取 Widget 来依附， 所以原先的方式还是可以用的。&emsp;&emsp;缺点就是没有通过我封装的 show 进行触发，窗口是独立于 Unreal 的。 &emsp;&emsp;所以基于上面的原因还是不可避免需要重写一下 MessageBox 弹出的效果 1234567891011121314import unrealfrom Qt import QtCore, QtWidgets, QtGuifrom dayu_widgets import dayu_themedef alert(msg=u"msg", title=u"警告", icon=QtWidgets.QMessageBox.Warning, button_text=u"确定"): # NOTE 生成 Qt 警告窗口 msg_box = QtWidgets.QMessageBox() msg_box.setIcon(icon) msg_box.setWindowTitle(title) msg_box.setText(msg) msg_box.addButton(button_text, QtWidgets.QMessageBox.AcceptRole) unreal.parent_external_window_to_slate(msg_box.winId()) dayu_theme.apply(msg_box) msg_box.exec_() &emsp;&emsp;我可以通过全手动的方式实现 QMessageBox ，这样可控性更高。&emsp;&emsp;通过 exec_ 函数实现 Qt 事件的占用，确保用户关闭窗口才能控制引擎。 无输入 优化 &emsp;&emsp;上面的实现效果已经不错了，但是还是不太完美。&emsp;&emsp;这种弹窗依然需要用户进行操作才可以将窗口关闭。&emsp;&emsp;如果窗口可以自动关闭就好了~ &emsp;&emsp;我查了一下 Qt 的功能，发现 其实 Qt 自带有 alert 函数可以实现定时关闭的效果 链接&emsp;&emsp;但是我简单测试了一下，这个函数完全不起作用，无论是 PySide 还是 PySide2 都是(:з」∠)&emsp;&emsp;希望有人能帮我解答一下这个问题。 &emsp;&emsp;虽然 Qt 默认内置的操作没法实现上面提到的提示弹出自动消失的效果。&emsp;&emsp;不过强大的 dayu_widgets 已经封装好了相关的组件，用起来很方便。&emsp;&emsp;比如 dayu_widgets 提供的 MToast 案例 &emsp;&emsp;但是同时也遇到了相关的问题，Unreal Python 不存在运行中的窗口，怎么才可以确保 MToast 在当前屏幕的中央触发呢？&emsp;&emsp;经过我的研究，可以活用 QDesktopWidget 获取当前鼠标所在的 屏幕，从而实现 MToast 居中显示的操作。 12345678910111213141516171819toast_dict = &#123; "error": MToast.error, "info": MToast.info, "success": MToast.success, "warning": MToast.warning,&#125;def toast(text="", typ=""): # NOTE 获取鼠标的位置弹出屏幕居中的 MToast 警告 global MESSAGE_TOAST # MOTE 获取鼠标位置 pos = QtGui.QCursor.pos() desktop = QtWidgets.QApplication.desktop() # MOTE 生成一个临时的屏幕 Widget MESSAGE_TOAST = QtWidgets.QWidget() # MOTE 将屏幕的长宽赋予到临时 Widget 上 MESSAGE_TOAST.setGeometry(desktop.screenGeometry(pos)) toast_dict.get(typ,MToast.error)(parent=MESSAGE_TOAST, text=text) &emsp;&emsp;上面的录屏是我两个显示屏，在不同屏幕上的弹出提示效果。&emsp;&emsp;如此以来我就可以根据用户的屏幕弹出提示信息，更加人性化，而且这个操作不依赖于激活的窗口，交互体验很好。 总结 &emsp;&emsp;最近又折腾了很多 Unreal C++ 结合 Python 操作的东西。&emsp;&emsp;越是折腾，越是深刻体会到 C++ 开发的痛苦，虽然运行效率很高，但是开发效率真的很低。&emsp;&emsp;每次编译需要几十秒，项目的引擎还没法做到官方直播的视频里面开着引擎热更新。&emsp;&emsp;编译完之后还重新开引擎，如果不重开反正也会报错强制重开(:з」∠)&emsp;&emsp;以前 Python 遇到代码的崩溃循环的时候，我已经非常抓狂了，但是试错的效率还是很高的。&emsp;&emsp;今天遇到了 C++ 代码的崩溃循环，耗了一天啥也没干就没了o(╥﹏╥)o]]></content>
+    <title><![CDATA[Unreal Sequencer 菜单工具栏嵌入]]></title>
+    <url>%2Fposts%2F434462e.html</url>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;关于菜单搭建，我之前就写过一篇文章关于如何使用 Python 搭建 Unreal 主界面的菜单。 链接&emsp;&emsp;但是倘若要实现更为复杂的效果，比如在 Sequencer 的右键菜单上扩展，或者添加工具栏。&emsp;&emsp;要实现这样的功能 Python 就无能为力了。 &emsp;&emsp;既然要用 C++ 实现，就必须要推荐一下官方提供的扩展教程。 B站链接 Youtube链接 github链接&emsp;&emsp;教程稍微有点老了，是 2015 年的，不过我把 Github 的代码拉下来，稍微修复一些编译的小问题，基本上是可用的。&emsp;&emsp;作为引擎扩展是绝佳的参考，另外最近逛论坛的时候还发现了一个不错 Python Editor 扩展插件。&emsp;&emsp;在 Unreal 里面实现 Maya 工具栏的效果，也是引擎扩展非常好的参考。 论坛地址 github地址 &emsp;&emsp;不过 Python Editor 在 4.25 引擎下编译会出现大量错误，头文件的索引很多都不可用，还有一些代码的小问题。&emsp;&emsp;所以我把这些杂七杂八的错误全部修复了，参见我 Fork 的仓库。 github地址&emsp;&emsp;时间不足，有空要好好研究一下这个插件，做得非常好。 &emsp;&emsp;这个需求和我上次研究的 Unreal 自定义快捷键拓展中诸多相似的地方，可以结合到一起看 链接 Sequencer 菜单扩展 &emsp;&emsp;虚幻是开源的，所以即使再不济，也可以在源码上进行修改。&emsp;&emsp;但是改动引擎是非常不好的操作，说明架构设计上扩展性不足，堂堂虚幻引擎怎么会沦落到这种地步。&emsp;&emsp;所以在官方论坛上搜索一下，可以看到官方工作人员给出了一些使用提示 链接 &emsp;&emsp;官方的回答有提到大部分 Slate 都预留了 FExtender 来进行菜单的扩展，不需要修改源代码。&emsp;&emsp;可以通过 C++ 插件来实现，并且插件实现可以迁移到不同项目的引擎，相比之下更友好。 &emsp;&emsp;到这一步可以去查 Unreal 的 C++ API 文档，看看 Sequencer 的 API 有没有提供相关的方法。&emsp;&emsp;通常优先查 I 开头的类，因为这种类属于接口，将内部函数转换到外部使用的。 &emsp;&emsp;所以可以在 ISequencerModule 里面找到目标。 &emsp;&emsp;这个函数获取到 FExtensibilityManager 基本上就和上次扩展快捷键一样。&emsp;&emsp;需要定制一个 UI_COMMAND 然后通过 AddExtender 将 UI_COMMAND 定义的命令添加进去。&emsp;&emsp;同时 FExtender 构建参数里面 FMenuExtensionDelegate 中定义菜单嵌入的生成代码。 12345678910111213141516171819202122232425262728293031323334353637383940// NOTE 获取 SequencerModule 以及 FExtensibilityManagerISequencerModule &amp;SequencerModule = FModuleManager::Get().LoadModuleChecked&lt;ISequencerModule&gt;("Sequencer");TSharedPtr&lt;FExtensibilityManager&gt; Manager = SequencerModule.GetObjectBindingContextMenuExtensibilityManager();struct Callback&#123; static void ExportCurve() &#123; // NOTE 点击触发执行的函数，这里我通常是定义调用特定路径的 Python 脚本 FString Script = "py \" xxx \""; GEngine-&gt;Exec(NULL, Script.GetCharArray().GetData()); &#125; static void ExtendMenu(FMenuBuilder &amp;MenuBuilder) &#123; // NOTE 设置 Section MenuBuilder.BeginSection("FXCurve", LOCTEXT("FXCurve", "FXCurve")); &#123; // NOTE 设置点击菜单栏 MenuBuilder.AddMenuEntry( LOCTEXT("ExportCurve", "Export Curve"), LOCTEXT("ExportCurveTooltip", "Export Curve to FX Blueprint"), FSlateIcon(), // NOTE 设置点击触发的函数 FExecuteAction::CreateStatic(&amp;ExportCurve) ); &#125; MenuBuilder.EndSection(); &#125;&#125;;// NOTE 获取 SequencerModule 以及 FExtensibilityManagerTSharedPtr&lt;FExtender&gt; MenuExtender = MakeShareable(new FExtender);MenuExtender-&gt;AddMenuExtension( TEXT("Spawnable"), EExtensionHook::Before, TSharedPtr&lt;FUICommandList&gt;(), FMenuExtensionDelegate::CreateStatic(&amp;Callback::ExtendMenu));Manager-&gt;AddExtender(MenuExtender); &emsp;&emsp;上面的代码可以在 Sequencer 的 binding 菜单上嵌入 Entry 。 &emsp;&emsp;嵌入的 Spawnable 位置是怎么填写的呢？&emsp;&emsp;其实看了官方的引擎扩展教程就可以知道怎么操作 ~&emsp;&emsp;需要在引擎的配置面板上开启显示。 &emsp;&emsp;需要在引擎的配置面板上勾选显示。&emsp;&emsp;然后重开引擎。(不重开 动态菜单也可以更新，不过 Toolbar 之类的就不行) &emsp;&emsp;这样就可以看到菜单背后的代码标记了。&emsp;&emsp;方便定位菜单的嵌入。 工具栏嵌入 &emsp;&emsp;其实有了菜单功能的嵌入，工具栏嵌入也是大同小异而已。&emsp;&emsp;不逼逼，直接上代码。 123456789101112131415161718192021222324252627282930313233343536373839404142ISequencerModule &amp;SequencerModule = FModuleManager::Get().LoadModuleChecked&lt;ISequencerModule&gt;("Sequencer");TSharedPtr&lt;FExtensibilityManager&gt; Manager = SequencerModule.GetToolBarExtensibilityManager();struct Callback&#123; static void ExportCurve() &#123; FString Script = "py \" xxx \""; GEngine-&gt;Exec(NULL, Script.GetCharArray().GetData()); &#125; static void ExtendToolBar(FToolBarBuilder &amp;ToolBarBuilder) &#123; ToolBarBuilder.BeginSection("Keys"); &#123; ToolBarBuilder.AddToolBarButton( FPyCommandList::Get().ExportSelectedKeys, NAME_None, TAttribute&lt;FText&gt;(), TAttribute&lt;FText&gt;(), FSlateIcon(FEditorStyle::GetStyleSetName(), "Matinee.ToggleCurveEditor") ); &#125; ToolBarBuilder.EndSection(); ToolBarBuilder.AddSeparator(); &#125;&#125;;TSharedRef&lt;FUICommandList&gt; CommandList = MakeShareable(new FUICommandList);CommandList-&gt;MapAction( FPyCommandList::Get().ExportSelectedKeys, FExecuteAction::CreateStatic(&amp;Callback::ExportCurve));TSharedPtr&lt;FExtender&gt; MenuExtender = MakeShareable(new FExtender);MenuExtender-&gt;AddToolBarExtension( TEXT("Curve Editor"), EExtensionHook::After, CommandList, FToolBarExtensionDelegate::CreateStatic(&amp;Callback::ExtendToolBar));Manager-&gt;AddExtender(MenuExtender); &emsp;&emsp;Toolbar 多了一个操作，需要创建一个 UI_COMMAND&emsp;&emsp;然后通过 CommandList 来映射执行的回调函数。&emsp;&emsp;这里我直接用了 Unreal 内置的图标，具体的名称可以参考引擎源码 SlateEditorStyle.cpp 里面的定义。 总结 &emsp;&emsp;可惜目前 Python 还没有暴露出相关的 UObject 类型来调用。&emsp;&emsp;所以没法用 Python 进行扩展，不过也可以参考 Sequencer Scripting 插件的做法，将 FClass 转成 UClass 进行调用。&emsp;&emsp;后续有空再进一步研究吧，c++的开发效率实在是太低了，而且我的基础极其不扎实，需要一些基础教程巩固一下(:з」∠)]]></content>
+      <categories>
+        <category>游戏开发</category>
+        <category>Unreal</category>
+        <category>C++</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Unreal</tag>
+        <tag>Socket</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Unreal Python 路径定位启动器]]></title>
+    <url>%2Fposts%2F5905c2c9.html</url>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;Unreal 引擎有个非常蛋疼的点，就是文件无法直接通过路径进行定位。&emsp;&emsp;虽然 Content Browser 可以直接搜索文件，但是文件如果很多的时候，搜索起来其实并不方便。&emsp;&emsp;反而很多时候是别人把路径的截图发过来，还需要自己手动去点点点各种层级目录去到目标位置。&emsp;&emsp;这个过程真是太痛苦了，于是我就想写一个启动器来解决这个问题。 &emsp;&emsp;怎么样定位到 Content Browser 的对应位置，其实并不难。&emsp;&emsp;Unreal 的官方 Python 已经提供了相应的处理方法 链接 &emsp;&emsp;只要输入 assets_path 路径数组，就可以让 Content Browser 自动选择对应的物体。&emsp;&emsp;不过 Python 有个缺点，无法选择文件夹。&emsp;&emsp;这个问题可以参照 Unreal Python 的教程来解决 ~ 虚幻引擎使用Python开发 How To Use Python Inside Unreal Engine 4&emsp;&emsp;github 路径地址 &emsp;&emsp;所以要实现这个工具的难点在于如何通过快捷键触发 Launcher 实现输入交互。&emsp;&emsp;实现的效果大体如下 ↓↓↓ Qt 快捷键触发 &emsp;&emsp;毕竟 Maya 开发用多了，快捷键触发首先就想到了使用 Qt 的事件进行触发。&emsp;&emsp;之前开发过 CommandLauncher 插件，通过 eventFilter 可以实现诸多黑科技 ~&emsp;&emsp;所以这次也想照抄差不多的思路。 &emsp;&emsp;在这里才发现之前开发 ComamndLauncher 还是踩了一些坑。&emsp;&emsp;应为是开发启动器，所以要实现点击外部的时候就要自动消失的功能。&emsp;&emsp;我之前是通过 eventFilter 来过滤点击事件实现的。&emsp;&emsp;其实 Qt 有更简单的实现方法，这个是我看 dayu_widgets 的 MDrawer 实现里面学到的。 1self.setWindowFlags(QtCore.Qt.Popup) &emsp;&emsp;只要组件设置了 Popup 标记，组件会自动变成没有窗口边框的模式，并且点击组件外部会自动消失。&emsp;&emsp;所以 Qt 都贴心地把这些功能实现好了(:з」∠) &emsp;&emsp;上面都是题外话了，这次还是打算用 eventFilter 来过滤键盘事件。&emsp;&emsp;从而实现在 Unreal 引擎的任意位置敲快捷键可以触发 Launcher&emsp;&emsp;然而现实并不如我所愿，组件一旦消失了之后，eventFilter 获取到的事件就只有定时的 Timer 事件了。&emsp;&emsp;键盘输入等等都将不起作用。&emsp;&emsp;考虑到 processEvent 执行，我也尝试在 tick 里面将 processEvent 启动起来。&emsp;&emsp;然而还是不行。 &emsp;&emsp;看来很可能是因为没有 QWidget 在运行了，QApplication也没有阻塞 Unreal 的执行， 而 Unreal 本身也有一套触快捷键的机制，也可能是被 Unreal 的机制截取了。&emsp;&emsp;反正 Qt 的快捷键只有在运行的工具界面上才起作用。 Unreal 自定义快捷键触发自定义命令 &emsp;&emsp;所以要解决这个问题，只能在 Unreal 引擎上面入手。&emsp;&emsp;通过自定义快捷键命令来触发 Launcher 。&emsp;&emsp;但是 Unreal 怎么设置快捷键呢？&emsp;&emsp;最先想到的就是 游戏模式下有 Input Event 相关的蓝图。&emsp;&emsp;可以进行任意按键的扩展。 &emsp;&emsp;然而我在 Editor Utility 里面测试并不能这么触发游戏用的键盘事件，只有游戏蓝图可以触发这些事件。 &emsp;&emsp;那如何才能在 Unreal 中注册一个快捷键呢？&emsp;&emsp;于是网上搜了 customize 相关的关键字。&emsp;&emsp;结果只是找到了 虚幻引擎 设置里面可以设置已有命令的快捷键。 &emsp;&emsp;既然能找到引擎可以设置快捷键的命令，那么可以沿着这条线索去搜索引擎源码里面包含这些快捷键命令，去查它的快捷键是怎么实现的。&emsp;&emsp;于是我找了个比较好观察的命令， F 键聚焦命令。 &emsp;&emsp;首先查 C++ 源码 &emsp;&emsp;可以定位到命令的名称，下面就是要找命令映射执行的。&emsp;&emsp;虚幻的聚焦命令其实是在命令行里面执行 CAMERA ALIGN ACTIVEVIEWPORTONLY&emsp;&emsp;所以配合着定位就很快就找到我们的目标代码。 &emsp;&emsp;基本上通过上述流程就可以知道虚幻是先声明 UI_COMMAND 命令定义命令的描述和触发基本信息。&emsp;&emsp;然后通过 MapAction 命令来映射到触发执行的命令。 &emsp;&emsp;但是这样还是没能解决我们的疑问，快捷键是如何触发到，又是如何触发 MapAction 之后的命令的。&emsp;&emsp;因此需要追查执行了 MapAction 的 LevelEditorCommands 的调用。&emsp;&emsp;这中间踩了一些坑，不过这里就直奔主题了。 &emsp;&emsp;LevelEditorCommands 是专门提供给 LevelEditor 这个 Slate 调用的命令列表， 查 Slate 的类可以查到有很多类似 Qt 的事件回调函数。&emsp;&emsp;从我们这里快捷键相关的 OnKeyDown 函数可以找到 Viewport 快捷键触发的时候会执行 ProcessCommandBindings&emsp;&emsp;ProcessCommandBindings 是 FUICommandList 这个类的派生方法 &emsp;&emsp;从上面的截图可以看到 ProcessCommandBindings 会获取注册的所有 Command ，然后注意判断当前触发是否符合 Command 的描述。&emsp;&emsp;最后会调用 Command 的 Action 来执行。 &emsp;&emsp;这个就是 Unreal Slate 快捷键触发的时候进行的处理流程。&emsp;&emsp;所以如果要自定义快捷键，那么需要将相应的命令添加到 LevelEditorCommands 里面。&emsp;&emsp;于是在查一下 LevelEditor 相关的文档，可以定位到 AppendCommands 命令。 &emsp;&emsp;源码上就是直接进行将额外的 FUICommandList 添加到 LevelEditorCommands 上 Unreal 自定义快捷键命令扩展 &emsp;&emsp;由于第一次进行命令扩展，最好能在源码里面找到个相对简单的例子，然后抄一抄代码。&emsp;&emsp;于是我搜索 TSharedPtr&lt;FUICommandList&gt; 找个简单的例子，还好很快就找到非常简单的例子 AdvancedPreviewSceneCommands.cpp。 &emsp;&emsp;这个例子刚好是 A 开头的，非常好找。&emsp;&emsp;而且代码也很少，只有三个 UI_COMMAND。&emsp;&emsp;后面就是模仿着这个命令扩展写一个 cpp 和 h 文件。&emsp;&emsp;再然后就是 Plugin 的代码里面引入这个命令，然后获取 ILevelEditor 执行 AppendCommands&emsp;&emsp;这里遇到了一个坑，如果插件初始化的时候就执行的话，还没有生成 SLevelEditor 组件。&emsp;&emsp;所以获取不到，会导致程序崩溃。 &emsp;&emsp;所以后面我将代码放到 Python 激活的 Tick 里面调用。&emsp;&emsp;下面是截取加上注释的代码 12345678910111213141516171819202122232425262728// ... Python 执行 initialize.py// NOTE 获取 LevelEditor 模块FLevelEditorModule &amp;LevelEditorModule = FModuleManager::LoadModuleChecked&lt;FLevelEditorModule&gt;("LevelEditor");// NOTE 通过 LevelEditor 模块获取当前的 ILevelEditorTSharedPtr&lt;ILevelEditor&gt; LevelEditor = LevelEditorModule.GetFirstLevelEditor();// NOTE 通过 LevelEditor 模块获取当中的命令TSharedRef&lt;FUICommandList&gt; CommandList = LevelEditorModule.GetGlobalLevelEditorActions();// NOTE 定义临时的结构体用来传递回调函数 (也可以用 Lambda | 只是 Lambda 报错无法定位)struct Callback&#123; static void RunCommand() &#123; FString LauncherScript = TEXT("py \"") + FPaths::ProjectPluginsDir() / TEXT("PyToolkit/Content/UE_Launcher/launcher.py") + TEXT("\""); GEngine-&gt;Exec(NULL, LauncherScript.GetCharArray().GetData()); &#125;&#125;;// NOTE 映射 UI_COMMAND 和执行命令CommandList-&gt;MapAction( FPyCommandList::Get().OpenLauncher, FExecuteAction::CreateStatic(&amp;Callback::RunCommand));// NOTE 将命令添加到 LevelEditor 里面LevelEditor-&gt;AppendCommands(CommandList); &emsp;&emsp;以上就是在 Unreal 上注册自定义快捷键的操作。&emsp;&emsp;和 Qt 不同，这个快捷键触发命令是根据 Slate 划分的，不同的 Slate 需要加到不同的 FUICommandList 里面&emsp;&emsp;所以我这里的添加只能在 LevelEditor 下触发，如果打开什么蓝图界面之类的窗口都无法触发这个快捷键了。&emsp;&emsp;我这个流程做全局快捷键的确不太方便，不知道 Unreal 有没有相关暴露方法来简化操作。&emsp;&emsp;也有可能 Unreal 本身设计就是不期望有全局统一的快捷键触发的。 Launcher 启动器 &emsp;&emsp;完成了上面最难的操作之后。&emsp;&emsp;启动器本身反倒是没有什么难度了。 &emsp;&emsp;主要是判断路径是否合法，如果不合法给用户提示，如果合法就进行跳转。&emsp;&emsp;这里支持判断文件的 uasset 本地路径和 Unreal 里面获取的引用路径。&emsp;&emsp;背后都是转换到引用路径进行判断的。 &emsp;&emsp;开发中也有遇到一些坑。&emsp;&emsp;默认的组件方方正正的，不太好看，于是我想加个圆角。&emsp;&emsp;网上查一下也不难， Stack Overflow 上有 链接&emsp;&emsp;但是这么处理并不透明。 &emsp;&emsp;但是这么处理并不透明。&emsp;&emsp;网上查的结果都是 透明背景 1self.setAttribute(QtCore.Qt.WA_TranslucentBackground) &emsp;&emsp;但是我已经设置了，还是有黑色背景。&emsp;&emsp;后来发现居然是 setWindowFlags Popup 的锅，只要在加上一个无边框命令就正常了。 12self.setWindowFlags(QtCore.Qt.Popup|QtCore.Qt.FramelessWindowHint)self.setAttribute(QtCore.Qt.WA_TranslucentBackground) &emsp;&emsp;这么设置之后的确是不会有黑色背景了，但是却变成了全透明。 &emsp;&emsp;后来在查了一下，原来我上面 Stack Overflow 的链接操作是要在 PaintEvent 里面重新附着颜色才行的。&emsp;&emsp;我当时注释掉了设置渐变颜色的代码，结果就变成全透明了。 总结 &emsp;&emsp;以上就是这次开发路径定位启动器的坑。&emsp;&emsp;其实启动器开发完成之后，后面的玩法很多样，只是不知道美术人员是否喜欢这种类似 Listary 启动各种命令的操作。&emsp;&emsp;最近在研究通过插件嵌入 Unreal 的菜单，下一篇就来讲讲怎么扩展 Unreal 的右键菜单。&emsp;&emsp;其实和 快捷键 的操作有共通的地方。]]></content>
       <categories>
         <category>游戏开发</category>
         <category>Unreal</category>
@@ -16,9 +31,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[Unreal Python 路径定位启动器]]></title>
-    <url>%2Fposts%2F5905c2c9.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;Unreal 引擎有个非常蛋疼的点，就是文件无法直接通过路径进行定位。&emsp;&emsp;虽然 Content Browser 可以直接搜索文件，但是文件如果很多的时候，搜索起来其实并不方便。&emsp;&emsp;反而很多时候是别人把路径的截图发过来，还需要自己手动去点点点各种层级目录去到目标位置。&emsp;&emsp;这个过程真是太痛苦了，于是我就想写一个启动器来解决这个问题。 &emsp;&emsp;怎么样定位到 Content Browser 的对应位置，其实并不难。&emsp;&emsp;Unreal 的官方 Python 已经提供了相应的处理方法 链接 &emsp;&emsp;只要输入 assets_path 路径数组，就可以让 Content Browser 自动选择对应的物体。&emsp;&emsp;不过 Python 有个缺点，无法选择文件夹。&emsp;&emsp;这个问题可以参照 Unreal Python 的教程来解决 ~ 虚幻引擎使用Python开发 How To Use Python Inside Unreal Engine 4&emsp;&emsp;github 路径地址 &emsp;&emsp;所以要实现这个工具的难点在于如何通过快捷键触发 Launcher 实现输入交互。&emsp;&emsp;实现的效果大体如下 ↓↓↓ Qt 快捷键触发 &emsp;&emsp;毕竟 Maya 开发用多了，快捷键触发首先就想到了使用 Qt 的事件进行触发。&emsp;&emsp;之前开发过 CommandLauncher 插件，通过 eventFilter 可以实现诸多黑科技 ~&emsp;&emsp;所以这次也想照抄差不多的思路。 &emsp;&emsp;在这里才发现之前开发 ComamndLauncher 还是踩了一些坑。&emsp;&emsp;应为是开发启动器，所以要实现点击外部的时候就要自动消失的功能。&emsp;&emsp;我之前是通过 eventFilter 来过滤点击事件实现的。&emsp;&emsp;其实 Qt 有更简单的实现方法，这个是我看 dayu_widgets 的 MDrawer 实现里面学到的。 1self.setWindowFlags(QtCore.Qt.Popup) &emsp;&emsp;只要组件设置了 Popup 标记，组件会自动变成没有窗口边框的模式，并且点击组件外部会自动消失。&emsp;&emsp;所以 Qt 都贴心地把这些功能实现好了(:з」∠) &emsp;&emsp;上面都是题外话了，这次还是打算用 eventFilter 来过滤键盘事件。&emsp;&emsp;从而实现在 Unreal 引擎的任意位置敲快捷键可以触发 Launcher&emsp;&emsp;然而现实并不如我所愿，组件一旦消失了之后，eventFilter 获取到的事件就只有定时的 Timer 事件了。&emsp;&emsp;键盘输入等等都将不起作用。&emsp;&emsp;考虑到 processEvent 执行，我也尝试在 tick 里面将 processEvent 启动起来。&emsp;&emsp;然而还是不行。 &emsp;&emsp;看来很可能是因为没有 QWidget 在运行了，QApplication也没有阻塞 Unreal 的执行， 而 Unreal 本身也有一套触快捷键的机制，也可能是被 Unreal 的机制截取了。&emsp;&emsp;反正 Qt 的快捷键只有在运行的工具界面上才起作用。 Unreal 自定义快捷键触发自定义命令 &emsp;&emsp;所以要解决这个问题，只能在 Unreal 引擎上面入手。&emsp;&emsp;通过自定义快捷键命令来触发 Launcher 。&emsp;&emsp;但是 Unreal 怎么设置快捷键呢？&emsp;&emsp;最先想到的就是 游戏模式下有 Input Event 相关的蓝图。&emsp;&emsp;可以进行任意按键的扩展。 &emsp;&emsp;然而我在 Editor Utility 里面测试并不能这么触发游戏用的键盘事件，只有游戏蓝图可以触发这些事件。 &emsp;&emsp;那如何才能在 Unreal 中注册一个快捷键呢？&emsp;&emsp;于是网上搜了 customize 相关的关键字。&emsp;&emsp;结果只是找到了 虚幻引擎 设置里面可以设置已有命令的快捷键。 &emsp;&emsp;既然能找到引擎可以设置快捷键的命令，那么可以沿着这条线索去搜索引擎源码里面包含这些快捷键命令，去查它的快捷键是怎么实现的。&emsp;&emsp;于是我找了个比较好观察的命令， F 键聚焦命令。 &emsp;&emsp;首先查 C++ 源码 &emsp;&emsp;可以定位到命令的名称，下面就是要找命令映射执行的。&emsp;&emsp;虚幻的聚焦命令其实是在命令行里面执行 CAMERA ALIGN ACTIVEVIEWPORTONLY&emsp;&emsp;所以配合着定位就很快就找到我们的目标代码。 &emsp;&emsp;基本上通过上述流程就可以知道虚幻是先声明 UI_COMMAND 命令定义命令的描述和触发基本信息。&emsp;&emsp;然后通过 MapAction 命令来映射到触发执行的命令。 &emsp;&emsp;但是这样还是没能解决我们的疑问，快捷键是如何触发到，又是如何触发 MapAction 之后的命令的。&emsp;&emsp;因此需要追查执行了 MapAction 的 LevelEditorCommands 的调用。&emsp;&emsp;这中间踩了一些坑，不过这里就直奔主题了。 &emsp;&emsp;LevelEditorCommands 是专门提供给 LevelEditor 这个 Slate 调用的命令列表， 查 Slate 的类可以查到有很多类似 Qt 的事件回调函数。&emsp;&emsp;从我们这里快捷键相关的 OnKeyDown 函数可以找到 Viewport 快捷键触发的时候会执行 ProcessCommandBindings&emsp;&emsp;ProcessCommandBindings 是 FUICommandList 这个类的派生方法 &emsp;&emsp;从上面的截图可以看到 ProcessCommandBindings 会获取注册的所有 Command ，然后注意判断当前触发是否符合 Command 的描述。&emsp;&emsp;最后会调用 Command 的 Action 来执行。 &emsp;&emsp;这个就是 Unreal Slate 快捷键触发的时候进行的处理流程。&emsp;&emsp;所以如果要自定义快捷键，那么需要将相应的命令添加到 LevelEditorCommands 里面。&emsp;&emsp;于是在查一下 LevelEditor 相关的文档，可以定位到 AppendCommands 命令。 &emsp;&emsp;源码上就是直接进行将额外的 FUICommandList 添加到 LevelEditorCommands 上 Unreal 自定义快捷键命令扩展 &emsp;&emsp;由于第一次进行命令扩展，最好能在源码里面找到个相对简单的例子，然后抄一抄代码。&emsp;&emsp;于是我搜索 TSharedPtr&lt;FUICommandList&gt; 找个简单的例子，还好很快就找到非常简单的例子 AdvancedPreviewSceneCommands.cpp。 &emsp;&emsp;这个例子刚好是 A 开头的，非常好找。&emsp;&emsp;而且代码也很少，只有三个 UI_COMMAND。&emsp;&emsp;后面就是模仿着这个命令扩展写一个 cpp 和 h 文件。&emsp;&emsp;再然后就是 Plugin 的代码里面引入这个命令，然后获取 ILevelEditor 执行 AppendCommands&emsp;&emsp;这里遇到了一个坑，如果插件初始化的时候就执行的话，还没有生成 SLevelEditor 组件。&emsp;&emsp;所以获取不到，会导致程序崩溃。 &emsp;&emsp;所以后面我将代码放到 Python 激活的 Tick 里面调用。&emsp;&emsp;下面是截取加上注释的代码 12345678910111213141516171819202122232425262728// ... Python 执行 initialize.py// NOTE 获取 LevelEditor 模块FLevelEditorModule &amp;LevelEditorModule = FModuleManager::LoadModuleChecked&lt;FLevelEditorModule&gt;("LevelEditor");// NOTE 通过 LevelEditor 模块获取当前的 ILevelEditorTSharedPtr&lt;ILevelEditor&gt; LevelEditor = LevelEditorModule.GetFirstLevelEditor();// NOTE 通过 LevelEditor 模块获取当中的命令TSharedRef&lt;FUICommandList&gt; CommandList = LevelEditorModule.GetGlobalLevelEditorActions();// NOTE 定义临时的结构体用来传递回调函数 (也可以用 Lambda | 只是 Lambda 报错无法定位)struct Callback&#123; static void RunCommand() &#123; FString LauncherScript = TEXT("py \"") + FPaths::ProjectPluginsDir() / TEXT("PyToolkit/Content/UE_Launcher/launcher.py") + TEXT("\""); GEngine-&gt;Exec(NULL, LauncherScript.GetCharArray().GetData()); &#125;&#125;;// NOTE 映射 UI_COMMAND 和执行命令CommandList-&gt;MapAction( FPyCommandList::Get().OpenLauncher, FExecuteAction::CreateStatic(&amp;Callback::RunCommand));// NOTE 将命令添加到 LevelEditor 里面LevelEditor-&gt;AppendCommands(CommandList); &emsp;&emsp;以上就是在 Unreal 上注册自定义快捷键的操作。&emsp;&emsp;和 Qt 不同，这个快捷键触发命令是根据 Slate 划分的，不同的 Slate 需要加到不同的 FUICommandList 里面&emsp;&emsp;所以我这里的添加只能在 LevelEditor 下触发，如果打开什么蓝图界面之类的窗口都无法触发这个快捷键了。&emsp;&emsp;我这个流程做全局快捷键的确不太方便，不知道 Unreal 有没有相关暴露方法来简化操作。&emsp;&emsp;也有可能 Unreal 本身设计就是不期望有全局统一的快捷键触发的。 Launcher 启动器 &emsp;&emsp;完成了上面最难的操作之后。&emsp;&emsp;启动器本身反倒是没有什么难度了。 &emsp;&emsp;主要是判断路径是否合法，如果不合法给用户提示，如果合法就进行跳转。&emsp;&emsp;这里支持判断文件的 uasset 本地路径和 Unreal 里面获取的引用路径。&emsp;&emsp;背后都是转换到引用路径进行判断的。 &emsp;&emsp;开发中也有遇到一些坑。&emsp;&emsp;默认的组件方方正正的，不太好看，于是我想加个圆角。&emsp;&emsp;网上查一下也不难， Stack Overflow 上有 链接&emsp;&emsp;但是这么处理并不透明。 &emsp;&emsp;但是这么处理并不透明。&emsp;&emsp;网上查的结果都是 透明背景 1self.setAttribute(QtCore.Qt.WA_TranslucentBackground) &emsp;&emsp;但是我已经设置了，还是有黑色背景。&emsp;&emsp;后来发现居然是 setWindowFlags Popup 的锅，只要在加上一个无边框命令就正常了。 12self.setWindowFlags(QtCore.Qt.Popup|QtCore.Qt.FramelessWindowHint)self.setAttribute(QtCore.Qt.WA_TranslucentBackground) &emsp;&emsp;这么设置之后的确是不会有黑色背景了，但是却变成了全透明。 &emsp;&emsp;后来在查了一下，原来我上面 Stack Overflow 的链接操作是要在 PaintEvent 里面重新附着颜色才行的。&emsp;&emsp;我当时注释掉了设置渐变颜色的代码，结果就变成全透明了。 总结 &emsp;&emsp;以上就是这次开发路径定位启动器的坑。&emsp;&emsp;其实启动器开发完成之后，后面的玩法很多样，只是不知道美术人员是否喜欢这种类似 Listary 启动各种命令的操作。&emsp;&emsp;最近在研究通过插件嵌入 Unreal 的菜单，下一篇就来讲讲怎么扩展 Unreal 的右键菜单。&emsp;&emsp;其实和 快捷键 的操作有共通的地方。]]></content>
+    <title><![CDATA[Unreal Python 警告提示优化]]></title>
+    <url>%2Fposts%2F534db3d0.html</url>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;最近折腾 Unreal Python 工具开发，又遇到了一些问题。&emsp;&emsp;工具开发经常需要提供一些弹窗来提示用户。&emsp;&emsp;但是因为 Unreal 的 Qt 环境和 Maya 之类的纯 Qt 软件有很大的出入，所以是不能互相兼容的。 QMessageBox 的优化 &emsp;&emsp;这就导致过去常用的 QMessageBox.warning 的操作方式不太可行。&emsp;&emsp;因为有时候需要在完全没有 Qt 窗口的环境下弹出窗口。&emsp;&emsp;后面我发现可以即便没有运行的 QWidget 也可以通过 QApplication.desktop() 的方式获取 Widget 来依附， 所以原先的方式还是可以用的。&emsp;&emsp;缺点就是没有通过我封装的 show 进行触发，窗口是独立于 Unreal 的。 &emsp;&emsp;所以基于上面的原因还是不可避免需要重写一下 MessageBox 弹出的效果 1234567891011121314import unrealfrom Qt import QtCore, QtWidgets, QtGuifrom dayu_widgets import dayu_themedef alert(msg=u"msg", title=u"警告", icon=QtWidgets.QMessageBox.Warning, button_text=u"确定"): # NOTE 生成 Qt 警告窗口 msg_box = QtWidgets.QMessageBox() msg_box.setIcon(icon) msg_box.setWindowTitle(title) msg_box.setText(msg) msg_box.addButton(button_text, QtWidgets.QMessageBox.AcceptRole) unreal.parent_external_window_to_slate(msg_box.winId()) dayu_theme.apply(msg_box) msg_box.exec_() &emsp;&emsp;我可以通过全手动的方式实现 QMessageBox ，这样可控性更高。&emsp;&emsp;通过 exec_ 函数实现 Qt 事件的占用，确保用户关闭窗口才能控制引擎。 无输入 优化 &emsp;&emsp;上面的实现效果已经不错了，但是还是不太完美。&emsp;&emsp;这种弹窗依然需要用户进行操作才可以将窗口关闭。&emsp;&emsp;如果窗口可以自动关闭就好了~ &emsp;&emsp;我查了一下 Qt 的功能，发现 其实 Qt 自带有 alert 函数可以实现定时关闭的效果 链接&emsp;&emsp;但是我简单测试了一下，这个函数完全不起作用，无论是 PySide 还是 PySide2 都是(:з」∠)&emsp;&emsp;希望有人能帮我解答一下这个问题。 &emsp;&emsp;虽然 Qt 默认内置的操作没法实现上面提到的提示弹出自动消失的效果。&emsp;&emsp;不过强大的 dayu_widgets 已经封装好了相关的组件，用起来很方便。&emsp;&emsp;比如 dayu_widgets 提供的 MToast 案例 &emsp;&emsp;但是同时也遇到了相关的问题，Unreal Python 不存在运行中的窗口，怎么才可以确保 MToast 在当前屏幕的中央触发呢？&emsp;&emsp;经过我的研究，可以活用 QDesktopWidget 获取当前鼠标所在的 屏幕，从而实现 MToast 居中显示的操作。 12345678910111213141516171819toast_dict = &#123; "error": MToast.error, "info": MToast.info, "success": MToast.success, "warning": MToast.warning,&#125;def toast(text="", typ=""): # NOTE 获取鼠标的位置弹出屏幕居中的 MToast 警告 global MESSAGE_TOAST # MOTE 获取鼠标位置 pos = QtGui.QCursor.pos() desktop = QtWidgets.QApplication.desktop() # MOTE 生成一个临时的屏幕 Widget MESSAGE_TOAST = QtWidgets.QWidget() # MOTE 将屏幕的长宽赋予到临时 Widget 上 MESSAGE_TOAST.setGeometry(desktop.screenGeometry(pos)) toast_dict.get(typ,MToast.error)(parent=MESSAGE_TOAST, text=text) &emsp;&emsp;上面的录屏是我两个显示屏，在不同屏幕上的弹出提示效果。&emsp;&emsp;如此以来我就可以根据用户的屏幕弹出提示信息，更加人性化，而且这个操作不依赖于激活的窗口，交互体验很好。 总结 &emsp;&emsp;最近又折腾了很多 Unreal C++ 结合 Python 操作的东西。&emsp;&emsp;越是折腾，越是深刻体会到 C++ 开发的痛苦，虽然运行效率很高，但是开发效率真的很低。&emsp;&emsp;每次编译需要几十秒，项目的引擎还没法做到官方直播的视频里面开着引擎热更新。&emsp;&emsp;编译完之后还重新开引擎，如果不重开反正也会报错强制重开(:з」∠)&emsp;&emsp;以前 Python 遇到代码的崩溃循环的时候，我已经非常抓狂了，但是试错的效率还是很高的。&emsp;&emsp;今天遇到了 C++ 代码的崩溃循环，耗了一天啥也没干就没了o(╥﹏╥)o]]></content>
       <categories>
         <category>游戏开发</category>
         <category>Unreal</category>
@@ -71,8 +86,8 @@
       <tags>
         <tag>PyQt</tag>
         <tag>Qt</tag>
-        <tag>Qt Designer</tag>
         <tag>PySide</tag>
+        <tag>Qt Designer</tag>
       </tags>
   </entry>
   <entry>
@@ -87,8 +102,8 @@
       <tags>
         <tag>PyQt</tag>
         <tag>Qt</tag>
-        <tag>Qt Designer</tag>
         <tag>PySide</tag>
+        <tag>Qt Designer</tag>
       </tags>
   </entry>
   <entry>
@@ -214,8 +229,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>Windows</tag>
+        <tag>效率</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -227,8 +242,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>Windows</tag>
+        <tag>效率</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -240,8 +255,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>Windows</tag>
+        <tag>效率</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -310,9 +325,9 @@
       </categories>
       <tags>
         <tag>WebGL</tag>
-        <tag>Vue</tag>
         <tag>全栈</tag>
         <tag>Three.js</tag>
+        <tag>Vue</tag>
         <tag>Go</tag>
         <tag>毕设</tag>
       </tags>
@@ -652,8 +667,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>android</tag>
         <tag>效率</tag>
+        <tag>android</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -665,8 +680,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>android</tag>
         <tag>效率</tag>
+        <tag>android</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -761,8 +776,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>Windows</tag>
+        <tag>效率</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -1163,8 +1178,8 @@
       </categories>
       <tags>
         <tag>VScode</tag>
-        <tag>Maya</tag>
         <tag>编辑器</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1177,8 +1192,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>shader</tag>
         <tag>Unreal</tag>
+        <tag>shader</tag>
       </tags>
   </entry>
   <entry>
@@ -1191,8 +1206,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>shader</tag>
         <tag>Unreal</tag>
+        <tag>shader</tag>
       </tags>
   </entry>
   <entry>
@@ -1205,8 +1220,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>shader</tag>
         <tag>Unreal</tag>
+        <tag>shader</tag>
       </tags>
   </entry>
   <entry>
@@ -1219,8 +1234,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>shader</tag>
         <tag>Unreal</tag>
+        <tag>shader</tag>
       </tags>
   </entry>
   <entry>
@@ -1285,9 +1300,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1299,9 +1314,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1315,8 +1330,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1356,8 +1371,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1371,8 +1386,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1386,8 +1401,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1401,8 +1416,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1416,8 +1431,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1431,8 +1446,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1446,8 +1461,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1461,8 +1476,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1476,8 +1491,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1491,8 +1506,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1686,8 +1701,8 @@
         <category>Unity</category>
       </categories>
       <tags>
-        <tag>unity</tag>
         <tag>C#</tag>
+        <tag>unity</tag>
       </tags>
   </entry>
   <entry>
@@ -1910,8 +1925,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>React</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1924,8 +1939,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>React</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -2194,8 +2209,8 @@
         <category>实战</category>
       </categories>
       <tags>
-        <tag>模型</tag>
         <tag>Houdini</tag>
+        <tag>模型</tag>
         <tag>体积</tag>
       </tags>
   </entry>
@@ -2338,8 +2353,8 @@
       </categories>
       <tags>
         <tag>three.js</tag>
-        <tag>模型</tag>
         <tag>Houdini</tag>
+        <tag>模型</tag>
         <tag>VDB</tag>
       </tags>
   </entry>
@@ -2634,9 +2649,9 @@
         <category>zplus 教程系列</category>
       </categories>
       <tags>
-        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
+        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2679,9 +2694,9 @@
         <category>zplus 教程系列</category>
       </categories>
       <tags>
-        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
+        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2765,9 +2780,9 @@
         <category>zplus 教程系列</category>
       </categories>
       <tags>
-        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
+        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2781,9 +2796,9 @@
         <category>zplus 教程系列</category>
       </categories>
       <tags>
-        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
+        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>

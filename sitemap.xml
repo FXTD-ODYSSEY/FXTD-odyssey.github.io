@@ -2,9 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.l0v0.com/posts/434462e.html</loc>
+    
+    <lastmod>2020-08-09T10:45:11.470Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/tags/index.html</loc>
+    
+    <lastmod>2020-08-09T07:44:27.887Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://blog.l0v0.com/posts/534db3d0.html</loc>
     
-    <lastmod>2020-08-08T16:09:34.850Z</lastmod>
+    <lastmod>2020-08-09T07:26:57.475Z</lastmod>
     
   </url>
   
@@ -138,13 +152,6 @@
     <loc>https://blog.l0v0.com/categories/index.html</loc>
     
     <lastmod>2020-07-26T03:56:03.228Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://blog.l0v0.com/tags/index.html</loc>
-    
-    <lastmod>2020-07-26T03:56:00.486Z</lastmod>
     
   </url>
   
