@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Unreal Python 修改蓝图组件属性]]></title>
+    <url>%2Fposts%2F139a3d44.html</url>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;记录一下这周搞到头秃的需求。&emsp;&emsp;遇到了非常蛋疼的需求，需要修改修改蓝图组件的属性。&emsp;&emsp;过去我修改组件属性都是通过 Actor 实现。&emsp;&emsp;但是 Actor 需要在 Game World 当中进行修改，而这个时候其实是已经实例化了。&emsp;&emsp;这里需要将值赋值到蓝图当中，等于下次复制已经自动带有配置好的新的初始值了。 &emsp;&emsp;原先我觉得 Actor 修改就是分分钟的事，蓝图相信也可以直接获取进行修改吧。&emsp;&emsp;然而我是图样图森破了(:з」∠) 修改蓝图组件属性尝试 &emsp;&emsp;我之前修改资源的属性，比如说修改 Texture2D 资源，都需要通过 Content Browser 获取当前选择的 Asset 资源。&emsp;&emsp;然后通过 Python 的 set_editor_property 来实现修改。 &emsp;&emsp;所以最开始我也是沿着这个方向去尝试的。 12345import unrealassets = unreal.EditorUtilityLibrary.get_selected_assets()print(assets)# LogPython: [Blueprint'"/Game/sequence/NewBlueprint.NewBlueprint"'] &emsp;&emsp;通过上面的方法可以获取到当前选择的 蓝图 Asset。&emsp;&emsp;但是去 Python 文档查 Asset 完全没有任何有价值的方法可以获取到它内部的 Component 链接 &emsp;&emsp;最初是想通过 Actor 的 component 看看有没有办法获取到 蓝图 内部的 Component ， 然并卵 ~&emsp;&emsp;于是我开始走弯路了。&emsp;&emsp;我想到蓝图编辑器窗口既然可以获取到这些 Component ，应该会有相关的线索的。&emsp;&emsp;所以我开始查阅引擎的源码，希望能够从中找到解决方案~ 蓝图编辑窗口 SCSEditor 源码查阅 &emsp;&emsp;首先要快速定位蓝图编辑器的源码位置。&emsp;&emsp;依然是使用老办法，通过 Tooltip 来定位最快。 &emsp;&emsp;然后可以定位到 SBlueprintEditorToolbar.cpp 脚本，并且可以定位模块在引擎的 Kismet 文件夹里面。&emsp;&emsp;由于这里面的代码已经非常多了，所以新开一个 VScode 在 Kismet 目录下进行快速的搜索。&emsp;&emsp;下一步我要获取的左侧的 Component 树状图的结构。&emsp;&emsp;于是我又找了个简单的 Tooltip 来定位 &emsp;&emsp;这里可以直接定位到 SCSCEditor.cpp 脚本，&emsp;&emsp;然后就开始了我更大弯路的阅读源码，其中还去找了右侧的 Detail 界面生成逻辑去看，但是其实是我想多了。&emsp;&emsp;我只要找到 蓝图的 Component 是怎么生成出树的即可。 &emsp;&emsp;后来总算找到了对的 函数 OnApplyChangesToBlueprint&emsp;&emsp;当蓝图的 Component 有任何的变动应该就会触发这个函数来进行 组件树的更新 &emsp;&emsp;Component 更新相关的逻辑就是红框框住的部分。&emsp;&emsp;可以看到这其中有一个关键操作。 123AActor* Actor = GetActorContext();// 代码省略 ...AActor* BlueprintCDO = Actor-&gt;GetClass()-&gt;GetDefaultObject&lt;AActor&gt;(); &emsp;&emsp;这个操作通过 Actor 获取类，然后再通过 类 获取 DefaultObject 来进行操作。&emsp;&emsp;这个变量的命名就很灵性，于是去查一下 unreal cdo 相关的内容，然后可以追查到 AnswerHub 链接 &emsp;&emsp;根据最佳回答可以知道， CDO 是 Unreal 的 Class Default Object 的简称。&emsp;&emsp;专门用来存储 类 的实例化初始值对象，也就是当 类实例化的时候，会通过反射系统从 CDO 对象中取值。&emsp;&emsp;所以针对蓝图这种就更为重要，因为蓝图其实是一个 C++ 类生成器，可以简单理解为 Compile 的时候生成相应的 C++ 类以及对应的 Class Default Object&emsp;&emsp;进而通过 Class Default Object 来衍生出其他的实例。 &emsp;&emsp;所以修改蓝图 Component 的属性，本质上就是要修改 Class Default Object 即可。 Python 尝试修改 CDO &emsp;&emsp;通过上面的 C++ 源码，我想到在游戏场景里面获取 Actor 然后模仿上面的方式获取类。 123456import unrealactors = unreal.EditorLevelLibrary.get_selected_level_actors()for actor in actors: print(actor.get_class())# LogPython: &lt;Object '/Game/sequence/NewBlueprint.NewBlueprint_C' (0x00000209683ADD00) Class 'BlueprintGeneratedClass'&gt; &emsp;&emsp;果然 Actor 获取到的 Class 是特殊的 BlueprintGeneratedClass&emsp;&emsp;然而在 Python 里面也提供太多特殊的调用方式。&emsp;&emsp;我用 dir 列出这个类可以调用的方法，发现还有 get_default_object 方法，继承于 unreal._ObjectBase 链接 123456import unrealactors = unreal.EditorLevelLibrary.get_selected_level_actors()for actor in actors: print(actor.get_class().get_default_object())# LogPython: LogPython: &lt;Object '/Script/Engine.Default__BlueprintGeneratedClass' (0x0000020943CB0100) Class 'BlueprintGeneratedClass'&gt; &emsp;&emsp;然而类的显示路径虽然变了，但是实际上的类型是不对的，我要获取到 Actor 类型才是对的。&emsp;&emsp;于是我又搜索了一下关于 Python 蓝图 修改 CDO 相关的信息，还真的搜到官方的工程师提供的方案 链接&emsp;&emsp;没想到官方工程师给的方案更加简单，可以直接从蓝图路径中获取到 CDO ，只需要在路径上加上 _C 后缀 ，Actor获取也给省了。&emsp;&emsp;我测试了官方的代码，通过 unreal.get_default_object 这个方法获取到的 object 是 Actor 类型，是对的。 1234567import unrealbp_gc = unreal.load_object(None, "/Game/sequence/NewBlueprint.NewBlueprint_C")bp_cdo = unreal.get_default_object(bp_gc)print(bp_cdo)print(type(bp_cdo))# LogPython: &lt;Object '/Game/sequence/NewBlueprint.Default__NewBlueprint_C' (0x000002096AEC4D00) Class 'NewBlueprint_C'&gt;# LogPython: &lt;type 'Actor'&gt; &emsp;&emsp;本来以为官方提供的就是最佳解决方案，困扰良久的问题总算解决了。&emsp;&emsp;最后证明我还是太Naive &emsp;&emsp;当我获取 Actor 的 root_component 之后，我发现没法获取 component。 123456789import unrealbp_gc = unreal.load_object(None, "/Game/sequence/NewBlueprint.NewBlueprint_C")bp_cdo = unreal.get_default_object(bp_gc)print (bp_cdo.root_component)print (bp_cdo.get_component_by_class(unreal.ActorComponent))print (bp_cdo.get_component_by_class(unreal.SceneComponent))# LogPython: None# LogPython: None# LogPython: None &emsp;&emsp;上面测试用的蓝图比较简单，我当时用项目的蓝图还是可以获取到 root_component 但是获取不到它的子对象。&emsp;&emsp;于是到头来 Python 还是无法解决这个问题。 C++ 获取 CDO Component &emsp;&emsp;我又追查了一下 C++ 的 API 。&emsp;&emsp;发现 Actor 可以通过 GetComponents 获取 123456789101112TArray&lt;UActorComponent *&gt; UPyToolkitBPLibrary::GetCDOInheritedComponents(AActor *CDO)&#123; TArray&lt;UActorComponent *&gt; ComponentArray; TInlineComponentArray&lt;UActorComponent *&gt; Components; CDO-&gt;GetComponents(Components); for (UActorComponent *Component : Components) &#123; ComponentArray.Add(Component); &#125; return ComponentArray;&#125; &emsp;&emsp;但是只是这样还是没法获取全部的 Component ， 一些后续添加的 Component 还是通过 Python 无法获取。&emsp;&emsp;于是我又开始去查 SCSCEditor.cpp 的源码，因为我相信既然可以生成组件树，一定是可以获取到 Component 的。&emsp;&emsp;但是当时总是想着 Component 的线索去追查，完全没想到这个东西居然和 Node 有关。&emsp;&emsp;所以就踩了个巨坑，浪费了好多时间，然后最后实在没办法了，找了程序来帮忙，然后程序也没有搞过，还是得自己查。&emsp;&emsp;最后又从网上挣扎了一下，没想到找到了解决方案 链接 12345678910111213TArray&lt;UActorComponent *&gt; UPyToolkitBPLibrary::GetCDONodeComponents(AActor *CDO)&#123; UBlueprintGeneratedClass *ActorBlueprintGeneratedClass = Cast&lt;UBlueprintGeneratedClass&gt;(CDO-&gt;GetClass()); // NOTE https://answers.unrealengine.com/questions/558236/how-to-get-a-component-from-a-classdefaultobject.html TArray&lt;UActorComponent *&gt; Components; const TArray&lt;USCS_Node *&gt; &amp;ActorBlueprintNodes = ActorBlueprintGeneratedClass-&gt;SimpleConstructionScript-&gt;GetAllNodes(); for (USCS_Node *Node : ActorBlueprintNodes) &#123; Components.Add(Node-&gt;ComponentTemplate); &#125; return Components;&#125; &emsp;&emsp;SimpleConstructionScript 获取到 USimpleConstructionScript 这个类&emsp;&emsp;这个类是 蓝图生成 Actor 的时候调用给 Actor 添加组件用的。&emsp;&emsp;这里并不包含所有的 Component ，只有一些蓝图额外添加的 Component 才会放到这里。 &emsp;&emsp;还好有人已经做好了获取的参考代码，要我自己查到是这么个逻辑估计得天荒地老了(:з」∠)&emsp;&emsp;于是通过上面这个蓝图的暴露就可以获取到 蓝图 中所有的 Component (但是是没有层级关系的)&emsp;&emsp;直接获取的 Component 中用 set_editor_property 设置值，就可以实现蓝图 Component 的修改了~ &emsp;&emsp;由于项目使用了一些自定义的 Component 组件，每每都要去查 C++ 源码看有什么 property 可以设置是非常不方便的。&emsp;&emsp;幸好之前推荐多次的 Unreal Python 教程已经提供了解决方案 链接 12345678910111213141516TArray&lt;FString&gt; UPyToolkitBPLibrary::GetAllProperties(UClass *Class)&#123; TArray&lt;FString&gt; Ret; if (Class != nullptr) &#123; for (TFieldIterator&lt;FProperty&gt; It(Class); It; ++It) &#123; FProperty *Property = *It; if (Property-&gt;HasAnyPropertyFlags(EPropertyFlags::CPF_Edit)) &#123; Ret.Add(Property-&gt;GetName()); &#125; &#125; &#125; return Ret;&#125; &emsp;&emsp;最新版本的引擎提示 UProperty 改名为了 FProperty&emsp;&emsp;目前编译可以通过，估计下一个版本就会直接报错了，所以这里我稍稍修改了一下。 &emsp;&emsp;通过这个方法就可以确切知道组件下有什么属性可以通过 Python 进行设置了。 总结 &emsp;&emsp;一个人搞 Unreal Python 就是痛苦无比，所有的雷都得自己解决。&emsp;&emsp;解决需求根本无法评估到底需要多少时间(:з」∠)，这次就踩到了天坑.&emsp;&emsp;真正解决问题的代码其实也就那么几行就够了，但是走了弯路就耗费了好多倍的时间o(╥﹏╥)o&emsp;&emsp;ε=(´ο｀*)))唉，但是就像我昨天吐槽的一样， C++ 的开发效率实在是太低了，能用 Python 还是尽量用 Python 解决了。]]></content>
+      <categories>
+        <category>游戏开发</category>
+        <category>Unreal</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>C++</tag>
+        <tag>Unreal</tag>
+        <tag>Socket</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Unreal Sequencer 菜单工具栏嵌入]]></title>
     <url>%2Fposts%2F434462e.html</url>
     <content type="text"><![CDATA[前言 &emsp;&emsp;关于菜单搭建，我之前就写过一篇文章关于如何使用 Python 搭建 Unreal 主界面的菜单。 链接&emsp;&emsp;但是倘若要实现更为复杂的效果，比如在 Sequencer 的右键菜单上扩展，或者添加工具栏。&emsp;&emsp;要实现这样的功能 Python 就无能为力了。 &emsp;&emsp;既然要用 C++ 实现，就必须要推荐一下官方提供的扩展教程。 B站链接 Youtube链接 github链接&emsp;&emsp;教程稍微有点老了，是 2015 年的，不过我把 Github 的代码拉下来，稍微修复一些编译的小问题，基本上是可用的。&emsp;&emsp;作为引擎扩展是绝佳的参考，另外最近逛论坛的时候还发现了一个不错 Python Editor 扩展插件。&emsp;&emsp;在 Unreal 里面实现 Maya 工具栏的效果，也是引擎扩展非常好的参考。 论坛地址 github地址 &emsp;&emsp;不过 Python Editor 在 4.25 引擎下编译会出现大量错误，头文件的索引很多都不可用，还有一些代码的小问题。&emsp;&emsp;所以我把这些杂七杂八的错误全部修复了，参见我 Fork 的仓库。 github地址&emsp;&emsp;时间不足，有空要好好研究一下这个插件，做得非常好。 &emsp;&emsp;这个需求和我上次研究的 Unreal 自定义快捷键拓展中诸多相似的地方，可以结合到一起看 链接 Sequencer 菜单扩展 &emsp;&emsp;虚幻是开源的，所以即使再不济，也可以在源码上进行修改。&emsp;&emsp;但是改动引擎是非常不好的操作，说明架构设计上扩展性不足，堂堂虚幻引擎怎么会沦落到这种地步。&emsp;&emsp;所以在官方论坛上搜索一下，可以看到官方工作人员给出了一些使用提示 链接 &emsp;&emsp;官方的回答有提到大部分 Slate 都预留了 FExtender 来进行菜单的扩展，不需要修改源代码。&emsp;&emsp;可以通过 C++ 插件来实现，并且插件实现可以迁移到不同项目的引擎，相比之下更友好。 &emsp;&emsp;到这一步可以去查 Unreal 的 C++ API 文档，看看 Sequencer 的 API 有没有提供相关的方法。&emsp;&emsp;通常优先查 I 开头的类，因为这种类属于接口，将内部函数转换到外部使用的。 &emsp;&emsp;所以可以在 ISequencerModule 里面找到目标。 &emsp;&emsp;这个函数获取到 FExtensibilityManager 基本上就和上次扩展快捷键一样。&emsp;&emsp;需要定制一个 UI_COMMAND 然后通过 AddExtender 将 UI_COMMAND 定义的命令添加进去。&emsp;&emsp;同时 FExtender 构建参数里面 FMenuExtensionDelegate 中定义菜单嵌入的生成代码。 12345678910111213141516171819202122232425262728293031323334353637383940// NOTE 获取 SequencerModule 以及 FExtensibilityManagerISequencerModule &amp;SequencerModule = FModuleManager::Get().LoadModuleChecked&lt;ISequencerModule&gt;("Sequencer");TSharedPtr&lt;FExtensibilityManager&gt; Manager = SequencerModule.GetObjectBindingContextMenuExtensibilityManager();struct Callback&#123; static void ExportCurve() &#123; // NOTE 点击触发执行的函数，这里我通常是定义调用特定路径的 Python 脚本 FString Script = "py \" xxx \""; GEngine-&gt;Exec(NULL, Script.GetCharArray().GetData()); &#125; static void ExtendMenu(FMenuBuilder &amp;MenuBuilder) &#123; // NOTE 设置 Section MenuBuilder.BeginSection("FXCurve", LOCTEXT("FXCurve", "FXCurve")); &#123; // NOTE 设置点击菜单栏 MenuBuilder.AddMenuEntry( LOCTEXT("ExportCurve", "Export Curve"), LOCTEXT("ExportCurveTooltip", "Export Curve to FX Blueprint"), FSlateIcon(), // NOTE 设置点击触发的函数 FExecuteAction::CreateStatic(&amp;ExportCurve) ); &#125; MenuBuilder.EndSection(); &#125;&#125;;// NOTE 获取 SequencerModule 以及 FExtensibilityManagerTSharedPtr&lt;FExtender&gt; MenuExtender = MakeShareable(new FExtender);MenuExtender-&gt;AddMenuExtension( TEXT("Spawnable"), EExtensionHook::Before, TSharedPtr&lt;FUICommandList&gt;(), FMenuExtensionDelegate::CreateStatic(&amp;Callback::ExtendMenu));Manager-&gt;AddExtender(MenuExtender); &emsp;&emsp;上面的代码可以在 Sequencer 的 binding 菜单上嵌入 Entry 。 &emsp;&emsp;嵌入的 Spawnable 位置是怎么填写的呢？&emsp;&emsp;其实看了官方的引擎扩展教程就可以知道怎么操作 ~&emsp;&emsp;需要在引擎的配置面板上开启显示。 &emsp;&emsp;需要在引擎的配置面板上勾选显示。&emsp;&emsp;然后重开引擎。(不重开 动态菜单也可以更新，不过 Toolbar 之类的就不行) &emsp;&emsp;这样就可以看到菜单背后的代码标记了。&emsp;&emsp;方便定位菜单的嵌入。 工具栏嵌入 &emsp;&emsp;其实有了菜单功能的嵌入，工具栏嵌入也是大同小异而已。&emsp;&emsp;不逼逼，直接上代码。 123456789101112131415161718192021222324252627282930313233343536373839404142ISequencerModule &amp;SequencerModule = FModuleManager::Get().LoadModuleChecked&lt;ISequencerModule&gt;("Sequencer");TSharedPtr&lt;FExtensibilityManager&gt; Manager = SequencerModule.GetToolBarExtensibilityManager();struct Callback&#123; static void ExportCurve() &#123; FString Script = "py \" xxx \""; GEngine-&gt;Exec(NULL, Script.GetCharArray().GetData()); &#125; static void ExtendToolBar(FToolBarBuilder &amp;ToolBarBuilder) &#123; ToolBarBuilder.BeginSection("Keys"); &#123; ToolBarBuilder.AddToolBarButton( FPyCommandList::Get().ExportSelectedKeys, NAME_None, TAttribute&lt;FText&gt;(), TAttribute&lt;FText&gt;(), FSlateIcon(FEditorStyle::GetStyleSetName(), "Matinee.ToggleCurveEditor") ); &#125; ToolBarBuilder.EndSection(); ToolBarBuilder.AddSeparator(); &#125;&#125;;TSharedRef&lt;FUICommandList&gt; CommandList = MakeShareable(new FUICommandList);CommandList-&gt;MapAction( FPyCommandList::Get().ExportSelectedKeys, FExecuteAction::CreateStatic(&amp;Callback::ExportCurve));TSharedPtr&lt;FExtender&gt; MenuExtender = MakeShareable(new FExtender);MenuExtender-&gt;AddToolBarExtension( TEXT("Curve Editor"), EExtensionHook::After, CommandList, FToolBarExtensionDelegate::CreateStatic(&amp;Callback::ExtendToolBar));Manager-&gt;AddExtender(MenuExtender); &emsp;&emsp;Toolbar 多了一个操作，需要创建一个 UI_COMMAND&emsp;&emsp;然后通过 CommandList 来映射执行的回调函数。&emsp;&emsp;这里我直接用了 Unreal 内置的图标，具体的名称可以参考引擎源码 SlateEditorStyle.cpp 里面的定义。 总结 &emsp;&emsp;可惜目前 Python 还没有暴露出相关的 UObject 类型来调用。&emsp;&emsp;所以没法用 Python 进行扩展，不过也可以参考 Sequencer Scripting 插件的做法，将 FClass 转成 UClass 进行调用。&emsp;&emsp;后续有空再进一步研究吧，c++的开发效率实在是太低了，而且我的基础极其不扎实，需要一些基础教程巩固一下(:з」∠)]]></content>
@@ -10,22 +26,7 @@
         <category>C++</category>
       </categories>
       <tags>
-        <tag>Python</tag>
-        <tag>Unreal</tag>
-        <tag>Socket</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Unreal Python 路径定位启动器]]></title>
-    <url>%2Fposts%2F5905c2c9.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;Unreal 引擎有个非常蛋疼的点，就是文件无法直接通过路径进行定位。&emsp;&emsp;虽然 Content Browser 可以直接搜索文件，但是文件如果很多的时候，搜索起来其实并不方便。&emsp;&emsp;反而很多时候是别人把路径的截图发过来，还需要自己手动去点点点各种层级目录去到目标位置。&emsp;&emsp;这个过程真是太痛苦了，于是我就想写一个启动器来解决这个问题。 &emsp;&emsp;怎么样定位到 Content Browser 的对应位置，其实并不难。&emsp;&emsp;Unreal 的官方 Python 已经提供了相应的处理方法 链接 &emsp;&emsp;只要输入 assets_path 路径数组，就可以让 Content Browser 自动选择对应的物体。&emsp;&emsp;不过 Python 有个缺点，无法选择文件夹。&emsp;&emsp;这个问题可以参照 Unreal Python 的教程来解决 ~ 虚幻引擎使用Python开发 How To Use Python Inside Unreal Engine 4&emsp;&emsp;github 路径地址 &emsp;&emsp;所以要实现这个工具的难点在于如何通过快捷键触发 Launcher 实现输入交互。&emsp;&emsp;实现的效果大体如下 ↓↓↓ Qt 快捷键触发 &emsp;&emsp;毕竟 Maya 开发用多了，快捷键触发首先就想到了使用 Qt 的事件进行触发。&emsp;&emsp;之前开发过 CommandLauncher 插件，通过 eventFilter 可以实现诸多黑科技 ~&emsp;&emsp;所以这次也想照抄差不多的思路。 &emsp;&emsp;在这里才发现之前开发 ComamndLauncher 还是踩了一些坑。&emsp;&emsp;应为是开发启动器，所以要实现点击外部的时候就要自动消失的功能。&emsp;&emsp;我之前是通过 eventFilter 来过滤点击事件实现的。&emsp;&emsp;其实 Qt 有更简单的实现方法，这个是我看 dayu_widgets 的 MDrawer 实现里面学到的。 1self.setWindowFlags(QtCore.Qt.Popup) &emsp;&emsp;只要组件设置了 Popup 标记，组件会自动变成没有窗口边框的模式，并且点击组件外部会自动消失。&emsp;&emsp;所以 Qt 都贴心地把这些功能实现好了(:з」∠) &emsp;&emsp;上面都是题外话了，这次还是打算用 eventFilter 来过滤键盘事件。&emsp;&emsp;从而实现在 Unreal 引擎的任意位置敲快捷键可以触发 Launcher&emsp;&emsp;然而现实并不如我所愿，组件一旦消失了之后，eventFilter 获取到的事件就只有定时的 Timer 事件了。&emsp;&emsp;键盘输入等等都将不起作用。&emsp;&emsp;考虑到 processEvent 执行，我也尝试在 tick 里面将 processEvent 启动起来。&emsp;&emsp;然而还是不行。 &emsp;&emsp;看来很可能是因为没有 QWidget 在运行了，QApplication也没有阻塞 Unreal 的执行， 而 Unreal 本身也有一套触快捷键的机制，也可能是被 Unreal 的机制截取了。&emsp;&emsp;反正 Qt 的快捷键只有在运行的工具界面上才起作用。 Unreal 自定义快捷键触发自定义命令 &emsp;&emsp;所以要解决这个问题，只能在 Unreal 引擎上面入手。&emsp;&emsp;通过自定义快捷键命令来触发 Launcher 。&emsp;&emsp;但是 Unreal 怎么设置快捷键呢？&emsp;&emsp;最先想到的就是 游戏模式下有 Input Event 相关的蓝图。&emsp;&emsp;可以进行任意按键的扩展。 &emsp;&emsp;然而我在 Editor Utility 里面测试并不能这么触发游戏用的键盘事件，只有游戏蓝图可以触发这些事件。 &emsp;&emsp;那如何才能在 Unreal 中注册一个快捷键呢？&emsp;&emsp;于是网上搜了 customize 相关的关键字。&emsp;&emsp;结果只是找到了 虚幻引擎 设置里面可以设置已有命令的快捷键。 &emsp;&emsp;既然能找到引擎可以设置快捷键的命令，那么可以沿着这条线索去搜索引擎源码里面包含这些快捷键命令，去查它的快捷键是怎么实现的。&emsp;&emsp;于是我找了个比较好观察的命令， F 键聚焦命令。 &emsp;&emsp;首先查 C++ 源码 &emsp;&emsp;可以定位到命令的名称，下面就是要找命令映射执行的。&emsp;&emsp;虚幻的聚焦命令其实是在命令行里面执行 CAMERA ALIGN ACTIVEVIEWPORTONLY&emsp;&emsp;所以配合着定位就很快就找到我们的目标代码。 &emsp;&emsp;基本上通过上述流程就可以知道虚幻是先声明 UI_COMMAND 命令定义命令的描述和触发基本信息。&emsp;&emsp;然后通过 MapAction 命令来映射到触发执行的命令。 &emsp;&emsp;但是这样还是没能解决我们的疑问，快捷键是如何触发到，又是如何触发 MapAction 之后的命令的。&emsp;&emsp;因此需要追查执行了 MapAction 的 LevelEditorCommands 的调用。&emsp;&emsp;这中间踩了一些坑，不过这里就直奔主题了。 &emsp;&emsp;LevelEditorCommands 是专门提供给 LevelEditor 这个 Slate 调用的命令列表， 查 Slate 的类可以查到有很多类似 Qt 的事件回调函数。&emsp;&emsp;从我们这里快捷键相关的 OnKeyDown 函数可以找到 Viewport 快捷键触发的时候会执行 ProcessCommandBindings&emsp;&emsp;ProcessCommandBindings 是 FUICommandList 这个类的派生方法 &emsp;&emsp;从上面的截图可以看到 ProcessCommandBindings 会获取注册的所有 Command ，然后注意判断当前触发是否符合 Command 的描述。&emsp;&emsp;最后会调用 Command 的 Action 来执行。 &emsp;&emsp;这个就是 Unreal Slate 快捷键触发的时候进行的处理流程。&emsp;&emsp;所以如果要自定义快捷键，那么需要将相应的命令添加到 LevelEditorCommands 里面。&emsp;&emsp;于是在查一下 LevelEditor 相关的文档，可以定位到 AppendCommands 命令。 &emsp;&emsp;源码上就是直接进行将额外的 FUICommandList 添加到 LevelEditorCommands 上 Unreal 自定义快捷键命令扩展 &emsp;&emsp;由于第一次进行命令扩展，最好能在源码里面找到个相对简单的例子，然后抄一抄代码。&emsp;&emsp;于是我搜索 TSharedPtr&lt;FUICommandList&gt; 找个简单的例子，还好很快就找到非常简单的例子 AdvancedPreviewSceneCommands.cpp。 &emsp;&emsp;这个例子刚好是 A 开头的，非常好找。&emsp;&emsp;而且代码也很少，只有三个 UI_COMMAND。&emsp;&emsp;后面就是模仿着这个命令扩展写一个 cpp 和 h 文件。&emsp;&emsp;再然后就是 Plugin 的代码里面引入这个命令，然后获取 ILevelEditor 执行 AppendCommands&emsp;&emsp;这里遇到了一个坑，如果插件初始化的时候就执行的话，还没有生成 SLevelEditor 组件。&emsp;&emsp;所以获取不到，会导致程序崩溃。 &emsp;&emsp;所以后面我将代码放到 Python 激活的 Tick 里面调用。&emsp;&emsp;下面是截取加上注释的代码 12345678910111213141516171819202122232425262728// ... Python 执行 initialize.py// NOTE 获取 LevelEditor 模块FLevelEditorModule &amp;LevelEditorModule = FModuleManager::LoadModuleChecked&lt;FLevelEditorModule&gt;("LevelEditor");// NOTE 通过 LevelEditor 模块获取当前的 ILevelEditorTSharedPtr&lt;ILevelEditor&gt; LevelEditor = LevelEditorModule.GetFirstLevelEditor();// NOTE 通过 LevelEditor 模块获取当中的命令TSharedRef&lt;FUICommandList&gt; CommandList = LevelEditorModule.GetGlobalLevelEditorActions();// NOTE 定义临时的结构体用来传递回调函数 (也可以用 Lambda | 只是 Lambda 报错无法定位)struct Callback&#123; static void RunCommand() &#123; FString LauncherScript = TEXT("py \"") + FPaths::ProjectPluginsDir() / TEXT("PyToolkit/Content/UE_Launcher/launcher.py") + TEXT("\""); GEngine-&gt;Exec(NULL, LauncherScript.GetCharArray().GetData()); &#125;&#125;;// NOTE 映射 UI_COMMAND 和执行命令CommandList-&gt;MapAction( FPyCommandList::Get().OpenLauncher, FExecuteAction::CreateStatic(&amp;Callback::RunCommand));// NOTE 将命令添加到 LevelEditor 里面LevelEditor-&gt;AppendCommands(CommandList); &emsp;&emsp;以上就是在 Unreal 上注册自定义快捷键的操作。&emsp;&emsp;和 Qt 不同，这个快捷键触发命令是根据 Slate 划分的，不同的 Slate 需要加到不同的 FUICommandList 里面&emsp;&emsp;所以我这里的添加只能在 LevelEditor 下触发，如果打开什么蓝图界面之类的窗口都无法触发这个快捷键了。&emsp;&emsp;我这个流程做全局快捷键的确不太方便，不知道 Unreal 有没有相关暴露方法来简化操作。&emsp;&emsp;也有可能 Unreal 本身设计就是不期望有全局统一的快捷键触发的。 Launcher 启动器 &emsp;&emsp;完成了上面最难的操作之后。&emsp;&emsp;启动器本身反倒是没有什么难度了。 &emsp;&emsp;主要是判断路径是否合法，如果不合法给用户提示，如果合法就进行跳转。&emsp;&emsp;这里支持判断文件的 uasset 本地路径和 Unreal 里面获取的引用路径。&emsp;&emsp;背后都是转换到引用路径进行判断的。 &emsp;&emsp;开发中也有遇到一些坑。&emsp;&emsp;默认的组件方方正正的，不太好看，于是我想加个圆角。&emsp;&emsp;网上查一下也不难， Stack Overflow 上有 链接&emsp;&emsp;但是这么处理并不透明。 &emsp;&emsp;但是这么处理并不透明。&emsp;&emsp;网上查的结果都是 透明背景 1self.setAttribute(QtCore.Qt.WA_TranslucentBackground) &emsp;&emsp;但是我已经设置了，还是有黑色背景。&emsp;&emsp;后来发现居然是 setWindowFlags Popup 的锅，只要在加上一个无边框命令就正常了。 12self.setWindowFlags(QtCore.Qt.Popup|QtCore.Qt.FramelessWindowHint)self.setAttribute(QtCore.Qt.WA_TranslucentBackground) &emsp;&emsp;这么设置之后的确是不会有黑色背景了，但是却变成了全透明。 &emsp;&emsp;后来在查了一下，原来我上面 Stack Overflow 的链接操作是要在 PaintEvent 里面重新附着颜色才行的。&emsp;&emsp;我当时注释掉了设置渐变颜色的代码，结果就变成全透明了。 总结 &emsp;&emsp;以上就是这次开发路径定位启动器的坑。&emsp;&emsp;其实启动器开发完成之后，后面的玩法很多样，只是不知道美术人员是否喜欢这种类似 Listary 启动各种命令的操作。&emsp;&emsp;最近在研究通过插件嵌入 Unreal 的菜单，下一篇就来讲讲怎么扩展 Unreal 的右键菜单。&emsp;&emsp;其实和 快捷键 的操作有共通的地方。]]></content>
-      <categories>
-        <category>游戏开发</category>
-        <category>Unreal</category>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
+        <tag>C++</tag>
         <tag>Unreal</tag>
         <tag>Socket</tag>
       </tags>
@@ -46,6 +47,22 @@
       </tags>
   </entry>
   <entry>
+    <title><![CDATA[Unreal Python 路径定位启动器]]></title>
+    <url>%2Fposts%2F5905c2c9.html</url>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;Unreal 引擎有个非常蛋疼的点，就是文件无法直接通过路径进行定位。&emsp;&emsp;虽然 Content Browser 可以直接搜索文件，但是文件如果很多的时候，搜索起来其实并不方便。&emsp;&emsp;反而很多时候是别人把路径的截图发过来，还需要自己手动去点点点各种层级目录去到目标位置。&emsp;&emsp;这个过程真是太痛苦了，于是我就想写一个启动器来解决这个问题。 &emsp;&emsp;怎么样定位到 Content Browser 的对应位置，其实并不难。&emsp;&emsp;Unreal 的官方 Python 已经提供了相应的处理方法 链接 &emsp;&emsp;只要输入 assets_path 路径数组，就可以让 Content Browser 自动选择对应的物体。&emsp;&emsp;不过 Python 有个缺点，无法选择文件夹。&emsp;&emsp;这个问题可以参照 Unreal Python 的教程来解决 ~ 虚幻引擎使用Python开发 How To Use Python Inside Unreal Engine 4&emsp;&emsp;github 路径地址 &emsp;&emsp;所以要实现这个工具的难点在于如何通过快捷键触发 Launcher 实现输入交互。&emsp;&emsp;实现的效果大体如下 ↓↓↓ Qt 快捷键触发 &emsp;&emsp;毕竟 Maya 开发用多了，快捷键触发首先就想到了使用 Qt 的事件进行触发。&emsp;&emsp;之前开发过 CommandLauncher 插件，通过 eventFilter 可以实现诸多黑科技 ~&emsp;&emsp;所以这次也想照抄差不多的思路。 &emsp;&emsp;在这里才发现之前开发 ComamndLauncher 还是踩了一些坑。&emsp;&emsp;应为是开发启动器，所以要实现点击外部的时候就要自动消失的功能。&emsp;&emsp;我之前是通过 eventFilter 来过滤点击事件实现的。&emsp;&emsp;其实 Qt 有更简单的实现方法，这个是我看 dayu_widgets 的 MDrawer 实现里面学到的。 1self.setWindowFlags(QtCore.Qt.Popup) &emsp;&emsp;只要组件设置了 Popup 标记，组件会自动变成没有窗口边框的模式，并且点击组件外部会自动消失。&emsp;&emsp;所以 Qt 都贴心地把这些功能实现好了(:з」∠) &emsp;&emsp;上面都是题外话了，这次还是打算用 eventFilter 来过滤键盘事件。&emsp;&emsp;从而实现在 Unreal 引擎的任意位置敲快捷键可以触发 Launcher&emsp;&emsp;然而现实并不如我所愿，组件一旦消失了之后，eventFilter 获取到的事件就只有定时的 Timer 事件了。&emsp;&emsp;键盘输入等等都将不起作用。&emsp;&emsp;考虑到 processEvent 执行，我也尝试在 tick 里面将 processEvent 启动起来。&emsp;&emsp;然而还是不行。 &emsp;&emsp;看来很可能是因为没有 QWidget 在运行了，QApplication也没有阻塞 Unreal 的执行， 而 Unreal 本身也有一套触快捷键的机制，也可能是被 Unreal 的机制截取了。&emsp;&emsp;反正 Qt 的快捷键只有在运行的工具界面上才起作用。 Unreal 自定义快捷键触发自定义命令 &emsp;&emsp;所以要解决这个问题，只能在 Unreal 引擎上面入手。&emsp;&emsp;通过自定义快捷键命令来触发 Launcher 。&emsp;&emsp;但是 Unreal 怎么设置快捷键呢？&emsp;&emsp;最先想到的就是 游戏模式下有 Input Event 相关的蓝图。&emsp;&emsp;可以进行任意按键的扩展。 &emsp;&emsp;然而我在 Editor Utility 里面测试并不能这么触发游戏用的键盘事件，只有游戏蓝图可以触发这些事件。 &emsp;&emsp;那如何才能在 Unreal 中注册一个快捷键呢？&emsp;&emsp;于是网上搜了 customize 相关的关键字。&emsp;&emsp;结果只是找到了 虚幻引擎 设置里面可以设置已有命令的快捷键。 &emsp;&emsp;既然能找到引擎可以设置快捷键的命令，那么可以沿着这条线索去搜索引擎源码里面包含这些快捷键命令，去查它的快捷键是怎么实现的。&emsp;&emsp;于是我找了个比较好观察的命令， F 键聚焦命令。 &emsp;&emsp;首先查 C++ 源码 &emsp;&emsp;可以定位到命令的名称，下面就是要找命令映射执行的。&emsp;&emsp;虚幻的聚焦命令其实是在命令行里面执行 CAMERA ALIGN ACTIVEVIEWPORTONLY&emsp;&emsp;所以配合着定位就很快就找到我们的目标代码。 &emsp;&emsp;基本上通过上述流程就可以知道虚幻是先声明 UI_COMMAND 命令定义命令的描述和触发基本信息。&emsp;&emsp;然后通过 MapAction 命令来映射到触发执行的命令。 &emsp;&emsp;但是这样还是没能解决我们的疑问，快捷键是如何触发到，又是如何触发 MapAction 之后的命令的。&emsp;&emsp;因此需要追查执行了 MapAction 的 LevelEditorCommands 的调用。&emsp;&emsp;这中间踩了一些坑，不过这里就直奔主题了。 &emsp;&emsp;LevelEditorCommands 是专门提供给 LevelEditor 这个 Slate 调用的命令列表， 查 Slate 的类可以查到有很多类似 Qt 的事件回调函数。&emsp;&emsp;从我们这里快捷键相关的 OnKeyDown 函数可以找到 Viewport 快捷键触发的时候会执行 ProcessCommandBindings&emsp;&emsp;ProcessCommandBindings 是 FUICommandList 这个类的派生方法 &emsp;&emsp;从上面的截图可以看到 ProcessCommandBindings 会获取注册的所有 Command ，然后注意判断当前触发是否符合 Command 的描述。&emsp;&emsp;最后会调用 Command 的 Action 来执行。 &emsp;&emsp;这个就是 Unreal Slate 快捷键触发的时候进行的处理流程。&emsp;&emsp;所以如果要自定义快捷键，那么需要将相应的命令添加到 LevelEditorCommands 里面。&emsp;&emsp;于是在查一下 LevelEditor 相关的文档，可以定位到 AppendCommands 命令。 &emsp;&emsp;源码上就是直接进行将额外的 FUICommandList 添加到 LevelEditorCommands 上 Unreal 自定义快捷键命令扩展 &emsp;&emsp;由于第一次进行命令扩展，最好能在源码里面找到个相对简单的例子，然后抄一抄代码。&emsp;&emsp;于是我搜索 TSharedPtr&lt;FUICommandList&gt; 找个简单的例子，还好很快就找到非常简单的例子 AdvancedPreviewSceneCommands.cpp。 &emsp;&emsp;这个例子刚好是 A 开头的，非常好找。&emsp;&emsp;而且代码也很少，只有三个 UI_COMMAND。&emsp;&emsp;后面就是模仿着这个命令扩展写一个 cpp 和 h 文件。&emsp;&emsp;再然后就是 Plugin 的代码里面引入这个命令，然后获取 ILevelEditor 执行 AppendCommands&emsp;&emsp;这里遇到了一个坑，如果插件初始化的时候就执行的话，还没有生成 SLevelEditor 组件。&emsp;&emsp;所以获取不到，会导致程序崩溃。 &emsp;&emsp;所以后面我将代码放到 Python 激活的 Tick 里面调用。&emsp;&emsp;下面是截取加上注释的代码 12345678910111213141516171819202122232425262728// ... Python 执行 initialize.py// NOTE 获取 LevelEditor 模块FLevelEditorModule &amp;LevelEditorModule = FModuleManager::LoadModuleChecked&lt;FLevelEditorModule&gt;("LevelEditor");// NOTE 通过 LevelEditor 模块获取当前的 ILevelEditorTSharedPtr&lt;ILevelEditor&gt; LevelEditor = LevelEditorModule.GetFirstLevelEditor();// NOTE 通过 LevelEditor 模块获取当中的命令TSharedRef&lt;FUICommandList&gt; CommandList = LevelEditorModule.GetGlobalLevelEditorActions();// NOTE 定义临时的结构体用来传递回调函数 (也可以用 Lambda | 只是 Lambda 报错无法定位)struct Callback&#123; static void RunCommand() &#123; FString LauncherScript = TEXT("py \"") + FPaths::ProjectPluginsDir() / TEXT("PyToolkit/Content/UE_Launcher/launcher.py") + TEXT("\""); GEngine-&gt;Exec(NULL, LauncherScript.GetCharArray().GetData()); &#125;&#125;;// NOTE 映射 UI_COMMAND 和执行命令CommandList-&gt;MapAction( FPyCommandList::Get().OpenLauncher, FExecuteAction::CreateStatic(&amp;Callback::RunCommand));// NOTE 将命令添加到 LevelEditor 里面LevelEditor-&gt;AppendCommands(CommandList); &emsp;&emsp;以上就是在 Unreal 上注册自定义快捷键的操作。&emsp;&emsp;和 Qt 不同，这个快捷键触发命令是根据 Slate 划分的，不同的 Slate 需要加到不同的 FUICommandList 里面&emsp;&emsp;所以我这里的添加只能在 LevelEditor 下触发，如果打开什么蓝图界面之类的窗口都无法触发这个快捷键了。&emsp;&emsp;我这个流程做全局快捷键的确不太方便，不知道 Unreal 有没有相关暴露方法来简化操作。&emsp;&emsp;也有可能 Unreal 本身设计就是不期望有全局统一的快捷键触发的。 Launcher 启动器 &emsp;&emsp;完成了上面最难的操作之后。&emsp;&emsp;启动器本身反倒是没有什么难度了。 &emsp;&emsp;主要是判断路径是否合法，如果不合法给用户提示，如果合法就进行跳转。&emsp;&emsp;这里支持判断文件的 uasset 本地路径和 Unreal 里面获取的引用路径。&emsp;&emsp;背后都是转换到引用路径进行判断的。 &emsp;&emsp;开发中也有遇到一些坑。&emsp;&emsp;默认的组件方方正正的，不太好看，于是我想加个圆角。&emsp;&emsp;网上查一下也不难， Stack Overflow 上有 链接&emsp;&emsp;但是这么处理并不透明。 &emsp;&emsp;但是这么处理并不透明。&emsp;&emsp;网上查的结果都是 透明背景 1self.setAttribute(QtCore.Qt.WA_TranslucentBackground) &emsp;&emsp;但是我已经设置了，还是有黑色背景。&emsp;&emsp;后来发现居然是 setWindowFlags Popup 的锅，只要在加上一个无边框命令就正常了。 12self.setWindowFlags(QtCore.Qt.Popup|QtCore.Qt.FramelessWindowHint)self.setAttribute(QtCore.Qt.WA_TranslucentBackground) &emsp;&emsp;这么设置之后的确是不会有黑色背景了，但是却变成了全透明。 &emsp;&emsp;后来在查了一下，原来我上面 Stack Overflow 的链接操作是要在 PaintEvent 里面重新附着颜色才行的。&emsp;&emsp;我当时注释掉了设置渐变颜色的代码，结果就变成全透明了。 总结 &emsp;&emsp;以上就是这次开发路径定位启动器的坑。&emsp;&emsp;其实启动器开发完成之后，后面的玩法很多样，只是不知道美术人员是否喜欢这种类似 Listary 启动各种命令的操作。&emsp;&emsp;最近在研究通过插件嵌入 Unreal 的菜单，下一篇就来讲讲怎么扩展 Unreal 的右键菜单。&emsp;&emsp;其实和 快捷键 的操作有共通的地方。]]></content>
+      <categories>
+        <category>游戏开发</category>
+        <category>Unreal</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>C++</tag>
+        <tag>Unreal</tag>
+        <tag>Socket</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Unreal Python 骨骼 Socket 自动化工具]]></title>
     <url>%2Fposts%2Fafa45ca4.html</url>
     <content type="text"><![CDATA[前言 &emsp;&emsp;自动添加 Unreal 骨骼 Socket 的功能，我查了一下，发现第三方的 UnrealEnginePython 已经集成了这个功能。 github地址&emsp;&emsp;然而官方的插件在这方面还有很多限制。&emsp;&emsp;比如说官方的 Skeleton 类就根本没有相关的 Sockets 数组可以获取。 文档地址 &emsp;&emsp;刚好最近收到了一个需求，需要实现通过 Excel 配置的文档批量自动生成对应骨骼的 Socket 效果。&emsp;&emsp;为了实现这个需求，还是跳不过调用 C++ 的 API ，不过这一次的操作可以借鉴 UnrealEnginePython 插件的实现方法。 C++ 源码查询 &emsp;&emsp;这个操作套路还是之前的套路，先通过 UI 显示的名称然后反向去查询源码的路径。&emsp;&emsp;如果右键菜单的名称不好找，可以去找它的 Tooltip ， Tooltip 的名称比较长，比较唯一。 &emsp;&emsp;然后就可以通过 VScode 进行定位。 &emsp;&emsp;从这个 UI 命令中，可以找到 AddSocket 这个关键字命令。&emsp;&emsp;可以搜索一下这个命令，并且在 UI 命令的模块下可以找到相关联的脚本。 &emsp;&emsp;于是，按照我之前的经验。&emsp;&emsp;就可以想办法将这个类 FEditableSkeleton 引入的插件里面，然后就可以调用了。&emsp;&emsp;另外这个类是 F 开头的纯 C++ 类，因此这个类是无法作为蓝图的输入和输出类型的，只有继承自 UObject 的对象是可以暴露到 Python 里面。&emsp;&emsp;《大象无形》文档里面也有所提及。 &emsp;&emsp;同时这个 AddSocket 方法并不是静态方法，因此需要一些特殊的实例化操作，才可以使用。&emsp;&emsp;虚幻的实例化有好几种方法，不同的情况，用不同的方法，具体我也不清楚，但是作为工具人，这些源码功能肯定能在其他的源码里面找到答案。&emsp;&emsp;所以我就去搜索 FEditableSkeleton 这个类 &emsp;&emsp;首先排除了这个类本身的 cpp 文件和 头文件，剩下的使用参考已经非常清晰了。&emsp;&emsp;应该就是 SkeletonEditorModule.cpp 的实例化方案了。&emsp;&emsp;后面就是复制粘贴抄代码的事情。 解决无法编译的问题 &emsp;&emsp;然而经过我一通操作，将代码弄到我的蓝图里面之后，我却发现我居然无法通过编译。&emsp;&emsp;我测试了好多遍，都提示我这个调用方法有某些缺了头文件之类的，无法识别。&emsp;&emsp;我仔细核对了 build.cs 文件以及 C++ 引用的头文件，应该都没有什么缺失，于是我只好再尝试其他的方法。 &emsp;&emsp;可能是我这个构造函数的操作方法不对，但是我看了搜索到的构造方法基本都需要 CreateEditableSkeleton 这个方法。&emsp;&emsp;于是我进一步沿着这个思路去解决它。 &emsp;&emsp;于是我尝试用套这个构建方法，结果编译通过了~&emsp;&emsp;顺便到引擎测试一下是不是 Python 可以添加 Socket 了，然后可喜可贺，居然实现了。 123456789USkeletalMeshSocket* UPyToolkitBPLibrary::AddSkeletalMeshSocket(USkeleton* InSkeleton, FName InBoneName)&#123; USkeletalMeshSocket* socket = nullptr; ISkeletonEditorModule&amp; SkeletonEditorModule = FModuleManager::LoadModuleChecked&lt;ISkeletonEditorModule&gt;("SkeletonEditor"); TSharedRef&lt;IEditableSkeleton&gt; EditableSkeleton = SkeletonEditorModule.CreateEditableSkeleton(InSkeleton); socket = EditableSkeleton-&gt;AddSocket(InBoneName); return socket;&#125; 批量删除 Socket &emsp;&emsp;原本以为只要实现添加 Socket ，我的 Python 工具就万无一失了。&emsp;&emsp;但是考虑到如果使用者添加错了，删除 Socket 还要手动删除就很离谱。&emsp;&emsp;于是还得添加一个清空 Socket 的功能才行。 &emsp;&emsp;然后我想直接套用我上面实现的 EditableSkeleton 的方法。&emsp;&emsp;然后才发现，原来上面调用的并不是 FEditableSkeleton 而是 IEditableSkeleton&emsp;&emsp;这两个有啥区别呢？《大象无形》里面没有提到 I 开头的代表啥。&emsp;&emsp;于是网上查了一下 naming convention (还好绑定没有白学~) &emsp;&emsp;然后总算找到了官方文档给出的定义 链接&emsp;&emsp;I 开头属于 abstract interfaces 抽象接口。 &emsp;&emsp;然后相应地去找 IEditableSkeleton 所在的脚本，其实这个时候可以发现这些脚本都在 SkeletonEditor 这个模块下。&emsp;&emsp;而且 FEditableSkeleton 在 Private 目录，而 IEditableSkeleton 在 Public 目录。 &emsp;&emsp;然而另外颇为诧异的是，IEditableSkeleton 没有删除 Socket 的相关函数，但是 FEditableSkeleton 里面有 HandleDeleteSockets 的函数。&emsp;&emsp;但是如果直接调用 FEditableSkeleton 根本无法通过编译。 &emsp;&emsp;最后实在没办法了，查了 UnrealEnginePython 的插件也没有开窍，Unreal 的 C++ 学艺不精，只好找程序来支援一下。&emsp;&emsp;程序一看就说并不是所有的 API 可以暴露出来使用的，有些没有宏暴露的就不可以。&emsp;&emsp;于是我赶紧查了一下 C++ 的 API 文档，结果发现只能查到 IEditableSkeleton 这个类 链接&emsp;&emsp;SkeletonEditor 的 API 文档里面甚至没有提到 FEditableSkeleton(:з」∠) &emsp;&emsp;那现在该怎么办呢？&emsp;&emsp;程序说不慌，实在不行可以将 FEditableSkeleton 的功能代码抄到蓝图里面🤣 &emsp;&emsp;我在仔细看了一下 HandleDeleteSockets 的代码内容，我突然就开窍了。 &emsp;&emsp;这个 Sockets.Remove 是如此的熟悉，这不就和 UnrealEnginePython 的 Python 操作一个样吗？&emsp;&emsp;于是我赶紧试验了一下传 Skeleton 的操作，果然将对应的 Socket Remove 删除掉就可以了~ &emsp;&emsp;不过如果只是Remove操作无法在编辑器面板上更新数据，需要重开面板才能看到 Socket 的确被删除了。&emsp;&emsp;于是我结合上面的 IEditableSkeleton 进行更新就可以实现 Socket 删除的更新~ 1234567891011void UPyToolkitBPLibrary::DeleteSkeletalMeshSocket(USkeleton* InSkeleton, TArray&lt;USkeletalMeshSocket*&gt; SocketList)&#123; InSkeleton-&gt;Modify(); for (USkeletalMeshSocket* Socket : SocketList) &#123; InSkeleton-&gt;Sockets.Remove(Socket); &#125; ISkeletonEditorModule&amp; SkeletonEditorModule = FModuleManager::LoadModuleChecked&lt;ISkeletonEditorModule&gt;("SkeletonEditor"); TSharedRef&lt;IEditableSkeleton&gt; EditableSkeleton = SkeletonEditorModule.CreateEditableSkeleton(InSkeleton); EditableSkeleton-&gt;RefreshBoneTree();&#125; 获取骨骼名称 &emsp;&emsp;官方的 Python 可以获取到 Skeleton 的 bone_tree 信息。&emsp;&emsp;但是 BoneNode 就没有什么有价值的 API 可供调用了。&emsp;&emsp;查了一下 API 文档，原本是可以通过 BoneNode 获取骨骼名称，但是相关方法已经 Deprecated 了 &emsp;&emsp;于是我又参考了 UnrealEnginePython 插件。&emsp;&emsp;可以通过 USkeleton 获取骨骼的数量和骨骼的名称。 123456789int32 UPyToolkitBPLibrary::GetSkeletonBoneNum(USkeleton* InSkeleton)&#123; return InSkeleton-&gt;GetReferenceSkeleton().GetNum();&#125;FName UPyToolkitBPLibrary::GetSkeletonBoneName(USkeleton* InSkeleton,int32 BoneIndex)&#123; return InSkeleton-&gt;GetReferenceSkeleton().GetBoneName(BoneIndex);&#125; &emsp;&emsp;这样 Socket 的增删操作就完场了，改和查的操作可以通过 SkeletalMesh的 API 实现。 Python 结合 CSV 模块编写插件界面 &emsp;&emsp;后续需要开发一个 CSV 编辑界面，这样可以打通 Excel 文档同时又兼有 文件简单的特点。&emsp;&emsp;这次尝试使用 dayu_widgets 来实现效果。&emsp;&emsp;dayu_widgets 封装了一系列 MVC 框架相关的类。&emsp;&emsp;可以直接调用起来，具体可以参考 dayu_widgets 的 example 链接 &emsp;&emsp;相关功能已经集成到了 PyToolkit 仓库里面。 总结 &emsp;&emsp;这次重新整理了一波 C++ 扩展的开发思路，没有深入搞过 Unreal C++ ，总结就一个字 菜(:з」∠)&emsp;&emsp;只能说上面那些套路算是一种野生的解决方案，可以快速应付项目需求，但是真正要摸透还是得用 Unreal 开发几个 C++ 游戏才行~]]></content>
@@ -56,6 +73,7 @@
       </categories>
       <tags>
         <tag>Python</tag>
+        <tag>C++</tag>
         <tag>Unreal</tag>
         <tag>Socket</tag>
       </tags>
@@ -113,9 +131,11 @@
       <categories>
         <category>游戏开发</category>
         <category>Unreal</category>
-        <category>Python</category>
+        <category>C++</category>
       </categories>
       <tags>
+        <tag>Python</tag>
+        <tag>C++</tag>
         <tag>Unreal</tag>
         <tag>插件</tag>
       </tags>
@@ -185,7 +205,7 @@
       <categories>
         <category>游戏开发</category>
         <category>Unreal</category>
-        <category>Python</category>
+        <category>C++</category>
       </categories>
       <tags>
         <tag>Python</tag>
@@ -229,8 +249,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -242,8 +262,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -255,8 +275,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -325,9 +345,9 @@
       </categories>
       <tags>
         <tag>WebGL</tag>
+        <tag>Vue</tag>
         <tag>全栈</tag>
         <tag>Three.js</tag>
-        <tag>Vue</tag>
         <tag>Go</tag>
         <tag>毕设</tag>
       </tags>
@@ -667,8 +687,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>android</tag>
+        <tag>效率</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -680,8 +700,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>android</tag>
+        <tag>效率</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -776,8 +796,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -1178,8 +1198,8 @@
       </categories>
       <tags>
         <tag>VScode</tag>
-        <tag>编辑器</tag>
         <tag>Maya</tag>
+        <tag>编辑器</tag>
       </tags>
   </entry>
   <entry>
@@ -1192,8 +1212,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>Unreal</tag>
         <tag>shader</tag>
+        <tag>Unreal</tag>
       </tags>
   </entry>
   <entry>
@@ -1206,8 +1226,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>Unreal</tag>
         <tag>shader</tag>
+        <tag>Unreal</tag>
       </tags>
   </entry>
   <entry>
@@ -1220,8 +1240,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>Unreal</tag>
         <tag>shader</tag>
+        <tag>Unreal</tag>
       </tags>
   </entry>
   <entry>
@@ -1234,8 +1254,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>Unreal</tag>
         <tag>shader</tag>
+        <tag>Unreal</tag>
       </tags>
   </entry>
   <entry>
@@ -1300,9 +1320,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1314,9 +1334,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1330,8 +1350,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1371,8 +1391,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1386,8 +1406,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1401,8 +1421,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1416,8 +1436,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1431,8 +1451,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1446,8 +1466,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1461,8 +1481,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1476,8 +1496,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1491,8 +1511,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1506,8 +1526,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1701,8 +1721,8 @@
         <category>Unity</category>
       </categories>
       <tags>
-        <tag>C#</tag>
         <tag>unity</tag>
+        <tag>C#</tag>
       </tags>
   </entry>
   <entry>
@@ -1925,8 +1945,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -1939,8 +1959,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -2209,8 +2229,8 @@
         <category>实战</category>
       </categories>
       <tags>
-        <tag>Houdini</tag>
         <tag>模型</tag>
+        <tag>Houdini</tag>
         <tag>体积</tag>
       </tags>
   </entry>
@@ -2353,9 +2373,9 @@
       </categories>
       <tags>
         <tag>three.js</tag>
-        <tag>Houdini</tag>
         <tag>模型</tag>
         <tag>VDB</tag>
+        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2649,9 +2669,9 @@
         <category>zplus 教程系列</category>
       </categories>
       <tags>
+        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
-        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2694,9 +2714,9 @@
         <category>zplus 教程系列</category>
       </categories>
       <tags>
+        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
-        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2780,9 +2800,9 @@
         <category>zplus 教程系列</category>
       </categories>
       <tags>
+        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
-        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
@@ -2796,9 +2816,9 @@
         <category>zplus 教程系列</category>
       </categories>
       <tags>
+        <tag>Houdini</tag>
         <tag>zplus</tag>
         <tag>sop</tag>
-        <tag>Houdini</tag>
       </tags>
   </entry>
   <entry>
