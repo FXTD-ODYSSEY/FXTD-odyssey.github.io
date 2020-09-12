@@ -2,9 +2,114 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.l0v0.com/about/todo.html</loc>
+    
+    <lastmod>2020-09-12T15:27:53.955Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/about/note.html</loc>
+    
+    <lastmod>2020-09-12T15:26:00.491Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/tags/index.html</loc>
+    
+    <lastmod>2020-09-12T15:25:39.206Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/categories/index.html</loc>
+    
+    <lastmod>2020-09-12T15:25:33.221Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/posts/cad78e0d.html</loc>
+    
+    <lastmod>2020-09-12T15:00:43.656Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/posts/434462e.html</loc>
+    
+    <lastmod>2020-09-12T14:41:31.032Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/posts/3ec26151.html</loc>
+    
+    <lastmod>2020-09-12T13:38:00.363Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/posts/345523ad.html</loc>
+    
+    <lastmod>2020-09-12T13:36:14.829Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/posts/578b1a97.html</loc>
+    
+    <lastmod>2020-09-12T13:33:59.292Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/about/index.html</loc>
+    
+    <lastmod>2020-09-12T12:27:02.387Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/posts/513f9ff.html</loc>
+    
+    <lastmod>2020-09-12T10:14:44.126Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/posts/9ef0c0d8.html</loc>
+    
+    <lastmod>2020-08-22T02:40:39.701Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://blog.l0v0.com/posts/139a3d44.html</loc>
     
-    <lastmod>2020-08-09T15:29:02.923Z</lastmod>
+    <lastmod>2020-08-22T02:30:45.404Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/posts/534db3d0.html</loc>
+    
+    <lastmod>2020-08-22T02:18:53.443Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/posts/5905c2c9.html</loc>
+    
+    <lastmod>2020-08-22T02:18:44.535Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.l0v0.com/posts/1c2d932.html</loc>
+    
+    <lastmod>2020-08-13T08:33:15.199Z</lastmod>
     
   </url>
   
@@ -16,44 +121,9 @@
   </url>
   
   <url>
-    <loc>https://blog.l0v0.com/posts/513f9ff.html</loc>
-    
-    <lastmod>2020-08-09T14:51:08.684Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://blog.l0v0.com/posts/afa45ca4.html</loc>
     
     <lastmod>2020-08-09T14:50:51.068Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://blog.l0v0.com/posts/5905c2c9.html</loc>
-    
-    <lastmod>2020-08-09T14:50:47.037Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://blog.l0v0.com/posts/534db3d0.html</loc>
-    
-    <lastmod>2020-08-09T14:50:44.640Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://blog.l0v0.com/posts/434462e.html</loc>
-    
-    <lastmod>2020-08-09T14:50:38.267Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://blog.l0v0.com/tags/index.html</loc>
-    
-    <lastmod>2020-08-09T07:44:27.887Z</lastmod>
     
   </url>
   
@@ -159,13 +229,6 @@
     <loc>https://blog.l0v0.com/posts/bea01990.html</loc>
     
     <lastmod>2020-07-28T04:11:03.287Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://blog.l0v0.com/categories/index.html</loc>
-    
-    <lastmod>2020-07-26T03:56:03.228Z</lastmod>
     
   </url>
   
@@ -1080,13 +1143,6 @@
   </url>
   
   <url>
-    <loc>https://blog.l0v0.com/posts/9ef0c0d8.html</loc>
-    
-    <lastmod>2020-07-26T03:28:55.400Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://blog.l0v0.com/posts/260a6911.html</loc>
     
     <lastmod>2020-07-26T03:28:55.400Z</lastmod>
@@ -1139,13 +1195,6 @@
     <loc>https://blog.l0v0.com/posts/15486.html</loc>
     
     <lastmod>2020-07-25T02:24:10.307Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://blog.l0v0.com/about/index.html</loc>
-    
-    <lastmod>2020-07-25T02:22:46.935Z</lastmod>
     
   </url>
   
@@ -1220,13 +1269,6 @@
   </url>
   
   <url>
-    <loc>https://blog.l0v0.com/posts/1c2d932.html</loc>
-    
-    <lastmod>2020-07-25T02:14:38.048Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://blog.l0v0.com/posts/906141af.html</loc>
     
     <lastmod>2020-07-25T02:14:38.048Z</lastmod>
@@ -1283,14 +1325,14 @@
   </url>
   
   <url>
-    <loc>https://blog.l0v0.com/contact/index.html</loc>
+    <loc>https://blog.l0v0.com/about/my_work.html</loc>
     
     <lastmod>2020-07-17T14:17:06.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://blog.l0v0.com/my_work/index.html</loc>
+    <loc>https://blog.l0v0.com/about/contact.html</loc>
     
     <lastmod>2020-07-17T14:17:06.000Z</lastmod>
     
