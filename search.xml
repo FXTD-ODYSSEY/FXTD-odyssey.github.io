@@ -3,7 +3,21 @@
   <entry>
     <title><![CDATA[Unreal Python 进阶菜单扩展]]></title>
     <url>%2Fposts%2Fcad78e0d.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;最近抽空深入研究了一下 Unreal Python 的菜单扩展。&emsp;&emsp;扩展菜单的主要方法我之前的文章有提到过 Unreal PyToolkit 插件&emsp;&emsp;当时主要参考论坛的一篇帖子用 Python 实现下拉菜单 链接 &emsp;&emsp;其实有个地方让我很困惑， menu 获取需要通过 ToolMenus 的 find_menu 实现 1234menus = unreal.ToolMenus.get()# NOTE 获取主界面的主菜单位置main_menu = menus.find_menu("LevelEditor.MainMenu") &emsp;&emsp;但是 find_menu 传入的 menu 字符串是从何而来的，完全就没有概念了。&emsp;&emsp;我最先想到的还是从 C++ 入手 ~ C++ 源码探索 &emsp;&emsp;首先在 VScode 查 UToolMenus ， 然后通过 F12 可以定位到头文件。&emsp;&emsp;头文件名为 ToolMenus.h ， 可以用 ctrl+P 去定位 ToolMenus.cpp 脚本&emsp;&emsp;ToolMenus.cpp 脚本里面可以找到 FindMenu 的函数。 &emsp;&emsp;可以看到是通过 Menus 字典来记录引擎中所有的 Menu 名称。&emsp;&emsp;然而比较头疼的地方时 Menus 在头文件里面设置为了私有变量，无法通过 Python 亦或是 C++ 插件来获取到里面存储的值 &emsp;&emsp;迫不得已，我改了引擎源码，实现蓝图调用，然后通过 Python 获取字典存储的值。 1234567891011121314151617181920212223242526272829303132333435&#123; "ContentBrowser.AssetContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_0"', "ContentBrowser.FolderContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_1"', "MainFrame.MainMenu.Asset": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_2"', "LevelEditor.ActorContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_3"', "ContentBrowser.AssetContextMenu.SoundWave": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_4"', "LevelEditor.MainMenu.Window": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_5"', "LevelEditor.MainMenu.Help": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_6"', "AssetEditor.SkeletalMeshEditor.ToolBar": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_7"', "LevelEditor.MainMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_8"', "ContentBrowser.AssetContextMenu.LevelSequence": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_9"', "MediaPlayer.AssetPickerAssetContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_10"', "ContentBrowser.AssetContextMenu.CameraAnim": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_11"', "LevelEditor.LevelEditorToolBar": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_12"', "LevelEditor.MainMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_13"', "LevelEditor.MainMenu.Edit": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_14"', "LevelEditor.LevelEditorToolBar.SourceControl": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_15"', "LevelEditor.LevelEditorToolBar.Cinematics": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_16"', "LevelEditor.LevelEditorToolBar.BuildComboButton": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_17"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingQuality": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_18"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingDensity": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_19"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingResolution": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_20"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_21"', "LevelEditor.LevelEditorToolBar.EditorModes": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_22"', "LevelEditor.LevelEditorToolBar.CompileComboButton": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_23"', "LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_24"', "LevelEditor.LevelEditorToolBar.OpenBlueprint": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_25"', "LevelEditor.LevelEditorSceneOutliner.ContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_30"', "MainFrame.MainMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_31"', "MainFrame.MainTabMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_32"', "MainFrame.MainMenu.Edit": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_33"', "MainFrame.MainMenu.Window": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_34"', "MainFrame.MainMenu.Help": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_35"', "MainFrame.MainMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_36"',&#125; &emsp;&emsp;现在除了 LevelEditor.MainMenu 我们有了更多的 menu 选项了。&emsp;&emsp;比如上面显示的就有 ContentBrowser.AssetContextMenu 还有 ContentBrowser.FolderContextMenu 以及 LevelEditor.LevelEditorToolBar&emsp;&emsp;由此可以得出， 应该可以用 Python 扩展这里相应的菜单的。 Python 右键菜单扩展 &emsp;&emsp;基于上面的 AssetContextMenu 和 FolderContextMenu 的信息&emsp;&emsp;我们可以分别去扩展右键资弹出的源菜单以及右键文件夹弹出的菜单。 1234567891011121314import unrealmenus = unreal.ToolMenus.get()menu_name = "ContentBrowser.FolderContextMenu"menu = menus.find_menu(menu_name)entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY)entry.set_label("测试 entry")# NOTE 注册执行的命令typ = unreal.ToolMenuStringCommandType.PYTHONentry.set_string_command(typ, "", 'print "entry 触发测试"')menu.add_menu_entry('AssetContextSourceControl',entry)# menus.refresh_all_widgets() &emsp;&emsp;本来 UI 修改需要 refresh_all_widgets 才会更新，因为右键菜单是右键生成时候会自动刷新，所以不执行也不影响。&emsp;&emsp;后面生成 Toolbar 扩展的时候踩了这个坑。 &emsp;&emsp;另外 AssetContextSourceControl 这个名称是 从何而来 的&emsp;&emsp;这就需要在编辑器配置里面开启 UI 名称的显示 &emsp;&emsp;开启上面的选项之后，右键菜单就会多出 绿色 的文字标注菜单的名称。 &emsp;&emsp;文件夹菜单扩展也是同理，将菜单的名称修改并且找到菜单相关的 section 进行添加即可。 Python Toolbar 添加 &emsp;&emsp;上面开启了 UI 显示之后，右键菜单可以显示了，但是 Toolbar 的显示依然是没有的。&emsp;&emsp;这就需要重启一下 引擎。 &emsp;&emsp;有了上面的标注就可以通过上面类似的方法添加 Toolbar 按钮 12345678910111213141516import unrealmenus = unreal.ToolMenus.get()menu_name = "LevelEditor.LevelEditorToolBar"menu = menus.find_menu(menu_name)# NOTE 生成类型改为 Toolbar 的按钮entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.TOOL_BAR_BUTTON)entry.set_label("测试 button")# NOTE 注册执行的命令typ = unreal.ToolMenuStringCommandType.PYTHONentry.set_string_command(typ, "", 'print "entry 触发测试"')menu.add_menu_entry('File',entry)# NOTE 添加刷新才能立刻看到添加的效果menus.refresh_all_widgets() &emsp;&emsp;执行上面的代码就可以在动态给 Toolbar 添加按钮了。 通过 Python 获取引擎生成的菜单 &emsp;&emsp;上面获取菜单名称的方式是通过 C++ 魔改引擎源码才能实现。&emsp;&emsp;这样限制非常大，有没有更加友好的获取方式呢？ &emsp;&emsp;我看着上面 C++ 获取的字典，不由得计从心生~&emsp;&emsp;我发现获取的 menu 的临时路径是有一定规律的，通过这个规律应该可以用 Python 动态读取到生成的菜单。 12345678910111213141516import unrealdef list_menu(num=1000): menu_list = set() for i in range(num): obj = unreal.find_object(None,"/Engine/Transient.ToolMenus_0:ToolMenu_%s" % i) if not obj: continue menu_name = str(obj.menu_name) if menu_name != "None": menu_list.add(menu_name) return list(menu_list)print(list_menu())LogPython: ['LevelEditor.LevelEditorToolBar', 'ContentBrowser.AssetContextMenu.LevelSequence', 'MediaPlayer.AssetPickerAssetContextMenu', 'ContentBrowser.AssetContextMenu', 'LevelEditor.LevelEditorToolBar.CompileComboButton', 'MainFrame.MainMenu', 'LevelEditor.MainMenu.Edit', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingResolution', 'LevelEditor.MainMenu', 'LevelEditor.MainMenu.File', 'AssetEditor.SkeletalMeshEditor.ToolBar', 'MainFrame.MainMenu.Edit', 'ContentBrowser.AssetContextMenu.CameraAnim', 'LevelEditor.MainMenu.Window', 'LevelEditor.LevelEditorToolBar.BuildComboButton', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingQuality', 'MainFrame.MainMenu.File', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingDensity', 'LevelEditor.ActorContextMenu', 'ContentBrowser.AssetContextMenu.SoundWave', 'MainFrame.MainTabMenu.File', 'LevelEditor.LevelEditorToolBar.SourceControl', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo', 'LevelEditor.LevelEditorSceneOutliner.ContextMenu', 'MainFrame.MainMenu.Window', 'LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings', 'MainFrame.MainMenu.Asset', 'LevelEditor.LevelEditorToolBar.Cinematics', 'LevelEditor.MainMenu.Help', 'LevelEditor.LevelEditorToolBar.EditorModes', 'MainFrame.MainMenu.Help', 'ContentBrowser.FolderContextMenu', 'LevelEditor.LevelEditorToolBar.OpenBlueprint'] &emsp;&emsp;我想要的效果实现了~&emsp;&emsp;这样就不需要魔改引擎代码，也可以获取出到大部分的 menu 名称。&emsp;&emsp;而且上面的数组只是默认开启引擎下的菜单，如果多打开一些编辑窗口，还可以获取到更多的 菜单 。 &emsp;&emsp;由于不知道到底有多少个菜单生成了，所以我默认定的循环数是 1000 ，基本是够用的，而且遍历速度很快。&emsp;&emsp;另外还有部分的菜单是 None 无名氏，估计是注册的时候没有给定名称，也不好判断是哪里的菜单，所以我就过滤掉了。 通过 Python 扩展 AddNewContextMenu &emsp;&emsp;AddNewContextMenu 就是没有选择任何资源的时候在 资源浏览器 右键弹出的菜单。&emsp;&emsp;更好我遇到了在这个菜单上进行扩展的需求，所以为了用 Python 实现踩了不少坑(:з」∠) &emsp;&emsp;从这个名字可以知道，默认开启引擎的时候并没有加载到这个菜单。&emsp;&emsp;使用上面写道 list_menu 函数是获取不到的，除非在 资源浏览器 进行右键触发。&emsp;&emsp;这个时候 list_menu 就会多出这个 ContentBrowser.AddNewContextMenu 的菜单名称。&emsp;&emsp;这就产生了很严重的问题，无法实现 C++ 插件的菜单嵌入效果。&emsp;&emsp;不可能让使用者手动右键生成一下菜单，再将需要的 entry 添加到菜单里呀(:з」∠) &emsp;&emsp;后来为了能够完成需求，我还是用 C++ 来解决了这个问题 参考知乎这篇文章 &emsp;&emsp;不过搞定了需求，周末还是抽空研究怎么通过 Python 来解决这个问题。&emsp;&emsp;这个过程还实现了一些有趣的效果，比如先注册生成 menu ，导致右键菜单变成了我自己自定义的菜单了。 12345678910111213menus = unreal.ToolMenus.get()menu_name = "ContentBrowser.AddNewContextMenu"menu = menus.find_menu(menu_name)# NOTE 如果已经注册则删除 | 否则无法执行 register_menuif menus.is_menu_registered(menu_name): menus.remove_menu(menu_name)menu = menus.register_menu(menu_name)entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY)entry.set_label("测试 entry")menu.add_menu_entry('',entry) &emsp;&emsp;其他菜单也可以尝试着这样魔改成自己的菜单。&emsp;&emsp;如果可以配合引擎快捷键触发不同的菜单，还是有点意思的。 &emsp;&emsp;上面魔改的菜单要回复也不难，将自己做的菜单 删除掉 ，默认右键就会生成回正常的菜单了。 &emsp;&emsp;问题是这个折腾依然没能解决实现我想要的效果(:з」∠)&emsp;&emsp;后面还是想往 C++ 的方向入手，能不能在右键菜单事件添加 回调事件，配合触发 Python 脚本。&emsp;&emsp;也的确在 C++ 文档里面找到相关的回调函数 链接&emsp;&emsp;但是要如何接入 Python 还不是很确定。 &emsp;&emsp;后面思路一转，还有更加简单的实现方式，可以用定时器来做。&emsp;&emsp;虽然定时器不是个好点子，听着就比较浪费资源，但是考虑到 Python 遍历 menu 的速度快到没感觉。&emsp;&emsp;定时执行嵌入操作的卡顿应该感知不到。 1234567891011121314151617181920212223242526import unrealfrom Qt import QtCorefrom functools import partialdef add_menu(timer): print("timer running...") menu = menus.find_menu("ContentBrowser.AddNewContextMenu") if not menu: return # NOTE 如果存在停止计时器 timer.stop() print("timer stop") entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY) entry.set_label("测试 entry") menu.add_menu_entry('ContentBrowserNewAdvancedAsset',entry) menus.refresh_all_widgets()# NOTE 使用 Qt 的定时器实现 js setInterval 函数的效果# NOTE Python 原生实现比较麻烦，用 Qt 的 Timer 比较简洁timer = QtCore.QTimer()timer.timeout.connect(partial(add_menu,timer))timer.start(1000) &emsp;&emsp;完美通过定时器实现动态嵌入菜单。 PyToolkit Json 配置优化 &emsp;&emsp;通过上面的一轮折腾，之前 PyToolkit 提供的菜单配置完全可以更加灵活。&emsp;&emsp;于是我又开始重写之前的 json 配置的读取和生成，通过递归的方法，自动处理多重嵌套菜单的效果。 &emsp;&emsp;具体的配置方法我写到了 PyToolkit 的帮助文档里面~ &emsp;&emsp;上面四种嵌入可以完全通过 json 配置来完成~ 总结 &emsp;&emsp;利用 Python 做菜单扩展的确方便了很多，但是 Python 也并不是万能的。&emsp;&emsp;例如我之前研究过的 Sequencer 菜单工具栏嵌入 扩展就只能通过 C++ 来实现&emsp;&emsp;因为 list_menu 没有找到相关的菜单名称。 &emsp;&emsp;最近博客因为各种原因写好了文章却没有更新，更新频率也下降了(:з」∠)&emsp;&emsp;希望后续可以整理规划好时间，继续坚持做博客的记录。]]></content>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;最近抽空深入研究了一下 Unreal Python 的菜单扩展。&emsp;&emsp;扩展菜单的主要方法我之前的文章有提到过 Unreal PyToolkit 插件&emsp;&emsp;当时主要参考论坛的一篇帖子用 Python 实现下拉菜单 链接 &emsp;&emsp;其实有个地方让我很困惑， menu 获取需要通过 ToolMenus 的 find_menu 实现 1234menus = unreal.ToolMenus.get()# NOTE 获取主界面的主菜单位置main_menu = menus.find_menu("LevelEditor.MainMenu") &emsp;&emsp;但是 find_menu 传入的 menu 字符串是从何而来的，完全就没有概念了。&emsp;&emsp;我最先想到的还是从 C++ 入手 ~ C++ 源码探索 &emsp;&emsp;首先在 VScode 查 UToolMenus ， 然后通过 F12 可以定位到头文件。&emsp;&emsp;头文件名为 ToolMenus.h ， 可以用 ctrl+P 去定位 ToolMenus.cpp 脚本&emsp;&emsp;ToolMenus.cpp 脚本里面可以找到 FindMenu 的函数。 &emsp;&emsp;可以看到是通过 Menus 字典来记录引擎中所有的 Menu 名称。&emsp;&emsp;然而比较头疼的地方时 Menus 在头文件里面设置为了私有变量，无法通过 Python 亦或是 C++ 插件来获取到里面存储的值 &emsp;&emsp;迫不得已，我改了引擎源码，实现蓝图调用，然后通过 Python 获取字典存储的值。 1234567891011121314151617181920212223242526272829303132333435&#123; "ContentBrowser.AssetContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_0"', "ContentBrowser.FolderContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_1"', "MainFrame.MainMenu.Asset": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_2"', "LevelEditor.ActorContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_3"', "ContentBrowser.AssetContextMenu.SoundWave": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_4"', "LevelEditor.MainMenu.Window": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_5"', "LevelEditor.MainMenu.Help": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_6"', "AssetEditor.SkeletalMeshEditor.ToolBar": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_7"', "LevelEditor.MainMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_8"', "ContentBrowser.AssetContextMenu.LevelSequence": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_9"', "MediaPlayer.AssetPickerAssetContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_10"', "ContentBrowser.AssetContextMenu.CameraAnim": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_11"', "LevelEditor.LevelEditorToolBar": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_12"', "LevelEditor.MainMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_13"', "LevelEditor.MainMenu.Edit": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_14"', "LevelEditor.LevelEditorToolBar.SourceControl": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_15"', "LevelEditor.LevelEditorToolBar.Cinematics": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_16"', "LevelEditor.LevelEditorToolBar.BuildComboButton": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_17"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingQuality": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_18"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingDensity": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_19"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingResolution": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_20"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_21"', "LevelEditor.LevelEditorToolBar.EditorModes": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_22"', "LevelEditor.LevelEditorToolBar.CompileComboButton": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_23"', "LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_24"', "LevelEditor.LevelEditorToolBar.OpenBlueprint": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_25"', "LevelEditor.LevelEditorSceneOutliner.ContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_30"', "MainFrame.MainMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_31"', "MainFrame.MainTabMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_32"', "MainFrame.MainMenu.Edit": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_33"', "MainFrame.MainMenu.Window": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_34"', "MainFrame.MainMenu.Help": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_35"', "MainFrame.MainMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_36"',&#125; &emsp;&emsp;现在除了 LevelEditor.MainMenu 我们有了更多的 menu 选项了。&emsp;&emsp;比如上面显示的就有 ContentBrowser.AssetContextMenu 还有 ContentBrowser.FolderContextMenu 以及 LevelEditor.LevelEditorToolBar&emsp;&emsp;由此可以得出， 应该可以用 Python 扩展这里相应的菜单的。 Python 右键菜单扩展 &emsp;&emsp;基于上面的 AssetContextMenu 和 FolderContextMenu 的信息&emsp;&emsp;我们可以分别去扩展右键资弹出的源菜单以及右键文件夹弹出的菜单。 1234567891011121314import unrealmenus = unreal.ToolMenus.get()menu_name = "ContentBrowser.FolderContextMenu"menu = menus.find_menu(menu_name)entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY)entry.set_label("测试 entry")# NOTE 注册执行的命令typ = unreal.ToolMenuStringCommandType.PYTHONentry.set_string_command(typ, "", 'print "entry 触发测试"')menu.add_menu_entry('AssetContextSourceControl',entry)# menus.refresh_all_widgets() &emsp;&emsp;本来 UI 修改需要 refresh_all_widgets 才会更新，因为右键菜单是右键生成时候会自动刷新，所以不执行也不影响。&emsp;&emsp;后面生成 Toolbar 扩展的时候踩了这个坑。 &emsp;&emsp;另外 AssetContextSourceControl 这个名称是 从何而来 的&emsp;&emsp;这就需要在编辑器配置里面开启 UI 名称的显示 &emsp;&emsp;开启上面的选项之后，右键菜单就会多出 绿色 的文字标注菜单的名称。 &emsp;&emsp;文件夹菜单扩展也是同理，将菜单的名称修改并且找到菜单相关的 section 进行添加即可。 Python Toolbar 添加 &emsp;&emsp;上面开启了 UI 显示之后，右键菜单可以显示了，但是 Toolbar 的显示依然是没有的。&emsp;&emsp;这就需要重启一下 引擎。 &emsp;&emsp;有了上面的标注就可以通过上面类似的方法添加 Toolbar 按钮 12345678910111213141516import unrealmenus = unreal.ToolMenus.get()menu_name = "LevelEditor.LevelEditorToolBar"menu = menus.find_menu(menu_name)# NOTE 生成类型改为 Toolbar 的按钮entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.TOOL_BAR_BUTTON)entry.set_label("测试 button")# NOTE 注册执行的命令typ = unreal.ToolMenuStringCommandType.PYTHONentry.set_string_command(typ, "", 'print "entry 触发测试"')menu.add_menu_entry('File',entry)# NOTE 添加刷新才能立刻看到添加的效果menus.refresh_all_widgets() &emsp;&emsp;执行上面的代码就可以在动态给 Toolbar 添加按钮了。 通过 Python 获取引擎生成的菜单 &emsp;&emsp;上面获取菜单名称的方式是通过 C++ 魔改引擎源码才能实现。&emsp;&emsp;这样限制非常大，有没有更加友好的获取方式呢？ &emsp;&emsp;我看着上面 C++ 获取的字典，不由得计从心生~&emsp;&emsp;我发现获取的 menu 的临时路径是有一定规律的，通过这个规律应该可以用 Python 动态读取到生成的菜单。 12345678910111213141516import unrealdef list_menu(num=1000): menu_list = set() for i in range(num): obj = unreal.find_object(None,"/Engine/Transient.ToolMenus_0:ToolMenu_%s" % i) if not obj: continue menu_name = str(obj.menu_name) if menu_name != "None": menu_list.add(menu_name) return list(menu_list)print(list_menu())LogPython: ['LevelEditor.LevelEditorToolBar', 'ContentBrowser.AssetContextMenu.LevelSequence', 'MediaPlayer.AssetPickerAssetContextMenu', 'ContentBrowser.AssetContextMenu', 'LevelEditor.LevelEditorToolBar.CompileComboButton', 'MainFrame.MainMenu', 'LevelEditor.MainMenu.Edit', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingResolution', 'LevelEditor.MainMenu', 'LevelEditor.MainMenu.File', 'AssetEditor.SkeletalMeshEditor.ToolBar', 'MainFrame.MainMenu.Edit', 'ContentBrowser.AssetContextMenu.CameraAnim', 'LevelEditor.MainMenu.Window', 'LevelEditor.LevelEditorToolBar.BuildComboButton', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingQuality', 'MainFrame.MainMenu.File', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingDensity', 'LevelEditor.ActorContextMenu', 'ContentBrowser.AssetContextMenu.SoundWave', 'MainFrame.MainTabMenu.File', 'LevelEditor.LevelEditorToolBar.SourceControl', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo', 'LevelEditor.LevelEditorSceneOutliner.ContextMenu', 'MainFrame.MainMenu.Window', 'LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings', 'MainFrame.MainMenu.Asset', 'LevelEditor.LevelEditorToolBar.Cinematics', 'LevelEditor.MainMenu.Help', 'LevelEditor.LevelEditorToolBar.EditorModes', 'MainFrame.MainMenu.Help', 'ContentBrowser.FolderContextMenu', 'LevelEditor.LevelEditorToolBar.OpenBlueprint'] &emsp;&emsp;我想要的效果实现了~&emsp;&emsp;这样就不需要魔改引擎代码，也可以获取出到大部分的 menu 名称。&emsp;&emsp;而且上面的数组只是默认开启引擎下的菜单，如果多打开一些编辑窗口，还可以获取到更多的 菜单 。 &emsp;&emsp;由于不知道到底有多少个菜单生成了，所以我默认定的循环数是 1000 ，基本是够用的，而且遍历速度很快。&emsp;&emsp;另外还有部分的菜单是 None 无名氏，估计是注册的时候没有给定名称，也不好判断是哪里的菜单，所以我就过滤掉了。 通过 Python 扩展 AddNewContextMenu &emsp;&emsp;AddNewContextMenu 就是没有选择任何资源的时候在 资源浏览器 右键弹出的菜单。&emsp;&emsp;更好我遇到了在这个菜单上进行扩展的需求，所以为了用 Python 实现踩了不少坑(:з」∠) &emsp;&emsp;从这个名字可以知道，默认开启引擎的时候并没有加载到这个菜单。&emsp;&emsp;使用上面写道 list_menu 函数是获取不到的，除非在 资源浏览器 进行右键触发。&emsp;&emsp;这个时候 list_menu 就会多出这个 ContentBrowser.AddNewContextMenu 的菜单名称。&emsp;&emsp;这就产生了很严重的问题，无法实现 C++ 插件的菜单嵌入效果。&emsp;&emsp;不可能让使用者手动右键生成一下菜单，再将需要的 entry 添加到菜单里呀(:з」∠) &emsp;&emsp;后来为了能够完成需求，我还是用 C++ 来解决了这个问题 参考知乎这篇文章 &emsp;&emsp;不过搞定了需求，周末还是抽空研究怎么通过 Python 来解决这个问题。&emsp;&emsp;这个过程还实现了一些有趣的效果，比如先注册生成 menu ，导致右键菜单变成了我自己自定义的菜单了。 12345678910111213menus = unreal.ToolMenus.get()menu_name = "ContentBrowser.AddNewContextMenu"menu = menus.find_menu(menu_name)# NOTE 如果已经注册则删除 | 否则无法执行 register_menuif menus.is_menu_registered(menu_name): menus.remove_menu(menu_name)menu = menus.register_menu(menu_name)entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY)entry.set_label("测试 entry")menu.add_menu_entry('',entry) &emsp;&emsp;其他菜单也可以尝试着这样魔改成自己的菜单。&emsp;&emsp;如果可以配合引擎快捷键触发不同的菜单，还是有点意思的。 &emsp;&emsp;上面魔改的菜单要回复也不难，将自己做的菜单 删除掉 ，默认右键就会生成回正常的菜单了。 &emsp;&emsp;问题是这个折腾依然没能解决实现我想要的效果(:з」∠)&emsp;&emsp;后面还是想往 C++ 的方向入手，能不能在右键菜单事件添加 回调事件，配合触发 Python 脚本。&emsp;&emsp;也的确在 C++ 文档里面找到相关的回调函数 链接&emsp;&emsp;但是要如何接入 Python 还不是很确定。 &emsp;&emsp;后面思路一转，还有更加简单的实现方式，可以用定时器来做。&emsp;&emsp;虽然定时器不是个好点子，听着就比较浪费资源，但是考虑到 Python 遍历 menu 的速度快到没感觉。&emsp;&emsp;定时执行嵌入操作的卡顿应该感知不到。 1234567891011121314151617181920212223242526import unrealfrom Qt import QtCorefrom functools import partialdef add_menu(timer): print("timer running...") menu = menus.find_menu("ContentBrowser.AddNewContextMenu") if not menu: return # NOTE 如果存在停止计时器 timer.stop() print("timer stop") entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY) entry.set_label("测试 entry") menu.add_menu_entry('ContentBrowserNewAdvancedAsset',entry) menus.refresh_all_widgets()# NOTE 使用 Qt 的定时器实现 js setInterval 函数的效果# NOTE Python 原生实现比较麻烦，用 Qt 的 Timer 比较简洁timer = QtCore.QTimer()timer.timeout.connect(partial(add_menu,timer))timer.start(1000) &emsp;&emsp;完美通过定时器实现动态嵌入菜单。 PyToolkit Json 配置优化 &emsp;&emsp;通过上面的一轮折腾，之前 PyToolkit 提供的菜单配置完全可以更加灵活。&emsp;&emsp;于是我又开始重写之前的 json 配置的读取和生成，通过递归的方法，自动处理多重嵌套菜单的效果。 &emsp;&emsp;具体的配置方法我写到了 PyToolkit 的帮助文档里面 链接~ &emsp;&emsp;上面四种嵌入可以完全通过 json 配置来完成~ 总结 &emsp;&emsp;利用 Python 做菜单扩展的确方便了很多，但是 Python 也并不是万能的。&emsp;&emsp;例如我之前研究过的 Sequencer 菜单工具栏嵌入 扩展就只能通过 C++ 来实现&emsp;&emsp;因为 list_menu 没有找到相关的菜单名称。 &emsp;&emsp;最近博客因为各种原因写好了文章却没有更新，更新频率也下降了(:з」∠)&emsp;&emsp;希望后续可以整理规划好时间，继续坚持做博客的记录。]]></content>
+      <categories>
+        <category>游戏开发</category>
+        <category>Unreal</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Unreal</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Unreal Python 替换动画资源骨骼]]></title>
+    <url>%2Fposts%2F121100f4.html</url>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;在 Unreal 引擎中，动画资源导入之后，就无法对其指向的骨骼进行修改了。&emsp;&emsp;在论坛上上查了一些资料 链接&emsp;&emsp;大多数人推荐使用 骨骼重定向 来生成新的动画。&emsp;&emsp;但是旧的动画会被一些 定序器 或者 蓝图 所引用，怎么将这些引用转移到新的 动画 上。 引用替换 &emsp;&emsp;还是参考了上面论坛链接提到的，删除动画文件的时候，如果动画文件存在引用，则可以选一个新的文件进行引用的替换。 &emsp;&emsp;选择一个新的动画文件替换之前的引用。 &emsp;&emsp;不过这个操作其实并不完整，我们可以打开引用查看器查看文件的引用情况。 &emsp;&emsp;之前的旧资源会保留一个 Redirector重定向器 指向新的资源。&emsp;&emsp;这会导致无法使用就资源的命名了。 &emsp;&emsp;而且这个无法命名还很诡异，因为目录里已经看不到有这个名字的资源了。&emsp;&emsp;默认 Redirector重定向器 是看不见的，想要看到它需要在过滤标签里面开启它的过滤。 &emsp;&emsp;这就很难受，因为我们替换资源就是希望新的资源和旧的资源在命名上能够保持一致。&emsp;&emsp;后来又经过我的一通搜索查找之后，发现文件夹的右键菜单有选项可以清理掉当前选中目录下的重定向器。 &emsp;&emsp;执行这个命令删除掉重定向器就可以将新的资源改名为旧的资源了。 Python 自动处理骨骼替换 &emsp;&emsp;既然上面的操作可以手动实现，用代码自动替换问题也不大了~ &emsp;&emsp;首先需要找到替换引用操作的 Python 调用是啥。&emsp;&emsp;这个函数的名字并不是我所想到的名字，找了好一段时间才找到 链接 &emsp;&emsp;unreal.EditorAssetLibrary.consolidate_assets 这个函数就是我的目标函数&emsp;&emsp;新资源和就旧资源数组，就可以实现引用替换到新资源上。 &emsp;&emsp;替换成功之后，怎么将 重定向器 清除呢？&emsp;&emsp;我先从 C++ 的源码入手，看看清理引用的时候，到底是调用了哪些 C++ 函数。 &emsp;&emsp;然而上面截图的调用并没有在 Python API 里面找到相关调用，只能写个蓝图节点来实现 Python 调用。&emsp;&emsp;调用这个函数，需要获取出需要清理的 重定向器。&emsp;&emsp;我当时想先从 Python 获取到 Object ，然后直接传到 C++ 里面进行处理。 12345678# NOTE 引擎内部路径 | 这个路径是我的测试目录路径destination_path = '/Game/TestAnim'reg = unreal.AssetRegistryHelpers.get_asset_registry()ar_filter = unreal.ARFilter(class_names=["ObjectRedirector"], package_paths=[destination_path])# NOTE 通过 filters 过滤出目录下的 重定向器 | get_assets 获取到的是 AssetData 类型redirector_list = [redirector.get_asset() for redirector in reg.get_assets(ar_filter)]print(redirector_list[0])# LogPython: &lt;Object '/Game/TestAnim/Replace_ThirdPersonWalk.Replace_ThirdPersonWalk' (0x000002CF62C19E80) Class 'ObjectRedirector'&gt; &emsp;&emsp;上面的代码可以获取出类型为 ObjectRedirector 的对象。&emsp;&emsp;所以我当时将这个对象传递到 C++ 蓝图里面进行清理。&emsp;&emsp;但是这样清理会导致清理失败~&emsp;&emsp;估计 get_assets 这个函数触发了什么东西，导致 Redirector 被占用了。 &emsp;&emsp;后来不得已我只好改成将路径传到 C++ 函数里面，通过 C++ 加载路径获取对象，就可以了。 123456789# NOTE 引擎内部路径 | 这个路径是我的测试目录路径destination_path = '/Game/TestAnim'reg = unreal.AssetRegistryHelpers.get_asset_registry()ar_filter = unreal.ARFilter(class_names=["ObjectRedirector"], package_paths=[destination_path])# NOTE 通过 filters 过滤出目录下的 重定向器 | get_assets 获取到的是 AssetData 类型redirector_list = [redirector.object_path for redirector in reg.get_assets(ar_filter)]# NOTE 清理获取到的 重定向器unreal.PyToolkitBPLibrary.fixup_referencers(redirector_list) 1234567891011121314151617void UPyToolkitBPLibrary::FixupReferencers(TArray&lt;FString&gt; ObjectPaths)&#123; // NOTE source code from FPathContextMenu::ExecuteFixUpRedirectorsInFolder TArray&lt;UObjectRedirector *&gt; Redirectors; for (auto ObjectPath : ObjectPaths) &#123; UObject *LoadedObject = LoadObject&lt;UObject&gt;(NULL, *ObjectPath, NULL, ELoadFlags::LOAD_None, NULL); if(LoadedObject)&#123; auto Redirector = CastChecked&lt;UObjectRedirector&gt;(LoadedObject); Redirectors.Add(Redirector); &#125; &#125; // Load the asset tools module FAssetToolsModule &amp;AssetToolsModule = FModuleManager::LoadModuleChecked&lt;FAssetToolsModule&gt;(TEXT("AssetTools")); AssetToolsModule.Get().FixupReferencers(Redirectors);&#125; &emsp;&emsp;基本上通过上面的方法就可以清理掉 重定向器，后续将新的资源的名称同步改为就资源名称即可。&emsp;&emsp;另外补充一下在 Unreal 引擎里面不支持 windows 系统的反斜杠 \ ，使用 os.path.join 拼接的路径很容易出错&emsp;&emsp;我网上查了之后，可以用 Python 内置的 posixpath 来拼接路径，确保输出的路径使用 斜杠 / 总结 &emsp;&emsp;以上就是 动画资源替换 的操作。&emsp;&emsp;有相关的问题欢迎联系我交流~]]></content>
       <categories>
         <category>游戏开发</category>
         <category>Unreal</category>
@@ -276,8 +290,8 @@
         <category>神秘研究</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -311,7 +325,7 @@
   <entry>
     <title><![CDATA[Windows 效率提升总结]]></title>
     <url>%2Fposts%2F82cd243a.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;经过了几个月的使用洗礼，总算是可以总结一些非常好用的效率软件使用经验了。 效率软件经验总结 Listary 收藏常用的路径 Listary Ctrl+G 切换路径 Listary Ctrl+Shift+c 复制路径 Listary Maya 打开窗口改用 os native QtTabbar 批量重命名文件 Quicker 快速关闭程序 Quicker 打开映射盘符的真实路径 Quicker 朗诵日语 Ditto 记录不同的路径进行切换 WGesture 常用手势 Capslock+ 个人魔改 中文标点输入 Windows快捷操作 操作参考 Ctrl+Shift+Esc 开启任务管理器 Win+e 打开 文件资源管理器 Win+d 显示桌面 Win+x 快捷菜单 Win+v Win10 自带的粘贴历史 Win+s Win10 自带的全局搜索 Win+Shift+S Win10 自带的截屏软件 Win++ &amp; Win+- 放大镜 Win+; Win10 自带颜文字菜单 alt+d 文件资源管理器定位到地址栏 路径上输入 cmd 打开命令行并定位到当前路径 .gitignore 这种文件在 Windows 平台的命名方法 鼠标中键 或 Shift左键 开启更多程序 Win+r 运行 固定 Windows 程序 shell 命令打开系统内置路径 %env% 打开环境变量路径 命令行操作 cd dir rename copy start ping ipconfig where 命令查找程序位置 sbust 映射网络地址 net 连接网络路径 taskkill 杀死进程 &emsp;&emsp;上面就是总结归纳的常用操作。 效率软件经验总结Listary 收藏常用的路径 &emsp;&emsp;Listary 在文件浏览器中键可以打开它的菜单。&emsp;&emsp;菜单里面可以添加一些文件夹的收藏，下次可以快速定位到我们需要文件路径去。 &emsp;&emsp;点击菜单的右上角添加按钮即可快速添加当前打开的路径。&emsp;&emsp;添加的菜单可以在 Listary 的设置里面进行修改，可以加入分割线和子菜单。 Listary Ctrl+G 切换路径 &emsp;&emsp;Listary 的打开窗口有非常便捷的操作，通过快捷键 Ctrl+G 可以快速切换到当前 文件浏览器 打开的路径上。 Listary Ctrl+Shift+c 复制路径 &emsp;&emsp;Listary 和 QtTabbar 都提供了 Ctrl+Shift+c 复制选中文件路径的功能。&emsp;&emsp;这样就可以通过 Maya 快速打开文件，而不需要复制文件的父目录，然后双击目录下的 maya 文件了。 Listary Maya 打开窗口改用 os native &emsp;&emsp;默认的 Maya 打开窗口是 Maya 自己写的提要统一 UI 文件浏览器。&emsp;&emsp;好处就是跨平台 UI 统一了，导出 FBX 之类的文件的时候，右侧还可以直接控制导出的属性。&emsp;&emsp;OS native 其实没啥缺点的，反而没有 Listary 加持，找文件会变得很辛苦。 &emsp;&emsp;考虑到导入导出基本都是用工具定好规范进行处理的，因此这点牺牲不算什么，但是接入 Listary 可以让 Maya 打开文件的效率提升很多。&emsp;&emsp;而且某位大大说过， Maya 这个打开窗口有时候会导致 Maya 读取文件卡死，还是系统打开窗口比较靠谱。 &emsp;&emsp;如图所示，进入首选项，将窗口风格选择为 OS native 就可以调用系统内置的打开窗口了。&emsp;&emsp;调用系统内置的打开窗口可以调用了 Listary 来快速定位要打开的文件。 &emsp;&emsp;也可以利用 Listary 的收藏夹来进行文件跳转。&emsp;&emsp;只不过 Maya 里面会有 BUG ，别的窗口会自动盖住当前的窗口，这个时候需要 alt+Tab 切换一下就好了。&emsp;&emsp;这里面也可以利用 Ctrl+G 跳转到当前打开的文件夹路径，打开文件会更方便。 QtTabbar 批量重命名文件 &emsp;&emsp;QtTabbar 内置批量重命名文件的功能，虽然功能比较简单，但是足够应付大多数批量重命名的情况。 Quicker 快速关闭程序 &emsp;&emsp;Quicker 可以获取到程序的 pid ，通过 pid 可以通过 windows 命令 taskkill 来强行关闭进程。 &emsp;&emsp;这样关闭 Maya 速度最快，虽然这样所有的首选项都不会保存下来。&emsp;&emsp;在应对卡死的 Maya 的时候，就不需要在 任务管理器 里面找无响应的进程了。&emsp;&emsp;有时候开了好几个Maya，任务管理器也无法分辨哪个是哪个，这种方法就可以直接结束掉我们想要的进程。&emsp;&emsp;杀进程的动作可以参考 quicker 官网的。 &emsp;&emsp;我的动作是我自己稍微修改过的， {context} 是 pid 进程的变量 1taskkill /pid &#123;context&#125; -f -t &emsp;&emsp;-f 指定强制终止进程&emsp;&emsp;-t 终止指定的进程和由它启动的子进程 打开映射盘符的真实路径 &emsp;&emsp;这边利用 windows subst 的命令来映射虚拟盘符。&emsp;&emsp;这样可以实现本地的不同路径通过 虚拟盘符 实现路径统一。 &emsp;&emsp;关于盘符映射工具，我之前通过 Tkinter Gui 打包了一个 windows 平台的映射工具 文章 &emsp;&emsp;但是这种路径会导致 SVN 无法正确索引导致右键菜单的更新按钮不在。&emsp;&emsp;之前的处理方案是需要在映射的路径上重新 checkout SVN的对应目录，从而生成一个 .svn 目录，这样右键更新就恢复了。&emsp;&emsp;如果 SVN 目录过于庞杂，这种操作就会比较麻烦，所以我想退而求其次，直接打开原始的路径。&emsp;&emsp;于是我通过 Quicker 做了一个自动跳转到真实路径的操作。 &emsp;&emsp;这个动作已经上传到 Quicker 官网。&emsp;&emsp;实现原理基本是超 Stack Overflow 回答的 https://stackoverflow.com/questions/1299814&emsp;&emsp;只是将路径修改为 Quicker 获取到的当前目录的路径 Quicker 朗诵日语 &emsp;&emsp;有时候看日语文章的时候，这个功能对我来说还是非常有用的。&emsp;&emsp;虽然我也自学了 50音图，但是看文字的速度还是太慢了，看文字也是读出来才能理解意思。如果可以直接朗读出日语的文章，我大部分的内容都可以听得懂，而且比起机翻更加亲切一点。 &emsp;&emsp;朗读文字的方法也可以参考 Quicker 官网上的一些动作。&emsp;&emsp;基本原理其实不难，通过 vbs 向百度翻译发送朗读语言的请求，然后通过 vbs 的 Stream 将生成的语音文件下载下来并进行播放。&emsp;&emsp;这个过程完全后台执行，我感觉非常好。 Ditto 记录不同的路径进行切换 &emsp;&emsp;有时候 Maya 需要打开的文件路径在好几个不同的文件夹里面。&emsp;&emsp;这个时候每次打开文件都要人工选择一大堆路径才可以找到正确的文件。&emsp;&emsp;通过 Ditto 的快捷键历史就可以省去重复找文件的麻烦。 &emsp;&emsp;如果比较常用的路径也可以通过 Ditto 将路径收藏起来&emsp;&emsp;通过 Ctrl+G 可以打开 Ditto 的收藏夹 WGesture 常用手势 ←↑ Home ←↓ End ← 后退 → 前进 ↓→ 关闭 ↓← 退出 &emsp;&emsp;最常用的手势有上面几个&emsp;&emsp;Home 和 End 浏览网页的时候可以快速去到顶部，特别是搜索引擎的搜索栏总是在顶部，可以快速回到网页上面进行搜索。&emsp;&emsp;后退 前进 通常在浏览文件的时候使用，&emsp;&emsp;关闭和退出通常在删除网页标签，文件标签的时候很常用。 Capslock+ 个人魔改 中文标点输入Capslock+ 个人魔改 github 仓库 &emsp;&emsp;这个操作是当时看网上一篇关于 AHK 解决中文标点输入的文章学到的，于是我将它的功能融合到 魔改的 Capslock+ 工具里面了。&emsp;&emsp;简单的意思就是将 打字法 的中文标点输入取消，然后通过 AHK 实现 HotString ，两个英文标点自动替换为中文标点。&emsp;&emsp;我觉得这个操作用起来真的很舒服，敲代码的时候再也不会因为敲错中文标点报错了。 Windows快捷操作 &emsp;&emsp;windows10 现在内置了很多功能，可以通过各种 win 加快捷键来触发。&emsp;&emsp;尽管 win10 内置的和第三方软件还是有很大差距，但是如果在一台全新的 win10 电脑上。&emsp;&emsp;无论是截图、粘贴历史还是快速搜索，win10内置的功能都有不错的暂用方案。 &emsp;&emsp;并且 windows 的放大镜还是很不错的，演讲屏幕太小的时候可以通过 放大镜 来辅助。 路径上输入 cmd 打开命令行并定位到当前路径 &emsp;&emsp;在当前路径打开命令行有两个方法。&emsp;&emsp;一种是在路径输入上输入 cmd 。 &emsp;&emsp;还有一种方法是按住 shift 右键。&emsp;&emsp;菜单上会多出在 命令行打开 ，不过这个功能在 win10 被修改为用 PowerShell 打开了。&emsp;&emsp;要修改回来需要修改注册表 ， 参考文章 .gitignore 这种文件在 Windows 平台的命名方法 &emsp;&emsp;这种文件在 VScode 可以直接命名&emsp;&emsp;但是再 windows 下的资源浏览器，你是无法命名一个只有后缀无名称的文件的&emsp;&emsp;这个时候需要命名为 .gitignore. 就可以命名了。 鼠标中键 或 Shift左键 开启更多程序 &emsp;&emsp;有时候运行了一个 Maya ，还想运行更多的 Maya 。&emsp;&emsp;过去的操作需要右键 Maya 的任务栏图标，然后选择 Maya 进行运行。&emsp;&emsp;其实可以直接对任务栏图标进行鼠标中间或者 shift+鼠标左键 就可以运行一个程序的副本了。 Win+r 运行 &emsp;&emsp;win+r 开启 windows 的启动窗口。&emsp;&emsp;这个窗口执行的命令类似于 cmd 窗口中执行 start&emsp;&emsp;通常支持启动添加到环境变量路径的程序，比如输入 cmd regedit 之类的可以启动相关的 exe 程序&emsp;&emsp;可以启动程序可以参考 链接 &emsp;&emsp;不过除了这些方法之外，还可以根据注册表里面的记录特殊打开一些内置的路径。&emsp;&emsp;比如通过 shell:startup 可以打开开机启动目录， shell:recycleBinFolder 可以打开回收站 链接参考&emsp;&emsp;另外 windows 的系统设置也有一套快捷打开路径 链接参考&emsp;&emsp;包括一些系统级的应用也可以通过特殊 ms- 前缀来启动 ， 比如 ms-actioncenter: &emsp;&emsp;经过我后面查找我发现有些启动可以在注册表里面找到对应记录的关系。shell: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptionsms- : HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\PackageRepository\Extensions\Windows.protocol &emsp;&emsp;最后运行窗口还支持 环境变量 存储的路径，比如可以通过 %SYSTEMDRIVE% 打开系统安装磁盘，也支持通过环境变量的路径拼接 链接参考 命令行操作 &emsp;&emsp;命令行操作其实没有什么好说的，属于 bat 批处理的范畴。命令文档可以参考 ss64.com &emsp;&emsp;比较重要的命令就是 where ，类似 mel 语言的 whatIs 命令（应该说 mel 语言就是参考它的），可以查询到命令的路径。&emsp;&emsp;有些很多命令的背后其实是运行 exe 实现的。&emsp;&emsp;另外 /? 非常重要，大部分的命令不懂都可以加这个后缀来查看帮助。 总结 &emsp;&emsp;以上就是 windows 这几个月使用总结的一些效率提升的操作。&emsp;&emsp;最近疯狂折腾，还要出一期 效率工具总结， 希望对大家有用。]]></content>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;经过了几个月的使用洗礼，总算是可以总结一些非常好用的效率软件使用经验了。 效率软件经验总结 Listary 收藏常用的路径 Listary Ctrl+G 切换路径 Listary Ctrl+Shift+c 复制路径 Listary Maya 打开窗口改用 os native QtTabbar 批量重命名文件 Quicker 快速关闭程序 Quicker 打开映射盘符的真实路径 Quicker 朗诵日语 Ditto 记录不同的路径进行切换 WGesture 常用手势 Capslock+ 个人魔改 中文标点输入 Windows快捷操作 操作参考 Ctrl+Shift+Esc 开启任务管理器 Win+e 打开 文件资源管理器 Win+d 显示桌面 Win+x 快捷菜单 Win+v Win10 自带的粘贴历史 Win+s Win10 自带的全局搜索 Win+Shift+S Win10 自带的截屏软件 Win++ &amp; Win+- 放大镜 Win+; Win10 自带颜文字菜单 alt+d 文件资源管理器定位到地址栏 路径上输入 cmd 打开命令行并定位到当前路径 .gitignore 这种文件在 Windows 平台的命名方法 鼠标中键 或 Shift左键 开启更多程序 Win+r 运行 固定 Windows 程序 shell 命令打开系统内置路径 %env% 打开环境变量路径 命令行操作 cd dir rename copy start ping ipconfig where 命令查找程序位置 sbust 映射网络地址 net 连接网络路径 taskkill 杀死进程 &emsp;&emsp;上面就是总结归纳的常用操作。 效率软件经验总结Listary 收藏常用的路径 &emsp;&emsp;Listary 在文件浏览器中键可以打开它的菜单。&emsp;&emsp;菜单里面可以添加一些文件夹的收藏，下次可以快速定位到我们需要文件路径去。 &emsp;&emsp;点击菜单的右上角添加按钮即可快速添加当前打开的路径。&emsp;&emsp;添加的菜单可以在 Listary 的设置里面进行修改，可以加入分割线和子菜单。 Listary Ctrl+G 切换路径 &emsp;&emsp;Listary 的打开窗口有非常便捷的操作，通过快捷键 Ctrl+G 可以快速切换到当前 文件浏览器 打开的路径上。 Listary Ctrl+Shift+c 复制路径 &emsp;&emsp;Listary 和 QtTabbar 都提供了 Ctrl+Shift+c 复制选中文件路径的功能。&emsp;&emsp;这样就可以通过 Maya 快速打开文件，而不需要复制文件的父目录，然后双击目录下的 maya 文件了。 Listary Maya 打开窗口改用 os native &emsp;&emsp;默认的 Maya 打开窗口是 Maya 自己写的提要统一 UI 文件浏览器。&emsp;&emsp;好处就是跨平台 UI 统一了，导出 FBX 之类的文件的时候，右侧还可以直接控制导出的属性。&emsp;&emsp;OS native 其实没啥缺点的，反而没有 Listary 加持，找文件会变得很辛苦。 &emsp;&emsp;考虑到导入导出基本都是用工具定好规范进行处理的，因此这点牺牲不算什么，但是接入 Listary 可以让 Maya 打开文件的效率提升很多。&emsp;&emsp;而且某位大大说过， Maya 这个打开窗口有时候会导致 Maya 读取文件卡死，还是系统打开窗口比较靠谱。 &emsp;&emsp;如图所示，进入首选项，将窗口风格选择为 OS native 就可以调用系统内置的打开窗口了。&emsp;&emsp;调用系统内置的打开窗口可以调用了 Listary 来快速定位要打开的文件。 &emsp;&emsp;也可以利用 Listary 的收藏夹来进行文件跳转。&emsp;&emsp;只不过 Maya 里面会有 BUG ，别的窗口会自动盖住当前的窗口，这个时候需要 alt+Tab 切换一下就好了。&emsp;&emsp;这里面也可以利用 Ctrl+G 跳转到当前打开的文件夹路径，打开文件会更方便。 QtTabbar 批量重命名文件 &emsp;&emsp;QtTabbar 内置批量重命名文件的功能，虽然功能比较简单，但是足够应付大多数批量重命名的情况。 Quicker 快速关闭程序 &emsp;&emsp;Quicker 可以获取到程序的 pid ，通过 pid 可以通过 windows 命令 taskkill 来强行关闭进程。 &emsp;&emsp;这样关闭 Maya 速度最快，虽然这样所有的首选项都不会保存下来。&emsp;&emsp;在应对卡死的 Maya 的时候，就不需要在 任务管理器 里面找无响应的进程了。&emsp;&emsp;有时候开了好几个Maya，任务管理器也无法分辨哪个是哪个，这种方法就可以直接结束掉我们想要的进程。&emsp;&emsp;杀进程的动作可以参考 quicker 官网的。 &emsp;&emsp;我的动作是我自己稍微修改过的， {context} 是 pid 进程的变量 1taskkill /pid &#123;context&#125; -f -t &emsp;&emsp;-f 指定强制终止进程&emsp;&emsp;-t 终止指定的进程和由它启动的子进程 打开映射盘符的真实路径 &emsp;&emsp;这边利用 windows subst 的命令来映射虚拟盘符。&emsp;&emsp;这样可以实现本地的不同路径通过 虚拟盘符 实现路径统一。 &emsp;&emsp;关于盘符映射工具，我之前通过 Tkinter Gui 打包了一个 windows 平台的映射工具 文章 &emsp;&emsp;但是这种路径会导致 SVN 无法正确索引导致右键菜单的更新按钮不在。&emsp;&emsp;之前的处理方案是需要在映射的路径上重新 checkout SVN的对应目录，从而生成一个 .svn 目录，这样右键更新就恢复了。&emsp;&emsp;如果 SVN 目录过于庞杂，这种操作就会比较麻烦，所以我想退而求其次，直接打开原始的路径。&emsp;&emsp;于是我通过 Quicker 做了一个自动跳转到真实路径的操作。 &emsp;&emsp;这个动作已经上传到 Quicker 官网。&emsp;&emsp;实现原理基本是超 Stack Overflow 回答的 https://stackoverflow.com/questions/1299814&emsp;&emsp;只是将路径修改为 Quicker 获取到的当前目录的路径 Quicker 朗诵日语 &emsp;&emsp;有时候看日语文章的时候，这个功能对我来说还是非常有用的。&emsp;&emsp;虽然我也自学了 50音图，但是看文字的速度还是太慢了，看文字也是读出来才能理解意思。如果可以直接朗读出日语的文章，我大部分的内容都可以听得懂，而且比起机翻更加亲切一点。 &emsp;&emsp;朗读文字的方法也可以参考 Quicker 官网上的一些动作。&emsp;&emsp;基本原理其实不难，通过 vbs 向百度翻译发送朗读语言的请求，然后通过 vbs 的 Stream 将生成的语音文件下载下来并进行播放。&emsp;&emsp;这个过程完全后台执行，我感觉非常好。 Ditto 记录不同的路径进行切换 &emsp;&emsp;有时候 Maya 需要打开的文件路径在好几个不同的文件夹里面。&emsp;&emsp;这个时候每次打开文件都要人工选择一大堆路径才可以找到正确的文件。&emsp;&emsp;通过 Ditto 的快捷键历史就可以省去重复找文件的麻烦。 &emsp;&emsp;如果比较常用的路径也可以通过 Ditto 将路径收藏起来&emsp;&emsp;通过 Ctrl+G 可以打开 Ditto 的收藏夹 WGesture 常用手势 ←↑ Home ←↓ End ← 后退 → 前进 ↓→ 关闭 ↓← 退出 &emsp;&emsp;最常用的手势有上面几个&emsp;&emsp;Home 和 End 浏览网页的时候可以快速去到顶部，特别是搜索引擎的搜索栏总是在顶部，可以快速回到网页上面进行搜索。&emsp;&emsp;后退 前进 通常在浏览文件的时候使用，&emsp;&emsp;关闭和退出通常在删除网页标签，文件标签的时候很常用。 Capslock+ 个人魔改 中文标点输入Capslock+ 个人魔改 github 仓库 &emsp;&emsp;这个操作是当时看网上一篇关于 AHK 解决中文标点输入的文章学到的，于是我将它的功能融合到 魔改的 Capslock+ 工具里面了。&emsp;&emsp;简单的意思就是将 打字法 的中文标点输入取消，然后通过 AHK 实现 HotString ，两个英文标点自动替换为中文标点。&emsp;&emsp;我觉得这个操作用起来真的很舒服，敲代码的时候再也不会因为敲错中文标点报错了。 Windows快捷操作 &emsp;&emsp;windows10 现在内置了很多功能，可以通过各种 win 加快捷键来触发。&emsp;&emsp;尽管 win10 内置的和第三方软件还是有很大差距，但是如果在一台全新的 win10 电脑上。&emsp;&emsp;无论是截图、粘贴历史还是快速搜索，win10内置的功能都有不错的暂用方案。 &emsp;&emsp;并且 windows 的放大镜还是很不错的，演讲屏幕太小的时候可以通过 放大镜 来辅助。 路径上输入 cmd 打开命令行并定位到当前路径 &emsp;&emsp;在当前路径打开命令行有两个方法。&emsp;&emsp;一种是在路径输入上输入 cmd 。 &emsp;&emsp;还有一种方法是按住 shift 右键。&emsp;&emsp;菜单上会多出在 命令行打开 ，不过这个功能在 win10 被修改为用 PowerShell 打开了。&emsp;&emsp;要修改回来需要修改注册表 ， 参考文章 .gitignore 这种文件在 Windows 平台的命名方法 &emsp;&emsp;这种文件在 VScode 可以直接命名&emsp;&emsp;但是在 windows 下的资源浏览器，你是无法命名一个只有后缀无名称的文件的&emsp;&emsp;这个时候需要命名为 .gitignore. 就可以命名了。 鼠标中键 或 Shift左键 开启更多程序 &emsp;&emsp;有时候运行了一个 Maya ，还想运行更多的 Maya 。&emsp;&emsp;过去的操作需要右键 Maya 的任务栏图标，然后选择 Maya 进行运行。&emsp;&emsp;其实可以直接对任务栏图标进行鼠标中间或者 shift+鼠标左键 就可以运行一个程序的副本了。 Win+r 运行 &emsp;&emsp;win+r 开启 windows 的启动窗口。&emsp;&emsp;这个窗口执行的命令类似于 cmd 窗口中执行 start&emsp;&emsp;通常支持启动添加到环境变量路径的程序，比如输入 cmd regedit 之类的可以启动相关的 exe 程序&emsp;&emsp;可以启动程序可以参考 链接 &emsp;&emsp;不过除了这些方法之外，还可以根据注册表里面的记录特殊打开一些内置的路径。&emsp;&emsp;比如通过 shell:startup 可以打开开机启动目录， shell:recycleBinFolder 可以打开回收站 链接参考&emsp;&emsp;另外 windows 的系统设置也有一套快捷打开路径 链接参考&emsp;&emsp;包括一些系统级的应用也可以通过特殊 ms- 前缀来启动 ， 比如 ms-actioncenter: &emsp;&emsp;经过我后面查找我发现有些启动可以在注册表里面找到对应记录的关系。shell: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptionsms- : HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\PackageRepository\Extensions\Windows.protocol &emsp;&emsp;最后运行窗口还支持 环境变量 存储的路径，比如可以通过 %SYSTEMDRIVE% 打开系统安装磁盘，也支持通过环境变量的路径拼接 链接参考 命令行操作 &emsp;&emsp;命令行操作其实没有什么好说的，属于 bat 批处理的范畴。命令文档可以参考 ss64.com &emsp;&emsp;比较重要的命令就是 where ，类似 mel 语言的 whatIs 命令（应该说 mel 语言就是参考它的），可以查询到命令的路径。&emsp;&emsp;有些很多命令的背后其实是运行 exe 实现的。&emsp;&emsp;另外 /? 非常重要，大部分的命令不懂都可以加这个后缀来查看帮助。 总结 &emsp;&emsp;以上就是 windows 这几个月使用总结的一些效率提升的操作。&emsp;&emsp;最近疯狂折腾，还要出一期 效率工具总结， 希望对大家有用。]]></content>
       <categories>
         <category>效率提升指南</category>
       </categories>
@@ -358,8 +372,8 @@
       </categories>
       <tags>
         <tag>Python</tag>
-        <tag>FBX</tag>
         <tag>Unreal</tag>
+        <tag>FBX</tag>
       </tags>
   </entry>
   <entry>
@@ -372,8 +386,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -416,8 +430,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -430,8 +444,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Game</tag>
       </tags>
   </entry>
@@ -445,8 +459,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>OpenMaya</tag>
       </tags>
   </entry>
@@ -460,8 +474,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>重定向</tag>
         <tag>HumanIK</tag>
       </tags>
@@ -476,8 +490,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>法线</tag>
       </tags>
   </entry>
@@ -517,8 +531,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Game</tag>
       </tags>
   </entry>
@@ -532,8 +546,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -557,8 +571,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -582,8 +596,8 @@
         <category>神秘研究</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -596,8 +610,8 @@
       </categories>
       <tags>
         <tag>Maya</tag>
-        <tag>FBX</tag>
         <tag>Unreal</tag>
+        <tag>FBX</tag>
       </tags>
   </entry>
   <entry>
@@ -621,8 +635,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>reference</tag>
       </tags>
   </entry>
@@ -636,8 +650,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -701,8 +715,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -715,8 +729,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -729,8 +743,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -769,8 +783,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -783,8 +797,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -797,8 +811,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -811,8 +825,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -838,8 +852,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -865,8 +879,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -879,8 +893,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -905,8 +919,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -930,8 +944,8 @@
         <category>Maya 插件分析</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -944,8 +958,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Git</tag>
       </tags>
   </entry>
@@ -959,8 +973,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -986,8 +1000,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1011,8 +1025,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1038,8 +1052,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -1252,8 +1266,8 @@
       </categories>
       <tags>
         <tag>VScode</tag>
-        <tag>编辑器</tag>
         <tag>Maya</tag>
+        <tag>编辑器</tag>
       </tags>
   </entry>
   <entry>
@@ -1348,8 +1362,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>BlendShape</tag>
       </tags>
   </entry>
@@ -1361,8 +1375,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1416,8 +1430,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1775,8 +1789,8 @@
         <category>Unity</category>
       </categories>
       <tags>
-        <tag>C#</tag>
         <tag>unity</tag>
+        <tag>C#</tag>
       </tags>
   </entry>
   <entry>
@@ -1789,8 +1803,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1806,8 +1820,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1823,8 +1837,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1852,8 +1866,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1869,8 +1883,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1886,8 +1900,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1903,8 +1917,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1920,8 +1934,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1960,8 +1974,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1985,8 +1999,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2038,8 +2052,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2050,8 +2064,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2062,8 +2076,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2074,8 +2088,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2086,8 +2100,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2136,8 +2150,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2148,8 +2162,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2269,8 +2283,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2315,8 +2329,8 @@
         <category>开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2331,8 +2345,8 @@
         <category>开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2386,8 +2400,8 @@
       </categories>
       <tags>
         <tag>VScode</tag>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2954,8 +2968,8 @@
       </categories>
       <tags>
         <tag>学习笔记</tag>
-        <tag>Hexo</tag>
         <tag>博客</tag>
+        <tag>Hexo</tag>
       </tags>
   </entry>
   <entry>
