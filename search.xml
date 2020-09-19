@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[Maya 基于 UV 偏移的眼球驱动]]></title>
     <url>%2Fposts%2Fec421c94.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;传统的角色眼球做法，特别是次世代一类的，通常会做比较复杂的眼球模型。&emsp;&emsp;我目前的项目是做手游了，为了能够 hold 住资源消耗，所以眼球就完全是个面片了。&emsp;&emsp;面片怎么实现眼球的挪移呢?&emsp;&emsp;本文就来探讨一下怎么利用 UV 节点控制眼球贴图的偏移，并且通过控制器来进行控制。 贴图偏移 &emsp;&emsp;Maya 控制贴图的的 UV 的方式是通过 Place2dTexture 节点&emsp;&emsp;这个节点默认添加贴图就会自动生成并且连接到 贴图 的 UV 属性上。 &emsp;&emsp;通过 Place2dTexture 可以实现贴图 UV 的多种控制效果。&emsp;&emsp;其中我们这里需要用到的主要是 Offset 属性。 &emsp;&emsp;通过控制偏移属性，就已经有点眼球移动的味道了。&emsp;&emsp;但是当眼球运动到面片的边缘的时候，会出现左右接缝相接了。 &emsp;&emsp;要解决这个问题需要将 WrapU 和 WrapV 属性关闭。&emsp;&emsp;这两个属性主要实现了贴图在多象限下的重复效果 &emsp;&emsp;关闭了之后，超出边界的地方会变成灰色。&emsp;&emsp;变成灰色是因为 贴图的 Default Color 默认设置为灰色的。 &emsp;&emsp;这里的操作主要参考了我看的第一个 Maya 教程里面的投射贴图的操作 链接 &emsp;&emsp;如此 offset 就没有问题了。 Locator 控制贴图偏移朝向 &emsp;&emsp;默认是两个 UV 属性的偏移，让动画师去控制两个属性 K 动画显然非常不方便。&emsp;&emsp;怎么通过一个 Locator 实现类似 AimConstraint 的效果呢？ &emsp;&emsp;这里就需要 Maya 隐藏节点的 closestPointOnMesh&emsp;&emsp;这个节点在创建节点的面板上是找不到的，不过可以在节点编辑器里通过 Tab 键输入找到它 &emsp;&emsp;这个节点接受一个模型和一个点，会自动计算出距离模型最近点的相关信息。&emsp;&emsp;其中就有我们这里所需要的 UV 信息。 &emsp;&emsp;然后将输出 UV 的填入 Offset 里面&emsp;&emsp;直接填入会有数值偏差，因为 Locator 的中心区域是 UV 0.5 0.5 的区域，需要分别减去 0.5 才是对的。&emsp;&emsp;所以需要建一个 plusMinusAverage 进行处理 &emsp;&emsp;这样就可以通过 locator 控制 UV 眼球的运动了 总结 &emsp;&emsp;其实这个设置不复杂，如果需要双眼单独控制需要做两个材质贴两张图。]]></content>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;传统的角色眼球做法，特别是次世代一类的，通常会做比较复杂的眼球模型。&emsp;&emsp;我目前的项目是做手游了，为了能够 hold 住资源消耗，所以眼球就完全是个面片了。&emsp;&emsp;面片怎么实现眼球的挪移呢?&emsp;&emsp;本文就来探讨一下怎么利用 UV 节点控制眼球贴图的偏移，并且通过控制器来进行控制。 贴图偏移 &emsp;&emsp;Maya 控制贴图的的 UV 的方式是通过 Place2dTexture 节点&emsp;&emsp;这个节点默认添加贴图就会自动生成并且连接到 贴图 的 UV 属性上。 &emsp;&emsp;通过 Place2dTexture 可以实现贴图 UV 的多种控制效果。&emsp;&emsp;其中我们这里需要用到的主要是 Offset 属性。 &emsp;&emsp;通过控制偏移属性，就已经有点眼球移动的味道了。&emsp;&emsp;但是当眼球运动到面片的边缘的时候，会出现左右接缝相接了。 &emsp;&emsp;要解决这个问题需要将 WrapU 和 WrapV 属性关闭。&emsp;&emsp;这两个属性主要实现了贴图在多象限下的重复效果 &emsp;&emsp;关闭了之后，超出边界的地方会变成灰色。&emsp;&emsp;变成灰色是因为 贴图的 Default Color 默认设置为灰色的。 &emsp;&emsp;这里的操作主要参考了我看的第一个 Maya 教程里面的投射贴图的操作 链接 &emsp;&emsp;如此 offset 就没有问题了。 Locator 控制贴图偏移朝向 &emsp;&emsp;默认是两个 UV 属性的偏移，让动画师去控制两个属性 K 动画显然非常不方便。&emsp;&emsp;怎么通过一个 Locator 实现类似 AimConstraint 的效果呢？ &emsp;&emsp;这里就需要 Maya 隐藏节点的 closestPointOnMesh&emsp;&emsp;这个节点在创建节点的面板上是找不到的，不过可以在节点编辑器里通过 Tab 键输入找到它 &emsp;&emsp;这个节点接受一个模型和一个点，会自动计算出距离模型最近点的相关信息。&emsp;&emsp;其中就有我们这里所需要的 UV 信息。 &emsp;&emsp;然后将输出 UV 的填入 Offset 里面&emsp;&emsp;直接填入会有数值偏差，因为 Locator 的中心区域是 UV 0.5 0.5 的区域，需要分别减去 0.5 才是对的。&emsp;&emsp;所以需要建一个 plusMinusAverage 进行处理 &emsp;&emsp;这样就可以通过 locator 控制 UV 眼球的运动了 更新问题 &emsp;&emsp;设置完上面的效果之后进行 K 帧，发现视窗没有及时更新。&emsp;&emsp;需要将 Maya 的刷新机制改为 DG 模式 总结 &emsp;&emsp;其实这个设置不复杂，如果需要双眼单独控制需要做两个材质贴两张图。]]></content>
       <categories>
         <category>CG</category>
         <category>Maya</category>
@@ -24,8 +24,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -36,7 +36,7 @@
   <entry>
     <title><![CDATA[Unreal Python 进阶菜单扩展]]></title>
     <url>%2Fposts%2Fcad78e0d.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;最近抽空深入研究了一下 Unreal Python 的菜单扩展。&emsp;&emsp;扩展菜单的主要方法我之前的文章有提到过 Unreal PyToolkit 插件&emsp;&emsp;当时主要参考论坛的一篇帖子用 Python 实现下拉菜单 链接 &emsp;&emsp;其实有个地方让我很困惑， menu 获取需要通过 ToolMenus 的 find_menu 实现 1234menus = unreal.ToolMenus.get()# NOTE 获取主界面的主菜单位置main_menu = menus.find_menu("LevelEditor.MainMenu") &emsp;&emsp;但是 find_menu 传入的 menu 字符串是从何而来的，完全就没有概念了。&emsp;&emsp;我最先想到的还是从 C++ 入手 ~ C++ 源码探索 &emsp;&emsp;首先在 VScode 查 UToolMenus ， 然后通过 F12 可以定位到头文件。&emsp;&emsp;头文件名为 ToolMenus.h ， 可以用 ctrl+P 去定位 ToolMenus.cpp 脚本&emsp;&emsp;ToolMenus.cpp 脚本里面可以找到 FindMenu 的函数。 &emsp;&emsp;可以看到是通过 Menus 字典来记录引擎中所有的 Menu 名称。&emsp;&emsp;然而比较头疼的地方时 Menus 在头文件里面设置为了私有变量，无法通过 Python 亦或是 C++ 插件来获取到里面存储的值 &emsp;&emsp;迫不得已，我改了引擎源码，实现蓝图调用，然后通过 Python 获取字典存储的值。 1234567891011121314151617181920212223242526272829303132333435&#123; "ContentBrowser.AssetContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_0"', "ContentBrowser.FolderContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_1"', "MainFrame.MainMenu.Asset": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_2"', "LevelEditor.ActorContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_3"', "ContentBrowser.AssetContextMenu.SoundWave": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_4"', "LevelEditor.MainMenu.Window": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_5"', "LevelEditor.MainMenu.Help": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_6"', "AssetEditor.SkeletalMeshEditor.ToolBar": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_7"', "LevelEditor.MainMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_8"', "ContentBrowser.AssetContextMenu.LevelSequence": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_9"', "MediaPlayer.AssetPickerAssetContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_10"', "ContentBrowser.AssetContextMenu.CameraAnim": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_11"', "LevelEditor.LevelEditorToolBar": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_12"', "LevelEditor.MainMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_13"', "LevelEditor.MainMenu.Edit": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_14"', "LevelEditor.LevelEditorToolBar.SourceControl": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_15"', "LevelEditor.LevelEditorToolBar.Cinematics": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_16"', "LevelEditor.LevelEditorToolBar.BuildComboButton": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_17"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingQuality": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_18"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingDensity": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_19"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingResolution": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_20"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_21"', "LevelEditor.LevelEditorToolBar.EditorModes": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_22"', "LevelEditor.LevelEditorToolBar.CompileComboButton": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_23"', "LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_24"', "LevelEditor.LevelEditorToolBar.OpenBlueprint": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_25"', "LevelEditor.LevelEditorSceneOutliner.ContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_30"', "MainFrame.MainMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_31"', "MainFrame.MainTabMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_32"', "MainFrame.MainMenu.Edit": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_33"', "MainFrame.MainMenu.Window": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_34"', "MainFrame.MainMenu.Help": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_35"', "MainFrame.MainMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_36"',&#125; &emsp;&emsp;现在除了 LevelEditor.MainMenu 我们有了更多的 menu 选项了。&emsp;&emsp;比如上面显示的就有 ContentBrowser.AssetContextMenu 还有 ContentBrowser.FolderContextMenu 以及 LevelEditor.LevelEditorToolBar&emsp;&emsp;由此可以得出， 应该可以用 Python 扩展这里相应的菜单的。 Python 右键菜单扩展 &emsp;&emsp;基于上面的 AssetContextMenu 和 FolderContextMenu 的信息&emsp;&emsp;我们可以分别去扩展右键资弹出的源菜单以及右键文件夹弹出的菜单。 1234567891011121314import unrealmenus = unreal.ToolMenus.get()menu_name = "ContentBrowser.FolderContextMenu"menu = menus.find_menu(menu_name)entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY)entry.set_label("测试 entry")# NOTE 注册执行的命令typ = unreal.ToolMenuStringCommandType.PYTHONentry.set_string_command(typ, "", 'print "entry 触发测试"')menu.add_menu_entry('AssetContextSourceControl',entry)# menus.refresh_all_widgets() &emsp;&emsp;本来 UI 修改需要 refresh_all_widgets 才会更新，因为右键菜单是右键生成时候会自动刷新，所以不执行也不影响。&emsp;&emsp;后面生成 Toolbar 扩展的时候踩了这个坑。 &emsp;&emsp;另外 AssetContextSourceControl 这个名称是 从何而来 的&emsp;&emsp;这就需要在编辑器配置里面开启 UI 名称的显示 &emsp;&emsp;开启上面的选项之后，右键菜单就会多出 绿色 的文字标注菜单的名称。 &emsp;&emsp;文件夹菜单扩展也是同理，将菜单的名称修改并且找到菜单相关的 section 进行添加即可。 Python Toolbar 添加 &emsp;&emsp;上面开启了 UI 显示之后，右键菜单可以显示了，但是 Toolbar 的显示依然是没有的。&emsp;&emsp;这就需要重启一下 引擎。 &emsp;&emsp;有了上面的标注就可以通过上面类似的方法添加 Toolbar 按钮 12345678910111213141516import unrealmenus = unreal.ToolMenus.get()menu_name = "LevelEditor.LevelEditorToolBar"menu = menus.find_menu(menu_name)# NOTE 生成类型改为 Toolbar 的按钮entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.TOOL_BAR_BUTTON)entry.set_label("测试 button")# NOTE 注册执行的命令typ = unreal.ToolMenuStringCommandType.PYTHONentry.set_string_command(typ, "", 'print "entry 触发测试"')menu.add_menu_entry('File',entry)# NOTE 添加刷新才能立刻看到添加的效果menus.refresh_all_widgets() &emsp;&emsp;执行上面的代码就可以在动态给 Toolbar 添加按钮了。 通过 Python 获取引擎生成的菜单 &emsp;&emsp;上面获取菜单名称的方式是通过 C++ 魔改引擎源码才能实现。&emsp;&emsp;这样限制非常大，有没有更加友好的获取方式呢？ &emsp;&emsp;我看着上面 C++ 获取的字典，不由得计从心生~&emsp;&emsp;我发现获取的 menu 的临时路径是有一定规律的，通过这个规律应该可以用 Python 动态读取到生成的菜单。 12345678910111213141516import unrealdef list_menu(num=1000): menu_list = set() for i in range(num): obj = unreal.find_object(None,"/Engine/Transient.ToolMenus_0:ToolMenu_%s" % i) if not obj: continue menu_name = str(obj.menu_name) if menu_name != "None": menu_list.add(menu_name) return list(menu_list)print(list_menu())LogPython: ['LevelEditor.LevelEditorToolBar', 'ContentBrowser.AssetContextMenu.LevelSequence', 'MediaPlayer.AssetPickerAssetContextMenu', 'ContentBrowser.AssetContextMenu', 'LevelEditor.LevelEditorToolBar.CompileComboButton', 'MainFrame.MainMenu', 'LevelEditor.MainMenu.Edit', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingResolution', 'LevelEditor.MainMenu', 'LevelEditor.MainMenu.File', 'AssetEditor.SkeletalMeshEditor.ToolBar', 'MainFrame.MainMenu.Edit', 'ContentBrowser.AssetContextMenu.CameraAnim', 'LevelEditor.MainMenu.Window', 'LevelEditor.LevelEditorToolBar.BuildComboButton', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingQuality', 'MainFrame.MainMenu.File', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingDensity', 'LevelEditor.ActorContextMenu', 'ContentBrowser.AssetContextMenu.SoundWave', 'MainFrame.MainTabMenu.File', 'LevelEditor.LevelEditorToolBar.SourceControl', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo', 'LevelEditor.LevelEditorSceneOutliner.ContextMenu', 'MainFrame.MainMenu.Window', 'LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings', 'MainFrame.MainMenu.Asset', 'LevelEditor.LevelEditorToolBar.Cinematics', 'LevelEditor.MainMenu.Help', 'LevelEditor.LevelEditorToolBar.EditorModes', 'MainFrame.MainMenu.Help', 'ContentBrowser.FolderContextMenu', 'LevelEditor.LevelEditorToolBar.OpenBlueprint'] &emsp;&emsp;我想要的效果实现了~&emsp;&emsp;这样就不需要魔改引擎代码，也可以获取出到大部分的 menu 名称。&emsp;&emsp;而且上面的数组只是默认开启引擎下的菜单，如果多打开一些编辑窗口，还可以获取到更多的 菜单 。 &emsp;&emsp;由于不知道到底有多少个菜单生成了，所以我默认定的循环数是 1000 ，基本是够用的，而且遍历速度很快。&emsp;&emsp;另外还有部分的菜单是 None 无名氏，估计是注册的时候没有给定名称，也不好判断是哪里的菜单，所以我就过滤掉了。 通过 Python 扩展 AddNewContextMenu &emsp;&emsp;AddNewContextMenu 就是没有选择任何资源的时候在 资源浏览器 右键弹出的菜单。&emsp;&emsp;更好我遇到了在这个菜单上进行扩展的需求，所以为了用 Python 实现踩了不少坑(:з」∠) &emsp;&emsp;从这个名字可以知道，默认开启引擎的时候并没有加载到这个菜单。&emsp;&emsp;使用上面写道 list_menu 函数是获取不到的，除非在 资源浏览器 进行右键触发。&emsp;&emsp;这个时候 list_menu 就会多出这个 ContentBrowser.AddNewContextMenu 的菜单名称。&emsp;&emsp;这就产生了很严重的问题，无法实现 C++ 插件的菜单嵌入效果。&emsp;&emsp;不可能让使用者手动右键生成一下菜单，再将需要的 entry 添加到菜单里呀(:з」∠) &emsp;&emsp;后来为了能够完成需求，我还是用 C++ 来解决了这个问题 参考知乎这篇文章 &emsp;&emsp;不过搞定了需求，周末还是抽空研究怎么通过 Python 来解决这个问题。&emsp;&emsp;这个过程还实现了一些有趣的效果，比如先注册生成 menu ，导致右键菜单变成了我自己自定义的菜单了。 12345678910111213menus = unreal.ToolMenus.get()menu_name = "ContentBrowser.AddNewContextMenu"menu = menus.find_menu(menu_name)# NOTE 如果已经注册则删除 | 否则无法执行 register_menuif menus.is_menu_registered(menu_name): menus.remove_menu(menu_name)menu = menus.register_menu(menu_name)entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY)entry.set_label("测试 entry")menu.add_menu_entry('',entry) &emsp;&emsp;其他菜单也可以尝试着这样魔改成自己的菜单。&emsp;&emsp;如果可以配合引擎快捷键触发不同的菜单，还是有点意思的。 &emsp;&emsp;上面魔改的菜单要恢复也不难，将自己做的菜单 删除掉 ，默认右键就会生成回正常的菜单了。 &emsp;&emsp;问题是这个折腾依然没能解决实现我想要的效果(:з」∠)&emsp;&emsp;后面还是想往 C++ 的方向入手，能不能在右键菜单事件添加 回调事件，配合触发 Python 脚本。&emsp;&emsp;也的确在 C++ 文档里面找到相关的回调函数 链接&emsp;&emsp;但是要如何接入 Python 还不是很确定。 &emsp;&emsp;后面思路一转，还有更加简单的实现方式，可以用定时器来做。&emsp;&emsp;虽然定时器不是个好点子，听着就比较浪费资源，但是考虑到 Python 遍历 menu 的速度快到没感觉。&emsp;&emsp;定时执行嵌入操作的卡顿应该感知不到。 1234567891011121314151617181920212223242526import unrealfrom Qt import QtCorefrom functools import partialdef add_menu(timer): print("timer running...") menu = menus.find_menu("ContentBrowser.AddNewContextMenu") if not menu: return # NOTE 如果存在停止计时器 timer.stop() print("timer stop") entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY) entry.set_label("测试 entry") menu.add_menu_entry('ContentBrowserNewAdvancedAsset',entry) menus.refresh_all_widgets()# NOTE 使用 Qt 的定时器实现 js setInterval 函数的效果# NOTE Python 原生实现比较麻烦，用 Qt 的 Timer 比较简洁timer = QtCore.QTimer()timer.timeout.connect(partial(add_menu,timer))timer.start(1000) &emsp;&emsp;完美通过定时器实现动态嵌入菜单。 PyToolkit Json 配置优化 &emsp;&emsp;通过上面的一轮折腾，之前 PyToolkit 提供的菜单配置完全可以更加灵活。&emsp;&emsp;于是我又开始重写之前的 json 配置的读取和生成，通过递归的方法，自动处理多重嵌套菜单的效果。 &emsp;&emsp;具体的配置方法我写到了 PyToolkit 的帮助文档里面 链接~ &emsp;&emsp;上面四种嵌入可以完全通过 json 配置来完成~ 总结 &emsp;&emsp;利用 Python 做菜单扩展的确方便了很多，但是 Python 也并不是万能的。&emsp;&emsp;例如我之前研究过的 Sequencer 菜单工具栏嵌入 扩展就只能通过 C++ 来实现&emsp;&emsp;因为 list_menu 没有找到相关的菜单名称。 &emsp;&emsp;最近博客因为各种原因写好了文章却没有更新，更新频率也下降了(:з」∠)&emsp;&emsp;希望后续可以整理规划好时间，继续坚持做博客的记录。]]></content>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;最近抽空深入研究了一下 Unreal Python 的菜单扩展。&emsp;&emsp;扩展菜单的主要方法我之前的文章有提到过 Unreal PyToolkit 插件&emsp;&emsp;当时主要参考论坛的一篇帖子用 Python 实现下拉菜单 链接 &emsp;&emsp;其实有个地方让我很困惑， menu 获取需要通过 ToolMenus 的 find_menu 实现 1234menus = unreal.ToolMenus.get()# NOTE 获取主界面的主菜单位置main_menu = menus.find_menu("LevelEditor.MainMenu") &emsp;&emsp;但是 find_menu 传入的 menu 字符串是从何而来的，完全就没有概念了。&emsp;&emsp;我最先想到的还是从 C++ 入手 ~ C++ 源码探索 &emsp;&emsp;首先在 VScode 查 UToolMenus ， 然后通过 F12 可以定位到头文件。&emsp;&emsp;头文件名为 ToolMenus.h ， 可以用 ctrl+P 去定位 ToolMenus.cpp 脚本&emsp;&emsp;ToolMenus.cpp 脚本里面可以找到 FindMenu 的函数。 &emsp;&emsp;可以看到是通过 Menus 字典来记录引擎中所有的 Menu 名称。&emsp;&emsp;然而比较头疼的地方时 Menus 在头文件里面设置为了私有变量，无法通过 Python 亦或是 C++ 插件来获取到里面存储的值 &emsp;&emsp;迫不得已，我改了引擎源码，实现蓝图调用，然后通过 Python 获取字典存储的值。 1234567891011121314151617181920212223242526272829303132333435&#123; "ContentBrowser.AssetContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_0"', "ContentBrowser.FolderContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_1"', "MainFrame.MainMenu.Asset": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_2"', "LevelEditor.ActorContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_3"', "ContentBrowser.AssetContextMenu.SoundWave": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_4"', "LevelEditor.MainMenu.Window": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_5"', "LevelEditor.MainMenu.Help": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_6"', "AssetEditor.SkeletalMeshEditor.ToolBar": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_7"', "LevelEditor.MainMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_8"', "ContentBrowser.AssetContextMenu.LevelSequence": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_9"', "MediaPlayer.AssetPickerAssetContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_10"', "ContentBrowser.AssetContextMenu.CameraAnim": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_11"', "LevelEditor.LevelEditorToolBar": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_12"', "LevelEditor.MainMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_13"', "LevelEditor.MainMenu.Edit": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_14"', "LevelEditor.LevelEditorToolBar.SourceControl": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_15"', "LevelEditor.LevelEditorToolBar.Cinematics": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_16"', "LevelEditor.LevelEditorToolBar.BuildComboButton": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_17"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingQuality": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_18"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingDensity": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_19"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingResolution": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_20"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_21"', "LevelEditor.LevelEditorToolBar.EditorModes": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_22"', "LevelEditor.LevelEditorToolBar.CompileComboButton": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_23"', "LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_24"', "LevelEditor.LevelEditorToolBar.OpenBlueprint": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_25"', "LevelEditor.LevelEditorSceneOutliner.ContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_30"', "MainFrame.MainMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_31"', "MainFrame.MainTabMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_32"', "MainFrame.MainMenu.Edit": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_33"', "MainFrame.MainMenu.Window": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_34"', "MainFrame.MainMenu.Help": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_35"', "MainFrame.MainMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_36"',&#125; &emsp;&emsp;现在除了 LevelEditor.MainMenu 我们有了更多的 menu 选项了。&emsp;&emsp;比如上面显示的就有 ContentBrowser.AssetContextMenu 还有 ContentBrowser.FolderContextMenu 以及 LevelEditor.LevelEditorToolBar&emsp;&emsp;由此可以得出， 应该可以用 Python 扩展这里相应的菜单的。 Python 右键菜单扩展 &emsp;&emsp;基于上面的 AssetContextMenu 和 FolderContextMenu 的信息&emsp;&emsp;我们可以分别去扩展右键资弹出的源菜单以及右键文件夹弹出的菜单。 1234567891011121314import unrealmenus = unreal.ToolMenus.get()menu_name = "ContentBrowser.FolderContextMenu"menu = menus.find_menu(menu_name)entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY)entry.set_label("测试 entry")# NOTE 注册执行的命令typ = unreal.ToolMenuStringCommandType.PYTHONentry.set_string_command(typ, "", 'print "entry 触发测试"')menu.add_menu_entry('AssetContextSourceControl',entry)# menus.refresh_all_widgets() &emsp;&emsp;本来 UI 修改需要 refresh_all_widgets 才会更新，因为右键菜单是右键生成时候会自动刷新，所以不执行也不影响。&emsp;&emsp;后面生成 Toolbar 扩展的时候踩了这个坑。 &emsp;&emsp;另外 AssetContextSourceControl 这个名称是 从何而来 的&emsp;&emsp;这就需要在编辑器配置里面开启 UI 名称的显示 &emsp;&emsp;开启上面的选项之后，右键菜单就会多出 绿色 的文字标注菜单的名称。 &emsp;&emsp;文件夹菜单扩展也是同理，将菜单的名称修改并且找到菜单相关的 section 进行添加即可。 Python Toolbar 添加 &emsp;&emsp;上面开启了 UI 显示之后，右键菜单可以显示了，但是 Toolbar 的显示依然是没有的。&emsp;&emsp;这就需要重启一下 引擎。 &emsp;&emsp;有了上面的标注就可以通过上面类似的方法添加 Toolbar 按钮 12345678910111213141516import unrealmenus = unreal.ToolMenus.get()menu_name = "LevelEditor.LevelEditorToolBar"menu = menus.find_menu(menu_name)# NOTE 生成类型改为 Toolbar 的按钮entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.TOOL_BAR_BUTTON)entry.set_label("测试 button")# NOTE 注册执行的命令typ = unreal.ToolMenuStringCommandType.PYTHONentry.set_string_command(typ, "", 'print "entry 触发测试"')menu.add_menu_entry('File',entry)# NOTE 添加刷新才能立刻看到添加的效果menus.refresh_all_widgets() &emsp;&emsp;执行上面的代码就可以在动态给 Toolbar 添加按钮了。 通过 Python 获取引擎生成的菜单 &emsp;&emsp;上面获取菜单名称的方式是通过 C++ 魔改引擎源码才能实现。&emsp;&emsp;这样限制非常大，有没有更加友好的获取方式呢？ &emsp;&emsp;我看着上面 C++ 获取的字典，不由得计从心生~&emsp;&emsp;menu 的引擎临时路径是有一定规律的，通过这个规律应该可以用 Python 动态读取到生成的菜单。 12345678910111213141516import unrealdef list_menu(num=1000): menu_list = set() for i in range(num): obj = unreal.find_object(None,"/Engine/Transient.ToolMenus_0:ToolMenu_%s" % i) if not obj: continue menu_name = str(obj.menu_name) if menu_name != "None": menu_list.add(menu_name) return list(menu_list)print(list_menu())LogPython: ['LevelEditor.LevelEditorToolBar', 'ContentBrowser.AssetContextMenu.LevelSequence', 'MediaPlayer.AssetPickerAssetContextMenu', 'ContentBrowser.AssetContextMenu', 'LevelEditor.LevelEditorToolBar.CompileComboButton', 'MainFrame.MainMenu', 'LevelEditor.MainMenu.Edit', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingResolution', 'LevelEditor.MainMenu', 'LevelEditor.MainMenu.File', 'AssetEditor.SkeletalMeshEditor.ToolBar', 'MainFrame.MainMenu.Edit', 'ContentBrowser.AssetContextMenu.CameraAnim', 'LevelEditor.MainMenu.Window', 'LevelEditor.LevelEditorToolBar.BuildComboButton', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingQuality', 'MainFrame.MainMenu.File', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingDensity', 'LevelEditor.ActorContextMenu', 'ContentBrowser.AssetContextMenu.SoundWave', 'MainFrame.MainTabMenu.File', 'LevelEditor.LevelEditorToolBar.SourceControl', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo', 'LevelEditor.LevelEditorSceneOutliner.ContextMenu', 'MainFrame.MainMenu.Window', 'LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings', 'MainFrame.MainMenu.Asset', 'LevelEditor.LevelEditorToolBar.Cinematics', 'LevelEditor.MainMenu.Help', 'LevelEditor.LevelEditorToolBar.EditorModes', 'MainFrame.MainMenu.Help', 'ContentBrowser.FolderContextMenu', 'LevelEditor.LevelEditorToolBar.OpenBlueprint'] &emsp;&emsp;我想要的效果实现了~&emsp;&emsp;这样就不需要魔改引擎代码，也可以获取出到大部分的 menu 名称。&emsp;&emsp;而且上面的数组只是默认开启引擎下的菜单，如果多打开一些编辑窗口，还可以获取到更多的 菜单 。 &emsp;&emsp;由于不知道到底有多少个菜单生成了，所以我默认定的循环数是 1000 ，基本是够用的，而且遍历速度很快。&emsp;&emsp;另外还有部分的菜单是 None 无名氏，估计是注册的时候没有给定名称，也不好判断是哪里的菜单，所以我就过滤掉了。 通过 Python 扩展 AddNewContextMenu &emsp;&emsp;AddNewContextMenu 就是没有选择任何资源的时候在 资源浏览器 右键弹出的菜单。&emsp;&emsp;刚好我遇到了在这个菜单上进行扩展的需求，所以为了用 Python 实现踩了不少坑(:з」∠) &emsp;&emsp;从这个名字可以知道，默认开启引擎的时候并没有加载到这个菜单。&emsp;&emsp;使用上面写道 list_menu 函数是获取不到的，除非在 资源浏览器 进行右键触发。&emsp;&emsp;这个时候 list_menu 就会多出这个 ContentBrowser.AddNewContextMenu 的菜单名称。&emsp;&emsp;这就产生了很严重的问题，无法实现 C++ 插件的菜单嵌入效果。&emsp;&emsp;不可能让使用者手动右键生成一下菜单，再让他点击什么按钮触发，将需要的 entry 添加到菜单里呀(:з」∠) &emsp;&emsp;后来为了能够完成需求，我还是用 C++ 来解决了这个问题 参考知乎这篇文章 &emsp;&emsp;不过搞定了需求，周末还是抽空研究怎么通过 Python 来解决这个问题。&emsp;&emsp;这个过程还实现了一些有趣的效果，比如先注册生成 menu ，导致右键菜单变成了我自己自定义的菜单了。 12345678910111213menus = unreal.ToolMenus.get()menu_name = "ContentBrowser.AddNewContextMenu"menu = menus.find_menu(menu_name)# NOTE 如果已经注册则删除 | 否则无法执行 register_menuif menus.is_menu_registered(menu_name): menus.remove_menu(menu_name)menu = menus.register_menu(menu_name)entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY)entry.set_label("测试 entry")menu.add_menu_entry('',entry) &emsp;&emsp;其他菜单也可以尝试着这样魔改成自己的菜单。&emsp;&emsp;如果可以配合引擎快捷键触发不同的菜单，还是有点意思的。 &emsp;&emsp;上面魔改的菜单要恢复也不难，将自己做的菜单 删除掉 ，默认右键就会生成回正常的菜单了。 &emsp;&emsp;问题是这个折腾依然没能解决实现我想要的效果(:з」∠)&emsp;&emsp;后面还是想往 C++ 的方向入手，能不能在右键菜单事件添加 回调事件，配合触发 Python 脚本。&emsp;&emsp;也的确在 C++ 文档里面找到相关的回调函数 链接&emsp;&emsp;但是要如何接入 Python 还不是很确定。 &emsp;&emsp;后面思路一转，还有更加简单的实现方式，可以用定时器来做。&emsp;&emsp;虽然定时器不是个好点子，听着就比较浪费资源，但是考虑到 Python 遍历 menu 的速度快到没感觉。&emsp;&emsp;定时执行嵌入操作的卡顿应该感知不到。 1234567891011121314151617181920212223242526import unrealfrom Qt import QtCorefrom functools import partialdef add_menu(timer): print("timer running...") menu = menus.find_menu("ContentBrowser.AddNewContextMenu") if not menu: return # NOTE 如果存在停止计时器 timer.stop() print("timer stop") entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY) entry.set_label("测试 entry") menu.add_menu_entry('ContentBrowserNewAdvancedAsset',entry) menus.refresh_all_widgets()# NOTE 使用 Qt 的定时器实现 js setInterval 函数的效果# NOTE Python 原生实现比较麻烦，用 Qt 的 Timer 比较简洁timer = QtCore.QTimer()timer.timeout.connect(partial(add_menu,timer))timer.start(1000) &emsp;&emsp;完美通过定时器实现动态嵌入菜单。 PyToolkit Json 配置优化 &emsp;&emsp;通过上面的一轮折腾，之前 PyToolkit 提供的菜单配置完全可以更加灵活。&emsp;&emsp;于是我又开始重写之前的 json 配置的读取和生成，通过递归的方法，自动处理多重嵌套菜单的效果。 &emsp;&emsp;具体的配置方法我写到了 PyToolkit 的帮助文档里面 链接~ &emsp;&emsp;上面四种嵌入可以完全通过 json 配置来完成~ 总结 &emsp;&emsp;利用 Python 做菜单扩展的确方便了很多，但是 Python 也并不是万能的。&emsp;&emsp;例如我之前研究过的 Sequencer 菜单工具栏嵌入 扩展就只能通过 C++ 来实现&emsp;&emsp;因为 list_menu 没有找到相关的菜单名称。 &emsp;&emsp;最近博客因为各种原因写好了文章却没有更新，更新频率也下降了(:з」∠)&emsp;&emsp;希望后续可以整理规划好时间，继续坚持做博客的记录。]]></content>
       <categories>
         <category>游戏开发</category>
         <category>Unreal</category>
@@ -205,8 +205,8 @@
       <tags>
         <tag>PyQt</tag>
         <tag>Qt</tag>
-        <tag>Qt Designer</tag>
         <tag>PySide</tag>
+        <tag>Qt Designer</tag>
       </tags>
   </entry>
   <entry>
@@ -221,8 +221,8 @@
       <tags>
         <tag>PyQt</tag>
         <tag>Qt</tag>
-        <tag>Qt Designer</tag>
         <tag>PySide</tag>
+        <tag>Qt Designer</tag>
       </tags>
   </entry>
   <entry>
@@ -323,8 +323,8 @@
         <category>神秘研究</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -350,8 +350,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -363,8 +363,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -376,8 +376,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -419,8 +419,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -463,8 +463,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -477,8 +477,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Game</tag>
       </tags>
   </entry>
@@ -492,8 +492,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>OpenMaya</tag>
       </tags>
   </entry>
@@ -507,8 +507,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>重定向</tag>
         <tag>HumanIK</tag>
       </tags>
@@ -523,8 +523,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>法线</tag>
       </tags>
   </entry>
@@ -564,8 +564,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Game</tag>
       </tags>
   </entry>
@@ -579,8 +579,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -604,8 +604,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -629,8 +629,8 @@
         <category>神秘研究</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -668,8 +668,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>reference</tag>
       </tags>
   </entry>
@@ -683,8 +683,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -748,8 +748,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -762,8 +762,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -776,8 +776,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -788,8 +788,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>android</tag>
+        <tag>效率</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -801,8 +801,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>android</tag>
+        <tag>效率</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -816,8 +816,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -830,8 +830,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -844,8 +844,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -858,8 +858,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -885,8 +885,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -897,8 +897,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>Windows</tag>
         <tag>效率</tag>
+        <tag>Windows</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -912,8 +912,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -926,8 +926,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -952,8 +952,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -977,8 +977,8 @@
         <category>Maya 插件分析</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -991,8 +991,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Git</tag>
       </tags>
   </entry>
@@ -1006,8 +1006,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1033,8 +1033,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1058,8 +1058,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1085,8 +1085,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -1294,8 +1294,8 @@
       </categories>
       <tags>
         <tag>VScode</tag>
-        <tag>Maya</tag>
         <tag>编辑器</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1308,8 +1308,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>Unreal</tag>
         <tag>shader</tag>
+        <tag>Unreal</tag>
       </tags>
   </entry>
   <entry>
@@ -1322,8 +1322,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>Unreal</tag>
         <tag>shader</tag>
+        <tag>Unreal</tag>
       </tags>
   </entry>
   <entry>
@@ -1336,8 +1336,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>Unreal</tag>
         <tag>shader</tag>
+        <tag>Unreal</tag>
       </tags>
   </entry>
   <entry>
@@ -1350,8 +1350,8 @@
         <category>教程笔记</category>
       </categories>
       <tags>
-        <tag>Unreal</tag>
         <tag>shader</tag>
+        <tag>Unreal</tag>
       </tags>
   </entry>
   <entry>
@@ -1390,8 +1390,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>BlendShape</tag>
       </tags>
   </entry>
@@ -1403,8 +1403,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1416,9 +1416,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1430,9 +1430,9 @@
         <category>node.js</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
-        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1446,8 +1446,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1458,8 +1458,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1487,8 +1487,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1502,8 +1502,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1517,8 +1517,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1532,8 +1532,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1547,8 +1547,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1562,8 +1562,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1577,8 +1577,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1592,8 +1592,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1607,8 +1607,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1622,8 +1622,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>Vue</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1817,8 +1817,8 @@
         <category>Unity</category>
       </categories>
       <tags>
-        <tag>unity</tag>
         <tag>C#</tag>
+        <tag>unity</tag>
       </tags>
   </entry>
   <entry>
@@ -1831,8 +1831,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1848,8 +1848,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1865,8 +1865,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1894,8 +1894,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1911,8 +1911,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1928,8 +1928,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1945,8 +1945,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1962,8 +1962,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -2002,8 +2002,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2027,8 +2027,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2080,8 +2080,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2092,8 +2092,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2104,8 +2104,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2116,8 +2116,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2128,8 +2128,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2178,8 +2178,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2190,8 +2190,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2311,8 +2311,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2357,8 +2357,8 @@
         <category>开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2373,8 +2373,8 @@
         <category>开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2428,8 +2428,8 @@
       </categories>
       <tags>
         <tag>VScode</tag>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
