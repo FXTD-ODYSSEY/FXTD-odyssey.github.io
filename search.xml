@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[15_Unreal Python 重启引擎]]></title>
+    <url>%2Fposts%2Faa6b138f.html</url>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;最近在虚幻商城看到一个简单而好用的免费小插件 Restart Editor&emsp;&emsp;经过之前的进阶菜单折腾之后，我觉得 Python 实现也不难。&emsp;&emsp;所以我就用 Python 来进行扩展了。 Python 脚本重启引擎123456789101112131415161718192021222324252627282930313233343536373839404142# -*- coding: utf-8 -*-"""自动重启引擎"""from __future__ import divisionfrom __future__ import print_functionfrom __future__ import absolute_import__author__ = 'timmyliang'__email__ = '820472580@qq.com'__date__ = '2020-09-18 15:53:10'import sysimport subprocessimport unrealfrom UE_Util import error_log, toasteditor_util = unreal.EditorLoadingAndSavingUtils()sys_lib = unreal.SystemLibrary()paths = unreal.Paths()@error_logdef main(): # NOTE 保存对象 check = editor_util.save_dirty_packages_with_dialog(True,True) if not check: toast(u"保存失败") return uproject = paths.get_project_file_path() editor = sys.executable # NOTE 启动当前引擎 subprocess.Popen([editor,uproject,'-skipcompile'],shell=True) # NOTE 退出引擎 sys_lib.quit_editor() if __name__ == "__main__": main() &emsp;&emsp;重启引擎之前先判断是否有资源需要进行报错操作，如果保存失败则跳过重启步骤&emsp;&emsp;然后获取引擎路径，这里通过 sys.executable 可以获取到 UE4Editor.exe&emsp;&emsp;继而通过 subprocess 外调命令行启动一个新的虚幻。&emsp;&emsp;接着就是退出当前虚幻。 &emsp;&emsp;其实脚本并不复杂，我也看了 C++ 插件的调用方式。&emsp;&emsp;C++ API 里面直接就有一个 restart 相关的函数，调用就完事了~ 配置 &emsp;&emsp;结合之前弄好的菜单扩展，可以通过配置 json 文件实现 C++ 插件的位置配置。&emsp;&emsp;唯一比较遗憾的是 Python 无法添加自定义的图标。&emsp;&emsp;虽然有 ToolMenuEntry 类里面有 setIcon 的 API ，但是 Python 暂时还无法扩充自定义的 style_set_name&emsp;&emsp;所以图标只能设置现有的引擎 style_set_name]]></content>
+      <categories>
+        <category>游戏开发</category>
+        <category>Unreal</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Unreal</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Unreal Python 蓝图库封装]]></title>
+    <url>%2Fposts%2F88b44c10.html</url>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;并不是所有人都喜欢写代码的，有些时候可能蓝图操作起来更加简单。&emsp;&emsp;尽管蓝图无法进行 git 的合并还是很不方便的。 &emsp;&emsp;通过 Unreal 封装蓝图可以反向让蓝图有了 Python 的功能。&emsp;&emsp;一些逻辑比较复杂的操作用蓝图链接会非常晦涩和复杂，可以将其封装成一个蓝图节点，方便不懂代码人进行使用。 &emsp;&emsp;最初我是完全没有想到还有这种用法的，是偶然间一个师弟问我问题，提供了一个蓝图封装好的脚本。&emsp;&emsp;这才让我大开眼界，这篇文章才有机会面世~ &emsp;&emsp;由于是 Python 进行封装的，所以这些蓝图节点不推荐在运行时的游戏逻辑上使用。&emsp;&emsp;推荐在 editor utility 相关的节点来使用。 蓝图库封装 &emsp;&emsp;虚幻引擎本身可以通过创建蓝图库资源来扩展蓝图。 &emsp;&emsp;在这里面进行扩展的蓝图，也可以在别的蓝图调用到。&emsp;&emsp;但是本质上还是 蓝图 分装自己 而已。 &emsp;&emsp;用 Python 封装不需要生成这个资源，只需要继承 unreal.BlueprintFunctionLibrary 文档链接 &emsp;&emsp;废话不多说，直接上代码。 123456789import unreal# NOTE 生成一个 Unreal Class 对象@unreal.uclass()class PyBPFunctionLibrary(unreal.BlueprintFunctionLibrary): # NOTE 蓝图库分类设置为 Python Blueprint @unreal.ufunction(static=True,meta=dict(Category="Python Blueprint")) def TestFunction(): unreal.SystemLibrary.print_string(None,'Python Test Function Run',text_color=[255,255,255,255]) &emsp;&emsp;打开一个蓝图，右键输入 Test 就可以找到上面 Python 生成的蓝图了。 &emsp;&emsp;点击按钮触发的蓝图就是 执行上面封装的 Python 代码&emsp;&emsp;通过这个方法可以利用 Python 的 API 实现蓝图不好做甚至是不能做的操作。 &emsp;&emsp;比如可以通过 Python 的 json 库输出 json 数据，借助 socket 库进行远程通信，也可以借助一些第三方库实现更多骚操作。&emsp;&emsp;比如通过蓝图调用 Python 图像库处理图片。 &emsp;&emsp;蓝图其实也可以通过 Execute Python Command 节点来执行 Python 字符串。&emsp;&emsp;但是用 Python 封装的 蓝图 节点还可以返回出内部的数据，一些复杂的运算可以用 Python 封装。&emsp;&emsp;因为蓝图每个运算符都是单独的节点，连接复杂的运算会变得很混乱，另外 for 循环也可以通过 Python 进行封装简化。&emsp;&emsp;当然这些操作其实都可以通过 BlueprintFunctionLibrary 资源 连接蓝图 来实现。 &emsp;&emsp;蓝图最弱的地方是读取外部的文件数据，通过 Python 可以完全弥补这个问题。 1234567891011121314151617import osimport unreal# NOTE 生成一个 Unreal Class 对象@unreal.uclass()class PyBPFunctionLibrary(unreal.BlueprintFunctionLibrary): # NOTE 蓝图库分类设置为 Python Blueprint @unreal.ufunction(static=True,meta=dict(Category="Python Blueprint")) def TestFunction(): unreal.SystemLibrary.print_string(None,'Python Test Function Run',text_color=[255,255,255,255]) @unreal.ufunction(params=[str],ret=str,static=True,meta=dict(Category="Python Blueprint")) def TestReadFile(filepath): if not os.path.exists(filepath): return '' with open(filepath,'r') as f: data = f.read() return data &emsp;&emsp;我在 C 盘建了 txt ，写入了 read from text file 的数据&emsp;&emsp;通过 Python 封装就可以读取到里面的数据了，省得用 C++ 去写。 &emsp;&emsp;ufunction 的参数可以参考文档， 链接&emsp;&emsp;不过文档也是简单得等同于没有说。&emsp;&emsp;其中比较值得让人注意的地方是，如果参数使用 数组 需要用 unreal.Array 来封装。 123456789101112131415161718192021222324252627import osimport unreal# NOTE 生成一个 Unreal Class 对象@unreal.uclass()class PyBPFunctionLibrary(unreal.BlueprintFunctionLibrary): # NOTE 蓝图库分类设置为 Python Blueprint @unreal.ufunction(static=True,meta=dict(Category="Python Blueprint")) def TestFunction(): unreal.SystemLibrary.print_string(None,'Python Test Function Run',text_color=[255,255,255,255]) @unreal.ufunction(params=[str],ret=str,static=True,meta=dict(Category="Python Blueprint")) def TestReadFile(filepath): if not os.path.exists(filepath): return '' with open(filepath,'r') as f: data = f.read() return data @unreal.ufunction(params=[unreal.Array(str)],ret=str,static=True,meta=dict(Category="Python Blueprint")) def TestReadArrayFile(file_list): data = "" for filepath in file_list: if not os.path.exists(filepath): continue with open(filepath,'r') as f: data += f.read() return data 注意事项 &emsp;&emsp;如果对已经使用的节点进行修改需要谨慎，目前 python 还不是很稳定，可能会导致很多报错。&emsp;&emsp;另外 Python 的蓝图封装是动态生成的，重开引擎之后，相关的节点需要重新执行一遍 Python 脚本来生成。&emsp;&emsp;否则蓝图就是红色显示，不起作用。 &emsp;&emsp;Python 封装的节点如果使用 Python 的库就无法在运行时使用了，编译就会提示报错。 &emsp;&emsp;不过如果是使用 unreal 模块的封装还是可以运行部分的，就是限制太大了，而且这样和纯蓝图没有什么区别。 1234567import unreal@unreal.uclass()class PyRuntimeBPFunctionLibrary(unreal.BlueprintFunctionLibrary): @unreal.ufunction(static=True,meta=dict(Category="Python Runtime")) def TestRuntime(): frame = unreal.SystemLibrary.get_frame_count() unreal.SystemLibrary.print_string(None,str(frame),text_color=[255,255,255,255]) 总结 &emsp;&emsp;以上就是 Python 反向封装蓝图的效果。&emsp;&emsp;我个人还是不太习惯用蓝图，可能主要还是对 虚幻 不太熟悉吧。&emsp;&emsp;而且 Python 的文档比较全面，参考 Python 文档补全了 蓝图 文档过于简略的问题。]]></content>
+      <categories>
+        <category>游戏开发</category>
+        <category>Unreal</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Unreal</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Maya 基于 UV 偏移的眼球驱动]]></title>
     <url>%2Fposts%2Fec421c94.html</url>
     <content type="text"><![CDATA[前言 &emsp;&emsp;传统的角色眼球做法，特别是次世代一类的，通常会做比较复杂的眼球模型。&emsp;&emsp;我目前的项目是做手游了，为了能够 hold 住资源消耗，所以眼球就完全是个面片了。&emsp;&emsp;面片怎么实现眼球的挪移呢?&emsp;&emsp;本文就来探讨一下怎么利用 UV 节点控制眼球贴图的偏移，并且通过控制器来进行控制。 贴图偏移 &emsp;&emsp;Maya 控制贴图的的 UV 的方式是通过 Place2dTexture 节点&emsp;&emsp;这个节点默认添加贴图就会自动生成并且连接到 贴图 的 UV 属性上。 &emsp;&emsp;通过 Place2dTexture 可以实现贴图 UV 的多种控制效果。&emsp;&emsp;其中我们这里需要用到的主要是 Offset 属性。 &emsp;&emsp;通过控制偏移属性，就已经有点眼球移动的味道了。&emsp;&emsp;但是当眼球运动到面片的边缘的时候，会出现左右接缝相接了。 &emsp;&emsp;要解决这个问题需要将 WrapU 和 WrapV 属性关闭。&emsp;&emsp;这两个属性主要实现了贴图在多象限下的重复效果 &emsp;&emsp;关闭了之后，超出边界的地方会变成灰色。&emsp;&emsp;变成灰色是因为 贴图的 Default Color 默认设置为灰色的。 &emsp;&emsp;这里的操作主要参考了我看的第一个 Maya 教程里面的投射贴图的操作 链接 &emsp;&emsp;如此 offset 就没有问题了。 Locator 控制贴图偏移朝向 &emsp;&emsp;默认是两个 UV 属性的偏移，让动画师去控制两个属性 K 动画显然非常不方便。&emsp;&emsp;怎么通过一个 Locator 实现类似 AimConstraint 的效果呢？ &emsp;&emsp;这里就需要 Maya 隐藏节点的 closestPointOnMesh&emsp;&emsp;这个节点在创建节点的面板上是找不到的，不过可以在节点编辑器里通过 Tab 键输入找到它 &emsp;&emsp;这个节点接受一个模型和一个点，会自动计算出距离模型最近点的相关信息。&emsp;&emsp;其中就有我们这里所需要的 UV 信息。 &emsp;&emsp;然后将输出 UV 的填入 Offset 里面&emsp;&emsp;直接填入会有数值偏差，因为 Locator 的中心区域是 UV 0.5 0.5 的区域，需要分别减去 0.5 才是对的。&emsp;&emsp;所以需要建一个 plusMinusAverage 进行处理 &emsp;&emsp;这样就可以通过 locator 控制 UV 眼球的运动了 更新问题 &emsp;&emsp;设置完上面的效果之后进行 K 帧，发现视窗没有及时更新。&emsp;&emsp;需要将 Maya 的刷新机制改为 DG 模式 总结 &emsp;&emsp;其实这个设置不复杂，如果需要双眼单独控制需要做两个材质贴两张图。]]></content>
@@ -24,8 +52,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -205,8 +233,8 @@
       <tags>
         <tag>PyQt</tag>
         <tag>Qt</tag>
-        <tag>PySide</tag>
         <tag>Qt Designer</tag>
+        <tag>PySide</tag>
       </tags>
   </entry>
   <entry>
@@ -221,8 +249,8 @@
       <tags>
         <tag>PyQt</tag>
         <tag>Qt</tag>
-        <tag>PySide</tag>
         <tag>Qt Designer</tag>
+        <tag>PySide</tag>
       </tags>
   </entry>
   <entry>
@@ -323,8 +351,8 @@
         <category>神秘研究</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -405,8 +433,8 @@
       </categories>
       <tags>
         <tag>Python</tag>
-        <tag>FBX</tag>
         <tag>Unreal</tag>
+        <tag>FBX</tag>
       </tags>
   </entry>
   <entry>
@@ -419,8 +447,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -463,8 +491,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -477,8 +505,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Game</tag>
       </tags>
   </entry>
@@ -492,8 +520,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>OpenMaya</tag>
       </tags>
   </entry>
@@ -507,8 +535,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>重定向</tag>
         <tag>HumanIK</tag>
       </tags>
@@ -523,8 +551,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>法线</tag>
       </tags>
   </entry>
@@ -564,8 +592,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Game</tag>
       </tags>
   </entry>
@@ -579,8 +607,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -604,8 +632,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -629,8 +657,8 @@
         <category>神秘研究</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -643,8 +671,8 @@
       </categories>
       <tags>
         <tag>Maya</tag>
-        <tag>FBX</tag>
         <tag>Unreal</tag>
+        <tag>FBX</tag>
       </tags>
   </entry>
   <entry>
@@ -668,8 +696,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>reference</tag>
       </tags>
   </entry>
@@ -683,8 +711,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -748,8 +776,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -762,8 +790,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -776,8 +804,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -816,8 +844,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -830,8 +858,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -844,8 +872,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -858,8 +886,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -885,8 +913,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -912,8 +940,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -926,8 +954,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -952,8 +980,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -977,8 +1005,8 @@
         <category>Maya 插件分析</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -991,8 +1019,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Git</tag>
       </tags>
   </entry>
@@ -1006,8 +1034,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1033,8 +1061,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1058,8 +1086,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1085,8 +1113,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -1294,8 +1322,8 @@
       </categories>
       <tags>
         <tag>VScode</tag>
-        <tag>编辑器</tag>
         <tag>Maya</tag>
+        <tag>编辑器</tag>
       </tags>
   </entry>
   <entry>
@@ -1390,8 +1418,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>BlendShape</tag>
       </tags>
   </entry>
@@ -1403,8 +1431,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1446,8 +1474,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1458,8 +1486,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1487,8 +1515,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1502,8 +1530,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1517,8 +1545,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1532,8 +1560,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1547,8 +1575,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1562,8 +1590,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1577,8 +1605,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1592,8 +1620,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1607,8 +1635,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1622,8 +1650,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>Vue</tag>
         <tag>JavaScript</tag>
+        <tag>Vue</tag>
       </tags>
   </entry>
   <entry>
@@ -1831,8 +1859,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1848,8 +1876,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1865,8 +1893,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1894,8 +1922,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1911,8 +1939,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1928,8 +1956,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1945,8 +1973,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1962,8 +1990,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -2002,8 +2030,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2027,8 +2055,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2041,8 +2069,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>React</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -2055,8 +2083,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>JavaScript</tag>
         <tag>React</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -2080,8 +2108,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2092,8 +2120,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2104,8 +2132,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2116,8 +2144,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2128,8 +2156,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2178,8 +2206,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2190,8 +2218,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2311,8 +2339,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -2357,8 +2385,8 @@
         <category>开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2373,8 +2401,8 @@
         <category>开发</category>
       </categories>
       <tags>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2428,8 +2456,8 @@
       </categories>
       <tags>
         <tag>VScode</tag>
-        <tag>Maya</tag>
         <tag>Python</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
