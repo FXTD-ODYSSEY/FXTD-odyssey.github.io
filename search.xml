@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[15_Unreal Python 重启引擎]]></title>
+    <title><![CDATA[Maya 编译 c 相关 Python 库 & pyd 编译]]></title>
+    <url>%2Fposts%2F1a24f2d2.html</url>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;最近突然心血来潮，想要给自己的 Maya 装上 numpy 。&emsp;&emsp;大概是因为 python3 要进 Maya 了，在革命到来之前，先来熟络一下 Python 一些常用的库吧。 &emsp;&emsp;默认情况下 Maya 的 Python 是无法导入包含 C 相关模块的库的。&emsp;&emsp;直接导入一般会提示 无法找到 dll 然后报错。 &emsp;&emsp;这里参考了网上的一些文章，大大简化了我操作的难度。 参考 Maya：第六周 作业 - 單壹崽崽参考链接 pip 安装 &emsp;&emsp;Maya 的 mayapy 默认没有安装 pip 工具&emsp;&emsp;参考上面的链接，可以使用 get-pip.py 的脚本为 mayapy.exe 安装上 pip 工具 1mayapy.exe -m pip install package &emsp;&emsp;这样可以用上面的操作方式操作 maya 的 pip&emsp;&emsp;不过 python2 很快就要被淘汰了， pip 作用已经不大了 (:з」∠) numpy 安装 &emsp;&emsp;继续参考文章，给 Maya 安装 numpy 的操作。 下载 devkit 获取到 include 里面的 Python2.7 头文件 下载 Visual Studio 对应 Maya 的版本进行编译。 下载 numpy 1.16.6 最后支持 python2 的版本源码 （我在 pypi 下载的） 1"C:\Program Files\Autodesk\Maya2019\bin\mayapy.exe" setup.py build_ext -I "C:\Program Files\Autodesk\Maya2019\include\python2.7" -L "C:\Program Files\Autodesk\Maya2019\lib" &emsp;&emsp;准备好上面的操作就可以通过 mayapy 命令来执行 numpy 源码的 setup.py 进行编译 1"C:\Program Files\Autodesk\Maya2019\bin\mayapy.exe" setup.py install &emsp;&emsp;编译完成之后执行 install 自动将代码安装到 maya 的 site-packages 里面。 踩到的坑 &emsp;&emsp;我的系统里面已经安装了 Visual Studio 2019 ， 但是编译的时候依然提示 Microsoft Visual C++ 14.0 is required&emsp;&emsp;最开始我参考外国网站的链接，尝试安装 VCForPython27 工具 参考&emsp;&emsp;然而安装了之后编译依然提示缺失。 &emsp;&emsp;最后找到这篇链接 安装Microsoft Visual C++ Build Tools 2015&emsp;&emsp;安装 Build Tools 就可以顺利编译了。&emsp;&emsp;当时我先 编译 了 Cython 是成功的。&emsp;&emsp;后面尝试编译 numpy 还是出问题了。&emsp;&emsp;提示: Broken toolchain: cannot link a simple C program &emsp;&emsp;最后在 Stack Overflow 找到一篇解答，完美解决了我的问题 链接&emsp;&emsp;主要是 mt.exe 程序的路径没有添加到环境变量。&emsp;&emsp;在解答提到的 windows kit 路径下可以找到 mt.exe ，添加到环境变量之后就可以顺利编译 numpy 了。 pyd 编译 &emsp;&emsp;如何使用 mayapy 来编译出 pyd 这位大佬的文章很有帮助 链接&emsp;&emsp;编译预准备的步骤 简单明了 解决了我的痛点~ 拷贝 Maya2019/lib/python27.lib 到 Maya2019/Python/libs 拷贝 devkitBase/include/python2.7 中所有的文件到 Maya2019/Python/include &emsp;&emsp;准备好上面的操作就可以 mayapy 执行 Cython 编译了。&emsp;&emsp;需要注意的是不能在 maya 里面执行编译操作，因为 sys.executable 是 maya.exe ， 执行会出错的。 1234567# NOTE 编译当前脚本路径下的 test_pyd.py | 输出 test_pyd.pyd 文件from distutils.core import setupfrom Cython.Build import cythonizesetup( #name = 'xxx', ext_modules = cythonize("test_pyd.py")) &emsp;&emsp;上面就是 build.py 脚本写的代码，test_pyd 的代码就是简单的 print(&quot;hello world&quot;) 1"C:\Program Files\Autodesk\Maya2019\bin\mayapy.exe" build.py build &emsp;&emsp;执行上面的命令就可以在当前路径下生成 build/lib.win-amd64-2.7/test_pyd.pyd 的文件&emsp;&emsp;在 maya 导入 test_pyd.py 可以打印出 hello world &emsp;&emsp;另外大佬提到要注意的点，无法编译 __init__.py 脚本，并且 __file__ 只能在函数内部获取都是我之前踩过的坑点~。&emsp;&emsp;try 异常处理 pyd 会出错这个倒是还没有遇到过~ &emsp;&emsp;另外大佬另一篇文章有提到 pyd 编译代码相关的坑点，上面链接也有所提及的，非常受用 链接 总结 &emsp;&emsp;这篇文章算是对以前踩坑的一些归纳汇总吧，方便以后遇到类似的问题进来查询~]]></content>
+      <categories>
+        <category>CG</category>
+        <category>Maya</category>
+        <category>Maya 研究记录</category>
+      </categories>
+      <tags>
+        <tag>Maya</tag>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[【转载】 如何让Python代码加速运行？]]></title>
+    <url>%2Fposts%2F84378342.html</url>
+    <content type="text"><![CDATA[原文链接 Python 是一种脚本语言，相比 C/C++ 这样的编译语言，在效率和性能方面存在一些不足。但是，有很多时候，Python的效率并没有想象中的那么夸张。本文对一些 Python 代码加速运行的技巧进行整理。 0. 代码优化原则本文会介绍不少的 Python 代码加速运行的技巧。在深入代码优化细节之前，需要了解一些代码优化基本原则。 第一个基本原则是不要过早优化。很多人一开始写代码就奔着性能优化的目标，“让正确的程序更快要比让快速的程序正确容易得多”。因此，优化的前提是代码能正常工作。过早地进行优化可能会忽视对总体性能指标的把握，在得到全局结果前不要主次颠倒。 第二个基本原则是权衡优化的代价。优化是有代价的，想解决所有性能的问题是几乎不可能的。通常面临的选择是时间换空间或空间换时间。另外，开发代价也需要考虑。 第三个原则是不要优化那些无关紧要的部分。如果对代码的每一部分都去优化，这些修改会使代码难以阅读和理解。如果你的代码运行速度很慢，首先要找到代码运行慢的位置，通常是内部循环，专注于运行慢的地方进行优化。在其他地方，一点时间上的损失没有什么影响。 1. 避免全局变量12345678# 不推荐写法。代码耗时：26.8秒 import math size = 10000 for x in range(size): for y in range(size): z = math.sqrt(x) + math.sqrt(y) 许多程序员刚开始会用 Python语言写一些简单的脚本，当编写脚本时，通常习惯了直接将其写为全局变量，例如上面的代码。但是，由于全局变量和局部变量实现方式不同，定义在全局范围内的代码运行速度会比定义在函数中的慢不少。通过将脚本语句放入到函数中，通常可带来15% - 30% 的速度提升。 12345678910# 推荐写法。代码耗时：20.6秒 import math def main(): # 定义到函数中，以减少全部变量使用 size = 10000 for x in range(size): for y in range(size): z = math.sqrt(x) + math.sqrt(y) main() 2. 避免.（属性访问操作符）2.1 避免模块和函数属性访问12345678910111213141516 # 不推荐写法。代码耗时：14.5秒 import math def computeSqrt(size: int): result = [] for i in range(size): result.append(math.sqrt(i)) return result def main(): size = 10000 for _ in range(size): result = computeSqrt(size) main() 每次使用.（属性访问操作符时）会触发特定的方法，如getattribute()和getattr()，这些方法会进行字典操作，因此会带来额外的时间开销。通过fromimport语句，可以消除属性访问。 12345678910111213141516 # 第一次优化写法。代码耗时：10.9秒 from math import sqrt def computeSqrt(size: int): result = [] for i in range(size): result.append(sqrt(i)) # 避免math.sqrt的使用 return result def main(): size = 10000 for _ in range(size): result = computeSqrt(size) main() 在第 1 节中我们讲到，局部变量的查找会比全局变量更快，因此对于频繁访问的变量sqrt，通过将其改为局部变量可以加速运行。 12345678910111213141516# 第二次优化写法。代码耗时：9.9秒 import math def computeSqrt(size: int): result = [] sqrt = math.sqrt # 赋值给局部变量 for i in range(size): result.append(sqrt(i)) # 避免math.sqrt的使用 return result def main(): size = 10000 for _ in range(size): result = computeSqrt(size) main() 除了math.sqrt外，computeSqrt函数中还有.的存在，那就是调用list的append方法。通过将该方法赋值给一个局部变量，可以彻底消除computeSqrt函数中for循环内部的.使用。 12345678910111213141516171819 # 推荐写法。代码耗时：7.9秒 import math def computeSqrt(size: int): result = [] append = result.append sqrt = math.sqrt # 赋值给局部变量 for i in range(size): append(sqrt(i)) # 避免 result.append 和 math.sqrt 的使用 return result def main(): size = 10000 for _ in range(size): result = computeSqrt(size) main() 2.2 避免类内属性访问123456789101112131415161718192021222324 # 不推荐写法。代码耗时：10.4秒 import math from typing import List class DemoClass: def __init__(self, value: int): self._value = value def computeSqrt(self, size: int) -&gt; List[float]: result = [] append = result.append sqrt = math.sqrt for _ in range(size): append(sqrt(self._value)) return result def main(): size = 10000 for _ in range(size): demo_instance = DemoClass(size) result = demo_instance.computeSqrt(size) main() 避免.的原则也适用于类内属性，访问self._value的速度会比访问一个局部变量更慢一些。通过将需要频繁访问的类内属性赋值给一个局部变量，可以提升代码运行速度。 12345678910111213141516171819202122232425# 推荐写法。代码耗时：8.0秒 import math from typing import List class DemoClass: def __init__(self, value: int): self._value = value def computeSqrt(self, size: int) -&gt; List[float]: result = [] append = result.append sqrt = math.sqrt value = self._value for _ in range(size): append(sqrt(value)) # 避免 self._value 的使用 return result def main(): size = 10000 for _ in range(size): demo_instance = DemoClass(size) demo_instance.computeSqrt(size) main() 3. 避免不必要的抽象123456789101112131415161718192021# 不推荐写法，代码耗时：0.55秒 class DemoClass: def __init__(self, value: int): self.value = value @property def value(self) -&gt; int: return self._value @value.setter def value(self, x: int): self._value = x def main(): size = 1000000 for i in range(size): demo_instance = DemoClass(size) value = demo_instance.value demo_instance.value = i main() 任何时候当你使用额外的处理层（比如装饰器、属性访问、描述器）去包装代码时，都会让代码变慢。大部分情况下，需要重新进行审视使用属性访问器的定义是否有必要，使用getter/setter函数对属性进行访问通常是C/C++ 程序员遗留下来的代码风格。如果真的没有必要，就使用简单属性。 12345678910111213# 推荐写法，代码耗时：0.33秒 class DemoClass: def __init__(self, value: int): self.value = value # 避免不必要的属性访问器 def main(): size = 1000000 for i in range(size): demo_instance = DemoClass(size) value = demo_instance.value demo_instance.value = i main() 4. 避免数据复制4.1 避免无意义的数据复制123456789# 不推荐写法，代码耗时：6.5秒 def main(): size = 10000 for _ in range(size): value = range(size) value_list = [x for x in value] square_list = [x * x for x in value_list] main() 上面的代码中value_list完全没有必要，这会创建不必要的数据结构或复制。 12345678# 推荐写法，代码耗时：4.8秒 def main(): size = 10000 for _ in range(size): value = range(size) square_list = [x * x for x in value] # 避免无意义的复制 main() 另外一种情况是对 Python 的数据共享机制过于偏执，并没有很好地理解或信任 Python 的内存模型，滥用copy.deepcopy()之类的函数。通常在这些代码中是可以去掉复制操作的。 4.2 交换值时不使用中间变量1234567891011# 不推荐写法，代码耗时：0.07秒 def main(): size = 1000000 for _ in range(size): a = 3 b = 5 temp = a a = b b = temp main() 上面的代码在交换值时创建了一个临时变量temp，如果不借助中间变量，代码更为简洁、且运行速度更快。 123456789# 推荐写法，代码耗时：0.06秒 def main(): size = 1000000 for _ in range(size): a = 3 b = 5 a, b = b, a # 不借助中间变量 main() 4.3 字符串拼接用join而不是+12345678910111213141516# 不推荐写法，代码耗时：2.6秒 import string from typing import List def concatString(string_list: List[str]) -&gt; str: result = '' for str_i in string_list: result += str_i return result def main(): string_list = list(string.ascii_letters * 100) for _ in range(10000): result = concatString(string_list) main() 当使用a + b拼接字符串时，由于 Python 中字符串是不可变对象，其会申请一块内存空间，将a和b分别复制到该新申请的内存空间中。因此，如果要拼接个字符串，会产生个中间结果，每产生一个中间结果都需要申请和复制一次内存，严重影响运行效率。而使用join()拼接字符串时，会首先计算出需要申请的总的内存空间，然后一次性地申请所需内存，并将每个字符串元素复制到该内存中去。 12345678910111213# 推荐写法，代码耗时：0.3秒 import string from typing import List def concatString(string_list: List[str]) -&gt; str: return ''.join(string_list) # 使用 join 而不是 + def main(): string_list = list(string.ascii_letters * 100) for _ in range(10000): result = concatString(string_list) main() 5. 利用if条件的短路特性123456789101112131415161718# 不推荐写法，代码耗时：0.05秒 from typing import List def concatString(string_list: List[str]) -&gt; str: abbreviations = &#123;'cf.', 'e.g.', 'ex.', 'etc.', 'flg.', 'i.e.', 'Mr.', 'vs.'&#125; abbr_count = 0 result = '' for str_i in string_list: if str_i in abbreviations: result += str_i return result def main(): for _ in range(10000): string_list = ['Mr.', 'Hat', 'is', 'Chasing', 'the', 'black', 'cat', '.'] result = concatString(string_list) main() if 条件的短路特性是指对if a and b这样的语句， 当a为False时将直接返回，不再计算b；对于if a orb这样的语句，当a为True时将直接返回，不再计算b。因此，为了节约运行时间，对于or语句，应该将值为True可能性比较高的变量写在or前，而and应该推后。 123456789101112131415161718# 推荐写法，代码耗时：0.03秒 from typing import List def concatString(string_list: List[str]) -&gt; str: abbreviations = &#123;'cf.', 'e.g.', 'ex.', 'etc.', 'flg.', 'i.e.', 'Mr.', 'vs.'&#125; abbr_count = 0 result = '' for str_i in string_list: if str_i[-1] == '.' and str_i in abbreviations: # 利用 if 条件的短路特性 result += str_i return result def main(): for _ in range(10000): string_list = ['Mr.', 'Hat', 'is', 'Chasing', 'the', 'black', 'cat', '.'] result = concatString(string_list) main() 6. 循环优化6.1 用for循环代替while循环123456789101112131415# 不推荐写法。代码耗时：6.7秒 def computeSum(size: int) -&gt; int: sum_ = 0 i = 0 while i &lt; size: sum_ += i i += 1 return sum_ def main(): size = 10000 for _ in range(size): sum_ = computeSum(size) main() Python 的for循环比while循环快不少。 12345678910111213# 推荐写法。代码耗时：4.3秒 def computeSum(size: int) -&gt; int: sum_ = 0 for i in range(size): # for 循环代替 while 循环 sum_ += i return sum_ def main(): size = 10000 for _ in range(size): sum_ = computeSum(size) main() 6.2 使用隐式for循环代替显式for循环针对上面的例子，更进一步可以用隐式for循环来替代显式for循环 12345678910# 推荐写法。代码耗时：1.7秒 def computeSum(size: int) -&gt; int: return sum(range(size)) # 隐式 for 循环代替显式 for 循环 def main(): size = 10000 for _ in range(size): sum = computeSum(size) main() 6.3 减少内层for循环的计算1234567891011# 不推荐写法。代码耗时：12.8秒 import math def main(): size = 10000 sqrt = math.sqrt for x in range(size): for y in range(size): z = sqrt(x) + sqrt(y) main() 上面的代码中sqrt(x)位于内侧for循环， 每次训练过程中都会重新计算一次，增加了时间开销。 123456789101112# 推荐写法。代码耗时：7.0秒 import math def main(): size = 10000 sqrt = math.sqrt for x in range(size): sqrt_x = sqrt(x) # 减少内层 for 循环的计算 for y in range(size): z = sqrt_x + sqrt(y) main() 7. 使用numba.jit我们沿用上面介绍过的例子，在此基础上使用numba.jit。numba可以将 Python 函数 JIT编译为机器码执行，大大提高代码运行速度。关于numba的更多信息见下面的主页： http://numba.pydata.org/numba.pydata.org 12345678910111213141516# 推荐写法。代码耗时：0.62秒 import numba @numba.jit def computeSum(size: float) -&gt; int: sum = 0 for i in range(size): sum += i return sum def main(): size = 10000 for _ in range(size): sum = computeSum(size) main() 8. 选择合适的数据结构Python 内置的数据结构如str, tuple, list, set, dict底层都是 C实现的，速度非常快，自己实现新的数据结构想在性能上达到内置的速度几乎是不可能的。 list类似于 C++中的std::vector，是一种动态数组。其会预分配一定内存空间，当预分配的内存空间用完，又继续向其中添加元素时，会申请一块更大的内存空间，然后将原有的所有元素都复制过去，之后销毁之前的内存空间，再插入新元素。删除元素时操作类似，当已使用内存空间比预分配内存空间的一半还少时，会另外申请一块小内存，做一次元素复制，之后销毁原有大内存空间。因此，如果有频繁的新增、删除操作，新增、删除的元素数量又很多时，list的效率不高。此时，应该考虑使用collections.deque。collections.deque是双端队列，同时具备栈和队列的特性，能够在两端进行复杂度的插入和删除操作。 list的查找操作也非常耗时。当需要在list频繁查找某些元素，或频繁有序访问这些元素时，可以使用bisect维护list对象有序并在其中进行二分查找，提升查找的效率。 另外一个常见需求是查找极小值或极大值，此时可以使用heapq模块将list转化为一个堆，使得获取最小值的时间复杂度是 。 下面的网页给出了常用的 Python 数据结构的各项操作的时间复杂度： TimeComplexity - Python Wikiwiki.python.org]]></content>
+      <categories>
+        <category>转载</category>
+      </categories>
+      <tags>
+        <tag>转载</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Unreal Python 引擎重启]]></title>
     <url>%2Fposts%2Faa6b138f.html</url>
     <content type="text"><![CDATA[前言 &emsp;&emsp;最近在虚幻商城看到一个简单而好用的免费小插件 Restart Editor&emsp;&emsp;经过之前的进阶菜单折腾之后，我觉得 Python 实现也不难。&emsp;&emsp;所以我就用 Python 来进行扩展了。 Python 脚本重启引擎123456789101112131415161718192021222324252627282930313233343536373839404142# -*- coding: utf-8 -*-"""自动重启引擎"""from __future__ import divisionfrom __future__ import print_functionfrom __future__ import absolute_import__author__ = 'timmyliang'__email__ = '820472580@qq.com'__date__ = '2020-09-18 15:53:10'import sysimport subprocessimport unrealfrom UE_Util import error_log, toasteditor_util = unreal.EditorLoadingAndSavingUtils()sys_lib = unreal.SystemLibrary()paths = unreal.Paths()@error_logdef main(): # NOTE 保存对象 check = editor_util.save_dirty_packages_with_dialog(True,True) if not check: toast(u"保存失败") return uproject = paths.get_project_file_path() editor = sys.executable # NOTE 启动当前引擎 subprocess.Popen([editor,uproject,'-skipcompile'],shell=True) # NOTE 退出引擎 sys_lib.quit_editor() if __name__ == "__main__": main() &emsp;&emsp;重启引擎之前先判断是否有资源需要进行报错操作，如果保存失败则跳过重启步骤&emsp;&emsp;然后获取引擎路径，这里通过 sys.executable 可以获取到 UE4Editor.exe&emsp;&emsp;继而通过 subprocess 外调命令行启动一个新的虚幻。&emsp;&emsp;接着就是退出当前虚幻。 &emsp;&emsp;其实脚本并不复杂，我也看了 C++ 插件的调用方式。&emsp;&emsp;C++ API 里面直接就有一个 restart 相关的函数，调用就完事了~ 配置 &emsp;&emsp;结合之前弄好的菜单扩展，可以通过配置 json 文件实现 C++ 插件的位置配置。&emsp;&emsp;唯一比较遗憾的是 Python 无法添加自定义的图标。&emsp;&emsp;虽然有 ToolMenuEntry 类里面有 setIcon 的 API ，但是 Python 暂时还无法扩充自定义的 style_set_name&emsp;&emsp;所以图标只能设置现有的引擎 style_set_name]]></content>
       <categories>
@@ -17,7 +42,7 @@
   <entry>
     <title><![CDATA[Unreal Python 蓝图库封装]]></title>
     <url>%2Fposts%2F88b44c10.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;并不是所有人都喜欢写代码的，有些时候可能蓝图操作起来更加简单。&emsp;&emsp;尽管蓝图无法进行 git 的合并还是很不方便的。 &emsp;&emsp;通过 Unreal 封装蓝图可以反向让蓝图有了 Python 的功能。&emsp;&emsp;一些逻辑比较复杂的操作用蓝图链接会非常晦涩和复杂，可以将其封装成一个蓝图节点，方便不懂代码人进行使用。 &emsp;&emsp;最初我是完全没有想到还有这种用法的，是偶然间一个师弟问我问题，提供了一个蓝图封装好的脚本。&emsp;&emsp;这才让我大开眼界，这篇文章才有机会面世~ &emsp;&emsp;由于是 Python 进行封装的，所以这些蓝图节点不推荐在运行时的游戏逻辑上使用。&emsp;&emsp;推荐在 editor utility 相关的节点来使用。 蓝图库封装 &emsp;&emsp;虚幻引擎本身可以通过创建蓝图库资源来扩展蓝图。 &emsp;&emsp;在这里面进行扩展的蓝图，也可以在别的蓝图调用到。&emsp;&emsp;但是本质上还是 蓝图 分装自己 而已。 &emsp;&emsp;用 Python 封装不需要生成这个资源，只需要继承 unreal.BlueprintFunctionLibrary 文档链接 &emsp;&emsp;废话不多说，直接上代码。 123456789import unreal# NOTE 生成一个 Unreal Class 对象@unreal.uclass()class PyBPFunctionLibrary(unreal.BlueprintFunctionLibrary): # NOTE 蓝图库分类设置为 Python Blueprint @unreal.ufunction(static=True,meta=dict(Category="Python Blueprint")) def TestFunction(): unreal.SystemLibrary.print_string(None,'Python Test Function Run',text_color=[255,255,255,255]) &emsp;&emsp;打开一个蓝图，右键输入 Test 就可以找到上面 Python 生成的蓝图了。 &emsp;&emsp;点击按钮触发的蓝图就是 执行上面封装的 Python 代码&emsp;&emsp;通过这个方法可以利用 Python 的 API 实现蓝图不好做甚至是不能做的操作。 &emsp;&emsp;比如可以通过 Python 的 json 库输出 json 数据，借助 socket 库进行远程通信，也可以借助一些第三方库实现更多骚操作。&emsp;&emsp;比如通过蓝图调用 Python 图像库处理图片。 &emsp;&emsp;蓝图其实也可以通过 Execute Python Command 节点来执行 Python 字符串。&emsp;&emsp;但是用 Python 封装的 蓝图 节点还可以返回出内部的数据，一些复杂的运算可以用 Python 封装。&emsp;&emsp;因为蓝图每个运算符都是单独的节点，连接复杂的运算会变得很混乱，另外 for 循环也可以通过 Python 进行封装简化。&emsp;&emsp;当然这些操作其实都可以通过 BlueprintFunctionLibrary 资源 连接蓝图 来实现。 &emsp;&emsp;蓝图最弱的地方是读取外部的文件数据，通过 Python 可以完全弥补这个问题。 1234567891011121314151617import osimport unreal# NOTE 生成一个 Unreal Class 对象@unreal.uclass()class PyBPFunctionLibrary(unreal.BlueprintFunctionLibrary): # NOTE 蓝图库分类设置为 Python Blueprint @unreal.ufunction(static=True,meta=dict(Category="Python Blueprint")) def TestFunction(): unreal.SystemLibrary.print_string(None,'Python Test Function Run',text_color=[255,255,255,255]) @unreal.ufunction(params=[str],ret=str,static=True,meta=dict(Category="Python Blueprint")) def TestReadFile(filepath): if not os.path.exists(filepath): return '' with open(filepath,'r') as f: data = f.read() return data &emsp;&emsp;我在 C 盘建了 txt ，写入了 read from text file 的数据&emsp;&emsp;通过 Python 封装就可以读取到里面的数据了，省得用 C++ 去写。 &emsp;&emsp;ufunction 的参数可以参考文档， 链接&emsp;&emsp;不过文档也是简单得等同于没有说。&emsp;&emsp;其中比较值得让人注意的地方是，如果参数使用 数组 需要用 unreal.Array 来封装。 123456789101112131415161718192021222324252627import osimport unreal# NOTE 生成一个 Unreal Class 对象@unreal.uclass()class PyBPFunctionLibrary(unreal.BlueprintFunctionLibrary): # NOTE 蓝图库分类设置为 Python Blueprint @unreal.ufunction(static=True,meta=dict(Category="Python Blueprint")) def TestFunction(): unreal.SystemLibrary.print_string(None,'Python Test Function Run',text_color=[255,255,255,255]) @unreal.ufunction(params=[str],ret=str,static=True,meta=dict(Category="Python Blueprint")) def TestReadFile(filepath): if not os.path.exists(filepath): return '' with open(filepath,'r') as f: data = f.read() return data @unreal.ufunction(params=[unreal.Array(str)],ret=str,static=True,meta=dict(Category="Python Blueprint")) def TestReadArrayFile(file_list): data = "" for filepath in file_list: if not os.path.exists(filepath): continue with open(filepath,'r') as f: data += f.read() return data 注意事项 &emsp;&emsp;如果对已经使用的节点进行修改需要谨慎，目前 python 还不是很稳定，可能会导致很多报错。&emsp;&emsp;另外 Python 的蓝图封装是动态生成的，重开引擎之后，相关的节点需要重新执行一遍 Python 脚本来生成。&emsp;&emsp;否则蓝图就是红色显示，不起作用。 &emsp;&emsp;Python 封装的节点如果使用 Python 的库就无法在运行时使用了，编译就会提示报错。 &emsp;&emsp;不过如果是使用 unreal 模块的封装还是可以运行部分的，就是限制太大了，而且这样和纯蓝图没有什么区别。 1234567import unreal@unreal.uclass()class PyRuntimeBPFunctionLibrary(unreal.BlueprintFunctionLibrary): @unreal.ufunction(static=True,meta=dict(Category="Python Runtime")) def TestRuntime(): frame = unreal.SystemLibrary.get_frame_count() unreal.SystemLibrary.print_string(None,str(frame),text_color=[255,255,255,255]) 总结 &emsp;&emsp;以上就是 Python 反向封装蓝图的效果。&emsp;&emsp;我个人还是不太习惯用蓝图，可能主要还是对 虚幻 不太熟悉吧。&emsp;&emsp;而且 Python 的文档比较全面，参考 Python 文档补全了 蓝图 文档过于简略的问题。]]></content>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;并不是所有人都喜欢写代码的，有些时候可能蓝图操作起来更加简单。&emsp;&emsp;尽管蓝图无法进行 git 的合并还是很不方便的。 &emsp;&emsp;通过 Unreal 封装蓝图可以反向让蓝图有了 Python 的功能。&emsp;&emsp;一些逻辑比较复杂的操作用蓝图链接会非常晦涩和复杂，可以将其封装成一个蓝图节点，方便不懂代码人进行使用。 &emsp;&emsp;最初我是完全没有想到还有这种用法的，是偶然间一个师弟问我问题，提供了一个蓝图封装好的脚本。&emsp;&emsp;这才让我大开眼界，这篇文章才有机会面世~&emsp;&emsp;后来我问了师弟的写法是从哪里来，可以参考这篇文章 链接 &emsp;&emsp;由于是 Python 进行封装的，所以这些蓝图节点不推荐在运行时的游戏逻辑上使用。&emsp;&emsp;推荐在 editor utility 相关的节点来使用。 蓝图库封装 &emsp;&emsp;虚幻引擎本身可以通过创建蓝图库资源来扩展蓝图。 &emsp;&emsp;在这里面进行扩展的蓝图，也可以在别的蓝图调用到。&emsp;&emsp;但是本质上还是 蓝图 分装自己 而已。 &emsp;&emsp;用 Python 封装不需要生成这个资源，只需要继承 unreal.BlueprintFunctionLibrary 文档链接 &emsp;&emsp;废话不多说，直接上代码。 123456789import unreal# NOTE 生成一个 Unreal Class 对象@unreal.uclass()class PyBPFunctionLibrary(unreal.BlueprintFunctionLibrary): # NOTE 蓝图库分类设置为 Python Blueprint @unreal.ufunction(static=True,meta=dict(Category="Python Blueprint")) def TestFunction(): unreal.SystemLibrary.print_string(None,'Python Test Function Run',text_color=[255,255,255,255]) &emsp;&emsp;打开一个蓝图，右键输入 Test 就可以找到上面 Python 生成的蓝图了。 &emsp;&emsp;点击按钮触发的蓝图就是 执行上面封装的 Python 代码&emsp;&emsp;通过这个方法可以利用 Python 的 API 实现蓝图不好做甚至是不能做的操作。 &emsp;&emsp;比如可以通过 Python 的 json 库输出 json 数据，借助 socket 库进行远程通信，也可以借助一些第三方库实现更多骚操作。&emsp;&emsp;比如通过蓝图调用 Python 图像库处理图片。 &emsp;&emsp;蓝图其实也可以通过 Execute Python Command 节点来执行 Python 字符串。&emsp;&emsp;但是用 Python 封装的 蓝图 节点还可以返回出内部的数据，一些复杂的运算可以用 Python 封装。&emsp;&emsp;因为蓝图每个运算符都是单独的节点，连接复杂的运算会变得很混乱，另外 for 循环也可以通过 Python 进行封装简化。&emsp;&emsp;当然这些操作其实都可以通过 BlueprintFunctionLibrary 资源 连接蓝图 来实现。 &emsp;&emsp;蓝图最弱的地方是读取外部的文件数据，通过 Python 可以完全弥补这个问题。 1234567891011121314151617import osimport unreal# NOTE 生成一个 Unreal Class 对象@unreal.uclass()class PyBPFunctionLibrary(unreal.BlueprintFunctionLibrary): # NOTE 蓝图库分类设置为 Python Blueprint @unreal.ufunction(static=True,meta=dict(Category="Python Blueprint")) def TestFunction(): unreal.SystemLibrary.print_string(None,'Python Test Function Run',text_color=[255,255,255,255]) @unreal.ufunction(params=[str],ret=str,static=True,meta=dict(Category="Python Blueprint")) def TestReadFile(filepath): if not os.path.exists(filepath): return '' with open(filepath,'r') as f: data = f.read() return data &emsp;&emsp;我在 C 盘建了 txt ，写入了 read from text file 的数据&emsp;&emsp;通过 Python 封装就可以读取到里面的数据了，省得用 C++ 去写。 &emsp;&emsp;ufunction 的参数可以参考文档， 链接&emsp;&emsp;不过文档也是简单得等同于没有说。&emsp;&emsp;其中比较值得让人注意的地方是，如果参数使用 数组 需要用 unreal.Array 来封装。 123456789101112131415161718192021222324252627import osimport unreal# NOTE 生成一个 Unreal Class 对象@unreal.uclass()class PyBPFunctionLibrary(unreal.BlueprintFunctionLibrary): # NOTE 蓝图库分类设置为 Python Blueprint @unreal.ufunction(static=True,meta=dict(Category="Python Blueprint")) def TestFunction(): unreal.SystemLibrary.print_string(None,'Python Test Function Run',text_color=[255,255,255,255]) @unreal.ufunction(params=[str],ret=str,static=True,meta=dict(Category="Python Blueprint")) def TestReadFile(filepath): if not os.path.exists(filepath): return '' with open(filepath,'r') as f: data = f.read() return data @unreal.ufunction(params=[unreal.Array(str)],ret=str,static=True,meta=dict(Category="Python Blueprint")) def TestReadArrayFile(file_list): data = "" for filepath in file_list: if not os.path.exists(filepath): continue with open(filepath,'r') as f: data += f.read() return data 注意事项 &emsp;&emsp;如果对已经使用的节点进行修改需要谨慎，目前 python 还不是很稳定，可能会导致很多报错。&emsp;&emsp;另外 Python 的蓝图封装是动态生成的，重开引擎之后，相关的节点需要重新执行一遍 Python 脚本来生成。&emsp;&emsp;否则蓝图就是红色显示，不起作用。 &emsp;&emsp;Python 封装的节点如果使用 Python 的库就无法在运行时使用了，编译就会提示报错。 &emsp;&emsp;不过如果是使用 unreal 模块的封装还是可以运行部分的，就是限制太大了，而且这样和纯蓝图没有什么区别。 1234567import unreal@unreal.uclass()class PyRuntimeBPFunctionLibrary(unreal.BlueprintFunctionLibrary): @unreal.ufunction(static=True,meta=dict(Category="Python Runtime")) def TestRuntime(): frame = unreal.SystemLibrary.get_frame_count() unreal.SystemLibrary.print_string(None,str(frame),text_color=[255,255,255,255]) 总结 &emsp;&emsp;以上就是 Python 反向封装蓝图的效果。&emsp;&emsp;我个人还是不太习惯用蓝图，可能主要还是对 虚幻 不太熟悉吧。&emsp;&emsp;而且 Python 的文档比较全面，参考 Python 文档补全了 蓝图 文档过于简略的问题。]]></content>
       <categories>
         <category>游戏开发</category>
         <category>Unreal</category>
@@ -52,8 +77,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -64,7 +89,7 @@
   <entry>
     <title><![CDATA[Unreal Python 进阶菜单扩展]]></title>
     <url>%2Fposts%2Fcad78e0d.html</url>
-    <content type="text"><![CDATA[前言 &emsp;&emsp;最近抽空深入研究了一下 Unreal Python 的菜单扩展。&emsp;&emsp;扩展菜单的主要方法我之前的文章有提到过 Unreal PyToolkit 插件&emsp;&emsp;当时主要参考论坛的一篇帖子用 Python 实现下拉菜单 链接 &emsp;&emsp;其实有个地方让我很困惑， menu 获取需要通过 ToolMenus 的 find_menu 实现 1234menus = unreal.ToolMenus.get()# NOTE 获取主界面的主菜单位置main_menu = menus.find_menu("LevelEditor.MainMenu") &emsp;&emsp;但是 find_menu 传入的 menu 字符串是从何而来的，完全就没有概念了。&emsp;&emsp;我最先想到的还是从 C++ 入手 ~ C++ 源码探索 &emsp;&emsp;首先在 VScode 查 UToolMenus ， 然后通过 F12 可以定位到头文件。&emsp;&emsp;头文件名为 ToolMenus.h ， 可以用 ctrl+P 去定位 ToolMenus.cpp 脚本&emsp;&emsp;ToolMenus.cpp 脚本里面可以找到 FindMenu 的函数。 &emsp;&emsp;可以看到是通过 Menus 字典来记录引擎中所有的 Menu 名称。&emsp;&emsp;然而比较头疼的地方时 Menus 在头文件里面设置为了私有变量，无法通过 Python 亦或是 C++ 插件来获取到里面存储的值 &emsp;&emsp;迫不得已，我改了引擎源码，实现蓝图调用，然后通过 Python 获取字典存储的值。 1234567891011121314151617181920212223242526272829303132333435&#123; "ContentBrowser.AssetContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_0"', "ContentBrowser.FolderContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_1"', "MainFrame.MainMenu.Asset": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_2"', "LevelEditor.ActorContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_3"', "ContentBrowser.AssetContextMenu.SoundWave": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_4"', "LevelEditor.MainMenu.Window": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_5"', "LevelEditor.MainMenu.Help": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_6"', "AssetEditor.SkeletalMeshEditor.ToolBar": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_7"', "LevelEditor.MainMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_8"', "ContentBrowser.AssetContextMenu.LevelSequence": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_9"', "MediaPlayer.AssetPickerAssetContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_10"', "ContentBrowser.AssetContextMenu.CameraAnim": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_11"', "LevelEditor.LevelEditorToolBar": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_12"', "LevelEditor.MainMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_13"', "LevelEditor.MainMenu.Edit": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_14"', "LevelEditor.LevelEditorToolBar.SourceControl": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_15"', "LevelEditor.LevelEditorToolBar.Cinematics": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_16"', "LevelEditor.LevelEditorToolBar.BuildComboButton": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_17"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingQuality": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_18"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingDensity": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_19"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingResolution": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_20"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_21"', "LevelEditor.LevelEditorToolBar.EditorModes": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_22"', "LevelEditor.LevelEditorToolBar.CompileComboButton": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_23"', "LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_24"', "LevelEditor.LevelEditorToolBar.OpenBlueprint": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_25"', "LevelEditor.LevelEditorSceneOutliner.ContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_30"', "MainFrame.MainMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_31"', "MainFrame.MainTabMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_32"', "MainFrame.MainMenu.Edit": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_33"', "MainFrame.MainMenu.Window": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_34"', "MainFrame.MainMenu.Help": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_35"', "MainFrame.MainMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_36"',&#125; &emsp;&emsp;现在除了 LevelEditor.MainMenu 我们有了更多的 menu 选项了。&emsp;&emsp;比如上面显示的就有 ContentBrowser.AssetContextMenu 还有 ContentBrowser.FolderContextMenu 以及 LevelEditor.LevelEditorToolBar&emsp;&emsp;由此可以得出， 应该可以用 Python 扩展这里相应的菜单的。 Python 右键菜单扩展 &emsp;&emsp;基于上面的 AssetContextMenu 和 FolderContextMenu 的信息&emsp;&emsp;我们可以分别去扩展右键资弹出的源菜单以及右键文件夹弹出的菜单。 1234567891011121314import unrealmenus = unreal.ToolMenus.get()menu_name = "ContentBrowser.FolderContextMenu"menu = menus.find_menu(menu_name)entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY)entry.set_label("测试 entry")# NOTE 注册执行的命令typ = unreal.ToolMenuStringCommandType.PYTHONentry.set_string_command(typ, "", 'print "entry 触发测试"')menu.add_menu_entry('AssetContextSourceControl',entry)# menus.refresh_all_widgets() &emsp;&emsp;本来 UI 修改需要 refresh_all_widgets 才会更新，因为右键菜单是右键生成时候会自动刷新，所以不执行也不影响。&emsp;&emsp;后面生成 Toolbar 扩展的时候踩了这个坑。 &emsp;&emsp;另外 AssetContextSourceControl 这个名称是 从何而来 的&emsp;&emsp;这就需要在编辑器配置里面开启 UI 名称的显示 &emsp;&emsp;开启上面的选项之后，右键菜单就会多出 绿色 的文字标注菜单的名称。 &emsp;&emsp;文件夹菜单扩展也是同理，将菜单的名称修改并且找到菜单相关的 section 进行添加即可。 Python Toolbar 添加 &emsp;&emsp;上面开启了 UI 显示之后，右键菜单可以显示了，但是 Toolbar 的显示依然是没有的。&emsp;&emsp;这就需要重启一下 引擎。 &emsp;&emsp;有了上面的标注就可以通过上面类似的方法添加 Toolbar 按钮 12345678910111213141516import unrealmenus = unreal.ToolMenus.get()menu_name = "LevelEditor.LevelEditorToolBar"menu = menus.find_menu(menu_name)# NOTE 生成类型改为 Toolbar 的按钮entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.TOOL_BAR_BUTTON)entry.set_label("测试 button")# NOTE 注册执行的命令typ = unreal.ToolMenuStringCommandType.PYTHONentry.set_string_command(typ, "", 'print "entry 触发测试"')menu.add_menu_entry('File',entry)# NOTE 添加刷新才能立刻看到添加的效果menus.refresh_all_widgets() &emsp;&emsp;执行上面的代码就可以在动态给 Toolbar 添加按钮了。 通过 Python 获取引擎生成的菜单 &emsp;&emsp;上面获取菜单名称的方式是通过 C++ 魔改引擎源码才能实现。&emsp;&emsp;这样限制非常大，有没有更加友好的获取方式呢？ &emsp;&emsp;我看着上面 C++ 获取的字典，不由得计从心生~&emsp;&emsp;menu 的引擎临时路径是有一定规律的，通过这个规律应该可以用 Python 动态读取到生成的菜单。 12345678910111213141516import unrealdef list_menu(num=1000): menu_list = set() for i in range(num): obj = unreal.find_object(None,"/Engine/Transient.ToolMenus_0:ToolMenu_%s" % i) if not obj: continue menu_name = str(obj.menu_name) if menu_name != "None": menu_list.add(menu_name) return list(menu_list)print(list_menu())LogPython: ['LevelEditor.LevelEditorToolBar', 'ContentBrowser.AssetContextMenu.LevelSequence', 'MediaPlayer.AssetPickerAssetContextMenu', 'ContentBrowser.AssetContextMenu', 'LevelEditor.LevelEditorToolBar.CompileComboButton', 'MainFrame.MainMenu', 'LevelEditor.MainMenu.Edit', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingResolution', 'LevelEditor.MainMenu', 'LevelEditor.MainMenu.File', 'AssetEditor.SkeletalMeshEditor.ToolBar', 'MainFrame.MainMenu.Edit', 'ContentBrowser.AssetContextMenu.CameraAnim', 'LevelEditor.MainMenu.Window', 'LevelEditor.LevelEditorToolBar.BuildComboButton', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingQuality', 'MainFrame.MainMenu.File', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingDensity', 'LevelEditor.ActorContextMenu', 'ContentBrowser.AssetContextMenu.SoundWave', 'MainFrame.MainTabMenu.File', 'LevelEditor.LevelEditorToolBar.SourceControl', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo', 'LevelEditor.LevelEditorSceneOutliner.ContextMenu', 'MainFrame.MainMenu.Window', 'LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings', 'MainFrame.MainMenu.Asset', 'LevelEditor.LevelEditorToolBar.Cinematics', 'LevelEditor.MainMenu.Help', 'LevelEditor.LevelEditorToolBar.EditorModes', 'MainFrame.MainMenu.Help', 'ContentBrowser.FolderContextMenu', 'LevelEditor.LevelEditorToolBar.OpenBlueprint'] &emsp;&emsp;我想要的效果实现了~&emsp;&emsp;这样就不需要魔改引擎代码，也可以获取出到大部分的 menu 名称。&emsp;&emsp;而且上面的数组只是默认开启引擎下的菜单，如果多打开一些编辑窗口，还可以获取到更多的 菜单 。 &emsp;&emsp;由于不知道到底有多少个菜单生成了，所以我默认定的循环数是 1000 ，基本是够用的，而且遍历速度很快。&emsp;&emsp;另外还有部分的菜单是 None 无名氏，估计是注册的时候没有给定名称，也不好判断是哪里的菜单，所以我就过滤掉了。 通过 Python 扩展 AddNewContextMenu &emsp;&emsp;AddNewContextMenu 就是没有选择任何资源的时候在 资源浏览器 右键弹出的菜单。&emsp;&emsp;刚好我遇到了在这个菜单上进行扩展的需求，所以为了用 Python 实现踩了不少坑(:з」∠) &emsp;&emsp;从这个名字可以知道，默认开启引擎的时候并没有加载到这个菜单。&emsp;&emsp;使用上面写道 list_menu 函数是获取不到的，除非在 资源浏览器 进行右键触发。&emsp;&emsp;这个时候 list_menu 就会多出这个 ContentBrowser.AddNewContextMenu 的菜单名称。&emsp;&emsp;这就产生了很严重的问题，无法实现 C++ 插件的菜单嵌入效果。&emsp;&emsp;不可能让使用者手动右键生成一下菜单，再让他点击什么按钮触发，将需要的 entry 添加到菜单里呀(:з」∠) &emsp;&emsp;后来为了能够完成需求，我还是用 C++ 来解决了这个问题 参考知乎这篇文章 &emsp;&emsp;不过搞定了需求，周末还是抽空研究怎么通过 Python 来解决这个问题。&emsp;&emsp;这个过程还实现了一些有趣的效果，比如先注册生成 menu ，导致右键菜单变成了我自己自定义的菜单了。 12345678910111213menus = unreal.ToolMenus.get()menu_name = "ContentBrowser.AddNewContextMenu"menu = menus.find_menu(menu_name)# NOTE 如果已经注册则删除 | 否则无法执行 register_menuif menus.is_menu_registered(menu_name): menus.remove_menu(menu_name)menu = menus.register_menu(menu_name)entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY)entry.set_label("测试 entry")menu.add_menu_entry('',entry) &emsp;&emsp;其他菜单也可以尝试着这样魔改成自己的菜单。&emsp;&emsp;如果可以配合引擎快捷键触发不同的菜单，还是有点意思的。 &emsp;&emsp;上面魔改的菜单要恢复也不难，将自己做的菜单 删除掉 ，默认右键就会生成回正常的菜单了。 &emsp;&emsp;问题是这个折腾依然没能解决实现我想要的效果(:з」∠)&emsp;&emsp;后面还是想往 C++ 的方向入手，能不能在右键菜单事件添加 回调事件，配合触发 Python 脚本。&emsp;&emsp;也的确在 C++ 文档里面找到相关的回调函数 链接&emsp;&emsp;但是要如何接入 Python 还不是很确定。 &emsp;&emsp;后面思路一转，还有更加简单的实现方式，可以用定时器来做。&emsp;&emsp;虽然定时器不是个好点子，听着就比较浪费资源，但是考虑到 Python 遍历 menu 的速度快到没感觉。&emsp;&emsp;定时执行嵌入操作的卡顿应该感知不到。 1234567891011121314151617181920212223242526import unrealfrom Qt import QtCorefrom functools import partialdef add_menu(timer): print("timer running...") menu = menus.find_menu("ContentBrowser.AddNewContextMenu") if not menu: return # NOTE 如果存在停止计时器 timer.stop() print("timer stop") entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY) entry.set_label("测试 entry") menu.add_menu_entry('ContentBrowserNewAdvancedAsset',entry) menus.refresh_all_widgets()# NOTE 使用 Qt 的定时器实现 js setInterval 函数的效果# NOTE Python 原生实现比较麻烦，用 Qt 的 Timer 比较简洁timer = QtCore.QTimer()timer.timeout.connect(partial(add_menu,timer))timer.start(1000) &emsp;&emsp;完美通过定时器实现动态嵌入菜单。 PyToolkit Json 配置优化 &emsp;&emsp;通过上面的一轮折腾，之前 PyToolkit 提供的菜单配置完全可以更加灵活。&emsp;&emsp;于是我又开始重写之前的 json 配置的读取和生成，通过递归的方法，自动处理多重嵌套菜单的效果。 &emsp;&emsp;具体的配置方法我写到了 PyToolkit 的帮助文档里面 链接~ &emsp;&emsp;上面四种嵌入可以完全通过 json 配置来完成~ 总结 &emsp;&emsp;利用 Python 做菜单扩展的确方便了很多，但是 Python 也并不是万能的。&emsp;&emsp;例如我之前研究过的 Sequencer 菜单工具栏嵌入 扩展就只能通过 C++ 来实现&emsp;&emsp;因为 list_menu 没有找到相关的菜单名称。 &emsp;&emsp;最近博客因为各种原因写好了文章却没有更新，更新频率也下降了(:з」∠)&emsp;&emsp;希望后续可以整理规划好时间，继续坚持做博客的记录。]]></content>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;最近抽空深入研究了一下 Unreal Python 的菜单扩展。&emsp;&emsp;扩展菜单的主要方法我之前的文章有提到过 Unreal PyToolkit 插件&emsp;&emsp;当时主要参考论坛的一篇帖子用 Python 实现下拉菜单 链接 &emsp;&emsp;其实有个地方让我很困惑， menu 获取需要通过 ToolMenus 的 find_menu 实现 1234menus = unreal.ToolMenus.get()# NOTE 获取主界面的主菜单位置main_menu = menus.find_menu("LevelEditor.MainMenu") &emsp;&emsp;但是 find_menu 传入的 menu 字符串是从何而来的，完全就没有概念了。&emsp;&emsp;我最先想到的还是从 C++ 入手 ~ C++ 源码探索 &emsp;&emsp;首先在 VScode 查 UToolMenus ， 然后通过 F12 可以定位到头文件。&emsp;&emsp;头文件名为 ToolMenus.h ， 可以用 ctrl+P 去定位 ToolMenus.cpp 脚本&emsp;&emsp;ToolMenus.cpp 脚本里面可以找到 FindMenu 的函数。 &emsp;&emsp;可以看到是通过 Menus 字典来记录引擎中所有的 Menu 名称。&emsp;&emsp;然而比较头疼的地方时 Menus 在头文件里面设置为了私有变量，无法通过 Python 亦或是 C++ 插件来获取到里面存储的值 &emsp;&emsp;迫不得已，我改了引擎源码，实现蓝图调用，然后通过 Python 获取字典存储的值。 1234567891011121314151617181920212223242526272829303132333435&#123; "ContentBrowser.AssetContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_0"', "ContentBrowser.FolderContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_1"', "MainFrame.MainMenu.Asset": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_2"', "LevelEditor.ActorContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_3"', "ContentBrowser.AssetContextMenu.SoundWave": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_4"', "LevelEditor.MainMenu.Window": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_5"', "LevelEditor.MainMenu.Help": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_6"', "AssetEditor.SkeletalMeshEditor.ToolBar": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_7"', "LevelEditor.MainMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_8"', "ContentBrowser.AssetContextMenu.LevelSequence": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_9"', "MediaPlayer.AssetPickerAssetContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_10"', "ContentBrowser.AssetContextMenu.CameraAnim": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_11"', "LevelEditor.LevelEditorToolBar": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_12"', "LevelEditor.MainMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_13"', "LevelEditor.MainMenu.Edit": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_14"', "LevelEditor.LevelEditorToolBar.SourceControl": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_15"', "LevelEditor.LevelEditorToolBar.Cinematics": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_16"', "LevelEditor.LevelEditorToolBar.BuildComboButton": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_17"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingQuality": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_18"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingDensity": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_19"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingResolution": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_20"', "LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_21"', "LevelEditor.LevelEditorToolBar.EditorModes": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_22"', "LevelEditor.LevelEditorToolBar.CompileComboButton": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_23"', "LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_24"', "LevelEditor.LevelEditorToolBar.OpenBlueprint": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_25"', "LevelEditor.LevelEditorSceneOutliner.ContextMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_30"', "MainFrame.MainMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_31"', "MainFrame.MainTabMenu.File": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_32"', "MainFrame.MainMenu.Edit": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_33"', "MainFrame.MainMenu.Window": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_34"', "MainFrame.MainMenu.Help": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_35"', "MainFrame.MainMenu": ToolMenu'"/Engine/Transient.ToolMenus_0:ToolMenu_36"',&#125; &emsp;&emsp;现在除了 LevelEditor.MainMenu 我们有了更多的 menu 选项了。&emsp;&emsp;比如上面显示的就有 ContentBrowser.AssetContextMenu 还有 ContentBrowser.FolderContextMenu 以及 LevelEditor.LevelEditorToolBar&emsp;&emsp;由此可以得出， 应该可以用 Python 扩展这里相应的菜单的。 Python 右键菜单扩展 &emsp;&emsp;基于上面的 AssetContextMenu 和 FolderContextMenu 的信息&emsp;&emsp;我们可以分别去扩展右键资弹出的源菜单以及右键文件夹弹出的菜单。 1234567891011121314import unrealmenus = unreal.ToolMenus.get()menu_name = "ContentBrowser.FolderContextMenu"menu = menus.find_menu(menu_name)entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY)entry.set_label("测试 entry")# NOTE 注册执行的命令typ = unreal.ToolMenuStringCommandType.PYTHONentry.set_string_command(typ, "", 'print "entry 触发测试"')menu.add_menu_entry('AssetContextSourceControl',entry)# menus.refresh_all_widgets() &emsp;&emsp;本来 UI 修改需要 refresh_all_widgets 才会更新，因为右键菜单是右键生成时候会自动刷新，所以不执行也不影响。&emsp;&emsp;后面生成 Toolbar 扩展的时候踩了这个坑。 &emsp;&emsp;另外 AssetContextSourceControl 这个名称是 从何而来 的&emsp;&emsp;这就需要在编辑器配置里面开启 UI 名称的显示 &emsp;&emsp;开启上面的选项之后，右键菜单就会多出 绿色 的文字标注菜单的名称。 &emsp;&emsp;文件夹菜单扩展也是同理，将菜单的名称修改并且找到菜单相关的 section 进行添加即可。 Python Toolbar 添加 &emsp;&emsp;上面开启了 UI 显示之后，右键菜单可以显示了，但是 Toolbar 的显示依然是没有的。&emsp;&emsp;这就需要重启一下 引擎。 &emsp;&emsp;有了上面的标注就可以通过上面类似的方法添加 Toolbar 按钮 12345678910111213141516import unrealmenus = unreal.ToolMenus.get()menu_name = "LevelEditor.LevelEditorToolBar"menu = menus.find_menu(menu_name)# NOTE 生成类型改为 Toolbar 的按钮entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.TOOL_BAR_BUTTON)entry.set_label("测试 button")# NOTE 注册执行的命令typ = unreal.ToolMenuStringCommandType.PYTHONentry.set_string_command(typ, "", 'print "entry 触发测试"')menu.add_menu_entry('File',entry)# NOTE 添加刷新才能立刻看到添加的效果menus.refresh_all_widgets() &emsp;&emsp;执行上面的代码就可以在动态给 Toolbar 添加按钮了。 通过 Python 获取引擎生成的菜单 &emsp;&emsp;上面获取菜单名称的方式是通过 C++ 魔改引擎源码才能实现。&emsp;&emsp;这样限制非常大，有没有更加友好的获取方式呢？ &emsp;&emsp;我看着上面 C++ 获取的字典，不由得计从心生~&emsp;&emsp;menu 的引擎临时路径是有一定规律的，通过这个规律应该可以用 Python 动态读取到生成的菜单。 12345678910111213141516import unrealdef list_menu(num=1000): menu_list = set() for i in range(num): obj = unreal.find_object(None,"/Engine/Transient.ToolMenus_0:ToolMenu_%s" % i) if not obj: continue menu_name = str(obj.menu_name) if menu_name != "None": menu_list.add(menu_name) return list(menu_list)print(list_menu())LogPython: ['LevelEditor.LevelEditorToolBar', 'ContentBrowser.AssetContextMenu.LevelSequence', 'MediaPlayer.AssetPickerAssetContextMenu', 'ContentBrowser.AssetContextMenu', 'LevelEditor.LevelEditorToolBar.CompileComboButton', 'MainFrame.MainMenu', 'LevelEditor.MainMenu.Edit', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingResolution', 'LevelEditor.MainMenu', 'LevelEditor.MainMenu.File', 'AssetEditor.SkeletalMeshEditor.ToolBar', 'MainFrame.MainMenu.Edit', 'ContentBrowser.AssetContextMenu.CameraAnim', 'LevelEditor.MainMenu.Window', 'LevelEditor.LevelEditorToolBar.BuildComboButton', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingQuality', 'MainFrame.MainMenu.File', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo.LightingDensity', 'LevelEditor.ActorContextMenu', 'ContentBrowser.AssetContextMenu.SoundWave', 'MainFrame.MainTabMenu.File', 'LevelEditor.LevelEditorToolBar.SourceControl', 'LevelEditor.LevelEditorToolBar.BuildComboButton.LightingInfo', 'LevelEditor.LevelEditorSceneOutliner.ContextMenu', 'MainFrame.MainMenu.Window', 'LevelEditor.LevelEditorToolBar.LevelToolbarQuickSettings', 'MainFrame.MainMenu.Asset', 'LevelEditor.LevelEditorToolBar.Cinematics', 'LevelEditor.MainMenu.Help', 'LevelEditor.LevelEditorToolBar.EditorModes', 'MainFrame.MainMenu.Help', 'ContentBrowser.FolderContextMenu', 'LevelEditor.LevelEditorToolBar.OpenBlueprint'] &emsp;&emsp;我想要的效果实现了~&emsp;&emsp;这样就不需要魔改引擎代码，也可以获取出到大部分的 menu 名称。&emsp;&emsp;而且上面的数组只是默认开启引擎下的菜单，如果多打开一些编辑窗口，还可以获取到更多的 菜单 。 &emsp;&emsp;由于不知道到底有多少个菜单生成了，所以我默认定的循环数是 1000 ，基本是够用的，而且遍历速度很快。&emsp;&emsp;另外还有部分的菜单是 None 无名氏，估计是注册的时候没有给定名称，也不好判断是哪里的菜单，所以我就过滤掉了。 通过 Python 扩展 AddNewContextMenu &emsp;&emsp;AddNewContextMenu 就是没有选择任何资源的时候在 资源浏览器 右键弹出的菜单。&emsp;&emsp;刚好我遇到了在这个菜单上进行扩展的需求，所以为了用 Python 实现踩了不少坑(:з」∠) &emsp;&emsp;从这个名字可以知道，默认开启引擎的时候并没有加载到这个菜单。&emsp;&emsp;使用上面写道 list_menu 函数是获取不到的，除非在 资源浏览器 进行右键触发。&emsp;&emsp;这个时候 list_menu 就会多出这个 ContentBrowser.AddNewContextMenu 的菜单名称。&emsp;&emsp;这就产生了很严重的问题，无法实现 C++ 插件的菜单嵌入效果。&emsp;&emsp;不可能让使用者手动右键生成一下菜单，再让他点击什么按钮触发，将需要的 entry 添加到菜单里呀(:з」∠) &emsp;&emsp;后来为了能够完成需求，我还是用 C++ 来解决了这个问题 参考知乎这篇文章 &emsp;&emsp;不过搞定了需求，周末还是抽空研究怎么通过 Python 来解决这个问题。&emsp;&emsp;这个过程还实现了一些有趣的效果，比如先注册生成 menu ，导致右键菜单变成了我自己自定义的菜单了。 12345678910111213menus = unreal.ToolMenus.get()menu_name = "ContentBrowser.AddNewContextMenu"menu = menus.find_menu(menu_name)# NOTE 如果已经注册则删除 | 否则无法执行 register_menuif menus.is_menu_registered(menu_name): menus.remove_menu(menu_name)menu = menus.register_menu(menu_name)entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY)entry.set_label("测试 entry")menu.add_menu_entry('',entry) &emsp;&emsp;其他菜单也可以尝试着这样魔改成自己的菜单。&emsp;&emsp;如果可以配合引擎快捷键触发不同的菜单，还是有点意思的。 &emsp;&emsp;上面魔改的菜单要恢复也不难，将自己做的菜单 删除掉 ，默认右键就会生成回正常的菜单了。 &emsp;&emsp;问题是这个折腾依然没能解决实现我想要的效果(:з」∠)&emsp;&emsp;后面还是想往 C++ 的方向入手，能不能在右键菜单事件添加 回调事件，配合触发 Python 脚本。&emsp;&emsp;也的确在 C++ 文档里面找到相关的回调函数 链接&emsp;&emsp;但是要如何接入 Python 还不是很确定。 &emsp;&emsp;后面思路一转，还有更加简单的实现方式，可以用定时器来做。&emsp;&emsp;虽然定时器不是个好点子，听着就比较浪费资源，但是考虑到 Python 遍历 menu 的速度快到没感觉。&emsp;&emsp;定时执行嵌入操作的卡顿应该感知不到。 1234567891011121314151617181920212223242526import unrealfrom Qt import QtCorefrom functools import partialdef add_menu(timer): print("timer running...") menu = menus.find_menu("ContentBrowser.AddNewContextMenu") if not menu: return # NOTE 如果存在停止计时器 timer.stop() print("timer stop") entry = unreal.ToolMenuEntry(type=unreal.MultiBlockType.MENU_ENTRY) entry.set_label("测试 entry") menu.add_menu_entry('ContentBrowserNewAdvancedAsset',entry) menus.refresh_all_widgets()# NOTE 使用 Qt 的定时器实现 js setInterval 函数的效果# NOTE Python 原生实现比较麻烦，用 Qt 的 Timer 比较简洁timer = QtCore.QTimer()timer.timeout.connect(partial(add_menu,timer))timer.start(1000) &emsp;&emsp;完美通过定时器实现动态嵌入菜单。 PyToolkit Json 配置优化 &emsp;&emsp;通过上面的一轮折腾，之前 PyToolkit 提供的菜单配置完全可以更加灵活。&emsp;&emsp;于是我又开始重写之前的 json 配置的读取和生成，通过递归的方法，自动处理多重嵌套菜单的效果。 &emsp;&emsp;具体的配置方法我写到了 PyToolkit 的帮助文档里面 链接~ &emsp;&emsp;上面四种嵌入可以完全通过 json 配置来完成~ 总结 &emsp;&emsp;利用 Python 做菜单扩展的确方便了很多，但是 Python 也并不是万能的。&emsp;&emsp;例如我之前研究过的 Sequencer 菜单工具栏嵌入 扩展就只能通过 C++ 来实现&emsp;&emsp;因为 list_menu 没有找到相关的菜单名称。 &emsp;&emsp;最近博客因为各种原因写好了文章却没有更新，更新频率也下降了(:з」∠)&emsp;&emsp;希望后续可以整理规划好时间，继续坚持做博客的记录。 2020-9-21 修复引擎崩溃 BUG &emsp;&emsp;记录上面方案的问题，如果引擎加载地图之类的大文件，需要比较长的时间。&emsp;&emsp;如果在这个过程中触发定时器的 嵌入 操作，会直接导致引擎崩溃。 &emsp;&emsp;最开始我查了 C++ 源码，打算做一个 C++ 函数判断引擎是否出在加载状态。&emsp;&emsp;我参考报错的 FUObjectThreadContext::Get().IsRoutingPostLoad 进行判断，结果还是产生了错误。 123456789101112131415161718192021222324252627282930313233343536373839LoginId:9f3ca733407852eca305588adf6ea300EpicAccountId:6d3892f3bd8843aea3ad36ed181ea5b8Assertion failed: !FUObjectThreadContext::Get().IsRoutingPostLoad [File:G:&#x2F;UnrealEngine425&#x2F;Engine&#x2F;Source&#x2F;Runtime&#x2F;CoreUObject&#x2F;Private&#x2F;UObject&#x2F;ScriptCore.cpp] [Line: 1755] Cannot call UnrealScript (RedArtToolkitBPLibrary &#x2F;Engine&#x2F;Transient.RedArtToolkitBPLibrary_206 - Function &#x2F;Script&#x2F;RedArtToolkit.RedArtToolkitBPLibrary:IsRoutingPostLoad) while PostLoading objectsUE4Editor_Core!AssertFailedImplV() [g:\unrealengine425\engine\source\runtime\core\private\misc\assertionmacros.cpp:100]UE4Editor_Core!FDebug::CheckVerifyFailedImpl() [g:\unrealengine425\engine\source\runtime\core\private\misc\assertionmacros.cpp:450]UE4Editor_CoreUObject!DispatchCheckVerify&lt;void,&lt;lambda_2781c71baf617450f2ef557efebba817&gt; &gt;() [g:\unrealengine425\engine\source\runtime\core\public\misc\assertionmacros.h:161]UE4Editor_CoreUObject!UObject::ProcessEvent() [g:\unrealengine425\engine\source\runtime\coreuobject\private\uobject\scriptcore.cpp:1755]UE4Editor_PythonScriptPlugin!PyUtil::InvokeFunctionCall() [g:\unrealengine425\engine\plugins\experimental\pythonscriptplugin\source\pythonscriptplugin\private\pyutil.cpp:579]UE4Editor_PythonScriptPlugin!FPyWrapperObject::CallFunction_Impl() [g:\unrealengine425\engine\plugins\experimental\pythonscriptplugin\source\pythonscriptplugin\private\pywrapperobject.cpp:254]UE4Editor_PythonScriptPlugin!FPyWrapperObject::CallMethodNoArgs_Impl() [g:\unrealengine425\engine\plugins\experimental\pythonscriptplugin\source\pythonscriptplugin\private\pywrapperobject.cpp:326]UE4Editor_PythonScriptPlugin!FPyMethodWithClosureDef::Call() [g:\unrealengine425\engine\plugins\experimental\pythonscriptplugin\source\pythonscriptplugin\private\pymethodwithclosure.cpp:180]python27python27python27python27python27python27python27python27python27python27pyside_python2_7pyside_python2_7QtCore4QtCore4QtCoreQtCore4QtCoreQtGui4QtGui4QtGuiQtCore4QtCore4QtCore4user32user32...... 省略 &emsp;&emsp;因此我需要找一个方法，判断 引擎 处于卡顿状态，然后阻断 timer 函数的执行。&emsp;&emsp;好在通过 tick 函数可以捕捉到时间差，判断到引擎是否真的卡顿。 1234567891011121314151617181920# NOTE 这里代码归纳 省略了中间代码global last_ticklast_tick = time.time()def timer_add_menu(menu_dict,timer): # NOTE 判断当前是否卡顿状态 | 如果卡顿就跳过执行 # NOTE 避免处于加载状态导致引擎崩溃 !FUObjectThreadContext::Get().IsRoutingPostLoad -&gt; Cannot call UnrealScript while PostLoading objects global last_tick tick_elapsed = time.time() - last_tick if (tick_elapsed &gt; 0.3): return # ...def __QtAppTick__(delta_seconds): global last_tick last_tick = time.time()unreal.register_slate_post_tick_callback(__QtAppTick__) &emsp;&emsp;如果 tick_elapsed 变量超过 0.3s 说明当前 tick 卡顿，就可以逃过后续的代码的执行。]]></content>
       <categories>
         <category>游戏开发</category>
         <category>Unreal</category>
@@ -92,7 +117,7 @@
   <entry>
     <title><![CDATA[Minigame 概况]]></title>
     <url>%2Fposts%2F3ec26151.html</url>
-    <content type="text"><![CDATA[您好, 这里需要密码. 53845ae4bbebf21dde323b467d769768e1c531f5c188783fe06e1d88f9d9a880e0da8c67d6d95d0d55733793bda709a2c062e223c9368e05af1f487548d6aeb78863a483289ad6bd3bce964a0ae4603556a906ecb066564e7d4eaafad0fb449830f974b4e16b57472f3cb7e9410a78eacb6e7dd1e8d935c7201a89c93dce72ee4b93b1ffc623a04023d2ed58898e6c4c1c8d364403bf4cbaafef4fe1ebdcc6a25bb69b752f91fd76482cd09b140eb77723ed4166ecb16db638273ef2306afd47ba28c1e3a969ac5cfce062dd940637143fffc37dabcb20e87d9537686071ba451ad2dd9fcda2671466ca1ad5dd76cd7250bf6bcd49978b86145463b585934d1a46e125a224837e282ee20837cdfe63694df9e85873025e4aeb1b7f388703d4ec327c511a85b4c33a09b6301b50d2028ff264b7b4381543ee4a4fe6afbcdaf05eb61a5b04dcb8fdb57e121a1721a190d35d109587d6a0b1f19c14b459fd8360b82597d1e97141ef4c40a62858e4dc4cb72ff68bd85d3854ce5bcdf67871924b1c0137a4291a48887f9118eb09ac4b75ccd77bcd5d64dbc085fc089f9b8126570e5d72c8e53fbc4194fc48d9d7644ceac5cdc5b814b4b88d94a02719ebee4f0d0854b489755922e582cebe5d71fd1c167d1a8b968cb1c0eb6d6c0dabd6ffcca154d5ae707394b6f10b7195cc487753d0e649a59ffb10cfc394efcbc87bf1fc604917debc4665bf0e9b94968d0244a65047a35c30d8839b346d9808a6fe9e905b49355f999d545e7ec879d9d0c1366b49b587449f3782570b9ec85bd471adadb4e414216efc5924e33b5e2f7247fc0fe1cc50dc8c5746865f746c549a40956dd5bd761043794d8e7a8d7488e5337b9cd44bae14c8b6ad43364f82776cd6fb7ef5c6b19bfae814d9fbcb6a96ef44dcc65a4528ddbaccb9ee685f40d57eec491d0534c708a03ae74aae89be80e17e4617503df8a8369389ddf6ba80ecc5ee6346435e7fcf92357d8f8901229d57ae7a108849b0fca02d415518824cbd215cd1d5d1bba031f3b7aee12e28eeec9ae918203d419f9e96c8dc4b78519a326e689ab871d175a28d6f1312167029d7ddf10bc3e8fcc591316b473e54d1e7442096b65d73fd0b758ec2dcc466d9c465be523cf3ffa0ca4524965d5dc6af18dc0d88dc39794f9a68485c5ad154dcbc7c64596e8b170fc7983fb9589049065921c63d56ba6d2ffb95a3fcef314f45f8dc4cf98a2f2dbfefb49c89ca818578608593b62a9ef9a9c92a0bc5770e82fd1d822c0b55e230d580f75e3cd8a56e751d8ec7212011605585fce63db500fd31aceb4786eca915ae7d1de9c060cb73b80040e8abfc6cddd5b53bcf58186d518ebec984000c27c0dde808689dfff24bbcbcdefd631cfd699a9fb43846059a23a8536481783584a7ff7256a51f43a5d126a1905d74b9038a1e5ada17e67387d0bca52db94002eb844cb2d15485d873015fbf8fd668cfef29d31c2ae57c6d4149854a55d5e4657e79c4f012f1d33259f105705cac51fb67aaa06437f04dee231db1fb8e62d28db5aeea4bfecd8c71fd0aa11b5d16f634a36031fa46885b87881be8ab93e195ee5bb06bea8be2448baea8b0c88a2c217dfd143a153ad1a9ef1f5072d8df318d999c36ee500a13bc27505cae9d86004e1b3dca2ddc80dd93923d5a15f202710a3573d024414695a215b317633eea5e16f5d725cac3b680029a6a302dfdae2f2edd030fbd0ad965004b03846257a38307740f0a8a3fe0e02ac0d670e3947e2caab4a992449b00ed202e3e9f74214b6e35734be6cf0f46495fc0ccdbcfcb685d1bd04ae6dcb719b275315d904f01f4866ddb0590302afce89e97b02ad4eef4e61006477051254d28b31cf08da1cc0c2d43e803933de03d96583a5db60cc55f8ba47e122d6423de79884bcb23ce3b0e57d7ebd1332a8d6c3f6a53b9f6edc224ac6ddbe8b0b5f404559d31208b01cab695c56523e8b8e332d3566bfff13d617e6ab8a40c1746b2dd67f4fbaa7f3b6403fda1c3c3c6cdf150d227d979d322fea3527f3acfd970554af889454e25b28c718129f286cb1e5f1e1321874b707e31afec8ab69a78e1ccdd4cd0f1aaf9a81dd49a3c3226d995c1b7d20b292c948a7120099778600e464bc673e7d27cf84afb89407aa319dfe43d11afbdf0be593417a30a3c00f79d720d862dd61181b350bb614c3565a22a85416d0d0fb0868afdc318a138459c344167d781c35e9bf9e826f169a93ef419c162ec44f2eacdfef3ff20b313157e7b381ff00ea1266f283713be7d5bb93f178b93cd3c12dbbdae42ced27cbcd5fcc79e452abfccb98a239b8d4e437f6c7782f5c45d3f9a4e330ce2181e4d04fcb893aebef1b30d2399867b84b4beeb2be737937f1cd5cffb07a7866212ec66fd700b1bdac8d6c88349720545e16ed0c528db49d132eb76eda23092eaf6c0e256fd600d3526c49ba18332f877d3767b942049660d22a4cb94dafae8da118c017eeb2bf35fc0f78f880682ce833d85df01cf6bc6b191fbee978f035e00ed75fd23c54b951e632a214cce41b52f67a9e3857121e64288ac11a7ae6c0e2eace6595f879883db91ab601ba505a5394b165235a2d67b19ae69fe1662f39f2b281b47e680e68304a0e855fbf8f81347960ee79a36aa3294f1be5f35598113e5280216bac2c4c3b7c0b24339afe6b73328659dbf1e8bcc43e00b4a2ac57840505352aa21537dbc738aa0559fcfeb807280c14f2dbb28323d4b2a2a29464f6fa1fea0d9d8383f2c914c6d8fe2eb6600e126814290e184671560dd7e9c8402cc94a97e231a5d4f6c1f36667c4ef3a653b87e9a54f8ab9b57f5a14d00c4eca3635ea322ea50c08434eb79554d9acec93890035136727eea53c46fdbda20ebea6d41a2657c7ed03afc0cd59d43bfb6e61fabafee7b16f6489b6e38bc24902d7b55672c4db6ecdc2e4940dd76d07917bcad019d6a6f09e823acfa64afcf6b22a11d65d049f3d49793b6c23572f7846c8f0d60b6859c2bf072ed140dd47bdd0fce8d6cd1e92b38c732fd18685978a7e0e9c6fb0480b1430b7bc0043398d60db9715936bf28a97bca9a71edfe8bb2d19303bef98fa53ed80d531f916bd50d97306f53a062718f9c78afc27724b44e3b32c42ebabf3a7abf2c68d1e63e7d22db0f4644b6ca50e83416a477f39d7c6e7e7257aaf95aa91aece74d0061ee37653dfba3cfeeeb86a7ea1c34a81c0767e9537b0b5a9ac415b708cee82def0ec59994ed4330f523a8b5c5d43243c8e20a98ae90f7d1dc23a4b8793a2a1c2bd3c5c9cc417cd7e89a7388801354505dc39eed9ec861bad180e9386488ef472c5e2b5ceb1f7fdd97891ad201a24a45b0eb410b36b33ac9b4696d5eb30fbc6bb78ab5af8b136960719d5140c05a94a3073562128e38c3b800464854852e9438324b8c1b56d5979c14bb1b5871efeb2f41f3ebf5d7f79f1234ccff1c0c4315ba7e129921da9ab07d2d06dabecd6005dfd53ddb4ee2e11e4244d64aa691aa8a9ea8ac9940397dfbbfd0df1746b47b3f2d1e986fea0f2a56e416ed2e6058fe4ffdd091dc79cd3f73705cca3d30cbc92292358ef31a5233d55a36dd95f0d402c4143c46526c84cf44e8ff07268a8edba839e99297f607d9a0550a48ee6b8a086d5ec68d0c2eaceae45b7fbea475f3ed9a5b496488a87f3e0bf959b34651226be6732812038756178e71623a0da05fae9728e45dd7424b2a3c382ee891ea0190ccb278e4535608bcfdae8c849f2f9159bf76de3fd8bfc10899938581cfb85580a27359f3999e5549f640467f37afd44b2496adf13d2dac509e1cee0cea908b7c6e7f70068519a3e04af2131fbb08c6c047a7a12c995122f875422ce89378a3245d3f1b9eea13c6c6f13b4570f1b78311eddb0152c1a4330128894633de9ba53ef62a27cebf488e65e3805772cf5ad275449f795aaa87b9e9745f0d4652bb9ce8efa2133a8ca631da74407d799a0d72b7999c7c16f2727cf232bec564a24bd2a45f446dfb8029d2d76404ce18a076c6e1d7a4fe92c154ec6d5bc80ea91d2126766916df4f9de44e0e301dd367465665901719baca6c0460083051a1fb44026f49d5617fa2f56794cf1a61d04e4855041766f9f181ded0fcbf3f1cd17110a51ff0a6667adc4571d53384a4e0db31f32bc4a5fb2354c603e872b53473d4d41fc9273579d695cd07d8fd19899006b6bfc3a54786f3222fbacdb370321f52aa6c1ab47976dd2afb613a97eb818c32a09076715a17a7b4d3f7afdc372b633bc3d4db67c271fafd6ad69ec13ed93a5ca36233a7540f35e0ea8206bf5fefc548ae4c1ea61fbbd40f762b6f6fca879c2855f82ccb0db49774dab1adc433b0416c17da016b1c1ceee90a7a544cd16285bcddff8828f8a11a69d11978f06227facf3f66f3ed8686ec78c85f82e6573d5078c8345d14327d8dbffcd50e400c4c1d4f8b9eeb30a0e44f2907ab554bd23ca539b628aa97df64f41455c0f35f2856c12a66998fe3213700496abc59f57f6c00fadb1c337a504924407f4f8d51314b49a141072e95de217426678656fb7422a407a5976639cb09189ba97d19d0ffa287de78a91792e94b336edc8a8d712739f83cd4af5f0e21ca2741ad0cb815d1dd1a486a931df7bc5f97ba9dfe56cc0ca7cccf1f52c3052926deb06ece8831a6f0afaa62ef7c1142a63bbc213fbd6cdb6384c7f1a05d4c9a3fcb11d565062c30dbd76ea0ebb87a9b1dd14c730ad6cc7655ca9f55f0449f879bfeb70608f0753e22809614f5da92db8c96654cf691e11e9971172f1c92a2b84139dc98ea2f331cbc9526c759c5f919dd5042ac5613fa6d8d678ea7a8f81782c28d22bc5a8f2f1b223c06206e61c5fb6e484650a0e3d2cb7cf2ab5f2415627e18246d9fe34bb1db052bae201f89b9bc359b8a523b7b7bc079b843916fab22b1dee575f0b4bf2456c0411a221c99f329a65e5ec237a04f4d6cfef91c5c61c6f9e307f898c7e2dca6e39d3b4163d2726002add4cf40581834a5906e17b99e155b3e216632afbfb3dbb5a22c3c8feac3b5dd66935fa0098370a563429bfc77b1f9f798443179908d315b80d40539734e34182ab86104d797ab2f376150b2059e072c95db67a391ee02ba8c0a4181a8296d2036a87d404dad7f5b5180e77809714ebed9d5764ed4e4ee7521222f3f3447d3835ccba6ad7b39adb813c33568ee1ac492e89d591898a83711fbef5945e74356eb9efe5bb28b0e9c87c2829d7eedaee8352029fca387fd58dc10184174fce309d67a2bd2ded8d2fecc4e98055439d9d29784caa99376667b02039b0c2a5d9bd4d239cd38a9aba5591baa692ae489e71c1feccb4122dbeb232fd25a1ab52c78973941ef46f5796fc1cd1480b778d2e835580b8cce98952e8e484f72b25cfd03e79f4ef1e0ea88d4ca9def2a7add837b4219167f497cd463d054f3b3cd325e1b24b3256c4c99f9b12bac3b2589660b8232a29745e8bf5772a537698bc593444206de8e710db2b1bba5104d95108d8a6a3c78d2a2096dd1d7f096e2165bf1a3f7ef1b132adc69112ba5822dbee8a67aa13b897806249b6ee91c0660c78f6525790a435251b230ef8de384313761132f9dcf6541d93ce778594e1d3b43366a8d6cd742fe3e83b24950c6a0413a65de2f6e04547a2d05cfa183504fee660dafa6627e3478304ce601171df0930d56a6284e67778a33b2898d65134223f3617ca0b86b27aaf2044fedd3974a43fb6624ddd977c844e6ce2abe614b244443658609ca1c71857dea8a0c2833f823c2dcf6b326bb13dd7f510df744aceb94321938b315647a78878f1e7645729b7e39971afa13e3cab517211cd1d50396d64622adca48b7eccfa4d67b8dd417d7200ce80ad6eca559543f213f8981a090f144631196fe05bf6c82675edcefbb298bfb726b40b5fb6a389b13c9311919eff98351abec382124a1b0171c2d91819aa3e0cb26d082a3fca22e60eb75b70ef0acca56b00dd79a0052e8877b7ccaf28b56cd9793c607047b7a43c5a8994ac02b4157b395e5112059976c71adfbe367f16b3d0a5f67f1ac667daeadcfc2aed4353de86aaff23f5b59ab2ab24fe3d95402276be072a57e7787e67623635ef0921d0044ee9d2f1d6fe5121a6c51159888ffbb877795db4ca730dae557fb2f87db8685f7687ae4a5380289cc7ea7be3670529aaaeec4acdde204e90890ab4973e78a9db9723fc9dd12515b084ad1607b5f26019bc7594f837a21709c934edd579841aec1c33cb35e93cb63e0d814795219eeb9d937445d95af84ef1423f640683ae38e09493bb8b9f582d9ae76c0cd9991b93f0c67e93c0464a0b51371692125c9ceb1b3d74a17bf09f89b16010e89533a908968937befee4e0231d6a8365333a0da09e06f862a9f71d33a8af351ef3d07c6d632be023e184f3d738aa3fb21d6eb38432562d9d1d4f9100e819179a23399f7f93688616f798b586fe9ae6722bbe17cd860c8fd750a506047b8656adfaa09291dc1ed7d93e57b2c62aaa0fe0115df687b35d57ae7bddcd36a0aa38601a22b1b84b90a8eb5a2df1c32583ef03da6980531e37683eb389dd0ba8c4a054f6f759cfe9b2615d9ed9e9f3b44ab67acc63bd567ae98968447200701194b3d60cd01f47ea82a241ad9a8093462912abf40079919edd50570cfd85357a9bbe6dbc61327ad3515b75c5b0a3834c295d70c99518a39df59d3584e376eddfb307165a9de90ce6f02a023a9387c58a26f823a87dcdf30ad00232bea9412019002a383ed5182cc847ba28e44528e62187005393feef1d0955d75e8033880fdffc246a9c497ba90637e8a6d420d9616d3b5ed84f2136ed94f612ff18adf4a454eb8cdb19ed719a5e46851489b1fb5cc169a7471b179a5ad9c0f9964104ec7d52fd2218fcb47e640b34b8ff994422a29e9cae1a4de27fe89f9e579f8b6200bedc0f2d8dcd69f6a8be90a7a852512d0f264905af07b2142874ed913d4506615de265089775c3205b9dfb1a0ecfd9da5024a57697c8708a9682e8a77382acbca1ffab6b957d0128c51b5b5d82967e6b4e7e391832017a6a579ab1d2f0420e84fff841214fe90812a56efaf980b5f4812eefa5eca91ae2b167dcdbe858c8894b33d73465065132fc5406796253fb1eb8ccb07467ecba41791f69fd9c6986b8ec24f9fa6754a06b5609901a28af9391f0e4ef9cb7fb30e5cb525ee6ff7a5f6183d7e68aae3047030bc11a93fca74b1656ea80de5b59ccb9c58fe501985d1f645ab6d531c54958e277c35c4602ec79221ca2fd33eaf1b0d2f4f1087e3bfb97975c8ae8e8684924d6d4bf916be41ee05e68b72e85690ce086d2109d13b13cf3fb32646fea1dfe2ecfec5aef7b9dd9a6541049fa906cbb628bc0ea4061d4f172424c76070e1823e0b879e4663498fc3af7cd35ed99f891ac55d00a64068cf369173089fe04a9040e3322cf1553ad632bc8ba6cf69729c0148fe8d032e1f6e68d41ec51799225a6ee7810a01f4433bab40387ce72cca3c93288bff563af81ca83632b981eea6e357dac60f87d9513de9f50b1636cf588471aaa08dbfbdf2270f826ab13a9cb37692c7d35295ee360235d867e4dc8b42752f4ba4ff3646c0bc77695305ef7706ef73fec5296dc88866f6416f73b8e9c9badd2d14dbae37b11d4d55124992827c3a724ee0edd9f9bfdb3ffa19493ab51fd7de4eae867b66f7fe7a026ac354509d4ba72e6b26cc1d427f824a63d637f553a67bbc79195e3aef5825e4a6881ae4da030737e7520c18fd0ad1f7de3f5f88348bd7ea9c8c727a6295f65e9ea3c3d08c6b16fc44231d61ce8f65b72cda0d90309eacd39e02699133b3773910211ed94ae2468468bcd7a8f7fe2c09ba14af8eaf0871de1ca616fa2a0f78efbaf94b2c8582385bab4252d4259003bfb622cf5d478818bba2e66c44d36ec4b30cce89b940fb1a4f33860f5d42df7cc03d3fe21f41712a7e4a05cbebf270800af0722f3464cf9e0fecf80051552ab6ea7548cac678248e3167d4742f2461b0f22a10018f7045a4a430909f2527025a4394e591a33b39afec4aa7e0e5cc12706c57a809a490e4df3148ce12f67bc17d8d1525a06ab4a34697383548681c9648b8c02105e15df9d63b86018fd389a765b56841bf5c05dcffc46c2da0c44cea42714a73f82b3cd8c607d9d9cc2c82b5bb5441b250cf85cd3984e909bb0f5d272f344368ef1e5e831f518af818b5e99c3a227b9e0ec096b5cf87bc4f0fcbf0e100140c8d70ce0845ed2cd0049883efddd16d8c7333151d0cfaf3607b4f6864cb9569ab1e7adba5b9e66ebfc156211cf1827f23c9d669836592f3fc4ac8c8989abc5040cfe38440420b2ddc7fc1ffa8d5c80256aad7f2d6a830577ea4112ae8ccb340ce39fea00fc82072a941934d9b00e9d45bfb6d1a64e35622fc7564a3a824c8e46b515ca84c93f7577e7efe455793238ab543e3cedf89eb5c9ee76e6b13c5cb226424ce4bbc73054b2e947118d6d7747328987fe8371f9f5e3c379c789c1dfb94761bdb3b6055a03cc94e3c44874150f233d059dc1b8d15b17573c51d4b3f50e1358256c804885bfc634ac6510f7eef8e42d0a210d8b0f4e5f978ebcfd51e01cd858da89e26e46d6654367026a779aff98a7ce2c44e165fc200856d8629c536c78066d8f1861d7ee5ed1e8cf7120fccca8b782df6cc89142350c43538f7dc75dcba488d8e830f2f2ccec906eeae7953c6ed73f20653911ac532fa3ab75282de3922d6ea53a8d9037a809f3033279d97c9c64fc6800e130728bc14b8380bd274d5d8fa91c5028a3bc0949df6a8e4c9ffc4f261db0919dd91c00b045ccfba977a4c1b22d2ccff9f431f8ad6f7c2d9841f55ad80bd769c9943faf945fe71e1f351cc7c1aff67e54d37e14463b910b212a51bbae0c90127deadd42d2f694f0e5f731dbbc9199ac2ca5c96d9fbfd7f2c32bc85e9d0977b9602d9a1ba98705d09c3c1665d329fbe0b9403faa434f430e406374c805b11db3fff0c44a2dcb9a27ba5d0d9743ea0771f7ee001bea0e30a305548be3a2cc29cc28b69d2092f6f996906d66aad48c7aef4940c755b5d7726e2e5a75d814688a79d36bf156074d2ddd48e8434e7bc2ab530cc3b23d48b236261de4c5360c54986c74762369491aba041667a02237430fa2d77127d29e9ecb37616ff55b105cf3994b280f48fa9821cb24ddfec519cc76a97b0cd92740ff5d43a7c8786152f440c6bbdb4afa0091d0b23b6287073ad68187cd6a62d557b20f513a871a53d0f05073519f7b2eb9a4bb480d8d85d17c926b4be17de2913be7358fda553f8b23029abc3d0c0d4dc0bb2aae5c0d290b295273f4a743233639635c287c473b5c0be6a616da92ff91ae619cc22a81ab1b59e84fa57bc5430724821c8b6c8e19622e837bb492db5bed15f17759fb700660e2ef419d8ca55edbc1e84386d1896e09f656208c6c0ef1613e61a4034921c3e88126a099c338913af9baba60263540aade3a65fad58e3a7d31f0023d330a2c9222a953c62c8ea9f9c5c2e2554bc1600aba699f8db30156e9fc9e2794790cd4f413e3124322dd2f4fe198d6d5ed82b944b97fb050127abdf6bd3e33f6e63ff4e11da8c13a02039720f1720caf46407c1e716114871d6f01ecee3cd828cd280163806e30b6399d25baae6819dd7b6a6d95f36081310774098a50a43357bce0674d657ba430d65e2f6fe5ae36f57b52d4afba4188916e8c58487c9cd6e2ec3e943f4bcc01c8668521561bf79e8d53ac458ed77de81be9d10dfee896d58841e8b34058ab828e28ffdd6e313b8a681b67866011b53ed426f757b6a24bc27fbbd3542ec50d8927cdac8cdf03ffd755fecb8734ed155b8489568432d3b703f79f25e6a396324fc78921c6ce490f77d1a8df55156b7b2d506323260aebe07567c4c6fcf18b2ce43ff6ae3c329bc7f032507560e69c4e871f46af25d95ab92f3bd8e217a1d21575cab9dc55519e3b2f34d0b594d8413651b5824836de3bdd2c5487d8014a0cedb41bf73a06f6dc8de736c5bcfc248f617e4601c8cebdb423d148176f6cd7b071351a2319be81bb3cdc1f0b4b987e4d983f7e813783b8cfd9ffcd6b70170cfcd81b9aa7c60901fbaf728526df36d3362ea35d9e1499d0ac45b22851bc66263f121cbb7306c9031c5ec21d5c50a5540d540f461e722e639de8d7395a8b6170763b472b4b0b687fd50899a72ba73b97147a2675288f7c55d9955127bb62abe37ec8be93c776e8cf61c0785f9e6b98a9997acd63c87d7554a24051d2754e927a1aedbaa7b18facb823167e7543a60fa44b988caedf6fc7169f55ce22dbd2ed71ea5bad332fe8ee238f1958a3353d2b97289eec7c7297f6777a75fbe199bb9f464b08ab3febdde7c1fd73486f69a6cc6f602ae70553833dfcf3bcc0cd36f6149a728dd153de111ef985bb3b34de666af06502e5a75e34ce1626c62f8bb36bc771d58d982ab5756d29e554530e37aab4b764a968f37ae390ee7ba46241d1bde632c8c06d678e67fc5badfd6e588a80c2b74901dcdd89a8f9218855e79bd2467e135fb1c2160cfb4ddaf140b937936947f261561f29edb6da91158d9b6ba7a8698a340d378b02f33d10357c280c161f677b94d43e73801018a92595ab92cc9d61bedcf8335566edad3718ec3a49155b521f821d4a6bccb38a3bdc4ea8479fee52cb8ac18161312c6b33e310282d7f65dd6a7d4accc778bf6f49eb0c443c75f87788510e5feb7b0bd22968a51350dfa82e6f8a84f7f85a25f4f62e1f61d18dc53de9c0648bd105b104097d93eae3f6af45c700ea13cceebabccba787abc651124e2597048b51b5bc5fc2ba73b6b773afe56db3ea8dd391078c16418f49df34704ea817279290173e751b65b0746f293b130bc2f9c7bdd685dd72c76a26a54afa23ce3fa46c5d9778f89166e2993f7270676f5156faf01ee3111787e5f7db293f3dfa77cc0c763904c388dc454e8d0475c5ff464ddf78d4d17d47e704a16450927f2e8ecd616d2f6368bd6485e9fcdc51e7a630998c2ae87f59398b3ceb37083b85b9bcc5bea0ca96569de58802536aae7eede44]]></content>
+    <content type="text"><![CDATA[您好, 这里需要密码. 440269205e9757a763006667663f577c5eb4064090259102a571f66ea8fc5b45670e76d00d7e787ef9db87c2afa4a194a9177299bd8dc729d362058349bee6abd4f240348660f151fe751dc4d8710ec83317bc258ca8411deadb22d3eade0ff962ff4fd03749d215979ba26d78aea733abdfa708a8fe0b961d86fc1119cf8036457cbbaf8e52b7de63e090359f1c8e720312bbeb18ebd7544b38928cc61de3dca7ebad2d9d26443067a8855c0c176fb72623f6f0813e3a45e2e2d3078b3b5f01026f8fb7cd9be225a736d2269fe11ed0c00e0642b3b3c57c71fe765926185984d5776575c4807071c6e6ae1e9cd3683c3aef416ae35d33ca2c2c7ca8fe9c4aafc2c9be6dbbad92c2f5ffb9431f49c319936e1442106ca699f5b0086d594bdfcc52476881100188c085a16b06e1dedff3ceecf19432434f02b4ec69460d7bd470c640f2256ee0426b154b3b0b857316cf1550ec8df40fa4093df6f1b534f3a865317e6f3a24f3d30bc9d82d889c985d832141aee182c2534265c6727603ac31eec0c190baa4a3011724cc61709cb3fd13ddcf5d03866aff071b04c8095b50d5e8597c0331bc7790122c4b93e93db4c68d86cb6ce7545d2c7758648da3a5b90517a5d368f1a4dacedee5db2334cdc09a0ce6e4284854f928b21ad7cf59d020bae6ff4189d56b63bf839f0b4f583c9f1bb6f107cd6588e0667cdc8e9ed7d5f93b8c14da3e5a24a5d0059c971e4a3827d9f8418ebf6195f917c3655f2b90ffb863c9494ee898799cadf4d872ce8b246cb3104acf0663a92771f82165e64a3e73c03305b9f337a5f8e8ce11308d80c12f1deed0e1375df274a3680048979d08d4c426484c62e3a04669dd4c95d9c9805953f144350167e2f30a6d751629a0ed9195acbea07345600d1f1bb97c17460df4eb8fca495df2effee4de84d4880d93741d25ed8137ecb12b3a4d4290459a8ebcd6c6bf73ef5977fa9986d74b37dc0cc4bcac86326251a9c320eb28bea212faf00ff9af01817d54141b5aace807b04f19ddf2383f559fb57e85b6211d54c064da6b2cbaa962a4a5f4e842075681dd7003a3ee2b832db07fc6603241b7accf52faf6df317ac30a7bdc88a637f48be44122f95105c003ad6862d9ee60d34da9c60b2dc7b6f336124671e87d8b85f9d497f67459a49d245581510f186cbe5ee7487c6ec25969b74761248a31b71cdcf106217bbc82777c6b7537942e9a0da769618ecd236e859c0f5d9279207a82db3c8f8391fdf0438eab22ffd26288f6a2eba5d5280e99db1bcf3879e7d7bf263747003f175f76738c15fda6afe65c66a0b60c795dc62be1f8326aeeca0582b74a82b16ad4c582f0da6680b0b63ed7ec4618e9f13f0f6b71639e91fa2d0105ac33beb93d4e566321c22c8aac80c25c47517d11dbcb66ec16b3d1e01e1eb1e21764ea64ab98d91d82c5b8634c8f4247b6b8dc36997e334e87308f736198beb33d91f9d6255d19ad7fcfeb00d15cdb3d622616b483d5ba005c41cd33f04f1b036bb1ce0596f11e684bdb9fa46a8e3286e25b518747e6c3df3edb1ebcc4be1cb4bcfae3db713d7f6c9522e71b28a2202ec7451915b8a7add12dc8858b1939ed237e109bef0b3b33eac407d99728865491b90a758d0c011185381e40a764b77164152686c45b7f04db2d28f18271c782532bfce4f1ea7c2d1651f94ef1d0bd333ffd85337b3e9d970e1dd9c246a13e7ba0b4d94f9b25200660f74cb7da5e072db78b265dff2d79c31d4ea0ae87ee228c1d30c17f8db1cd87ec48ac7d7d2845b671d1a543ea9968de3860e1745da60f13036dd22d04e781db754c247c733f46559b07b0bd6fcb0c54d5cb66e5e57fd5ebc285841c6dffb6077ad86acaf5574cb01226f48577913826567352805076f322275725847a014c79793f1318244d6f6d6ce92871223cdf33572b626c437892c07e0687d36483174b0d0ef3b4f8285866fe49c685a0187f50e628ca0d85e42a1544bd3d77ef38af4621269a54314322a6cbf18fb8acb8a37569b397d1d4d38a569108591ce631c1ef63a887d630884ebddb62089076885ac7794df54eb2e66e157de0d07537b6f83280366a8a8ea2a06ab19e3dc850c937edde20ac3d2d88f0bff37bb971a9b335a122a384925f7acc76f59ad605de3bdd1bde3035671e9a8958f83b2f4f383a9cd1f6fb28e9cedeec33b9a5840769b1823011f48093886288f42e5a9cca22b411bf75636a8cb854d64b3e3e9de0736e2ed736073fef5b0b89924f76e4bdd037c686be3b47549da3f11870ec882d7aaa5aa58902fa81a7c0b3e5d013a752233c5e33f946afc1972ab826d9a9ee0329b4d9a8efbcba111c9285e0bf865de6cb6cd8b61b3037090ec324eb0cef5d857836f736169f94384ceb22a8bc93478597f56cd3d77fdc4331cdfaa786dff4e97fa375434bb104f2efdb287ff8b90d50423ce83ff31eed543b020cdb8349c56cb32a9f53401a87dd6826ea86e313131c605cd62656c4ad9b5e8c2d3d2d52b40481c5e814104cc6bb8d5f5f0b6ded3055288e37a14aa6888937fbd073ca9a83f05364dae727ef90d67ede7a2573d031bafdcfa2c267eebcda3db60fcb24d1042d2d549c20eadb004a63d3bb7bed49d2df876d06128df79765775c7eb9ab3e76ccc932368e28940e297c9ac127e8c1387212e85521038155baf7090d3a6abcc6cb66826a646ce7d8dc4574c240082f5466ff26ddf1812b961ac69f14deea9e33ef6e8772e7b08025982d06dcd301c52b0eaddf08ca15d3e74fb0e309a5eda7b0e2a1c89368285573539418520597aef66f198a4e522069db87fe36d68657b9d8c55ce3259ae4d96b81767e815acef1d73e5cee7faf98b3a5f3803773306e970396e9752a46541c1a1fe0f68086a4e654a928ead74f95ec411feb42681a451c4852f5e5987c731f4e63b23b2816aaec2f438e97302cc94acf37e9863122d44e182181b5c1832934685fefd954c9457baabe11c91d548b9819e5cc4414a9dc6e5012c6884cf8b80438f26fb59e029d8061bdcb6a4dcfe4a549d34150cc596444915a5d84a3ca1f16d3df2e9c17296cf8296389108ab8ba4aee2d3b47d8eafe6bb512402e1c92195dd0551e7dfe15217aebf51e5cb534e76f9b7c51dd265f660e10aadd7fb6b833febcc4d2306c5af7658f5a09c50cae03281937b03be79c527a337ba44268492c1751df75f8aaf93d8689e27fcbac2bad39e85d12d2e5489ff9cef01c7bace83f0eeba2e83f3a9f5cad3e2d3101d18ea67aea8b794302b4a5494ad7e9b72d594297d9bb2756a1cd412f428d3f4523f02e9f54105f5124a4907ea537ab8168abe162e8bedb4dd896c5119c7cb1eb01c277d6e13dca70581f8db2a3dd9cff8bdc879c4f777b3467a8a5183f35504a45643eaba38a417531c4d0511986794c561866189ae578c633518eef9501df0f30a3475b01f77ea06eecc4a402f7e8f23d94cef1c5084d6b231a521ecb3ad7d4e563cb7cd895f7e18bc6d3ff1c1a7c65eea34df1a8611f996aff2796e209f8570c6457beaecb04cfe0bba6ec2ecb1eb228c43b529cc17a1673262303d677f5861c394f8e4d6f6bcbea5cb62544d8bc1cd9e7aaab2921051a4029b2bb5b718afe6a99b46ff12e88a60e263776edb5c1d734de50be55c75b5d3eebab4f55da3f662ceaf7b74796d791e14a0e0cf0f28d29d00eeecd323fa3ecf3a9a1a41674dd5274208f272549d6aff96bfe62aaf7465967cf5a5353173b3174376305c55854cd072b5ae6adef9091d76226f101de2af13e971f9e6e6a6dee285cfbf8a2eb8773461170a71268ce745e2625b2a2497b27390f10d335dfc5db74fe5a1227ae0d0e5965b5c1c29235b07d05e08001e5de2416f94dbdce4b96b7a8d2abf6872e1f4190da31a3c91083ba23ca844818267400f1b52e2902838b6a2f325ffd4aa2b30c28db0a251ac42f6b9f189cded684a19392a5689a45c83a882a37c114decf8d38a7496c331fd788f4cd30ab36dca04d7886ec55cf3f354dcf0e9c851dd587ba5a95697eb234b1064e5f6c13150214f788084df935656eb252ca5fdb4d6ce2259fc1891d9b51568b690e3bf786cccc8456b7de7a44c9a61e11050cd6832089648114a190b74d4aeae316ac1eb1f05415413c0f9a07e55e4e21199e3059a94a51d1ea992e5efd47aaaaed62c6148403b914d8d1946d4bdae75da9845f74d487f70eabb8044edb3c80cef7fdd446e8eafe76a1f3b7bcc5864049b3eefd4eb2c8c27c8dd8a3da6f25b45f9344997670685c0d020b0e89b7581414a319151f3efe4b289f33dfa73eb286645f8dd7be1e77ad20b38f8c1018b221dc02509d8e6ebd35e6553e2f8a06fdb104587a011e9ad315886aba9dad27a80cc71906c5de946616418fe546b52d0095e8315d0688a5bcdd6a0f65172e29514d6bbfc7f7436aa9717e407c8c72cb62faf5f3dbdebf133d92139a7f13b1a8b0733d2cffb4835aefdacadc68077e10569ec54e58b83d5c06e412de50235dca5bc0796443ca1491b6e4b538a5ea053a99ffc6cf463ed7a6e235f344225a49bb4037edc5c9f0d2f22eeb21883db98a7bc70ee16c29464da8828d820813aba2e3f4f119ee7aa2c8a1632806dcf5f00d1b314906885484869dca7e2e6297cf504dda3363420ddc842a8321262965b552ae49370923f74ce2be9816affb3a74c224765c5c8b0f02cba7e09380b6e11728f2dfcf34ae062cf46afe8d40c49d990c764d6496a81e6cd3700e044a2fa2df67c91419282bc25a8ed32efb124c8f658c67dda42cdc47b58f563fb5e68b6344b88685fd604a89f916179ff7cc405682bfd521d8c3d50af696bd773e5779c173652bcf45cb38403bfe950f2707a90b82606bcb15c0abab22eef57b0bb2e729e00bb570de5e595286e7e09570936c842d490c5b7cc5f23005552014a8ea65d930d4f53d0d2cb22855cb41cac30a61b9b77e8a092c3f4f2074010586287ef4626be9680845f01f4ed05b6d4d6b48492450e51a3ae66a67180992f6a5fbe791f32b7d21146129133ce04467f65a87400c92851a5775b7e9ac18666c5dac8fd80ba50d8a65324416c69365970eca378742f7bf3fbe384a0d6cee49902857b3c330952ff2e8afce0eac2423a0805888d0879059610a7f93078ea7c9c12e21f5cb85219efb0c290dc13650ceded042943d6f708782152bcd88720bfeaaaa253499fba59231bc32d3b881ecc16e50bd7813a081b7937333715b6807d1abdf8af743f5b8e5fd9c80cdd07a0ce19e50aed2b6565af6050020f0c3c2a0f7f8c148b1e6dba629d1f319eb356df78973ef39eb40515768a721451c58fcba8c248992e266e6a34b88cc9babaaea9fa278734ffea22c5ed24fa8321d93cf3c6836fdadf9521ae7f23f1a7509a7b24ee8ae6c3ca4c2bdd59e5de13cfd6d139d2054fee8a9b27807818770d53ff847b288cb7cb2eeffb1a9d7b72c105486443753f7e6a754e75a445eb5a07f6164feef0b2b2cde93b9bb45c98239f08b8edc5b998df2a00a19308939cc464abadd5c42ffd2d3994abdea6605e581233b29cb44af2228735379b85504da71662c6014cd479cf748d0866e237feb2d6fb305f4aa066cafafacdf98433daa1cdd5afa25771549fadbf953a1cf604a0b41030d383f72715f5fbac1a58a5aa225bc0b188e3442177305f2d5ad7542b715ee087047684a840748a0792fdebda33ce6c59803ed1c700f98a165d3e837665bcdf5c4568e0ed9a48c8d12b03264907195596d17b276eeb32b626a2ebcb1f8e5c7a4e59bc7e46a7802bac10239945ac463075597e27ea70859d4d46e0faf498eecc9729c3832cdf0ddf7547bdbdebba19bf16ded68238a349a3e77d3a46a8adb87bb013b8d7f7c738c53c869ea7ce7aaecb4728437b201333d5b4ea4e94b5cbba71423510885a8f36d96f02bc51b81c309c3e208d6e08ba408e2e380d29578a23feb7b7bf0e0d57aae9da770cfb07ba20abeaf026d4f33681c40db62222644ea803db0efe374acf6137edcfc35a46250264a16ce0cede94c943b81c3a508244d48e6f951ba49a24c831124801f1ba0250da59ff2f08cef4bd52c1852057367d529a6e39320a5cc5dec2540de394d894c2c23a3122c08f9711fbd0a31a4ad9ffcbcad03ecc773ff70cd7aeb54b9c0a4fac6a3c0915c786462091cc1d4b754eb85a05c294791d2c56555703ce244de6b9b2422c797c3ad77df9203a2cdcedf7b1d66a1150adc8f9342848d85c50b45ccd56fe57298caa487468e61d1889d2d7f80c86ff9602c794351ec9f59cf456b09f7ac4e75628a13a4b7e646ed53d25d76b51da8ec43627b5511526bcaffaaebc531d2ffd42cf31d0520856a7dd32bfe946e0f8881edfa4f6b8f82ad74d4ac8d30eb4bf491882280bca8cd99c13d7b3c4302e3fb0ca8b25cfc34b091a742161fcedb80bf31d8fd813bd480c2260e437519275b90b125c00309963920538bd643fb150491525c769f919c4edefa86a4de91d04ce57df20883110de1934f8f26422966f72389ee229909b7ce65fab98e921f15cd9505917120601030aec2eee8c4d0f0c259482073baf93283c9f788f5f2b07e89c666c38cc4af4e0cbc6a74c09a810ddc831a25461a9e80c2f0eb53676acd2f6da34ef4fcf50507a924a50750bc465249c36d65d5aefecf0f687ca6c13a0735e1b78aa60c00ad31a16987e34bc2a6fd3127a643d5f6c73fb68d79f184c89dd08f9eb657e712c9c1006199d4fbf28d8dcb910580e8e246e58f4f6309104adcfaf16f7803cac29dcef8f58d61270093b85893de3b50a9c20e7a94b520b67cbb583c447d04d05072f355cfb2c39b668bfa969b5459ae9cafe4f1ace8bce405978ad7ba33f53b0dd6ea099ef68e73677ad279fc2b46c22aa4476ed5aa5f5b5b0bdd3420a2b1a787b448776bdec3ed0241b6e513784cf60e8ee86a93a90b916094080f26d2b6315087ebb2c8d2cf4f1a98b1848cd7d27d1653071996037249ef04436cde1764b9158303788e4b32da3781e0805cd4c95cfd6ad44719e934ced77bcd72f6ffafb6eeb9e419c8fe24efd8c2ef1fb821d0b503ca27d79732626e08835e8ad7cee76a41daefc0971ffa563c894543ce62761ef6358ca5cefebbd5de7f223aa3b9321f1e16e3a99f738835411b6ef9ba8065306a6362da0512a9542ebd985bb388713c410fddc151b05b4cc53048066ab1f98143423ddef471fc7d1bacc25db58139b5e6d14436b362d8abedf83b6920ad2e45c7acf2cad396d09f333855d2f2761b4714e3c43983a5f36b58dfea25c016627c092e107c9481651822d5fca2127172d2bd5ef7305a21dcf43360213eb7617acef92e5acab638d137f6f3da01f275ab1ad1eae9c15599c2c1d9254858c25d03037bd64cd3f31a1a3afe78b5b040a59f6fbf97968bd2734077bb6b122159b75aea7dc0ac992c4dec85f4081e4e026d9b0c5e491438c70bdae9ff28e76f4e9b88af7f882d96a587e793e763fde8b1aab261536af4029b6d9f43128cf1d5b7e3f8f78da1386c591c9c47d3836fee96cb0fe754de96c1019f7506c6c7a39324862f74816f51d115a3136747cf9ac19c531a9bb2b26e7106c1356c1410948690df92050cf12763a1d67e5726c7a755b4345894cba70a014c109ed8c3db59a4257cea951c285d68d5ca5dda8de75ff99665cb84a9fc5f70a05f752c402099cfec45e88c3ef693672372b451f8e84f3d554b34c6b060bad596432ef2f1eb198b784f01e53d367c8017fc7dac7d3b0736a2571f6cf02e076fd5c5ad50b2c5870da44e6227e0df7fe93bdee6e6b272b12b67ce8f1b194dfc60410528afce16042b65d477651d50cd65a190a7a804801eaa6f61d73b94d44c05e28d4208f1a038043fadc26edb469781a30b24a02a5689ce315b980a34c2c28c1b7d075915ce43cd3896d021849bcd4bdfe92a0f50de36df468a4158828fa34dad7c6b6de415da80421420f374e7776eba7809f00fb2194c4d6781f7cb909b8a121e3b6193182671659ee09edf9f5bc3c038f1e3a855832ebe2f9be644ab4e9b605d46114b75c4860b5a7bd68557a93757992465e30af6604203c18a43b587351d60d6b943ebe4698b60d564b22c0b6767db840dcb0c5aa15f39007384a72545068f76aa52263cc16aaee70fd6acae765ea68945b32943302d2c9832966c83dbeefc5bac32d7fa6df66658b93b22ebcde67a255d2817488bddf13f9224223225210a4d1034358d886d2d15eb0ee9df1e961dbe627251e94f739babce5bcc7120cb7ad888259a3ef805dabae8876923a9e864708180f226c020dda1bf272ff3a91c497912448d23d6d1d8944e96bace226a83f8d09bff33d8b70be89e1320913498edc549e2c42b85f2ecf9c90a89893f10752aed4cb88fd0ff7d7ac2d99bc799d9759f0e3509334b57e8821031ccb0abcb37317de4d5f8a1ff2bb19a33454c49698e70fe0fbc180c309d770ff498bbd447765e35f4e67d9da426598edfcbe39a19b27f8d8b97f3a7dd2267a8ce083e77b7d2b3d6a80650e3e52201d71cb76a5b509191f265ce0f506d52132a3d134d8eebac838699a191d60ebd6432b23d8e1f4ef431d9b4c946bebd3f992e0ab7cb821a747a3eabc10f0926e65cea7b3d9cd22f3051aefd1120d38882ad60417853fe089b815f6ec2c839afc1685c2ae43ffdd237490e2ceefa30f8949ea68e31699fd5f06ac5196d1c8844b4039edc48fc06fd16d2c5bd48a480d163f6c23ed4de48e206fdde8dc70250fbbcb44d85f6630a8e1fdac7a7d0717c5efb09ea20d846a74555bf35d59200459813e7c9f116e68b63e790b2c78398efb15fd58d6ea1ea40b794b5995f68af796cd1e1363aae1ed1946a6b6f57d67fb1af0c8e21776be4929254debbd09d91153eeedee550aa9a6ea8761c54fba114a688941931c9c8d744a94841ee2b540a5112c979499e2b99f7c81ee6bcb44fa442c57c7a1cb4c142dce54b90ef0c3c24f2810fef71d9792d979e4ff400166a0a9dbc7293bb59a01ba463f1f3bda0f3e1dfb4a1c466fa8f03a16742edb9f7c17db1145aa34d2d5c4dc56b338db5bbd461045c1c1fc9f339bda80639f54aa8abca31c0e7a536ef06fad2cd78daef6d665e26bc94f0aa68862fdd0c75d9a993b65f48d1d1fc3f87e9505ca25bd818706decde571bbe44d49b886157422eaf7bb52e2a2355f6b7d3042f654c877690db25c6e7108ae34f3a5084632050ccd574a2973392fea6f4340298cb24199e0b58430021152ef2919edbf24f3b39dbbb5ac4ce3495834b6cd05ca71c8d7cf764e58fe22b34e17e81866127af10eb5f2515e9afe8dbadc8e2a95962c8e5ffd3591f44c7fc48885e4e166ee8090449f76ea750b5ed7381afe2a49d36cd40c98a79613ce1562695caebbbefd28320de1e0d3fa0adfd0bc5062e57b75cf151a06876021985c4c238f31ae993c861f649668f7d1ac749c6f2137d0c903c5d569e9238735b329ad2ce3553bdcc4d37f71d73a136446bbd33202b6945655e8351724885e9ae1691bae52ac5e0ffdd5c33fb4ab63e4932f4f97c8a1ad90cd0dc458f28345c68a75e403df4aa24e51b1bd3ede5355a5409890e445864f6220b5a12a903271c65d2fcc700fbe71d7e1a0fef4bf66143a7fb1c27d7c0143a82fcab49c56ef25880570dd204df465f4ff31e60c3f70a850e430f9257086b19964364aaf95ca8f7a2dee458ad9fd0d1801022f160e390bc660d01a84937e9162e0aad2cbd2b4ef5690e64701f60b403434378a238a685b3f43ddc7e39d6ee285261cf30b3a6973c8fb0a051c30b01b14690f3d4e06ea6247e0e49f6330c8a75b28208ff71aa0d493ec9f8506a32bbbaef15bca0488932609184727c92e18df1ea7f679b67b8b877fecb9b04edddc21f3bbc26fde03c4be7584ba27ceecce806f4cc3296cdd04a013a1a3cffea6839dfd10d86fe31fa1408a8111238e917e6bf90b1394997d5fec656df60ed5e39b7150689678e7d37beb44847d228810abbe5f8521dacef231d56af38a861e2ccc326b1a1720093f928417e7e309ec4cb843f04218eb276276532d39dff688d831f288e2787168470fb2966c438e5f866a65234331cf69845e99610db17936ad314062ba82e77fadb436b392bf7f59a8cec369d4b1b50330362f2170d593332a838d55ee73376fd7fa7563da62ac354d5f798e71035bd60c50f246f813725cbe08e154d3720591816ca558ab332ab12c51951487ba4836cdfe11d0f66ea21c0c00c056ab52a9718274e61c6baddd5ad39e0705e9c44bb845cb68df0f0902775569cee24a0af2b54c0e706fb5f69f1103390d0ce57d04c8bd16ee27aed1f58201c3b20ba9b39b808c7f747ba9fb76de1c502c6949701632e913cae7f798fa52c1b2646b7650f8b8f3948298ea05a2334b5817858e511943293a03cb9da0eaf5bf85d027d35f9e2146e7bfcf203a722316a98ee59671b5feff0853920c25311c128404ec3145bec6f55abfe06c3b25a1b2ce371717a89b1239222b6a5b9589ac9d4d1a8af5edca6f741ee4731c94a0fee0c6023f3969037fe596b740ccec0b380a0b3ddd2007014b7c043eeb2b7182f757dd9b15bbaf2d78294a7904e5bb123d5765eab62bc50579826823c0e37a5a2f55851c129cb74abfbe6b4c1b162e13ca29f71f42e89dd72e60107bd9242f0f11fe7bbae1c15393c5e584e0ca140877bdfd9f625747afec64eeda5a5a95643d776fbb4302058114ef7fcee9aa8a78aa7e5c57ab4c692b68cd214c5ad4d3dd0cedb91e85fe9cef6cd8afb5aad9bc7156d8987ed8bd04534147a22a105d96d0dc199e60b436860b0fe6898e6961bd82e1eef6f84753cf5457bd57129ac7a5d0e87f5fe399e22a4aec427c0a94739d419a806a0eba1cbf5586378a8a896ca5432877119f6446af690ba6ae2c6277974b337555718c972e369ce048246378ec8fcba18f13662d11ed7272a353e353903a04188d89df768c75f773bc6da778b578f785963739ea0a166d80ad16ffb55649ddf756762813f9522e266810d8fcf1e63661d166e1069b85e858fae2f23d43a487d10f2afb450de17eeb336]]></content>
       <categories>
         <category>游戏开发</category>
         <category>Unreal</category>
@@ -351,8 +376,8 @@
         <category>神秘研究</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -378,8 +403,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>Windows</tag>
+        <tag>效率</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -391,8 +416,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>Windows</tag>
+        <tag>效率</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -404,8 +429,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>Windows</tag>
+        <tag>效率</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -433,8 +458,8 @@
       </categories>
       <tags>
         <tag>Python</tag>
-        <tag>Unreal</tag>
         <tag>FBX</tag>
+        <tag>Unreal</tag>
       </tags>
   </entry>
   <entry>
@@ -447,8 +472,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -491,8 +516,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -505,8 +530,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Game</tag>
       </tags>
   </entry>
@@ -520,8 +545,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>OpenMaya</tag>
       </tags>
   </entry>
@@ -535,8 +560,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>重定向</tag>
         <tag>HumanIK</tag>
       </tags>
@@ -551,8 +576,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>法线</tag>
       </tags>
   </entry>
@@ -592,8 +617,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Game</tag>
       </tags>
   </entry>
@@ -607,14 +632,14 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
     <title><![CDATA[Python unicode_literal 坑爹记录]]></title>
     <url>%2Fposts%2F12108ee7.html</url>
-    <content type="text"><![CDATA[Qt 有些情况不支持 unicode 字符串 前言 &emsp;&emsp;最近打算逐渐熟悉一下 Python3 的语法效果，经过网上查找，如果在 Python2 中还原 Python3 的效果可以通过 __future__ 引入一些 Python3 的功能。&emsp;&emsp;于是我就引入了 from __future__ import unicode_literals,division,print_function 这一句。 &emsp;&emsp;unicode_literals 可以让 Python2 的字符串全部编程 unicode 模式，也就是所有字符串默认前面带 u 了，中文就不会变成乱码。 &emsp;&emsp;division 引入之后 Python2 的整数除法也可以输出浮点数了。&emsp;&emsp;比如说 1/2 默认输出是 0，因为 被除数不是浮点数 因此输出变整数了，以前我是通过 float(1)/2 来解决这个问题，现在就可以通过 __future__ 来解决 &emsp;&emsp;print_function 引入之后就可以支持 Python3 的 print ，所以 print 的写法也要和 Python3 一样加括号。&emsp;&emsp;这样 print 命令就可以直接嵌入到 lambda 函数里面，不引入的话 lambda 函数打印只能使用 sys.stdout.write &emsp;&emsp;交代了一下背景，终于要扯出今天的主角 unicode_literals 的坑了。 setProperty 要设置 byte string &emsp;&emsp;最近在开发 QMVVM 模块状态管理模块，使用 Qt 的 DynamicProperty 发现无法正确设置。 123456789101112131415161718192021222324252627282930# coding:utf-8from __future__ import unicode_literals,division,print_functionimport osimport sysfrom Qt import QtWidgetsfrom Qt import QtCorefrom Qt import QtGuiclass WidgetTest(QtWidgets.QWidget): def __init__(self): super(WidgetTest, self).__init__() # NOTE 设置 Property 为空 self.setProperty("test","hello,world") print(self.dynamicPropertyNames()) # NOTE 解决方案是去掉 unicode_literals 或者 添加 byte string self.setProperty(b"test2","hello,world") print(self.dynamicPropertyNames()) # NOTE 打印 [PySide2.QtCore.QByteArray('test2')]if __name__ == '__main__': app = QtWidgets.QApplication(sys.argv) widget = WidgetTest() widget.show() sys.exit(app.exec_()) 注: Qt 无法导入可以去 Github 下载兼容脚本 &emsp;&emsp;上面的代码就很清晰了，这背后可能也和 Qt 框架有关， Qt 可能不支持 Python unicode string&emsp;&emsp;即便这里不引入 unicode_literals ，只是 setProperty(u&#39;test&#39;,&#39;hello&#39;) 这样设置也照样不行了。 signal 调用造成递归永动机 &emsp;&emsp;我觉得正常使用几乎不会遇到这个问题，碰巧我在开发 QMVVM 模块，所以用了一些比较偏门的方法来构造变量，结果引入 unicode_literals 出了大问题。 12345678910111213141516171819202122232425262728293031323334353637# coding:utf-8from __future__ import unicode_literals,division,print_functionimport osimport sysfrom Qt import QtWidgetsfrom Qt import QtCorefrom Qt import QtGuiclass WidgetTest(QtWidgets.QWidget): # ComputedSignal = QtCore.Signal() # StateSignal = QtCore.Signal() _var_dict = &#123;&#125; _var_dict["ComputedSignal"] = QtCore.Signal() _var_dict["StateSignal"] = QtCore.Signal() locals().update(_var_dict) def __init__(self): super(WidgetTest, self).__init__() # NOTE 信号槽套娃处理 getattr(self,"StateSignal").connect(getattr(self,"ComputedSignal").emit) # NOTE 如果加上这行就会打印一堆 computed signal # self.ComputedSignal.connect(lambda:print("computed signal")) # ! 报错 RuntimeError: maximum recursion depth exceeded while calling a Python object getattr(self,"StateSignal").emit()if __name__ == '__main__': app = QtWidgets.QApplication(sys.argv) widget = WidgetTest() widget.show() sys.exit(app.exec_()) &emsp;&emsp;这里构建信号槽变量用了比较 tricky 的方法，因为 QMVVM 需要根据传入的字符串动态生成变量。&emsp;&emsp;Python 的变量背后其实就是一个 locals 的字典来产生对应关系，可以通过 update 方法更新字典从而更新到本地变量里面。&emsp;&emsp;当然除了这个方法之外 类里面 也可以使用 setattr 方法添加类属性，只不过用字典也方便我后面获取动态生成的变量。 &emsp;&emsp;后面 __init__ 函数里面 QMVVM 通过 getattr 根据字符串动态获取类属性，因此这里测试我也不直接 self.StateSignal 来获取了。&emsp;&emsp;然后这里进行了套娃处理，两个信号槽，一个触发同时会触发另一个。&emsp;&emsp;然后触发 信号槽 就会导致调用永动机从而报错了。 &emsp;&emsp;上面的代码就是我花了大半天调试精简出来的，在 QMVVM 内部的运行还是挺绕的，更何况一开始完全没有预料到问题出在 unicode_literals 里面 (:з」∠)&emsp;&emsp;解决方案也不复杂，可以去掉 unicode_literals 或者构建信号槽的变量的时候给字符串加上 b’’ 转换为 byte string 总结 &emsp;&emsp;上面的代码测试我汇总到了 github 的仓库上 代码&emsp;&emsp;后面我又测试不同版本的Python，发现 Python 2.7.16 版本已经解决了这个问题，但是 Python 2.7.14 还是出错， Maya 的 Python 2.7.11 也照样有问题。&emsp;&emsp;Python 3.7.6 完全 OK ，所以可以相当肯定这个就是 Python2 的 BUG。&emsp;&emsp;经过了这个坑之后，我还是不推荐使用 unicode_literals 了，毕竟中文乱码至少还可以运行，开了 unicode_literals 之后出问题的代价太大了。 更新 2020-5-7 &emsp;&emsp;在 Stack Overflow 上发现了类似的问题 链接&emsp;&emsp;或许这真的是 Qt 的 Bug 而已，如果用起来方便的话还是可以考虑一下的。]]></content>
+    <content type="text"><![CDATA[前言 &emsp;&emsp;最近打算逐渐熟悉一下 Python3 的语法效果，经过网上查找，如果在 Python2 中还原 Python3 的效果可以通过 __future__ 引入一些 Python3 的功能。&emsp;&emsp;于是我就引入了 from __future__ import unicode_literals,division,print_function 这一句。 &emsp;&emsp;unicode_literals 可以让 Python2 的字符串全部编程 unicode 模式，也就是所有字符串默认前面带 u 了，中文就不会变成乱码。 &emsp;&emsp;division 引入之后 Python2 的整数除法也可以输出浮点数了。&emsp;&emsp;比如说 1/2 默认输出是 0，因为 被除数不是浮点数 因此输出变整数了，以前我是通过 float(1)/2 来解决这个问题，现在就可以通过 __future__ 来解决 &emsp;&emsp;print_function 引入之后就可以支持 Python3 的 print ，所以 print 的写法也要和 Python3 一样加括号。&emsp;&emsp;这样 print 命令就可以直接嵌入到 lambda 函数里面，不引入的话 lambda 函数打印只能使用 sys.stdout.write &emsp;&emsp;交代了一下背景，终于要扯出今天的主角 unicode_literals 的坑了。 setProperty 要设置 byte string &emsp;&emsp;最近在开发 QMVVM 模块状态管理模块，使用 Qt 的 DynamicProperty 发现无法正确设置。 123456789101112131415161718192021222324252627282930# coding:utf-8from __future__ import unicode_literals,division,print_functionimport osimport sysfrom Qt import QtWidgetsfrom Qt import QtCorefrom Qt import QtGuiclass WidgetTest(QtWidgets.QWidget): def __init__(self): super(WidgetTest, self).__init__() # NOTE 设置 Property 为空 self.setProperty("test","hello,world") print(self.dynamicPropertyNames()) # NOTE 解决方案是去掉 unicode_literals 或者 添加 byte string self.setProperty(b"test2","hello,world") print(self.dynamicPropertyNames()) # NOTE 打印 [PySide2.QtCore.QByteArray('test2')]if __name__ == '__main__': app = QtWidgets.QApplication(sys.argv) widget = WidgetTest() widget.show() sys.exit(app.exec_()) 注: Qt 无法导入可以去 Github 下载兼容脚本 &emsp;&emsp;上面的代码就很清晰了，这背后可能也和 Qt 框架有关， Qt 可能不支持 Python unicode string&emsp;&emsp;即便这里不引入 unicode_literals ，只是 setProperty(u&#39;test&#39;,&#39;hello&#39;) 这样设置也照样不行了。 signal 调用造成递归永动机 &emsp;&emsp;我觉得正常使用几乎不会遇到这个问题，碰巧我在开发 QMVVM 模块，所以用了一些比较偏门的方法来构造变量，结果引入 unicode_literals 出了大问题。 12345678910111213141516171819202122232425262728293031323334353637# coding:utf-8from __future__ import unicode_literals,division,print_functionimport osimport sysfrom Qt import QtWidgetsfrom Qt import QtCorefrom Qt import QtGuiclass WidgetTest(QtWidgets.QWidget): # ComputedSignal = QtCore.Signal() # StateSignal = QtCore.Signal() _var_dict = &#123;&#125; _var_dict["ComputedSignal"] = QtCore.Signal() _var_dict["StateSignal"] = QtCore.Signal() locals().update(_var_dict) def __init__(self): super(WidgetTest, self).__init__() # NOTE 信号槽套娃处理 getattr(self,"StateSignal").connect(getattr(self,"ComputedSignal").emit) # NOTE 如果加上这行就会打印一堆 computed signal # self.ComputedSignal.connect(lambda:print("computed signal")) # ! 报错 RuntimeError: maximum recursion depth exceeded while calling a Python object getattr(self,"StateSignal").emit()if __name__ == '__main__': app = QtWidgets.QApplication(sys.argv) widget = WidgetTest() widget.show() sys.exit(app.exec_()) &emsp;&emsp;这里构建信号槽变量用了比较 tricky 的方法，因为 QMVVM 需要根据传入的字符串动态生成变量。&emsp;&emsp;Python 的变量背后其实就是一个 locals 的字典来产生对应关系，可以通过 update 方法更新字典从而更新到本地变量里面。&emsp;&emsp;当然除了这个方法之外 类里面 也可以使用 setattr 方法添加类属性，只不过用字典也方便我后面获取动态生成的变量。 &emsp;&emsp;后面 __init__ 函数里面 QMVVM 通过 getattr 根据字符串动态获取类属性，因此这里测试我也不直接 self.StateSignal 来获取了。&emsp;&emsp;然后这里进行了套娃处理，两个信号槽，一个触发同时会触发另一个。&emsp;&emsp;然后触发 信号槽 就会导致调用永动机从而报错了。 &emsp;&emsp;上面的代码就是我花了大半天调试精简出来的，在 QMVVM 内部的运行还是挺绕的，更何况一开始完全没有预料到问题出在 unicode_literals 里面 (:з」∠)&emsp;&emsp;解决方案也不复杂，可以去掉 unicode_literals 或者构建信号槽的变量的时候给字符串加上 b’’ 转换为 byte string 总结 &emsp;&emsp;上面的代码测试我汇总到了 github 的仓库上 代码&emsp;&emsp;后面我又测试不同版本的Python，发现 Python 2.7.16 版本已经解决了这个问题，但是 Python 2.7.14 还是出错， Maya 的 Python 2.7.11 也照样有问题。&emsp;&emsp;Python 3.7.6 完全 OK ，所以可以相当肯定这个就是 Python2 的 BUG。&emsp;&emsp;经过了这个坑之后，我还是不推荐使用 unicode_literals 了，毕竟中文乱码至少还可以运行，开了 unicode_literals 之后出问题的代价太大了。 更新 2020-5-7 &emsp;&emsp;在 Stack Overflow 上发现了类似的问题 链接&emsp;&emsp;或许这真的是 Qt 的 Bug 而已，如果用起来方便的话还是可以考虑一下的。]]></content>
       <categories>
         <category>Python</category>
       </categories>
@@ -632,8 +657,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -657,8 +682,8 @@
         <category>神秘研究</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -671,8 +696,8 @@
       </categories>
       <tags>
         <tag>Maya</tag>
-        <tag>Unreal</tag>
         <tag>FBX</tag>
+        <tag>Unreal</tag>
       </tags>
   </entry>
   <entry>
@@ -696,8 +721,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>reference</tag>
       </tags>
   </entry>
@@ -711,8 +736,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -776,8 +801,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -790,8 +815,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -804,8 +829,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -816,8 +841,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>android</tag>
         <tag>效率</tag>
+        <tag>android</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -829,8 +854,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>android</tag>
         <tag>效率</tag>
+        <tag>android</tag>
         <tag>app</tag>
       </tags>
   </entry>
@@ -844,8 +869,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -858,8 +883,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -872,8 +897,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -886,8 +911,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -913,8 +938,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -925,8 +950,8 @@
         <category>效率提升指南</category>
       </categories>
       <tags>
-        <tag>效率</tag>
         <tag>Windows</tag>
+        <tag>效率</tag>
         <tag>软件</tag>
       </tags>
   </entry>
@@ -940,8 +965,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -954,8 +979,8 @@
         <category>Maya 工具开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -980,8 +1005,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1005,8 +1030,8 @@
         <category>Maya 插件分析</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1019,8 +1044,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Git</tag>
       </tags>
   </entry>
@@ -1034,8 +1059,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1061,8 +1086,8 @@
         <category>Maya 疑难杂症</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1086,8 +1111,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1113,8 +1138,8 @@
         <category>Rigging</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>Rigging</tag>
       </tags>
   </entry>
@@ -1322,8 +1347,8 @@
       </categories>
       <tags>
         <tag>VScode</tag>
-        <tag>Maya</tag>
         <tag>编辑器</tag>
+        <tag>Maya</tag>
       </tags>
   </entry>
   <entry>
@@ -1418,8 +1443,8 @@
         <category>Maya 研究记录</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>BlendShape</tag>
       </tags>
   </entry>
@@ -1431,8 +1456,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1444,9 +1469,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1458,9 +1483,9 @@
         <category>node.js</category>
       </categories>
       <tags>
-        <tag>JavaScript</tag>
         <tag>后端</tag>
         <tag>node.js</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -1486,8 +1511,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1859,8 +1884,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1876,8 +1901,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1893,8 +1918,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1922,8 +1947,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1939,8 +1964,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1956,8 +1981,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1973,8 +1998,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -1990,8 +2015,8 @@
         <category>Python结合Qt系列开发教程</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>PyQt</tag>
         <tag>Qt</tag>
         <tag>PySide</tag>
@@ -2030,8 +2055,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2055,8 +2080,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2069,8 +2094,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -2083,8 +2108,8 @@
       </categories>
       <tags>
         <tag>前端</tag>
-        <tag>React</tag>
         <tag>JavaScript</tag>
+        <tag>React</tag>
       </tags>
   </entry>
   <entry>
@@ -2108,8 +2133,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2120,8 +2145,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2132,8 +2157,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2144,8 +2169,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2156,8 +2181,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2206,8 +2231,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2218,8 +2243,8 @@
         <category>华强方特</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2339,8 +2364,8 @@
         <category>Maya 脚本</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -2385,8 +2410,8 @@
         <category>开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2401,8 +2426,8 @@
         <category>开发</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
         <tag>pluralsight</tag>
       </tags>
   </entry>
@@ -2456,8 +2481,8 @@
       </categories>
       <tags>
         <tag>VScode</tag>
-        <tag>Python</tag>
         <tag>Maya</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -3024,8 +3049,8 @@
       </categories>
       <tags>
         <tag>学习笔记</tag>
-        <tag>Hexo</tag>
         <tag>博客</tag>
+        <tag>Hexo</tag>
       </tags>
   </entry>
   <entry>
