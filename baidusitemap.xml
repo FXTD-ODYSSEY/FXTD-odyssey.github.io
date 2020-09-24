@@ -4,6 +4,66 @@
 
     
   <url>
+    <loc>https://blog.l0v0.com/posts/bea01990.html</loc>
+    <lastmod>2020-09-24T05:10:10.193Z</lastmod>
+    <data>
+        <display>
+        <title>Qt Designer 使用全攻略</title>
+        <pubTime>2020-07-24T12:36:09.000Z</pubTime>
+        
+        <tag>PyQt</tag>
+         
+        <tag>Qt</tag>
+         
+        <tag>Qt Designer</tag>
+         
+        <tag>PySide</tag>
+         
+         
+           
+             
+              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
+          
+             
+              <breadCrumb title="Qt" url="https://blog.l0v0.com/categories/CG/Qt/"/>
+          
+             
+              <breadCrumb title="Python" url="https://blog.l0v0.com/categories/CG/Qt/Python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/345523ad.html</loc>
+    <lastmod>2020-09-24T05:05:08.677Z</lastmod>
+    <data>
+        <display>
+        <title>Unreal Python 批量改名工具开发</title>
+        <pubTime>2020-08-22T02:18:20.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>Unreal</tag>
+         
+         
+           
+             
+              <breadCrumb title="游戏开发" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/"/>
+          
+             
+              <breadCrumb title="Unreal" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/"/>
+          
+             
+              <breadCrumb title="Python" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://blog.l0v0.com/posts/ecc4c5a4.html</loc>
     <lastmod>2020-09-24T04:52:45.629Z</lastmod>
     <data>
@@ -1159,9 +1219,9 @@
         <title>Windows 效率提升总结</title>
         <pubTime>2020-06-27T14:16:35.000Z</pubTime>
         
-        <tag>Windows</tag>
-         
         <tag>效率</tag>
+         
+        <tag>Windows</tag>
          
         <tag>软件</tag>
          
@@ -1183,9 +1243,9 @@
         <title>安卓手机效率提升指南（一）</title>
         <pubTime>2020-02-27T10:17:10.000Z</pubTime>
         
-        <tag>效率</tag>
-         
         <tag>android</tag>
+         
+        <tag>效率</tag>
          
         <tag>app</tag>
          
@@ -1207,9 +1267,9 @@
         <title>安卓手机效率提升指南（二）</title>
         <pubTime>2020-02-29T09:14:52.000Z</pubTime>
         
-        <tag>效率</tag>
-         
         <tag>android</tag>
+         
+        <tag>效率</tag>
          
         <tag>app</tag>
          
@@ -1249,34 +1309,6 @@
           
              
               <breadCrumb title="C++" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/C/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.l0v0.com/posts/345523ad.html</loc>
-    <lastmod>2020-09-12T13:36:14.829Z</lastmod>
-    <data>
-        <display>
-        <title>Unreal Python 批量改名工具开发</title>
-        <pubTime>2020-08-22T02:18:20.000Z</pubTime>
-        
-        <tag>Python</tag>
-         
-        <tag>Unreal</tag>
-         
-         
-           
-             
-              <breadCrumb title="游戏开发" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/"/>
-          
-             
-              <breadCrumb title="Unreal" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/"/>
-          
-             
-              <breadCrumb title="Python" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python/"/>
           
         </display>
     </data>
@@ -1571,9 +1603,9 @@
         
         <tag>Python</tag>
          
-        <tag>Unreal</tag>
-         
         <tag>FBX</tag>
+         
+        <tag>Unreal</tag>
          
          
            
@@ -1741,38 +1773,6 @@
         <display>
         <title>Qt.py 代码补全修复</title>
         <pubTime>2020-07-25T14:33:45.000Z</pubTime>
-        
-        <tag>PyQt</tag>
-         
-        <tag>Qt</tag>
-         
-        <tag>Qt Designer</tag>
-         
-        <tag>PySide</tag>
-         
-         
-           
-             
-              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
-          
-             
-              <breadCrumb title="Qt" url="https://blog.l0v0.com/categories/CG/Qt/"/>
-          
-             
-              <breadCrumb title="Python" url="https://blog.l0v0.com/categories/CG/Qt/Python/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.l0v0.com/posts/bea01990.html</loc>
-    <lastmod>2020-07-28T04:11:03.287Z</lastmod>
-    <data>
-        <display>
-        <title>Qt Designer 使用全攻略</title>
-        <pubTime>2020-07-24T12:36:09.000Z</pubTime>
         
         <tag>PyQt</tag>
          
@@ -1970,34 +1970,6 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/99ca25ca.html</loc>
-    <lastmod>2020-07-26T03:28:55.417Z</lastmod>
-    <data>
-        <display>
-        <title>学习笔记 水材质制作 Unlocking the Unreal Engine Material Editor</title>
-        <pubTime>2019-08-21T00:22:41.000Z</pubTime>
-        
-        <tag>Unreal</tag>
-         
-        <tag>shader</tag>
-         
-         
-           
-             
-              <breadCrumb title="游戏开发" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/"/>
-          
-             
-              <breadCrumb title="Unreal" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/"/>
-          
-             
-              <breadCrumb title="教程笔记" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://blog.l0v0.com/posts/c476f94c.html</loc>
     <lastmod>2020-07-26T03:28:55.417Z</lastmod>
     <data>
@@ -2005,9 +1977,9 @@
         <title>学习笔记 Pluralsight - Unreal Engine 4 Materials Fundamentals</title>
         <pubTime>2019-08-13T01:02:54.000Z</pubTime>
         
-        <tag>Unreal</tag>
-         
         <tag>shader</tag>
+         
+        <tag>Unreal</tag>
          
          
            
@@ -2026,13 +1998,43 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/d58573f8.html</loc>
+    <loc>https://blog.l0v0.com/posts/9915f9db.html</loc>
     <lastmod>2020-07-26T03:28:55.417Z</lastmod>
     <data>
         <display>
-        <title>学习笔记 Packt Publishing - Unreal Engine 4 - The Complete Beginner's Course</title>
-        <pubTime>2019-08-12T05:15:56.000Z</pubTime>
+        <title>学习笔记 Unreal 官方 - Water Pack Overview</title>
+        <pubTime>2019-08-22T16:03:06.000Z</pubTime>
         
+        <tag>shader</tag>
+         
+        <tag>Unreal</tag>
+         
+         
+           
+             
+              <breadCrumb title="游戏开发" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/"/>
+          
+             
+              <breadCrumb title="Unreal" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/"/>
+          
+             
+              <breadCrumb title="教程笔记" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/11d100be.html</loc>
+    <lastmod>2020-07-26T03:28:55.417Z</lastmod>
+    <data>
+        <display>
+        <title>学习笔记 Udemy - Unlocking the Unreal Engine Material Editor</title>
+        <pubTime>2019-08-18T05:11:01.000Z</pubTime>
+        
+        <tag>shader</tag>
+         
         <tag>Unreal</tag>
          
          
@@ -2058,6 +2060,60 @@
         <display>
         <title>学习笔记 Lynda - Unreal Essential Training</title>
         <pubTime>2019-08-11T11:26:04.000Z</pubTime>
+        
+        <tag>Unreal</tag>
+         
+         
+           
+             
+              <breadCrumb title="游戏开发" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/"/>
+          
+             
+              <breadCrumb title="Unreal" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/"/>
+          
+             
+              <breadCrumb title="教程笔记" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/99ca25ca.html</loc>
+    <lastmod>2020-07-26T03:28:55.417Z</lastmod>
+    <data>
+        <display>
+        <title>学习笔记 水材质制作 Unlocking the Unreal Engine Material Editor</title>
+        <pubTime>2019-08-21T00:22:41.000Z</pubTime>
+        
+        <tag>shader</tag>
+         
+        <tag>Unreal</tag>
+         
+         
+           
+             
+              <breadCrumb title="游戏开发" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/"/>
+          
+             
+              <breadCrumb title="Unreal" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/"/>
+          
+             
+              <breadCrumb title="教程笔记" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/d58573f8.html</loc>
+    <lastmod>2020-07-26T03:28:55.417Z</lastmod>
+    <data>
+        <display>
+        <title>学习笔记 Packt Publishing - Unreal Engine 4 - The Complete Beginner's Course</title>
+        <pubTime>2019-08-12T05:15:56.000Z</pubTime>
         
         <tag>Unreal</tag>
          
@@ -2140,55 +2196,24 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/11d100be.html</loc>
-    <lastmod>2020-07-26T03:28:55.417Z</lastmod>
+    <loc>https://blog.l0v0.com/posts/1947fed4.html</loc>
+    <lastmod>2020-07-26T03:28:55.416Z</lastmod>
     <data>
         <display>
-        <title>学习笔记 Udemy - Unlocking the Unreal Engine Material Editor</title>
-        <pubTime>2019-08-18T05:11:01.000Z</pubTime>
+        <title>VScode - 全面使用攻略（一）</title>
+        <pubTime>2019-11-15T01:22:25.000Z</pubTime>
         
-        <tag>Unreal</tag>
+        <tag>VScode</tag>
          
-        <tag>shader</tag>
+        <tag>VScode - 全面使用攻略</tag>
          
          
            
              
-              <breadCrumb title="游戏开发" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/"/>
+              <breadCrumb title="VScode" url="https://blog.l0v0.com/categories/VScode/"/>
           
              
-              <breadCrumb title="Unreal" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/"/>
-          
-             
-              <breadCrumb title="教程笔记" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.l0v0.com/posts/9915f9db.html</loc>
-    <lastmod>2020-07-26T03:28:55.417Z</lastmod>
-    <data>
-        <display>
-        <title>学习笔记 Unreal 官方 - Water Pack Overview</title>
-        <pubTime>2019-08-22T16:03:06.000Z</pubTime>
-        
-        <tag>Unreal</tag>
-         
-        <tag>shader</tag>
-         
-         
-           
-             
-              <breadCrumb title="游戏开发" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/"/>
-          
-             
-              <breadCrumb title="Unreal" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/"/>
-          
-             
-              <breadCrumb title="教程笔记" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0/"/>
+              <breadCrumb title="VScode - 全面使用攻略" url="https://blog.l0v0.com/categories/VScode/VScode-%E5%85%A8%E9%9D%A2%E4%BD%BF%E7%94%A8%E6%94%BB%E7%95%A5/"/>
           
         </display>
     </data>
@@ -2248,31 +2273,6 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/1947fed4.html</loc>
-    <lastmod>2020-07-26T03:28:55.416Z</lastmod>
-    <data>
-        <display>
-        <title>VScode - 全面使用攻略（一）</title>
-        <pubTime>2019-11-15T01:22:25.000Z</pubTime>
-        
-        <tag>VScode</tag>
-         
-        <tag>VScode - 全面使用攻略</tag>
-         
-         
-           
-             
-              <breadCrumb title="VScode" url="https://blog.l0v0.com/categories/VScode/"/>
-          
-             
-              <breadCrumb title="VScode - 全面使用攻略" url="https://blog.l0v0.com/categories/VScode/VScode-%E5%85%A8%E9%9D%A2%E4%BD%BF%E7%94%A8%E6%94%BB%E7%95%A5/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://blog.l0v0.com/posts/8150782b.html</loc>
     <lastmod>2020-07-26T03:28:55.416Z</lastmod>
     <data>
@@ -2280,9 +2280,9 @@
         <title>Houdini - 计算模型体积 过滤问题模型</title>
         <pubTime>2018-10-11T11:25:37.000Z</pubTime>
         
-        <tag>Houdini</tag>
-         
         <tag>模型</tag>
+         
+        <tag>Houdini</tag>
          
         <tag>体积</tag>
          
@@ -2296,33 +2296,6 @@
           
              
               <breadCrumb title="实战" url="https://blog.l0v0.com/categories/CG/Houdini/%E5%AE%9E%E6%88%98/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.l0v0.com/posts/4ad87fc3.html</loc>
-    <lastmod>2020-07-26T03:28:55.416Z</lastmod>
-    <data>
-        <display>
-        <title>Unreal 导入 FBX 选项事项</title>
-        <pubTime>2020-03-27T09:51:13.000Z</pubTime>
-        
-        <tag>Maya</tag>
-         
-        <tag>Unreal</tag>
-         
-        <tag>FBX</tag>
-         
-         
-           
-             
-              <breadCrumb title="游戏开发" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/"/>
-          
-             
-              <breadCrumb title="Unreal" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/"/>
           
         </display>
     </data>
@@ -2470,6 +2443,33 @@
 
     
   <url>
+    <loc>https://blog.l0v0.com/posts/4ad87fc3.html</loc>
+    <lastmod>2020-07-26T03:28:55.416Z</lastmod>
+    <data>
+        <display>
+        <title>Unreal 导入 FBX 选项事项</title>
+        <pubTime>2020-03-27T09:51:13.000Z</pubTime>
+        
+        <tag>Maya</tag>
+         
+        <tag>FBX</tag>
+         
+        <tag>Unreal</tag>
+         
+         
+           
+             
+              <breadCrumb title="游戏开发" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/"/>
+          
+             
+              <breadCrumb title="Unreal" url="https://blog.l0v0.com/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://blog.l0v0.com/posts/6830570a.html</loc>
     <lastmod>2020-07-26T03:28:55.416Z</lastmod>
     <data>
@@ -2531,12 +2531,40 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/52737.html</loc>
+    <loc>https://blog.l0v0.com/posts/18de3838.html</loc>
     <lastmod>2020-07-26T03:28:55.416Z</lastmod>
     <data>
         <display>
-        <title> MEL - 面片自动匹配插件（二）</title>
-        <pubTime>2018-08-28T01:55:41.000Z</pubTime>
+        <title>Maya插件 - CommandLauncher</title>
+        <pubTime>2020-03-05T14:44:40.000Z</pubTime>
+        
+        <tag>Maya</tag>
+         
+        <tag>Python</tag>
+         
+         
+           
+             
+              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
+          
+             
+              <breadCrumb title="Maya" url="https://blog.l0v0.com/categories/CG/Maya/"/>
+          
+             
+              <breadCrumb title="Maya 工具开发" url="https://blog.l0v0.com/categories/CG/Maya/Maya-%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/988.html</loc>
+    <lastmod>2020-07-26T03:28:55.416Z</lastmod>
+    <data>
+        <display>
+        <title>MEL - 选点成盒插件</title>
+        <pubTime>2018-09-03T00:27:14.000Z</pubTime>
         
         <tag>Maya</tag>
          
@@ -2559,12 +2587,40 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/988.html</loc>
+    <loc>https://blog.l0v0.com/posts/27d5d78d.html</loc>
     <lastmod>2020-07-26T03:28:55.416Z</lastmod>
     <data>
         <display>
-        <title>MEL - 选点成盒插件</title>
-        <pubTime>2018-09-03T00:27:14.000Z</pubTime>
+        <title>Maya插件 SiShelf 改良</title>
+        <pubTime>2020-05-26T16:19:17.000Z</pubTime>
+        
+        <tag>Maya</tag>
+         
+        <tag>Python</tag>
+         
+         
+           
+             
+              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
+          
+             
+              <breadCrumb title="Maya" url="https://blog.l0v0.com/categories/CG/Maya/"/>
+          
+             
+              <breadCrumb title="Maya 工具开发" url="https://blog.l0v0.com/categories/CG/Maya/Maya-%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/52737.html</loc>
+    <lastmod>2020-07-26T03:28:55.416Z</lastmod>
+    <data>
+        <display>
+        <title> MEL - 面片自动匹配插件（二）</title>
+        <pubTime>2018-08-28T01:55:41.000Z</pubTime>
         
         <tag>Maya</tag>
          
@@ -2643,40 +2699,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/18de3838.html</loc>
+    <loc>https://blog.l0v0.com/posts/13258e66.html</loc>
     <lastmod>2020-07-26T03:28:55.416Z</lastmod>
     <data>
         <display>
-        <title>Maya插件 - CommandLauncher</title>
-        <pubTime>2020-03-05T14:44:40.000Z</pubTime>
-        
-        <tag>Maya</tag>
-         
-        <tag>Python</tag>
-         
-         
-           
-             
-              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
-          
-             
-              <breadCrumb title="Maya" url="https://blog.l0v0.com/categories/CG/Maya/"/>
-          
-             
-              <breadCrumb title="Maya 工具开发" url="https://blog.l0v0.com/categories/CG/Maya/Maya-%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.l0v0.com/posts/27d5d78d.html</loc>
-    <lastmod>2020-07-26T03:28:55.416Z</lastmod>
-    <data>
-        <display>
-        <title>Maya插件 SiShelf 改良</title>
-        <pubTime>2020-05-26T16:19:17.000Z</pubTime>
+        <title>Maya插件 - mpdb - Maya Python Debugger</title>
+        <pubTime>2020-01-28T12:09:25.000Z</pubTime>
         
         <tag>Maya</tag>
          
@@ -2727,16 +2755,20 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/13258e66.html</loc>
-    <lastmod>2020-07-26T03:28:55.416Z</lastmod>
+    <loc>https://blog.l0v0.com/posts/21898.html</loc>
+    <lastmod>2020-07-26T03:28:55.415Z</lastmod>
     <data>
         <display>
-        <title>Maya插件 - mpdb - Maya Python Debugger</title>
-        <pubTime>2020-01-28T12:09:25.000Z</pubTime>
+        <title>Houdini VDB 将CAD图纸转成实体模型</title>
+        <pubTime>2018-09-21T12:02:41.000Z</pubTime>
         
-        <tag>Maya</tag>
+        <tag>three.js</tag>
          
-        <tag>Python</tag>
+        <tag>模型</tag>
+         
+        <tag>Houdini</tag>
+         
+        <tag>VDB</tag>
          
          
            
@@ -2744,10 +2776,10 @@
               <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
           
              
-              <breadCrumb title="Maya" url="https://blog.l0v0.com/categories/CG/Maya/"/>
+              <breadCrumb title="Houdini" url="https://blog.l0v0.com/categories/CG/Houdini/"/>
           
              
-              <breadCrumb title="Maya 工具开发" url="https://blog.l0v0.com/categories/CG/Maya/Maya-%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/"/>
+              <breadCrumb title="实战" url="https://blog.l0v0.com/categories/CG/Houdini/%E5%AE%9E%E6%88%98/"/>
           
         </display>
     </data>
@@ -2761,6 +2793,67 @@
         <display>
         <title>zplus 教程系列（三）</title>
         <pubTime>2018-07-27T13:23:03.000Z</pubTime>
+        
+        <tag>Houdini</tag>
+         
+        <tag>zplus</tag>
+         
+        <tag>sop</tag>
+         
+         
+           
+             
+              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
+          
+             
+              <breadCrumb title="Houdini" url="https://blog.l0v0.com/categories/CG/Houdini/"/>
+          
+             
+              <breadCrumb title="教程笔记" url="https://blog.l0v0.com/categories/CG/Houdini/%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0/"/>
+          
+             
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/50174.html</loc>
+    <lastmod>2020-07-26T03:28:55.415Z</lastmod>
+    <data>
+        <display>
+        <title>观看笔记 - Pluralsight - Houdini VEX Fundamentals</title>
+        <pubTime>2018-09-23T02:57:40.000Z</pubTime>
+        
+        <tag>Houdini</tag>
+         
+        <tag>pluralsight</tag>
+         
+        <tag>VEX</tag>
+         
+         
+           
+             
+              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
+          
+             
+              <breadCrumb title="Houdini" url="https://blog.l0v0.com/categories/CG/Houdini/"/>
+          
+             
+              <breadCrumb title="教程笔记" url="https://blog.l0v0.com/categories/CG/Houdini/%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/60230.html</loc>
+    <lastmod>2020-07-26T03:28:55.415Z</lastmod>
+    <data>
+        <display>
+        <title>zplus 教程系列（四）</title>
+        <pubTime>2018-08-03T03:20:04.000Z</pubTime>
         
         <tag>Houdini</tag>
          
@@ -2817,99 +2910,6 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/50174.html</loc>
-    <lastmod>2020-07-26T03:28:55.415Z</lastmod>
-    <data>
-        <display>
-        <title>观看笔记 - Pluralsight - Houdini VEX Fundamentals</title>
-        <pubTime>2018-09-23T02:57:40.000Z</pubTime>
-        
-        <tag>pluralsight</tag>
-         
-        <tag>Houdini</tag>
-         
-        <tag>VEX</tag>
-         
-         
-           
-             
-              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
-          
-             
-              <breadCrumb title="Houdini" url="https://blog.l0v0.com/categories/CG/Houdini/"/>
-          
-             
-              <breadCrumb title="教程笔记" url="https://blog.l0v0.com/categories/CG/Houdini/%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.l0v0.com/posts/21898.html</loc>
-    <lastmod>2020-07-26T03:28:55.415Z</lastmod>
-    <data>
-        <display>
-        <title>Houdini VDB 将CAD图纸转成实体模型</title>
-        <pubTime>2018-09-21T12:02:41.000Z</pubTime>
-        
-        <tag>three.js</tag>
-         
-        <tag>Houdini</tag>
-         
-        <tag>模型</tag>
-         
-        <tag>VDB</tag>
-         
-         
-           
-             
-              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
-          
-             
-              <breadCrumb title="Houdini" url="https://blog.l0v0.com/categories/CG/Houdini/"/>
-          
-             
-              <breadCrumb title="实战" url="https://blog.l0v0.com/categories/CG/Houdini/%E5%AE%9E%E6%88%98/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.l0v0.com/posts/60230.html</loc>
-    <lastmod>2020-07-26T03:28:55.415Z</lastmod>
-    <data>
-        <display>
-        <title>zplus 教程系列（四）</title>
-        <pubTime>2018-08-03T03:20:04.000Z</pubTime>
-        
-        <tag>Houdini</tag>
-         
-        <tag>zplus</tag>
-         
-        <tag>sop</tag>
-         
-         
-           
-             
-              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
-          
-             
-              <breadCrumb title="Houdini" url="https://blog.l0v0.com/categories/CG/Houdini/"/>
-          
-             
-              <breadCrumb title="教程笔记" url="https://blog.l0v0.com/categories/CG/Houdini/%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0/"/>
-          
-             
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://blog.l0v0.com/posts/3b9c0ad6.html</loc>
     <lastmod>2020-07-26T03:28:55.415Z</lastmod>
     <data>
@@ -2933,74 +2933,6 @@
           
              
               <breadCrumb title="Python" url="https://blog.l0v0.com/categories/CG/Qt/Python/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.l0v0.com/posts/2c06616b.html</loc>
-    <lastmod>2020-07-26T03:28:55.415Z</lastmod>
-    <data>
-        <display>
-        <title>Python - Python Qt 开发教程(1)</title>
-        <pubTime>2019-04-27T01:45:12.000Z</pubTime>
-        
-        <tag>Maya</tag>
-         
-        <tag>Python</tag>
-         
-        <tag>PyQt</tag>
-         
-        <tag>Qt</tag>
-         
-        <tag>PySide</tag>
-         
-         
-           
-             
-              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
-          
-             
-              <breadCrumb title="Qt" url="https://blog.l0v0.com/categories/CG/Qt/"/>
-          
-             
-              <breadCrumb title="Python结合Qt系列开发教程" url="https://blog.l0v0.com/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.l0v0.com/posts/c5c920e.html</loc>
-    <lastmod>2020-07-26T03:28:55.415Z</lastmod>
-    <data>
-        <display>
-        <title>Python - Python Qt 开发教程(2)</title>
-        <pubTime>2019-05-04T12:25:32.000Z</pubTime>
-        
-        <tag>Maya</tag>
-         
-        <tag>Python</tag>
-         
-        <tag>PyQt</tag>
-         
-        <tag>Qt</tag>
-         
-        <tag>PySide</tag>
-         
-         
-           
-             
-              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
-          
-             
-              <breadCrumb title="Qt" url="https://blog.l0v0.com/categories/CG/Qt/"/>
-          
-             
-              <breadCrumb title="Python结合Qt系列开发教程" url="https://blog.l0v0.com/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"/>
           
         </display>
     </data>
@@ -3042,12 +2974,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/431d04c9.html</loc>
+    <loc>https://blog.l0v0.com/posts/2c06616b.html</loc>
     <lastmod>2020-07-26T03:28:55.415Z</lastmod>
     <data>
         <display>
-        <title>Python - Python Qt 开发教程(5)</title>
-        <pubTime>2019-05-20T15:14:00.000Z</pubTime>
+        <title>Python - Python Qt 开发教程(1)</title>
+        <pubTime>2019-04-27T01:45:12.000Z</pubTime>
         
         <tag>Maya</tag>
          
@@ -3110,12 +3042,46 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/5a063588.html</loc>
+    <loc>https://blog.l0v0.com/posts/431d04c9.html</loc>
     <lastmod>2020-07-26T03:28:55.415Z</lastmod>
     <data>
         <display>
-        <title>Python - Python Qt 开发教程(4)</title>
-        <pubTime>2019-05-14T04:53:37.000Z</pubTime>
+        <title>Python - Python Qt 开发教程(5)</title>
+        <pubTime>2019-05-20T15:14:00.000Z</pubTime>
+        
+        <tag>Maya</tag>
+         
+        <tag>Python</tag>
+         
+        <tag>PyQt</tag>
+         
+        <tag>Qt</tag>
+         
+        <tag>PySide</tag>
+         
+         
+           
+             
+              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
+          
+             
+              <breadCrumb title="Qt" url="https://blog.l0v0.com/categories/CG/Qt/"/>
+          
+             
+              <breadCrumb title="Python结合Qt系列开发教程" url="https://blog.l0v0.com/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/c5c920e.html</loc>
+    <lastmod>2020-07-26T03:28:55.415Z</lastmod>
+    <data>
+        <display>
+        <title>Python - Python Qt 开发教程(2)</title>
+        <pubTime>2019-05-04T12:25:32.000Z</pubTime>
         
         <tag>Maya</tag>
          
@@ -3178,6 +3144,40 @@
 
     
   <url>
+    <loc>https://blog.l0v0.com/posts/5a063588.html</loc>
+    <lastmod>2020-07-26T03:28:55.415Z</lastmod>
+    <data>
+        <display>
+        <title>Python - Python Qt 开发教程(4)</title>
+        <pubTime>2019-05-14T04:53:37.000Z</pubTime>
+        
+        <tag>Maya</tag>
+         
+        <tag>Python</tag>
+         
+        <tag>PyQt</tag>
+         
+        <tag>Qt</tag>
+         
+        <tag>PySide</tag>
+         
+         
+           
+             
+              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
+          
+             
+              <breadCrumb title="Qt" url="https://blog.l0v0.com/categories/CG/Qt/"/>
+          
+             
+              <breadCrumb title="Python结合Qt系列开发教程" url="https://blog.l0v0.com/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://blog.l0v0.com/posts/7c31db18.html</loc>
     <lastmod>2020-07-26T03:28:55.413Z</lastmod>
     <data>
@@ -3188,31 +3188,6 @@
         <tag>Python</tag>
          
         <tag>PyQt</tag>
-         
-         
-           
-             
-              <breadCrumb title="Python" url="https://blog.l0v0.com/categories/Python/"/>
-          
-             
-              <breadCrumb title="工具开发" url="https://blog.l0v0.com/categories/Python/%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.l0v0.com/posts/7d4ea2e3.html</loc>
-    <lastmod>2020-07-26T03:28:55.413Z</lastmod>
-    <data>
-        <display>
-        <title>Python爬虫 -  抓取 青年之声 数据</title>
-        <pubTime>2018-10-16T09:05:38.000Z</pubTime>
-        
-        <tag>Python</tag>
-         
-        <tag>前端</tag>
          
          
            
@@ -3278,6 +3253,31 @@
 
     
   <url>
+    <loc>https://blog.l0v0.com/posts/7d4ea2e3.html</loc>
+    <lastmod>2020-07-26T03:28:55.413Z</lastmod>
+    <data>
+        <display>
+        <title>Python爬虫 -  抓取 青年之声 数据</title>
+        <pubTime>2018-10-16T09:05:38.000Z</pubTime>
+        
+        <tag>Python</tag>
+         
+        <tag>前端</tag>
+         
+         
+           
+             
+              <breadCrumb title="Python" url="https://blog.l0v0.com/categories/Python/"/>
+          
+             
+              <breadCrumb title="工具开发" url="https://blog.l0v0.com/categories/Python/%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://blog.l0v0.com/posts/6532.html</loc>
     <lastmod>2020-07-26T03:28:55.413Z</lastmod>
     <data>
@@ -3309,31 +3309,6 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/5b9053f9.html</loc>
-    <lastmod>2020-07-26T03:28:55.412Z</lastmod>
-    <data>
-        <display>
-        <title>Python - 用 PyQt 写爬虫界面</title>
-        <pubTime>2018-10-17T05:49:43.000Z</pubTime>
-        
-        <tag>Python</tag>
-         
-        <tag>PyQt</tag>
-         
-         
-           
-             
-              <breadCrumb title="Python" url="https://blog.l0v0.com/categories/Python/"/>
-          
-             
-              <breadCrumb title="工具开发" url="https://blog.l0v0.com/categories/Python/%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://blog.l0v0.com/posts/c5dbea3.html</loc>
     <lastmod>2020-07-26T03:28:55.412Z</lastmod>
     <data>
@@ -3359,21 +3334,24 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/ce6b2154.html</loc>
+    <loc>https://blog.l0v0.com/posts/5b9053f9.html</loc>
     <lastmod>2020-07-26T03:28:55.412Z</lastmod>
     <data>
         <display>
-        <title>Maya Python - ALembic导入导出助手</title>
-        <pubTime>2018-12-02T07:47:41.000Z</pubTime>
+        <title>Python - 用 PyQt 写爬虫界面</title>
+        <pubTime>2018-10-17T05:49:43.000Z</pubTime>
         
-        <tag>Maya</tag>
-         
         <tag>Python</tag>
+         
+        <tag>PyQt</tag>
          
          
            
              
-              <breadCrumb title="华强方特" url="https://blog.l0v0.com/categories/%E5%8D%8E%E5%BC%BA%E6%96%B9%E7%89%B9/"/>
+              <breadCrumb title="Python" url="https://blog.l0v0.com/categories/Python/"/>
+          
+             
+              <breadCrumb title="工具开发" url="https://blog.l0v0.com/categories/Python/%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/"/>
           
         </display>
     </data>
@@ -3403,34 +3381,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/dc7fc7b9.html</loc>
+    <loc>https://blog.l0v0.com/posts/ce6b2154.html</loc>
     <lastmod>2020-07-26T03:28:55.412Z</lastmod>
     <data>
         <display>
-        <title>Maya Python - 藤蔓生长快速绑定工具</title>
-        <pubTime>2018-12-03T01:45:03.000Z</pubTime>
-        
-        <tag>Maya</tag>
-         
-        <tag>Python</tag>
-         
-         
-           
-             
-              <breadCrumb title="华强方特" url="https://blog.l0v0.com/categories/%E5%8D%8E%E5%BC%BA%E6%96%B9%E7%89%B9/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.l0v0.com/posts/41495e54.html</loc>
-    <lastmod>2020-07-26T03:28:55.412Z</lastmod>
-    <data>
-        <display>
-        <title>Maya Python - 外包检查工具开发</title>
-        <pubTime>2019-01-02T14:38:42.000Z</pubTime>
+        <title>Maya Python - ALembic导入导出助手</title>
+        <pubTime>2018-12-02T07:47:41.000Z</pubTime>
         
         <tag>Maya</tag>
          
@@ -3469,12 +3425,56 @@
 
     
   <url>
+    <loc>https://blog.l0v0.com/posts/dc7fc7b9.html</loc>
+    <lastmod>2020-07-26T03:28:55.412Z</lastmod>
+    <data>
+        <display>
+        <title>Maya Python - 藤蔓生长快速绑定工具</title>
+        <pubTime>2018-12-03T01:45:03.000Z</pubTime>
+        
+        <tag>Maya</tag>
+         
+        <tag>Python</tag>
+         
+         
+           
+             
+              <breadCrumb title="华强方特" url="https://blog.l0v0.com/categories/%E5%8D%8E%E5%BC%BA%E6%96%B9%E7%89%B9/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://blog.l0v0.com/posts/50d67130.html</loc>
     <lastmod>2020-07-26T03:28:55.412Z</lastmod>
     <data>
         <display>
         <title>Maya Python - TSM镜像工具</title>
         <pubTime>2019-01-02T07:05:12.000Z</pubTime>
+        
+        <tag>Maya</tag>
+         
+        <tag>Python</tag>
+         
+         
+           
+             
+              <breadCrumb title="华强方特" url="https://blog.l0v0.com/categories/%E5%8D%8E%E5%BC%BA%E6%96%B9%E7%89%B9/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/41495e54.html</loc>
+    <lastmod>2020-07-26T03:28:55.412Z</lastmod>
+    <data>
+        <display>
+        <title>Maya Python - 外包检查工具开发</title>
+        <pubTime>2019-01-02T14:38:42.000Z</pubTime>
         
         <tag>Maya</tag>
          
@@ -3588,9 +3588,9 @@
         <title>Unity - 场景漫游课程设计</title>
         <pubTime>2019-06-06T04:53:39.000Z</pubTime>
         
-        <tag>unity</tag>
-         
         <tag>C#</tag>
+         
+        <tag>unity</tag>
          
          
            
@@ -3613,33 +3613,9 @@
         <title>Windows 效率提升指南</title>
         <pubTime>2020-02-05T09:21:48.000Z</pubTime>
         
-        <tag>Windows</tag>
-         
         <tag>效率</tag>
          
-        <tag>软件</tag>
-         
-         
-           
-             
-              <breadCrumb title="效率提升指南" url="https://blog.l0v0.com/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.l0v0.com/posts/ccde0edd.html</loc>
-    <lastmod>2020-07-26T03:28:55.410Z</lastmod>
-    <data>
-        <display>
-        <title>Windows 效率提升指南 （二）</title>
-        <pubTime>2020-06-29T13:17:08.000Z</pubTime>
-        
         <tag>Windows</tag>
-         
-        <tag>效率</tag>
          
         <tag>软件</tag>
          
@@ -3661,9 +3637,9 @@
         <title>AHK - 实现软件自动安装</title>
         <pubTime>2020-06-21T01:12:15.000Z</pubTime>
         
-        <tag>Windows</tag>
-         
         <tag>效率</tag>
+         
+        <tag>Windows</tag>
          
         <tag>软件</tag>
          
@@ -3678,21 +3654,23 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/5fce3fcb.html</loc>
+    <loc>https://blog.l0v0.com/posts/ccde0edd.html</loc>
     <lastmod>2020-07-26T03:28:55.410Z</lastmod>
     <data>
         <display>
-        <title>Maya C++ 多核性能测试</title>
-        <pubTime>2019-05-19T07:05:12.000Z</pubTime>
+        <title>Windows 效率提升指南 （二）</title>
+        <pubTime>2020-06-29T13:17:08.000Z</pubTime>
         
-        <tag>Maya</tag>
+        <tag>效率</tag>
          
-        <tag>C++</tag>
+        <tag>Windows</tag>
+         
+        <tag>软件</tag>
          
          
            
              
-              <breadCrumb title="华强方特" url="https://blog.l0v0.com/categories/%E5%8D%8E%E5%BC%BA%E6%96%B9%E7%89%B9/"/>
+              <breadCrumb title="效率提升指南" url="https://blog.l0v0.com/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"/>
           
         </display>
     </data>
@@ -3710,6 +3688,28 @@
         <tag>Maya</tag>
          
         <tag>Python</tag>
+         
+         
+           
+             
+              <breadCrumb title="华强方特" url="https://blog.l0v0.com/categories/%E5%8D%8E%E5%BC%BA%E6%96%B9%E7%89%B9/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/5fce3fcb.html</loc>
+    <lastmod>2020-07-26T03:28:55.410Z</lastmod>
+    <data>
+        <display>
+        <title>Maya C++ 多核性能测试</title>
+        <pubTime>2019-05-19T07:05:12.000Z</pubTime>
+        
+        <tag>Maya</tag>
+         
+        <tag>C++</tag>
          
          
            
@@ -3766,21 +3766,23 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/5871be65.html</loc>
+    <loc>https://blog.l0v0.com/posts/4323d1ae.html</loc>
     <lastmod>2020-07-26T03:28:55.410Z</lastmod>
     <data>
         <display>
-        <title>【回忆录】 - 我的大一</title>
-        <pubTime>2019-10-26T07:36:05.000Z</pubTime>
+        <title>【总结】 2018年10月回顾 | 11月学习计划</title>
+        <pubTime>2018-10-30T14:08:27.000Z</pubTime>
         
         <tag>人生</tag>
          
         <tag>回顾</tag>
          
+        <tag>学习</tag>
+         
          
            
              
-              <breadCrumb title="回忆录" url="https://blog.l0v0.com/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"/>
+              <breadCrumb title="学习计划" url="https://blog.l0v0.com/categories/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/"/>
           
         </display>
     </data>
@@ -3815,23 +3817,21 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/4323d1ae.html</loc>
+    <loc>https://blog.l0v0.com/posts/5871be65.html</loc>
     <lastmod>2020-07-26T03:28:55.410Z</lastmod>
     <data>
         <display>
-        <title>【总结】 2018年10月回顾 | 11月学习计划</title>
-        <pubTime>2018-10-30T14:08:27.000Z</pubTime>
+        <title>【回忆录】 - 我的大一</title>
+        <pubTime>2019-10-26T07:36:05.000Z</pubTime>
         
         <tag>人生</tag>
          
         <tag>回顾</tag>
          
-        <tag>学习</tag>
-         
          
            
              
-              <breadCrumb title="学习计划" url="https://blog.l0v0.com/categories/%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/"/>
+              <breadCrumb title="回忆录" url="https://blog.l0v0.com/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"/>
           
         </display>
     </data>
@@ -4120,36 +4120,6 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/50040e4f.html</loc>
-    <lastmod>2020-07-26T03:28:55.408Z</lastmod>
-    <data>
-        <display>
-        <title>Vue 学习之路（三）</title>
-        <pubTime>2019-06-30T03:44:28.000Z</pubTime>
-        
-        <tag>前端</tag>
-         
-        <tag>JavaScript</tag>
-         
-        <tag>Vue</tag>
-         
-         
-           
-             
-              <breadCrumb title="前端" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/"/>
-          
-             
-              <breadCrumb title="Vue" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/Vue/"/>
-          
-             
-              <breadCrumb title="Vue学习之路" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://blog.l0v0.com/posts/e729172a.html</loc>
     <lastmod>2020-07-26T03:28:55.408Z</lastmod>
     <data>
@@ -4240,6 +4210,36 @@
 
     
   <url>
+    <loc>https://blog.l0v0.com/posts/50040e4f.html</loc>
+    <lastmod>2020-07-26T03:28:55.408Z</lastmod>
+    <data>
+        <display>
+        <title>Vue 学习之路（三）</title>
+        <pubTime>2019-06-30T03:44:28.000Z</pubTime>
+        
+        <tag>前端</tag>
+         
+        <tag>JavaScript</tag>
+         
+        <tag>Vue</tag>
+         
+         
+           
+             
+              <breadCrumb title="前端" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/"/>
+          
+             
+              <breadCrumb title="Vue" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/Vue/"/>
+          
+             
+              <breadCrumb title="Vue学习之路" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://blog.l0v0.com/posts/c8d2c668.html</loc>
     <lastmod>2020-07-26T03:28:55.408Z</lastmod>
     <data>
@@ -4295,33 +4295,6 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/f449d28f.html</loc>
-    <lastmod>2020-07-26T03:28:55.407Z</lastmod>
-    <data>
-        <display>
-        <title>node.js 学习之路（一）</title>
-        <pubTime>2019-07-11T13:08:30.000Z</pubTime>
-        
-        <tag>后端</tag>
-         
-        <tag>node.js</tag>
-         
-        <tag>JavaScript</tag>
-         
-         
-           
-             
-              <breadCrumb title="前端" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/"/>
-          
-             
-              <breadCrumb title="node.js" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/node-js/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://blog.l0v0.com/posts/c45f3e57.html</loc>
     <lastmod>2020-07-26T03:28:55.407Z</lastmod>
     <data>
@@ -4349,12 +4322,39 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/372dc2f3.html</loc>
+    <loc>https://blog.l0v0.com/posts/f449d28f.html</loc>
+    <lastmod>2020-07-26T03:28:55.407Z</lastmod>
+    <data>
+        <display>
+        <title>node.js 学习之路（一）</title>
+        <pubTime>2019-07-11T13:08:30.000Z</pubTime>
+        
+        <tag>后端</tag>
+         
+        <tag>node.js</tag>
+         
+        <tag>JavaScript</tag>
+         
+         
+           
+             
+              <breadCrumb title="前端" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/"/>
+          
+             
+              <breadCrumb title="node.js" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/node-js/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/2d0c41c5.html</loc>
     <lastmod>2020-07-26T03:28:55.403Z</lastmod>
     <data>
         <display>
-        <title>Vue 学习之路（十）</title>
-        <pubTime>2019-07-03T13:43:04.000Z</pubTime>
+        <title>Vue 学习之路（一）</title>
+        <pubTime>2019-06-29T12:02:47.000Z</pubTime>
         
         <tag>前端</tag>
          
@@ -4379,12 +4379,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/2d0c41c5.html</loc>
+    <loc>https://blog.l0v0.com/posts/372dc2f3.html</loc>
     <lastmod>2020-07-26T03:28:55.403Z</lastmod>
     <data>
         <display>
-        <title>Vue 学习之路（一）</title>
-        <pubTime>2019-06-29T12:02:47.000Z</pubTime>
+        <title>Vue 学习之路（十）</title>
+        <pubTime>2019-07-03T13:43:04.000Z</pubTime>
         
         <tag>前端</tag>
          
@@ -4435,12 +4435,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/de2ca4c2.html</loc>
+    <loc>https://blog.l0v0.com/posts/d8bf85b3.html</loc>
     <lastmod>2020-07-26T03:28:55.402Z</lastmod>
     <data>
         <display>
-        <title>React - React 两日游有感</title>
-        <pubTime>2019-02-17T12:13:45.000Z</pubTime>
+        <title>观看笔记 - Pluralsight React:The Big Picture</title>
+        <pubTime>2019-02-08T13:49:10.000Z</pubTime>
         
         <tag>前端</tag>
          
@@ -4462,12 +4462,12 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/d8bf85b3.html</loc>
+    <loc>https://blog.l0v0.com/posts/de2ca4c2.html</loc>
     <lastmod>2020-07-26T03:28:55.402Z</lastmod>
     <data>
         <display>
-        <title>观看笔记 - Pluralsight React:The Big Picture</title>
-        <pubTime>2019-02-08T13:49:10.000Z</pubTime>
+        <title>React - React 两日游有感</title>
+        <pubTime>2019-02-17T12:13:45.000Z</pubTime>
         
         <tag>前端</tag>
          
@@ -4614,33 +4614,6 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/56108.html</loc>
-    <lastmod>2020-07-26T03:28:55.401Z</lastmod>
-    <data>
-        <display>
-        <title>Hexo博客优化之路（七）- 代码块进阶优化&分类优化</title>
-        <pubTime>2018-08-15T13:21:30.000Z</pubTime>
-        
-        <tag>前端</tag>
-         
-        <tag>博客</tag>
-         
-        <tag>代码块</tag>
-         
-         
-           
-             
-              <breadCrumb title="前端" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/"/>
-          
-             
-              <breadCrumb title="Hexo" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/Hexo/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>https://blog.l0v0.com/posts/39119.html</loc>
     <lastmod>2020-07-26T03:28:55.401Z</lastmod>
     <data>
@@ -4668,26 +4641,26 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/59323.html</loc>
+    <loc>https://blog.l0v0.com/posts/56108.html</loc>
     <lastmod>2020-07-26T03:28:55.401Z</lastmod>
     <data>
         <display>
-        <title>数据结构大作业回顾</title>
-        <pubTime>2018-08-09T13:48:15.000Z</pubTime>
+        <title>Hexo博客优化之路（七）- 代码块进阶优化&分类优化</title>
+        <pubTime>2018-08-15T13:21:30.000Z</pubTime>
         
-        <tag>C++</tag>
+        <tag>前端</tag>
          
-        <tag>SFML</tag>
+        <tag>博客</tag>
          
-        <tag>数据结构</tag>
+        <tag>代码块</tag>
          
          
            
              
-              <breadCrumb title="大学" url="https://blog.l0v0.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+              <breadCrumb title="前端" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/"/>
           
              
-              <breadCrumb title="我的作品" url="https://blog.l0v0.com/categories/%E5%A4%A7%E5%AD%A6/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/"/>
+              <breadCrumb title="Hexo" url="https://blog.l0v0.com/categories/%E5%89%8D%E7%AB%AF/Hexo/"/>
           
         </display>
     </data>
@@ -4722,18 +4695,18 @@
 
     
   <url>
-    <loc>https://blog.l0v0.com/posts/6250.html</loc>
+    <loc>https://blog.l0v0.com/posts/59323.html</loc>
     <lastmod>2020-07-26T03:28:55.401Z</lastmod>
     <data>
         <display>
-        <title>渔村苏维埃政府旧址-数字博物馆</title>
-        <pubTime>2018-07-21T13:47:38.000Z</pubTime>
+        <title>数据结构大作业回顾</title>
+        <pubTime>2018-08-09T13:48:15.000Z</pubTime>
         
-        <tag>前端</tag>
+        <tag>C++</tag>
          
-        <tag>photo sphere viewer</tag>
+        <tag>SFML</tag>
          
-        <tag>全景地图</tag>
+        <tag>数据结构</tag>
          
          
            
@@ -4767,6 +4740,33 @@
         <tag>Go</tag>
          
         <tag>毕设</tag>
+         
+         
+           
+             
+              <breadCrumb title="大学" url="https://blog.l0v0.com/categories/%E5%A4%A7%E5%AD%A6/"/>
+          
+             
+              <breadCrumb title="我的作品" url="https://blog.l0v0.com/categories/%E5%A4%A7%E5%AD%A6/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.l0v0.com/posts/6250.html</loc>
+    <lastmod>2020-07-26T03:28:55.401Z</lastmod>
+    <data>
+        <display>
+        <title>渔村苏维埃政府旧址-数字博物馆</title>
+        <pubTime>2018-07-21T13:47:38.000Z</pubTime>
+        
+        <tag>前端</tag>
+         
+        <tag>photo sphere viewer</tag>
+         
+        <tag>全景地图</tag>
          
          
            
@@ -4974,11 +4974,11 @@
         <title>观看笔记 - Pluralsight - Houdini SOP Solver</title>
         <pubTime>2018-09-19T07:33:48.000Z</pubTime>
         
+        <tag>Houdini</tag>
+         
         <tag>pluralsight</tag>
          
         <tag>SOP</tag>
-         
-        <tag>Houdini</tag>
          
          
            
@@ -5082,6 +5082,33 @@
 
     
   <url>
+    <loc>https://blog.l0v0.com/posts/410ea085.html</loc>
+    <lastmod>2020-07-25T02:17:33.045Z</lastmod>
+    <data>
+        <display>
+        <title>观看笔记 - Maya 100 招 - 第三十一招到第四十招</title>
+        <pubTime>2019-06-23T11:10:30.000Z</pubTime>
+        
+        <tag>Maya</tag>
+         
+         
+           
+             
+              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
+          
+             
+              <breadCrumb title="Maya" url="https://blog.l0v0.com/categories/CG/Maya/"/>
+          
+             
+              <breadCrumb title="Maya 教程笔记" url="https://blog.l0v0.com/categories/CG/Maya/Maya-%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0/"/>
+          
+             
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://blog.l0v0.com/posts/df0a441f.html</loc>
     <lastmod>2020-07-25T02:17:33.045Z</lastmod>
     <data>
@@ -5115,33 +5142,6 @@
         <display>
         <title>观看笔记 - Maya 100 招 - 第四十一招到第五十招</title>
         <pubTime>2019-06-24T13:10:30.000Z</pubTime>
-        
-        <tag>Maya</tag>
-         
-         
-           
-             
-              <breadCrumb title="CG" url="https://blog.l0v0.com/categories/CG/"/>
-          
-             
-              <breadCrumb title="Maya" url="https://blog.l0v0.com/categories/CG/Maya/"/>
-          
-             
-              <breadCrumb title="Maya 教程笔记" url="https://blog.l0v0.com/categories/CG/Maya/Maya-%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0/"/>
-          
-             
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.l0v0.com/posts/410ea085.html</loc>
-    <lastmod>2020-07-25T02:17:33.045Z</lastmod>
-    <data>
-        <display>
-        <title>观看笔记 - Maya 100 招 - 第三十一招到第四十招</title>
-        <pubTime>2019-06-23T11:10:30.000Z</pubTime>
         
         <tag>Maya</tag>
          
