@@ -55,7 +55,7 @@ $(function () {
   function search (path) {
     $.ajax({
       // url: GLOBAL_CONFIG.root + path,
-      url: "//cdn.jsdelivr.net/gh/FXTD-Odyssey/FXTD-odyssey.github.io/" + path,
+      url: "//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/" + path,
       dataType: 'xml',
       success: function (xmlResponse) {
         // get the contents from search data
