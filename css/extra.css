@@ -18,3 +18,15 @@
     background-color: #263238;
     text-align: right;
 }
+
+/* VEX 语言高亮 */
+pre .vex_built_in{color:#66cccc}
+pre .vex_type{color:#ed77ed}
+pre .vex_operator{color:#ed77ed}
+pre .vex_string{color:#63c563}
+/* 这个部分Houdini没有高亮 有需要的话可以自己设置  */
+pre .vex_context{color:#ed77ed}
+pre .vex_variable{color:#eecd10}
+pre .vex_function{color:#66d9ef}
+pre .vex_title{color:#66d9ef}
+/* pre .vex_number{color:#7163d7} */

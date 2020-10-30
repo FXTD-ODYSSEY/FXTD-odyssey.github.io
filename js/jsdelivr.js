@@ -1,18 +1,18 @@
 // NOTE 将图片路径改为 jsdelivr 的 cdn 路径
-var name = "FXTD-Odyssey";
+var name = "FXTD-odyssey";
 var repository = "FXTD-odyssey.github.io";
-var link;
+var link = "//cdn.jsdelivr.net/gh/" + name + "/" + repository + "@master"
 function changeImgUrl(that, src) {
-    link = "//cdn.jsdelivr.net/gh/" + name + "/" + repository + src
-    if (src.startsWith("/post_img") || src.startsWith("/img")) {
-        $(that).attr("data-lazy-src", link)
+    if (src.startsWith(link)) {
+        // $(that).attr("data-lazy-src", link)
+        $(that).attr("onerror", "this.src='" + src.replace(link,"") + "'")
     }
     if (src.endsWith(".mp4")) {
         // $(that).replaceWith($('<video class="post_bg" src="' + link + '" autoplay="autoplay" loop="loop" style="width: 100%; height:100%;"></video>'));
-        $(that).replaceWith($('<video class="post_bg" src="' + src + '" autoplay="autoplay" loop="loop" style="width: 100%; height:100%;"></video>'));
+        $(that).replaceWith($('<video onerror="' + src.replace(link,"") + '" class="post_bg" src="' + src + '" autoplay="autoplay" loop="loop" style="width: 100%; height:100%;"></video>'));
     }
 }
-function updateImg() {
+function updateImage() {
     // if (document.domain != 'localhost')
     $("img").each(function () {
         src = $(this).attr("data-lazy-src")
@@ -26,8 +26,21 @@ function updateImg() {
     })
 }
 
-updateImg()
-// setInterval(updateImg, 1000);
+
+function updateVideo() {
+    // if (document.domain != 'localhost')
+    $("video").each(function () {
+        src = $(this).attr("src")
+        if (src) {
+            $(this).attr("onerror", "this.src='" + src.replace(link,"") + "'")
+        }
+    })
+}
+
+// NOTE 识别失败自动用本地路径
+updateImage()
+updateVideo()
+
 
 // Note 添加 comment 特殊样式
 $(".comment").each(function () {
