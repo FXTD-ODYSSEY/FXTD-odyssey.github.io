@@ -55,7 +55,7 @@ $(function () {
   function search (path) {
     $.ajax({
       // url: GLOBAL_CONFIG.root + path,
-      url: "//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/" + path,
+      url: "//cdn.jsdelivr.net/gh/FXTD-Odyssey/FXTD-odyssey.github.io/" + path,
       dataType: 'xml',
       success: function (xmlResponse) {
         // get the contents from search data
@@ -86,7 +86,7 @@ $(function () {
             }
             let dataTitle = data.title.trim().toLowerCase()
             const dataContent = data.content.trim().replace(/<[^>]+>/g, '').toLowerCase()
-            const dataUrl = data.url
+            const dataUrl = data.url.startsWith('/') ? data.url : GLOBAL_CONFIG.root + data.url
             let indexTitle = -1
             let indexContent = -1
             let firstOccur = -1
@@ -139,7 +139,7 @@ $(function () {
                   dataTitle = dataTitle.replace(regS, '<span class="search-keyword">' + keyword + '</span>')
                 })
 
-                str += '<div class="local-search__hit-item"><a href="/' + dataUrl + '" class="search-result-title">' + dataTitle + '</a>'
+                str += '<div class="local-search__hit-item"><a href="' + dataUrl + '" class="search-result-title">' + dataTitle + '</a>'
                 count += 1
                 $('.local-search-stats__hr').show()
 
