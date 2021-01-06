@@ -6170,7 +6170,7 @@ blockquote.pullquote.right {
 }
 #local-search .search-result-list {
   overflow-y: auto;
-  max-height: 10.5rem;
+  max-height: 70vh;
 }
 @media screen and (max-width: 768px) {
   #local-search .search-result-list {
