@@ -1,7 +1,7 @@
 // NOTE 将图片路径改为 jsdelivr 的 cdn 路径
 var name = "FXTD-odyssey";
 var repository = "FXTD-odyssey.github.io";
-var link = "//cdn.jsdelivr.net/gh/" + name + "/" + repository + "@master"
+var link = "https://cdn.jsdelivr.net/gh/" + name + "/" + repository + "@master"
 function changeImgUrl(that, src) {
     if (src.startsWith(link)) {
         // $(that).attr("data-lazy-src", link)
