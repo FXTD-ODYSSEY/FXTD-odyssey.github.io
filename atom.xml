@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://blog.l0v0.com/"/>
-  <updated>2021-01-25T11:59:08.791Z</updated>
+  <updated>2021-01-28T03:31:26.216Z</updated>
   <id>https://blog.l0v0.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>RenderDoc Python 开发 FBX 导出工具</title>
+    <link href="https://blog.l0v0.com/posts/c12b915c.html"/>
+    <id>https://blog.l0v0.com/posts/c12b915c.html</id>
+    <published>2021-01-28T00:29:28.000Z</published>
+    <updated>2021-01-28T03:31:26.216Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote><p>&emsp;&emsp;本来要肝 Houdini 教程的，但是最近一直不在状态<em>(:з」∠)</em><br>&emsp;&emsp;然后工作上遇到这个需求，本来是打算从 RenderDoc 导出 csv 文件，然后读取 csv 文件在 Maya API 将相关信息写到模型里面。<br>&emsp;&emsp;但是 RenderDoc 的 ID 序号和 Maya 的 FaceVertex 无法关联到一起。<br>&emsp;&emsp;在 Maya 里面顺序被打乱了。</p></blockquote><blockquote><p>&emsp;&emsp;由于这个问题不急，所以也就搁置了，没有进行下一步的处理。<br>&emsp;&emsp;直到最近在 KM 上找到了一篇 RenderDoc 插件开发的文章，瞬间觉得可以调用 RenderDoc API 来解决这个问题。<br>&emsp;&emsp;于是才有了本篇文章的探索。</p></blockquote><blockquote><p>&emsp;&emsp;最后的实现效果已经开源在 Github 上 <a href="https://github.com/FXTD-ODYSSEY/RenderDoc2fbx" target="_blank" rel="noopener">链接</a></p></blockquote><h2 id="RenderDoc-是啥"><a href="#RenderDoc-是啥" class="headerlink" title="RenderDoc 是啥"></a>RenderDoc 是啥</h2><blockquote><p>&emsp;&emsp;RenderDoc 是业内大名鼎鼎的 截帧软件， 用来分析游戏渲染数据的利器。不过我不是图形向 TA ， 使用上还是一知半解<em>(:з」∠)</em>。<br>&emsp;&emsp;RenderDoc 是结余 Qt 框架开发，内置 Python API ，可以通过 Python 脚本实现插件开发。 </p></blockquote><p><img src= "/img/loading.gif" data-lazy-src="https://renderdoc.org/fp/screen1.jpg" alt="alt"></p><p><a href="https://github.com/baldurk/renderdoc" target="_blank" rel="noopener">Github链接</a><br><a href="https://renderdoc.org/" target="_blank" rel="noopener">官网链接</a><br><a href="https://renderdoc.org/docs/index.html" target="_blank" rel="noopener">文档链接</a></p><h2 id="插件开发"><a href="#插件开发" class="headerlink" title="插件开发"></a>插件开发</h2><blockquote><p>&emsp;&emsp;RenderDoc 的文档里面有很详细关于插件开发的内容 <a href="https://renderdoc.org/docs/how/how_python_extension.html" target="_blank" rel="noopener">链接</a></p></blockquote><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># windows</span><br><span class="line">%APPDATA%\qrenderdoc\extensions</span><br><span class="line"># linux</span><br><span class="line">~&#x2F;.local&#x2F;share&#x2F;qrenderdoc&#x2F;extensions</span><br></pre></td></tr></table></figure><blockquote><p>&emsp;&emsp;在上面的路径下创建目录<br>&emsp;&emsp;然后添加一个 <code>__init__.py</code> 和 <code>extension.json</code> 的文件</p></blockquote><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"extension_api"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"Extension name for users"</span>,</span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"1.0"</span>,</span><br><span class="line">    <span class="attr">"minimum_renderdoc"</span>: <span class="string">"1.2"</span>,</span><br><span class="line">    <span class="attr">"description"</span>: <span class="string">"A longer description of your extension.\n\nIt can contain multiple lines"</span>,</span><br><span class="line">    <span class="attr">"author"</span>: <span class="string">"Your name &lt;your@email.com&gt;"</span>,</span><br><span class="line">    <span class="attr">"url"</span>: <span class="string">"url/to/repository"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p><code>extension_api 固定为 1</code></p><blockquote><p>&emsp;&emsp;RenderDoc 会读取 <code>extension.json</code> 的信息显示在 Extension Mananger 的面板上。</p></blockquote><p><img src= "/img/loading.gif" data-lazy-src="https://renderdoc.org/docs/_images/ExtensionManager.png" alt="alt"></p><blockquote><p>&emsp;&emsp;启用插件之后就可以通过 API 扩展界面功能了</p></blockquote><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-ODYSSEY/renderdoc2fbx@main/image/03.png" alt="alt"></p><h2 id="RenderDoc-调试-Python-代码"><a href="#RenderDoc-调试-Python-代码" class="headerlink" title="RenderDoc 调试 Python 代码"></a>RenderDoc 调试 Python 代码</h2><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c12b915c/01.png" alt="alt"></p><blockquote><p>&emsp;&emsp;RenderDoc 有 Python Shell 面板<br>&emsp;&emsp;这里编写代码有完整的 renderdoc 环境， 方便测试代码。<br>&emsp;&emsp;毕竟上面的插件流程测试代码都需要 reload 一下，非常不方便</p></blockquote><h2 id="RenderDoc-使用-Qt-编写界面"><a href="#RenderDoc-使用-Qt-编写界面" class="headerlink" title="RenderDoc 使用 Qt 编写界面"></a>RenderDoc 使用 Qt 编写界面</h2><blockquote><p>&emsp;&emsp;虽然 RenderDoc 自带 PySide 模块<br>&emsp;&emsp;但是 Qt 界面开发上并没有 Maya 那么灵活<br>&emsp;&emsp;用 Maya 的传统思路构建 UI 会让 UI 一闪而过，即便使用 global 变量也不行。</p></blockquote><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PySide2 <span class="keyword">import</span> QtWidgets</span><br><span class="line">dialog = QtWidgets.QDialog()</span><br><span class="line">dialog.show()</span><br><span class="line"><span class="comment"># 下面注释的代码会导致 RenderDoc 卡死</span></span><br><span class="line"><span class="comment"># dialog.exec_()</span></span><br><span class="line"><span class="comment"># QtWidgets.QMessageBox.warning(None, "title", "msg")</span></span><br></pre></td></tr></table></figure><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c12b915c/02.gif" alt="alt"></p><blockquote><p>&emsp;&emsp;RenderDoc 的主线程不能被 PySide 创建的界面所阻塞，否则就会导致 RenderDoc 卡死。<br>&emsp;&emsp;RenderDoc Python API 提供了 Mini-Qt Helper</p></blockquote><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PySide2 <span class="keyword">import</span> QtWidgets</span><br><span class="line">dialog = QtWidgets.QDialog()</span><br><span class="line">manager = pyrenderdoc.Extensions()</span><br><span class="line">mqt = manager.GetMiniQtHelper()</span><br><span class="line">mqt.ShowWidgetAsDialog(dialog)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 也可以通过下面的代码生成一个警告窗口</span></span><br><span class="line"><span class="comment"># manager.MessageDialog("msg", "title")</span></span><br></pre></td></tr></table></figure><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c12b915c/03.gif" alt="alt"><br><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c12b915c/04.gif" alt="alt"></p><blockquote><p>&emsp;&emsp;这里使用全局变量 <code>pyrenderdoc</code> 获取 Helper ，然后调用 Helper 显示 Dialog<br>&emsp;&emsp;不过有个缺点这是个 阻塞 Dialog ， RenderDoc 的界面就无法响应了。</p></blockquote><hr><blockquote><p>&emsp;&emsp;关于 RenderDoc 一些内置变量和库需要进行区分</p></blockquote><blockquote><p>renderdoc 是自身的 API 模块<br>qrenderdoc 是Qt相关的 API 模块</p></blockquote><blockquote><p>&emsp;&emsp;pyrenderdoc 则是默认自带的全局变量，属于 CaptureContext 类型，可以在文档中查阅相关的信息。 <a href="https://renderdoc.org/docs/python_api/examples/qrenderdoc_intro.html" target="_blank" rel="noopener">文档链接</a></p></blockquote><blockquote><p>&emsp;&emsp;根据上面的文档上面， RenderDoc 推荐在 Python 环境下使用 <code>pyrenderdoc.Replay().BlockInvoke(myCallback)</code> 来进行处理操作。<br>&emsp;&emsp;BlockInvoke 会调用非 UI 现成进行处理，避免 UI 无响应，并且只有激活的 controller 下才会触发。<br>&emsp;&emsp;也就是没有截帧数据的情况下， BlockInvoke 的函数是不会被调用到的。<br>&emsp;&emsp;但是这样会导致 BlockInvoke 的调用函数不在 Qt 线程里面，如果触发 Qt 相关的界面 API 依然不行。</p></blockquote><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">manager = pyrenderdoc.Extensions()</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">myCallback</span><span class="params">(controller)</span>:</span></span><br><span class="line">    manager.MessageDialog(<span class="string">"FBX Ouput Sucessfully"</span>, <span class="string">"Congradualtion!~"</span>)</span><br><span class="line">pyrenderdoc.Replay().BlockInvoke(myCallback)</span><br></pre></td></tr></table></figure><blockquote><p>&emsp;&emsp;比较神奇的情况就出现了，我也不太搞懂，理论上上面的代码无法执行的，但是在代码调试界面是可以执行的。<br>&emsp;&emsp;但是如果在 插件环境 下执行这个代码就会卡死，使用需要慎重。</p></blockquote><h2 id="FBX-导出插件编写"><a href="#FBX-导出插件编写" class="headerlink" title="FBX 导出插件编写"></a>FBX 导出插件编写</h2><blockquote><p>&emsp;&emsp;关于扩展的相关命令可以在 Extension Manager 相关的 API 文档里面找到 <a href="https://renderdoc.org/docs/python_api/qrenderdoc/extensions.html" target="_blank" rel="noopener">链接</a></p></blockquote><h3 id="注册-Mesh-Viewer-菜单"><a href="#注册-Mesh-Viewer-菜单" class="headerlink" title="注册 Mesh Viewer 菜单"></a>注册 Mesh Viewer 菜单</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pyrenderdoc.Extensions().RegisterPanelMenu(</span><br><span class="line">    qrenderdoc.PanelMenu.MeshPreview, [<span class="string">"Export FBX Mesh"</span>], callback</span><br><span class="line">)</span><br></pre></td></tr></table></figure><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-ODYSSEY/renderdoc2fbx@main/image/03.png" alt="alt"></p><blockquote><p>&emsp;&emsp;上面的代码可以在 <code>Mesh Viewer</code> 的插件按钮下扩展一个 menu item ，触发相应的函数功能。<br>&emsp;&emsp;具体编写方式可以参照官方文档 <a href="https://renderdoc.org/docs/python_api/ui_extensions.html" target="_blank" rel="noopener">链接</a></p></blockquote><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">register</span><span class="params">(version: str, ctx: qrd.CaptureContext)</span>:</span></span><br><span class="line">    <span class="comment"># as above ...</span></span><br><span class="line">    ctx.Extensions().RegisterWindowMenu(qrd.WindowMenu.Tools, [<span class="string">"My extension"</span>], menu_callback)</span><br></pre></td></tr></table></figure><p><img src= "/img/loading.gif" data-lazy-src="https://renderdoc.org/docs/_images/Step1.png" alt="alt"></p><blockquote><p>&emsp;&emsp;官方文档的案例是扩展到 Tools 菜单下</p></blockquote><h3 id="解析-模型-数据"><a href="#解析-模型-数据" class="headerlink" title="解析 模型 数据"></a>解析 模型 数据</h3><blockquote><p>&emsp;&emsp;官方提供了很详细的数据解析案例 <a href="https://renderdoc.org/docs/python_api/examples/renderdoc/decode_mesh.html" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;官方使用 struct 库解析二进制数据，从中提取出我们需要的信息。</p></blockquote><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c12b915c/05.png" alt="alt"></p><blockquote><p>&emsp;&emsp;基于官方提供的数据就可以获取到 <code>Vertex</code> <code>Normal</code> <code>UV</code> <code>Tangent</code> <code>VertexColor</code> 的数据了。</p></blockquote><blockquote><p>&emsp;&emsp;接下来就是将这些数据更具 FBX ASCII 的形式组装到文本里面。<br>&emsp;&emsp;具体操作我是从 Maya 导出一个简单的面片 ASCII FBX 去测试的。</p></blockquote><blockquote><p>&emsp;&emsp;其中比较坑的地方是， FBX 组装位置信息是有一个规则来区分三角面和四边面的。<br>&emsp;&emsp;在网上查到了不错文章解决了我这个头疼的问题 <a href="https://www.codenong.com/cs105411312/" target="_blank" rel="noopener">https://www.codenong.com/cs105411312/</a></p></blockquote><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c12b915c/06.png" alt="alt"></p><blockquote><p>&emsp;&emsp;所以 PolygonVertexIndex 按照这个规范去构建数据就不会导致模型显示不出来。<br>&emsp;&emsp;另外考虑到导出都是单个模型， 也不带材质，所以我导出的时候也将 FBX 无关的信息统统清理掉了。</p></blockquote><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote><p>&emsp;&emsp;以上就是 RenderDoc 开发 FBX 导出工具的记录。</p></blockquote>]]></content>
+    
+    <summary type="html">
+    
+      RenderDoc 截帧信息导出 FBX 文件
+    
+    </summary>
+    
+      <category term="CG" scheme="https://blog.l0v0.com/categories/CG/"/>
+    
+      <category term="RenderDoc" scheme="https://blog.l0v0.com/categories/CG/RenderDoc/"/>
+    
+    
+      <category term="RenderDoc" scheme="https://blog.l0v0.com/tags/RenderDoc/"/>
+    
+  </entry>
   
   <entry>
     <title>Hugo 构建 HoudiniWiki 静态网站</title>
@@ -328,9 +352,9 @@
       <category term="魔方" scheme="https://blog.l0v0.com/categories/%E9%AD%94%E6%96%B9/"/>
     
     
-      <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
-    
       <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
+    
+      <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
     
   </entry>
   
@@ -356,9 +380,9 @@
       <category term="Maya 疑难杂症" scheme="https://blog.l0v0.com/categories/CG/Maya/Maya-%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/"/>
     
     
-      <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
-    
       <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
+    
+      <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
     
   </entry>
   
@@ -384,9 +408,9 @@
       <category term="Maya 疑难杂症" scheme="https://blog.l0v0.com/categories/CG/Maya/Maya-%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/"/>
     
     
-      <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
-    
       <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
+    
+      <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
     
   </entry>
   
@@ -434,9 +458,9 @@
       <category term="Maya 疑难杂症" scheme="https://blog.l0v0.com/categories/CG/Maya/Maya-%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/"/>
     
     
-      <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
-    
       <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
+    
+      <category term="Maya" scheme="https://blog.l0v0.com/tags/Maya/"/>
     
   </entry>
   
@@ -487,32 +511,6 @@
       <category term="Python" scheme="https://blog.l0v0.com/tags/Python/"/>
     
       <category term="Tkinter" scheme="https://blog.l0v0.com/tags/Tkinter/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Chrome 浏览器扩展 实用推荐</title>
-    <link href="https://blog.l0v0.com/posts/3c806643.html"/>
-    <id>https://blog.l0v0.com/posts/3c806643.html</id>
-    <published>2020-10-17T06:40:36.000Z</published>
-    <updated>2020-11-14T08:03:50.867Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote><p>&emsp;&emsp;我原本还计划要出一篇关于 Windows 美化指南的文章。<br>&emsp;&emsp;但是我个人是实用主义先行的，美化没啥用，还要用软件修改系统底层的东西。<br>&emsp;&emsp;随着时间流逝，我还是奉行了简洁至上主义吧，没有把美化贯彻到底，所以 windows 美化指南也就流产了。</p></blockquote><blockquote><p>&emsp;&emsp;这一篇文章来总结一下最近一直一段时间好用的 Chrome 插件。</p></blockquote><hr><blockquote><p>&emsp;&emsp;以前我常用的浏览器是 360 ，没有别的原因，最早开始用起来的。<br>&emsp;&emsp;后面收藏夹等等东西全部都存在里面，形成了依赖，所以就一直用着。<br>&emsp;&emsp;后面网上查了一下，发现 Chromium 浏览器的收藏都是可以互相迁移的。<br>&emsp;&emsp;国内几乎所有的浏览器都是基于 Chromium 内核修改的（没错吐槽的就是国产之光红芯浏览器）</p></blockquote><blockquote><p>&emsp;&emsp;后来来了腾讯之后，还是支持一下腾讯的产品，所以就转用了 QQ浏览器了。<br>&emsp;&emsp;虽然在网上看到很多文章推荐 微软新出的 Edge 浏览器。<br>&emsp;&emsp;不过我还是没有找到让我非转不可的理由，所以我目前还是使用着 QQ浏览器 。</p></blockquote><h2 id="Vimium"><a href="#Vimium" class="headerlink" title="Vimium"></a>Vimium</h2><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3c806643/Vimium.jpg" alt="alt"></p><p><a href="https://chrome.google.com/webstore/detail/vimium/dbepggeogbaibhgnhhndojpepiihcmeb" target="_blank" rel="noopener">Google 商店</a></p><p><a href="https://github.com/philc/vimium" target="_blank" rel="noopener">github 地址</a></p><blockquote><p>&emsp;&emsp;这个插件是集成大成之作，整合了多个插件的功能。<br>&emsp;&emsp;在还没有知道这款大名鼎鼎的插件之前，我还是通过好几个不同的插件来实现一些便利的操作。<br>&emsp;&emsp;自从发现了这款神器之后，我就少用了好多个插件。</p></blockquote><blockquote><p>&emsp;&emsp;这款插件的功能非常多，但我个人并不常用 vim 所以并没有那么深的键盘执念。<br>&emsp;&emsp;所以其实很多功能我都不大用得上。</p></blockquote><blockquote><p>&emsp;&emsp;Vimium 有非常不错的搜索功能。<br>&emsp;&emsp;通过 O 键可以快速搜索历史，就可以通过这个 vomnibar 来快速进入搜索页面</p></blockquote><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3c806643/01.png" alt="alt"></p><blockquote><p>&emsp;&emsp;搜索引擎配置可以在 属性的 Custom Search Engine 进行配置，不过我个人可能更习惯使用 listary</p></blockquote><blockquote><p>&emsp;&emsp;另外 yt 快捷键可以快速复制标签页，这个我有很喜欢。<br>&emsp;&emsp;不过我通常将这个快捷键改为 alt+shift+D ，习惯使然。</p></blockquote><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3c806643/02.png" alt="alt"></p><blockquote><p>&emsp;&emsp;有点不爽的就是 X 键，会和我另一个插件产生冲突，而且本事也可以通过 ctrl+W 来关闭标签，所以我就把它干掉了。</p></blockquote><blockquote><p>&emsp;&emsp;另外 Vimium 的搜索功能支持正则表达式，有替代我另一个插件的功能。 根据 <a href="https://github.com/philc/vimium/wiki/Find-Mode" target="_blank" rel="noopener">github说明</a><br>&emsp;&emsp;搜索模型按 / 键启动，并且在最后加上 \r 即可启用正则表达式匹配</p></blockquote><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3c806643/03.png" alt="alt"></p><blockquote><p>&emsp;&emsp;只是匹配方式不太适应， Enter 键确认匹配方式之后，按 n 键来跳转匹配结果。</p></blockquote><h2 id="Tampermonkey-amp-html5视频播放器增强脚本"><a href="#Tampermonkey-amp-html5视频播放器增强脚本" class="headerlink" title="Tampermonkey &amp; html5视频播放器增强脚本"></a>Tampermonkey &amp; html5视频播放器增强脚本</h2><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3c806643/Tampermonkey.jpg" alt="alt"></p><p><a href="https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo" target="_blank" rel="noopener">Google 商店</a></p><blockquote><p>&emsp;&emsp;油猴脚本插件绝对是重量级，它相当于脚本容器，让简单的 JS 脚本也可以使用 浏览器插件的 API。<br>&emsp;&emsp;而油猴脚本千千万万，能够让我爱不释手的只有一个 - Html5 视频播放器</p></blockquote><p><a href="https://github.com/xxxily/h5player" target="_blank" rel="noopener">github 地址</a></p><p><a href="https://greasyfork.org/zh-CN/scripts/381682-html5%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE%E5%99%A8%E5%A2%9E%E5%BC%BA%E8%84%9A%E6%9C%AC" target="_blank" rel="noopener">Greasy Fork 安装地址</a></p><blockquote><p>&emsp;&emsp;有了这个视频播放器增强功能，我看教程再也不需要下载了，操作习惯是按着 PotPlayer 来的。<br>&emsp;&emsp;功能非常全面，我大多数时候只需要 视频加速 功能 和 Shift + P 在 youtube 上开小窗口模式。<br>&emsp;&emsp;不少快捷键和 Vimium  冲突了，使用的时候需要 按 i 键开启 Vimium 的插入模式，防止快捷键冲突。</p></blockquote><h2 id="OneTab"><a href="#OneTab" class="headerlink" title="OneTab"></a>OneTab</h2><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3c806643/OneTab.jpg" alt="alt"></p><p><a href="https://chrome.google.com/webstore/detail/onetab/chphlpgkkbolifaimnlloiipkdnihall" target="_blank" rel="noopener">Google 商店</a></p><blockquote><p>&emsp;&emsp;这个工具可以一键收容当前所有的窗口，然后按需要进行打开。<br>&emsp;&emsp;用得不多，页面开多了不舍得关闭的时候还挺有用的。</p></blockquote><h2 id="Smart-TOC"><a href="#Smart-TOC" class="headerlink" title="Smart TOC"></a>Smart TOC</h2><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3c806643/Smart TOC.jpg" alt="alt"></p><p><a href="https://chrome.google.com/webstore/detail/smart-toc/lifgeihcfpkmmlfjbailfpfhbahhibba" target="_blank" rel="noopener">Google 商店</a></p><blockquote><p>&emsp;&emsp;这个小工具可以自动生成文章的目录，有时候看别人的博客没有目录浏览的时候还是非常方便。</p></blockquote><h2 id="JSONView"><a href="#JSONView" class="headerlink" title="JSONView"></a>JSONView</h2><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3c806643/JSONView.jpg" alt="alt"></p><p><a href="https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc" target="_blank" rel="noopener">Google 商店</a></p><blockquote><p>&emsp;&emsp;测试接口的时候还是挺好用的，自动格式化 Json 数据，看得更舒服。</p></blockquote><h2 id="二箱"><a href="#二箱" class="headerlink" title="二箱"></a>二箱</h2><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3c806643/二箱.jpg" alt="alt"></p><p><a href="https://chrome.google.com/webstore/detail/noobox/kidibbfcblfbbafhnlanccjjdehoahep" target="_blank" rel="noopener">Google 商店</a></p><p><a href="https://github.com/AInoob/NooBox" target="_blank" rel="noopener">github 地址</a></p><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3c806643/04.png" alt="alt"></p><blockquote><p>&emsp;&emsp;鼠标右键在 二箱 的标签下可以提取当前网页的所有图片。<br>&emsp;&emsp;快速获取当前页面可下载的图片链接，并且可以直接拖拽到本地。<br>&emsp;&emsp;省得我用 F12 在 Html 里面找地址了。</p></blockquote><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3c806643/05.png" alt="alt"></p><blockquote><p>&emsp;&emsp;另外 二箱 提供了全网快速搜图功能，非常赞~</p></blockquote><h2 id="二管家"><a href="#二管家" class="headerlink" title="二管家"></a>二管家</h2><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3c806643/二管家.jpg" alt="alt"></p><p><a href="https://chrome.google.com/webstore/detail/nooboss/aajodjghehmlpahhboidcpfjcncmcklf" target="_blank" rel="noopener">Google 商店</a></p><p><a href="https://github.com/AInoob/NooBoss" target="_blank" rel="noopener">github 地址</a></p><blockquote><p>&emsp;&emsp;这个和上面的插件是同一个作者开发的。<br>&emsp;&emsp;这个管家可以对自己本地安装的插件进行分组，快速开启不同分组的插件。<br>&emsp;&emsp;如果安装了很多插件的话，使用这个管理非常好用。</p></blockquote><h2 id="Octotree"><a href="#Octotree" class="headerlink" title="Octotree"></a>Octotree</h2><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3c806643/Octotree.jpg" alt="alt"></p><p><a href="https://chrome.google.com/webstore/detail/octotree-github-code-tree/bkhaagjahfmjljalopjnoealnfndnagc" target="_blank" rel="noopener">Google 商店</a></p><p><a href="https://github.com/ovity/octotree" target="_blank" rel="noopener">github 地址</a></p><blockquote><p>&emsp;&emsp;这个插件给 Github 网站扩展了层级树结构，方便浏览项目下的文件。</p></blockquote><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote><p>&emsp;&emsp;其实我对浏览器插件的需求很低，日常使用上用得最多的就是 Vimium 和 H5 播放器 两个<br>&emsp;&emsp;希望这次个人分享对大家使用浏览器有所帮助。</p></blockquote>]]></content>
-    
-    <summary type="html">
-    
-      工欲善其事必先利其器
-    
-    </summary>
-    
-      <category term="效率提升指南" scheme="https://blog.l0v0.com/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"/>
-    
-    
-      <category term="Windows" scheme="https://blog.l0v0.com/tags/Windows/"/>
-    
-      <category term="效率" scheme="https://blog.l0v0.com/tags/%E6%95%88%E7%8E%87/"/>
-    
-      <category term="软件" scheme="https://blog.l0v0.com/tags/%E8%BD%AF%E4%BB%B6/"/>
     
   </entry>
   
