@@ -55,55 +55,55 @@ $(function(){
     
     tooltip_anim("main","主菜单");
     
-    $("#webgl").after("<img id='help_btn' src= "/img/loading.gif" data-lazy-src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/information.ico' width='32px' height='32px' onclick='help_display()'>") 
+    $("#webgl").after("<img id='help_btn' src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/information.ico' width='32px' height='32px' onclick='help_display()'>") 
     
     tooltip_anim("help_btn","帮助");//添加按钮tooltip
     
     $("#help_btn").hide();//隐藏按钮
     
-    $("#webgl").after("<img id='full_btn' src= "/img/loading.gif" data-lazy-src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/statusNotDone.ico' width='32px' height='32px' onclick='full_screen_fun()'>") 
+    $("#webgl").after("<img id='full_btn' src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/statusNotDone.ico' width='32px' height='32px' onclick='full_screen_fun()'>") 
     
     tooltip_anim("full_btn","全屏");//添加按钮tooltip
     
     $("#full_btn").hide();//隐藏按钮
     
-    $("#webgl").after("<img id='share_btn' src= "/img/loading.gif" data-lazy-src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/flag.ico' width='32px' height='32px' onclick='share_display()'>") 
+    $("#webgl").after("<img id='share_btn' src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/flag.ico' width='32px' height='32px' onclick='share_display()'>") 
     
     tooltip_background = tooltip_anim("share_btn","背景颜色");//这里用这个无法删除改变按钮
     
     $("#share_btn").hide();//隐藏按钮
     
-    $("#webgl").after("<img id='stop_btn' src= "/img/loading.gif" data-lazy-src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/jumplist_pausealltask.ico' width='32px' height='32px' onclick='rotate_stop()'>") 
+    $("#webgl").after("<img id='stop_btn' src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/jumplist_pausealltask.ico' width='32px' height='32px' onclick='rotate_stop()'>") 
     
     tooltip_stop = tooltip_anim("stop_btn","暂停旋转");//添加按钮tooltip
     
     $("#stop_btn").hide();//隐藏按钮
     
-    $("#webgl").after("<img id='origin_btn' src= "/img/loading.gif" data-lazy-src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/sync.ico' width='32px' height='32px'onclick='origin_position()'>") 
+    $("#webgl").after("<img id='origin_btn' src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/sync.ico' width='32px' height='32px'onclick='origin_position()'>") 
     
     tooltip_anim("origin_btn","初始位置");//添加按钮tooltip
     
     $("#origin_btn").hide();//隐藏按钮
     
-    $("#webgl").after("<img id='color_white_btn' src= "/img/loading.gif" data-lazy-src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/white.jpg' width='32px' height='32px'onclick='white_BG()'>") 
+    $("#webgl").after("<img id='color_white_btn' src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/white.jpg' width='32px' height='32px'onclick='white_BG()'>") 
     
     tooltip_anim("color_white_btn","白背景",'top');//添加按钮tooltip
     
     $("#color_white_btn").hide();//隐藏按钮
     
-    $("#webgl").after("<img id='color_dark_btn' src= "/img/loading.gif" data-lazy-src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/dark.jpg' width='32px' height='32px'onclick='dark_BG()'>") 
+    $("#webgl").after("<img id='color_dark_btn' src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/dark.jpg' width='32px' height='32px'onclick='dark_BG()'>") 
     
     tooltip_anim("color_dark_btn","黑背景",'top');//添加按钮tooltip
     
     $("#color_dark_btn").hide();//隐藏按钮
     
-    $("#webgl").after("<img id='color_white_btn_small' src= "/img/loading.gif" data-lazy-src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/white.jpg' width='10px' height='10px'onclick='white_BG()' >") 
+    $("#webgl").after("<img id='color_white_btn_small' src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/white.jpg' width='10px' height='10px'onclick='white_BG()' >") 
     
     tooltip_anim("color_white_btn_small","白背景",'top');//添加按钮tooltip
     
     $("#color_white_btn_small").hide();//隐藏按钮
     
-    $("#webgl").after("<img id='color_dark_btn_small' src= "/img/loading.gif" data-lazy-src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/dark.jpg' width='10px' height='10px'onclick='dark_BG()' >")   
+    $("#webgl").after("<img id='color_dark_btn_small' src='https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/OPENGL_homework/ico/dark.jpg' width='10px' height='10px'onclick='dark_BG()' >")   
     
     tooltip_anim("color_dark_btn_small","黑背景",'top');//添加按钮tooltip
     
