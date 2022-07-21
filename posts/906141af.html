@@ -1,0 +1,356 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Maya Standalone 后台模式 | 智伤帝的个人博客</title><meta name="keywords" content="ࠀMaya,ࠕPython"><meta name="author" content="智伤帝"><meta name="copyright" content="智伤帝"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="纯命令行使用 Maya | userSetup 自动加载机制分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Maya Standalone 后台模式">
+<meta property="og:url" content="https://blog.l0v0.com/posts/906141af.html">
+<meta property="og:site_name" content="智伤帝的个人博客">
+<meta property="og:description" content="纯命令行使用 Maya | userSetup 自动加载机制分析">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/avatar.png">
+<meta property="article:published_time" content="2020-06-06T02:10:31.000Z">
+<meta property="article:modified_time" content="2022-07-14T02:32:13.004Z">
+<meta property="article:author" content="智伤帝">
+<meta property="article:tag" content="ࠀMaya">
+<meta property="article:tag" content="ࠕPython">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/avatar.png"><link rel="shortcut icon" href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/favicon.png"><link rel="canonical" href="https://blog.l0v0.com/posts/906141af.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><meta name="google-site-verification" content="google15d1ccb0af66991a"/><meta name="msvalidate.01" content="D306EED72EF12BF89A2A951583FF91C7"/><meta name="baidu-site-verification" content="A3TUx6EZdy"/><meta name="360-site-verification" content="48ce68b0e3754c994b6e79677b842d48"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cda99107ced8e9ef4d02339065438d4f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  hexoversion: '4.2.1',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2022-07-14 10:32:13'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {
+  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }
+})()</script><link rel="stylesheet" href="/css/iconfont.css"><link rel="stylesheet" href="/css/extra.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/avatar.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">293</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">69</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">67</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" href="https://wiki.l0v0.com/" target="_blank" rel="noopener"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" href="http://hou.l0v0.com" target="_blank" rel="noopener"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Maya-初始化探索"><span class="toc-number">2.</span> <span class="toc-text">Maya 初始化探索</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/bg.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">智伤帝的个人博客</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" href="https://wiki.l0v0.com/" target="_blank" rel="noopener"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" href="http://hou.l0v0.com" target="_blank" rel="noopener"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">Maya Standalone 后台模式</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-06-06T02:10:31.000Z" title="发表于 2020-06-06 10:10:31">2020-06-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-07-14T02:32:13.004Z" title="更新于 2022-07-14 10:32:13">2022-07-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/CG/">CG</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/CG/Maya/">Maya</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/CG/Maya/Maya-%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95/">Maya 研究记录</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><a id="more"></a>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>&emsp;&emsp;前段时间去有了个小需求，需要批量统计之前做好的动画文件的文件帧数和相应的骨骼数。<br>&emsp;&emsp;之前大部分的批处理都是在前台做的，也没有什么大问题，就是 Maya 一直在加载文件， UI 各种更新确实影响到了执行效率。<br>&emsp;&emsp;最近总算是闲了一点，于是打算好好研究一下通过 standalone 批处理的方法。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;其实早在去年，我就用过 standalone 模式，一直没有写文章进行深刻的总结，不过这个模式也不复杂。<br>&emsp;&emsp;其实就是实现无 UI 界面使用 Maya，通过 Python 命令可以实现大部分的 Maya 操作，这样的好处上面也提到了， Maya 不需要更新 UI ，文件加载效率更高。<br>&emsp;&emsp;关于 standlone 模式， DT 有一套老教程有提到，可惜教程之前被爆破了，我最近上传了补档教程，希望对大家有帮助。 <a href="https://www.bilibili.com/video/BV13K4y1b7DU?p=27" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;由于教程很少，我之前是通过官方文档研究的。 <a href="http://help.autodesk.com/view/MAYAUL/2018/ENU/?guid=GUID-83799297-C629-48A8-BCE4-061D3F275215" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;Stack Overflow 也有不少有用的参考回答 <a href="https://stackoverflow.com/questions/27437733/use-external-python-script-to-open-maya-and-run-another-script-inside-maya" target="_blank" rel="noopener">链接</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;我之前就一直很好奇， Maya 是如何执行 userSetup 的<br>&emsp;&emsp;为什么使用 standalone 模式也会自动加载到 userSetup 导致开启速度大降<br>&emsp;&emsp;结合着上述的问题，我开始了研究。</p>
+</blockquote>
+<h2 id="Maya-初始化探索"><a href="#Maya-初始化探索" class="headerlink" title="Maya 初始化探索"></a>Maya 初始化探索</h2><blockquote>
+<p>&emsp;&emsp;我之前写了一篇文章，关于如何提取出 mayapy.exe 并且可以正常输出 Maya 文件的文章 <a href="./946c38e7.html">链接</a><br>&emsp;&emsp;mayapy.exe 其实就是重新编译的 python.exe<br>&emsp;&emsp;完全兼容 python2 并且对 maya 内置 dll 进行了底层对接。<br>&emsp;&emsp;我之前的研究发现 maya 的 bin 目录下有 commandList 文件，里面记录了所有的 mel 命令对应读取的 dll 文件。<br>&emsp;&emsp;这些发现其实都和 Maya 启动初始化的读取相关的。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;我们可以直接双击启动 mayapy.exe ， 打开之后的操作和双击启动的 python.exe 没有任何区别<br>&emsp;&emsp;最大的特点是这里定位的 python 包里面已经自带了 maya 包<br>&emsp;&emsp;可以通过 <code>from maya import cmds</code> 来导入 cmds 库<br>&emsp;&emsp;但是当你 <code>print dir(cmds)</code> 你会发现 cmds 库里面的 mel 命令是空空如也的。<br>&emsp;&emsp;根据官方的说法，你需要使用 maya 的 standalone 模式初始化，才可以正常使用 cmds 库。<br>&emsp;&emsp;pymel文档也有提到 <a href="http://help.autodesk.com/cloudhelp/2019/ENU/Maya-Tech-Docs/PyMel/standalone.html" target="_blank" rel="noopener">链接</a></p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;今天就针对上面所列的代码，探讨 initialize 函数执行的背后到底发生了什么。<br>&emsp;&emsp;直觉告诉我，这个东西绝对和 python 的环境相关。<br>&emsp;&emsp;于是我简单粗暴的将 os.environ 的环境赋值为空。<br>&emsp;&emsp;就是想看看 mayapy 会怎么花式报错。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line">os.environ = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> maya <span class="keyword">import</span> standalone</span><br><span class="line">standalone.initialize()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;执行上面的代码，会有如下的代码报错提示 (测试使用的是 Maya2017 的 mayapy.exe) </p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Python 2.7.11 (default, Dec 21 2015, 22:48:54) [MSC v.1700 64 bit (AMD64)] on win32</span><br><span class="line">Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.</span><br><span class="line">&gt;&gt;&gt; import os</span><br><span class="line">&gt;&gt;&gt; os.environ &#x3D; &#123;&#125;</span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">&gt;&gt;&gt; from maya import standalone</span><br><span class="line">&gt;&gt;&gt; standalone.initialize()</span><br><span class="line">Error: local variable &#39;commandListPath&#39; referenced before assignment</span><br><span class="line"># Traceback (most recent call last):</span><br><span class="line">#   File &quot;C:\Program Files\Autodesk\Maya2017\Python\lib\site-packages\maya\app\startup\batch.py&quot;, line 5, in &lt;module&gt;</span><br><span class="line">#     import maya.app.startup.basic</span><br><span class="line">#   File &quot;C:\Program Files\Autodesk\Maya2017\Python\lib\site-packages\maya\app\startup\basic.py&quot;, line 76, in &lt;module&gt;</span><br><span class="line">#     maya.app.commands.processCommandList()</span><br><span class="line">#   File &quot;C:\Program Files\Autodesk\Maya2017\Python\lib\site-packages\maya\app\commands.py&quot;, line 43, in processCommandList</span><br><span class="line">#     sys.stderr.write(&quot;Unable to process commandList %s&quot; % commandListPath)</span><br><span class="line"># UnboundLocalError: local variable &#39;commandListPath&#39; referenced before assignment</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;这个脚本路径，一看就知道大概是怎么回事了，原来 maya.app 里面还有 startup 的库。<br>&emsp;&emsp;可以断定 startup 肯定和启动初始化有着千丝万缕的关系了。<br>&emsp;&emsp;于是我又将 startup 这个名字稍稍改掉<br>&emsp;&emsp;然后再执行一遍。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Python 2.7.11 (default, Dec 21 2015, 22:48:54) [MSC v.1700 64 bit (AMD64)] on win32</span><br><span class="line">Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.</span><br><span class="line">&gt;&gt;&gt; from maya import standalone</span><br><span class="line">&gt;&gt;&gt; standalone.initialize()</span><br><span class="line">Error: No module named startup.batch</span><br><span class="line"># ImportError: No module named startup.batch</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;盲生发现了华点了，可以断定 initialize 函数导入了 startup.batch 脚本。<br>&emsp;&emsp;于是追踪 startup.batch 的脚本可以找到下面的代码</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">This module is imported during the startup of Maya in batch mode.</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> maya.app.startup.basic</span><br><span class="line"></span><br><span class="line"><span class="comment"># Run the user's userSetup.py if it exists</span></span><br><span class="line">maya.app.startup.basic.executeUserSetup()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;这里导入了 basic 库，然后进行初始化。<br>&emsp;&emsp;于是又可以去追踪 basic 的脚本</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">This module is always imported during Maya's startup.  It is imported from</span></span><br><span class="line"><span class="string">both the maya.app.startup.batch and maya.app.startup.gui scripts</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">import</span> atexit</span><br><span class="line"><span class="keyword">import</span> os.path</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> traceback</span><br><span class="line"><span class="keyword">import</span> maya</span><br><span class="line"><span class="keyword">import</span> maya.app</span><br><span class="line"><span class="keyword">import</span> maya.app.commands</span><br><span class="line"><span class="keyword">from</span> maya <span class="keyword">import</span> cmds, utils</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setupScriptPaths</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Add Maya-specific directories to sys.path</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># Extra libraries</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># Tkinter libraries are included in the zip, add that subfolder</span></span><br><span class="line">        p = [p <span class="keyword">for</span> p <span class="keyword">in</span> sys.path <span class="keyword">if</span> p.endswith(<span class="string">'.zip'</span>)][<span class="number">0</span>]</span><br><span class="line">        sys.path.append( os.path.join(p,<span class="string">'lib-tk'</span>) )</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Per-version prefs scripts dir (eg .../maya8.5/prefs/scripts)</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    prefsDir = cmds.internalVar( userPrefDir=<span class="literal">True</span> )</span><br><span class="line">    sys.path.append( os.path.join( prefsDir, <span class="string">'scripts'</span> ) )</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Per-version scripts dir (eg .../maya8.5/scripts)</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    scriptDir = cmds.internalVar( userScriptDir=<span class="literal">True</span> )</span><br><span class="line">    sys.path.append( os.path.dirname(scriptDir) )</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># User application dir (eg .../maya/scripts)</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    appDir = cmds.internalVar( userAppDir=<span class="literal">True</span> )</span><br><span class="line">    sys.path.append( os.path.join( appDir, <span class="string">'scripts'</span> ) )</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">executeUserSetup</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Look for userSetup.py in the search path and execute it in the "__main__"</span></span><br><span class="line"><span class="string">    namespace</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.environ.has_key(<span class="string">'MAYA_SKIP_USERSETUP_PY'</span>):</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">for</span> path <span class="keyword">in</span> sys.path[:]:</span><br><span class="line">                scriptPath = os.path.join( path, <span class="string">'userSetup.py'</span> )</span><br><span class="line">                <span class="keyword">if</span> os.path.isfile( scriptPath ):</span><br><span class="line">                    <span class="keyword">import</span> __main__</span><br><span class="line">                    execfile( scriptPath, __main__.__dict__ )</span><br><span class="line">        <span class="keyword">except</span> Exception, err:</span><br><span class="line">            <span class="comment"># err contains the stack of everything leading to execfile,</span></span><br><span class="line">            <span class="comment"># while sys.exc_info returns the stack of everything after execfile</span></span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                <span class="comment"># extract the stack trace for the current exception</span></span><br><span class="line">                etype, value, tb = sys.exc_info()</span><br><span class="line">                tbStack = traceback.extract_tb(tb)</span><br><span class="line">            <span class="keyword">finally</span>:</span><br><span class="line">                <span class="keyword">del</span> tb <span class="comment"># see warning in sys.exc_type docs for why this is deleted here</span></span><br><span class="line">            sys.stderr.write(<span class="string">"Failed to execute userSetup.py\n"</span>)</span><br><span class="line">            sys.stderr.write(<span class="string">"Traceback (most recent call last):\n"</span>)</span><br><span class="line">            <span class="comment"># format the traceback, excluding our current level</span></span><br><span class="line">            result = traceback.format_list( tbStack[<span class="number">1</span>:] ) + traceback.format_exception_only(etype, value)</span><br><span class="line">            sys.stderr.write(<span class="string">''</span>.join(result))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set up sys.path to include Maya-specific user script directories.</span></span><br><span class="line">setupScriptPaths()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set up string table instance for application</span></span><br><span class="line">maya.stringTable = utils.StringTable()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set up auto-load stubs for Maya commands implemented in libraries which are not yet loaded</span></span><br><span class="line">maya.app.commands.processCommandList()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set up the maya logger before userSetup.py runs, so that any custom scripts that</span></span><br><span class="line"><span class="comment"># use the logger will have it available</span></span><br><span class="line">utils.shellLogHandler()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Register code to be run on exit</span></span><br><span class="line">atexit.register( maya.app.finalize )</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;自动桌的脚本注释还挺全的。<br>&emsp;&emsp;从注释可以知道这个脚本每次启动都会自动加载。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;<code>executeUserSetup</code> 通过代码可以知道如果环境变量存在 <code>MAYA_SKIP_USERSETUP_PY</code> 这个，就不会被执行。<br>&emsp;&emsp;后续也是自动执行 userSetup.py 这个脚本， 其实都是 python 脚本，甚至可以修改这里 userSetup 命名，让 Maya 启动其他名称的脚本 (如果真的这么干的话 TD或TA 估计会疯掉的)<br>&emsp;&emsp;所以代码查到这里，我还额外发现了 <code>MAYA_SKIP_USERSETUP_PY</code> 这个不错的环境变量来加速 Mayapy 的启动。<br>&emsp;&emsp;使用方法也很简单。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="comment"># NOTE 注意环境变量只能赋值字符串</span></span><br><span class="line">os.environ[<span class="string">"MAYA_SKIP_USERSETUP_PY"</span>] = <span class="string">""</span></span><br><span class="line"><span class="keyword">from</span> maya <span class="keyword">import</span> standalone</span><br><span class="line">standalone.initialize()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;下面的代码可以再逐个分析。<br>&emsp;&emsp;<code>setupScriptPaths</code> 函数会自动将 Maya 一些默认的 scripts 目录路径添加到 sys.path 里面方便导入。<br>&emsp;&emsp;<code>stringTable</code> 就是个字典类， 主要为了实现类似 mel的 res 脚本实现多语言匹配的效果，maya 包里有其他的脚本有用到，可以对照参考。<br>&emsp;&emsp;<code>shellLogHandler</code> 可以追查源码，和 logging 库相关<br>&emsp;&emsp;最后一句则是让 Maya 正常退出的时候执行退出操作。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;<code>processCommandList</code> 可以去找 commands 的 python 脚本</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> maya.cmds</span><br><span class="line"><span class="keyword">import</span> sys, os.path</span><br><span class="line"></span><br><span class="line"><span class="comment"># Locations of commandList file by OS type as returned by maya.cmds.about( os=True )</span></span><br><span class="line">commandListLocations = &#123;</span><br><span class="line">    <span class="string">'nt'</span> : <span class="string">'bin'</span>,</span><br><span class="line">    <span class="string">'win64'</span> : <span class="string">'bin'</span>,</span><br><span class="line">    <span class="string">'mac'</span> : <span class="string">'Resources'</span>,</span><br><span class="line">    <span class="string">'linux'</span> : <span class="string">'lib'</span>,</span><br><span class="line">    <span class="string">'linux64'</span> : <span class="string">'lib'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__makeStubFunc</span><span class="params">( command, library )</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">stubFunc</span><span class="params">( *args, **keywords )</span>:</span></span><br><span class="line">        <span class="string">""" Dynamic library stub function """</span></span><br><span class="line">        maya.cmds.dynamicLoad( library )</span><br><span class="line">        <span class="comment"># call the real function which has replaced us</span></span><br><span class="line">        <span class="keyword">return</span> maya.cmds.__dict__[command]( *args, **keywords )</span><br><span class="line">    <span class="keyword">return</span> stubFunc</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">processCommandList</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Process the "commandList" file that contains the mappings between command names and the</span></span><br><span class="line"><span class="string">    libraries in which they are found.  This function will install stub functions in maya.cmds</span></span><br><span class="line"><span class="string">    for all commands that are not yet loaded.  The stub functions will load the required library</span></span><br><span class="line"><span class="string">    and then execute the command.</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># Assume that maya.cmds.about and maya.cmds.internalVar are already registered</span></span><br><span class="line">        <span class="comment">#</span></span><br><span class="line">        commandListPath = os.path.realpath( os.environ[ <span class="string">'MAYA_LOCATION'</span> ] )</span><br><span class="line">        platform = maya.cmds.about( os=<span class="literal">True</span> )</span><br><span class="line">        commandListPath = os.path.join( commandListPath, commandListLocations[platform], <span class="string">'commandList'</span> )</span><br><span class="line"></span><br><span class="line">        file = open( commandListPath, <span class="string">'r'</span> )</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> file:</span><br><span class="line">            commandName, library = line.split()</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> commandName <span class="keyword">in</span> maya.cmds.__dict__:</span><br><span class="line">                maya.cmds.__dict__[commandName] = __makeStubFunc( commandName, library )</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        sys.stderr.write(<span class="string">"Unable to process commandList %s"</span> % commandListPath)</span><br><span class="line">        <span class="keyword">raise</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;这里的操作主要是读取 commandList 文件的 dll 对应关系。<br>&emsp;&emsp;如果前面的 standalone 初始化有些命令没有顺利加载，可以通过 mel 命令引入的 dynamicLoad 方法<br>&emsp;&emsp;重新加载命令。</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>&emsp;&emsp;Maya 已经和 Python 深度结合了，启动的时候会执行下面的操作</p>
+</blockquote>
+<blockquote>
+<ol>
+<li>首先加载 dll 添加 cmds 库的 mel 命令</li>
+<li>加载 maya.app.startup.batch 库</li>
+<li>通过 mel 命令获取 我的文档的 maya 目录一些默认的 scripts 路径 | 添加到 sys.path 里面</li>
+<li>初始化 StringTable 调用</li>
+<li>通过 processCommandList ， 避免一些 mel 命令漏网之鱼没有加载</li>
+<li>初始化信息打印</li>
+<li>注册关闭 Maya 事件</li>
+<li><code>executeUserSetup</code> 执行 sys.path 下所有的 userSetup.py 脚本&gt; </li>
+</ol>
+</blockquote>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">智伤帝</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.l0v0.com/posts/906141af.html">https://blog.l0v0.com/posts/906141af.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.l0v0.com" target="_blank">智伤帝的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E0%A0%80Maya/">ࠀMaya</a><a class="post-meta__tags" href="/tags/%E0%A0%95Python/">ࠕPython</a></div><div class="post_share"><div class="addtoany"><div class="a2a_kit a2a_kit_size_32 a2a_default_style"><a class="a2a_button_facebook"></a><a class="a2a_button_twitter"></a><a class="a2a_button_wechat"></a><a class="a2a_button_sina_weibo"></a><a class="a2a_button_facebook_messenger"></a><a class="a2a_button_email"></a><a class="a2a_button_copy_link"></a><a class="a2a_dd" href="https://www.addtoany.com/share" target="_blank" rel="noopener"></a></div></div><script async="async" src="https://static.addtoany.com/menu/page.js"></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/a999f0c.html"><img class="prev-cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/a999f0c/01.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Unreal FBX 动画导入比对面板</div></div></a></div><div class="next-post pull-right"><a href="/posts/5e76f729.html"><img class="next-cover" data-lazy-src="/null" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">梅开二度 - 校招总结</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/1b238b83.html" title="Unreal Python 导出 MetaHuman 控制器关键帧"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-24</div><div class="title">Unreal Python 导出 MetaHuman 控制器关键帧</div></div></a></div><div><a href="/posts/3aad4b0a.html" title="Maya 编程基础汇总"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3aad4b0a/01.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-02</div><div class="title">Maya 编程基础汇总</div></div></a></div><div><a href="/posts/8c385876.html" title="Maya Mel & Pymel 妙用总结"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/8c385876/02.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-15</div><div class="title">Maya Mel & Pymel 妙用总结</div></div></a></div><div><a href="/posts/50c81a5e.html" title="Maya Qt.py loadUi 问题记录"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/50c81a5e/01.gif" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-22</div><div class="title">Maya Qt.py loadUi 问题记录</div></div></a></div><div><a href="/posts/c45d9aff.html" title="Maya Python 模型拍屏合并工具"><img class="cover" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-11-14</div><div class="title">Maya Python 模型拍屏合并工具</div></div></a></div><div><a href="/posts/2a2e288f.html" title="Maya 打印输出到了 Output Window"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-11-14</div><div class="title">Maya 打印输出到了 Output Window</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><label><input id="switch-comments-btn" type="checkbox"/><span class="slider"></span></label><span class="second-comment">Gitalk</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="gitalk-container"></div></div></div></div></article></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 智伤帝</div><div class="framework-info"><span>框架 </span><a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener">Butterfly</a></div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.spacingElementById('content-inner')
+  else {
+    $.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js', () => {
+      pangu.spacingElementById('content-inner')
+    })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguFn)</script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'mrRioyNTSEAOvVLAsLgkhr4j-gzGzoHsz',
+      appKey: 'wHDm1kxC2FUpOA7FNdgTOEnx',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk({
+      clientID: '355e44f722e24963b9dd',
+      clientSecret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+      repo: 'FXTD-odyssey.github.io',
+      owner: 'FXTD-odyssey',
+      admin: ['FXTD-odyssey'],
+      id: '3905b3a9730db348ddb45f76240d9fcc',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    })
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    $.getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js', initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Valine' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="https://cdn.jsdelivr.net/gh/wilq32/jqueryrotate/jQueryRotate.js"></script><script src="/js/classify.js"></script><script src="/js/jsdelivr.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https'){
+  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>

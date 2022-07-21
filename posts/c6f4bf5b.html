@@ -1,0 +1,420 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Unreal Python 结合 C++ 开发蓝图库插件 | 智伤帝的个人博客</title><meta name="keywords" content="ࠕPython,ࠇCpp,ࠃUnreal/blueprint"><meta name="author" content="智伤帝"><meta name="copyright" content="智伤帝"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="C++ 开发的蓝图暴露给 Python 进行调用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unreal Python 结合 C++ 开发蓝图库插件">
+<meta property="og:url" content="https://blog.l0v0.com/posts/c6f4bf5b.html">
+<meta property="og:site_name" content="智伤帝的个人博客">
+<meta property="og:description" content="C++ 开发的蓝图暴露给 Python 进行调用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c6f4bf5b/01.png">
+<meta property="article:published_time" content="2020-07-15T15:19:35.000Z">
+<meta property="article:modified_time" content="2022-07-07T13:27:18.163Z">
+<meta property="article:author" content="智伤帝">
+<meta property="article:tag" content="ࠕPython">
+<meta property="article:tag" content="ࠇCpp">
+<meta property="article:tag" content="ࠃUnreal&#x2F;blueprint">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c6f4bf5b/01.png"><link rel="shortcut icon" href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/favicon.png"><link rel="canonical" href="https://blog.l0v0.com/posts/c6f4bf5b.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><meta name="google-site-verification" content="google15d1ccb0af66991a"/><meta name="msvalidate.01" content="D306EED72EF12BF89A2A951583FF91C7"/><meta name="baidu-site-verification" content="A3TUx6EZdy"/><meta name="360-site-verification" content="48ce68b0e3754c994b6e79677b842d48"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cda99107ced8e9ef4d02339065438d4f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  hexoversion: '4.2.1',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2022-07-07 21:27:18'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {
+  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }
+})()</script><link rel="stylesheet" href="/css/iconfont.css"><link rel="stylesheet" href="/css/extra.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/avatar.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">293</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">69</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">67</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" href="https://wiki.l0v0.com/" target="_blank" rel="noopener"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" href="http://hou.l0v0.com" target="_blank" rel="noopener"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么需要开发-C-蓝图"><span class="toc-number">2.</span> <span class="toc-text">为什么需要开发 C++ 蓝图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-开发蓝图库插件"><span class="toc-number">3.</span> <span class="toc-text">C++ 开发蓝图库插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#unreal-C-插件注意事项"><span class="toc-number">4.</span> <span class="toc-text">unreal C++ 插件注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-实现-Add-Component-蓝图功能"><span class="toc-number">5.</span> <span class="toc-text">C++ 实现 Add Component 蓝图功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-蓝图获取当前-Sequencer-选择的元素"><span class="toc-number">6.</span> <span class="toc-text">C++ 蓝图获取当前 Sequencer 选择的元素</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c6f4bf5b/01.png)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">智伤帝的个人博客</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" href="https://wiki.l0v0.com/" target="_blank" rel="noopener"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" href="http://hou.l0v0.com" target="_blank" rel="noopener"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">Unreal Python 结合 C++ 开发蓝图库插件</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-07-15T15:19:35.000Z" title="发表于 2020-07-15 23:19:35">2020-07-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-07-07T13:27:18.163Z" title="更新于 2022-07-07 21:27:18">2022-07-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/">游戏开发</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/">Unreal</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/C/">C++</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>&emsp;&emsp;上个月的这个时候我写了一篇文章关于如何嵌入 PySide 调用 Qt 的 GUI 开发。 <a href="./a999f0c.html">链接</a><br>&emsp;&emsp;Python 虽然很好，但是有些功能，并没有从 C++ 里面暴露出来。<br>&emsp;&emsp;这种情况就需要通过 C++ 的蓝图开发来将这部分的功能进行暴露。<br>&emsp;&emsp;这样 Python 基本上可以做任何 Unreal 的事情。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;如何开发蓝图库也基本可以参照上篇文章提到的 Unreal Python 教程。 <a href="https://www.bilibili.com/video/BV1b4411r7kX?p=8" target="_blank" rel="noopener">链接</a> </p>
+</blockquote>
+<h2 id="为什么需要开发-C-蓝图"><a href="#为什么需要开发-C-蓝图" class="headerlink" title="为什么需要开发 C++ 蓝图"></a>为什么需要开发 C++ 蓝图</h2><blockquote>
+<p>&emsp;&emsp;上面的视频链接有很详细如何通过 Unreal C++ API 开发一个 Unreal 的蓝图，暴露给 Python 调用。<br>&emsp;&emsp;Unreal 的 Python 插件其实已经将 Unreal 内置的所有蓝图暴露给了 Python。<br>&emsp;&emsp;因此 蓝图 能够做到的事情， Python 是绝对可以做到的。<br>&emsp;&emsp;而且经过一个多月的使用来看， Python 的 API 文档做得比 蓝图 的 文档要好很多。<br>&emsp;&emsp;有时候直接查 Python 的 API 反而更有效率，甚至会发现一些其他插件所引入的蓝图。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;那么 Python 相较于 蓝图 的有什么异同？<br>&emsp;&emsp;<del>我目前的使用感受来看，除了失去图形节点编程的可视化之外，基本上碾压蓝图，当然运行效率上没有测试过。</del><br>&emsp;&emsp;蓝图 和 Python 的定位有很大的不一样。<br>&emsp;&emsp;蓝图可以作为游戏运行逻辑的一部分， Python 只能当做编辑器的自动化工具。（Python 效率太低了，运行脚本宁愿用 lua 调 C++）</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;蓝图自身有它的优缺点，效率比不过 C++ <a href="https://www.bilibili.com/video/BV1Ma4y1Y7dZ?p=2" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;但是图形化编程，对于非 coding 人员很友好，而且一些简单的逻辑也比较直观。<br>&emsp;&emsp;但是复杂蓝图的连线还是太让人劝退了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;Python 对于像我这种工具向开发的 TA 来说太友好了，毕竟很多 DCC 都使用 Python 。<br>&emsp;&emsp;Unreal 的 Python 插件大部分是对 蓝图 的分装，基本上蓝图有的功能都可以通过 Python 来调。<br>&emsp;&emsp;同时 Python 还可以实现一些神奇的功能，比如说通过 Python 开发一个蓝图节点 ，调用 Python 的第三方库诸如 PySide 包，或者调用系统的 cmd 或者 shell 命令。<br>&emsp;&emsp;因此从引擎的提升来说， Python 的确在这方面更胜一筹，复杂逻辑通过代码看也比较直观。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;当然很明显， 蓝图不能实现的引擎操作，基本上也不用指望 Python 能够调用什么 API 来实现了。<br>&emsp;&emsp;这种情况下就需要 C++ 来扩展蓝图，实现 Python 调用。</p>
+</blockquote>
+<h2 id="C-开发蓝图库插件"><a href="#C-开发蓝图库插件" class="headerlink" title="C++ 开发蓝图库插件"></a>C++ 开发蓝图库插件</h2><blockquote>
+<p>&emsp;&emsp;我们目前的需求并不是开发游戏调用的蓝图，因此我们可以开发一个蓝图库插件。<br>&emsp;&emsp;这样可以轻易将这些蓝图迁移到不同的项目里面去。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;Unreal 搭建蓝图库开发其实并不难，按照官方的指引去做即可。<br>&emsp;&emsp;首先需要创建一个 C++ 工程，如果是蓝图工程是无法写 C++ 代码的。<br>&emsp;&emsp;然后打开插件面板，选择 New Plugin</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c6f4bf5b/01.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;然后引擎就会自动创建一个基础插件的模板出来。<br>&emsp;&emsp;后续就是在这个基础模板上调用 C++ 的 API 实现一些特殊的功能。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c6f4bf5b/02.png" alt="alt"></p>
+<h2 id="unreal-C-插件注意事项"><a href="#unreal-C-插件注意事项" class="headerlink" title="unreal C++ 插件注意事项"></a>unreal C++ 插件注意事项</h2><blockquote>
+<p>&emsp;&emsp;插件的默认结构是 .uplugin 文件加 Resource 和 Source 文件夹。<br>&emsp;&emsp;uplugin 就是一个 Json 配置，配置了插件在引擎的插件列表的显示，以及加载方式。<br>&emsp;&emsp;Resource 存放插件显示的图标。<br>&emsp;&emsp;Source 存放的是 C++ 源码了。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;前面两个不需要太过关注，重点的 Source 文件夹的东西。<br>&emsp;&emsp;里面会有 <em>.Build.cs 文件以及 Public 和 Private 文件夹。<br>&emsp;&emsp;`</em>.Build.cs`是 C# 代码，通过虚幻的 Reflect 机制生成 Intermediate 的中间代码用来编译生成 dll。<br>&emsp;&emsp;Public 默认存放头文件<br>&emsp;&emsp;Private 默认存放cpp源码</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;引用了引擎内部的一些库，需要在 build.cs 文件里面添加上。<br>&emsp;&emsp;否则编译的时候回报某些类型无法识别的错误。<br>&emsp;&emsp;试过排查这种小错误花了我大半天。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c6f4bf5b/05.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;前面两个部分是添加路径的，用来缩短头文件索引的路径长度。<br>&emsp;&emsp;后面的 Private 和 Public Module 则是最重要的索引头文件的，必须要在这里配置才能在 c++ 里面调用。<br>&emsp;&emsp;这里怎么填写可以参考引擎 Source 源码下的文件夹名称。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;cs 里面配置就可以找 Source 源码的一些头文件进行引用了。<br>&emsp;&emsp;因为虚幻开源了，所以内部 Private 和 Public 没有什么区别，也可能是我的 C++ 造诣还不够。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;配置头文件就可以愉快地使用官方提供的一些 C++ 了。</p>
+</blockquote>
+<h2 id="C-实现-Add-Component-蓝图功能"><a href="#C-实现-Add-Component-蓝图功能" class="headerlink" title="C++ 实现 Add Component 蓝图功能"></a>C++ 实现 Add Component 蓝图功能</h2><blockquote>
+<p>&emsp;&emsp;这个功能看似非常简单，奈何 Python 就是实现不了。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c6f4bf5b/03.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;就是给现有 Actor 添加新的 Component 组件而已。<br>&emsp;&emsp;但是查了 API 文档，即便使用 Attach 相关的方法，也无法新的 Component 添加到 Actor 上。<br>&emsp;&emsp;应该说 Python 的操作没有问题， Component 也加上了，可以通过 Python 获取到，但是 Component 没有注册，无法在 UI 上显示出来。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;经过我查阅大量网上的资料之后，只在论坛上找到了一个通过 C++ 实现的方案。 <a href="https://forums.unrealengine.com/development-discussion/Python-scripting/1703959-how-to-add-component-to-existing-actor-in-level-with-Python-blueprint" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;这段代码里面有很关键的 RegisterComponent 的操作。<br>&emsp;&emsp;而这些操作并没有暴露到 Python 或者说 蓝图 里面。<br>&emsp;&emsp;当然这个添加 Component 的方法估计也和 Unreal 的机制有关，我对 Unreal 引擎还不是很熟，就不做无关的揣测了。 </p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c6f4bf5b/04.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;Python 的文档在 Actor 的部分有所涉及。<br>&emsp;&emsp;不过这个问题就非常蛋疼，<br>&emsp;&emsp;unreal.EditorLevelLibrary.get_all_level_actors_components 可以获取所有注册的 Component<br>&emsp;&emsp;Actor 也可以删除现有的 Component ，偏偏无法添加新的 Component</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;C++ 的部分我简化了上面回答的代码。<br>&emsp;&emsp;如果没有传入具体的 Component 类型就返回 None 给 Python 就好了。</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">UActorComponent* <span class="title">URedArtToolkitBPLibrary::AddComponent</span><span class="params">(AActor* a, USceneComponent *future_parent, FName name, UClass* NewComponentClass)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">	UActorComponent* retComponent = <span class="literal">nullptr</span>;</span><br><span class="line">	<span class="keyword">if</span> (NewComponentClass)</span><br><span class="line">	&#123;</span><br><span class="line">		UActorComponent* NewComponent = NewObject&lt;UActorComponent&gt;(a, NewComponentClass, name);</span><br><span class="line">		FTransform CmpTransform;<span class="comment">// = dup_source-&gt;GetComponentToWorld();</span></span><br><span class="line">		<span class="comment">//NewComponent-&gt;AttachToComponent(sc, FAttachmentTransformRules::KeepWorldTransform);</span></span><br><span class="line">		<span class="comment">// Do Scene Attachment if this new Comnponent is a USceneComponent</span></span><br><span class="line">		<span class="keyword">if</span> (USceneComponent* NewSceneComponent = Cast&lt;USceneComponent&gt;(NewComponent))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (future_parent != <span class="number">0</span>)</span><br><span class="line">				NewSceneComponent-&gt;AttachToComponent(future_parent, FAttachmentTransformRules::KeepWorldTransform);</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				NewSceneComponent-&gt;AttachToComponent(a-&gt;GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);</span><br><span class="line"></span><br><span class="line">			NewSceneComponent-&gt;SetComponentToWorld(CmpTransform);</span><br><span class="line">		&#125;</span><br><span class="line">		a-&gt;AddInstanceComponent(NewComponent);</span><br><span class="line">		NewComponent-&gt;OnComponentCreated();</span><br><span class="line">		NewComponent-&gt;RegisterComponent();</span><br><span class="line"></span><br><span class="line">		a-&gt;RerunConstructionScripts();</span><br><span class="line">		retComponent = NewComponent;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> retComponent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;头文件怎么去 <code>#include</code> ，我基本就是用 VScode 搜索引擎源码，查找头文件的位置，然后逐个添加。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;C++有点麻烦的地方就是 cpp 代码写完之后还要将函数注册到 头文件 里面<br>&emsp;&emsp;不过基本上复制 cpp 的函数第一行就可以了，只需要把 :: 前面的类名删除掉而已。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;下面就是点击 VS 上面的 本地 windows 调试，编译插件并启动项目。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;我用 VS2017 编译经常遇到 <code>clxx.dll 命令行过长</code> 的错误。<br>&emsp;&emsp;网上了查了要将项目的编译改为 Release 版本，或者升级到 VS2019 才可以解决。（网上查到这个是 VS 的 BUG）</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;后来我是随便将一些 Intermediate 文件夹删除，然后重新调用 UnrealHeaderTool 生成反射代码就不会有这个编译报错了。<br>&emsp;&emsp;完成到这里基本可以参照老外的教程，使用 Python 可以在 unreal 库下找到刚才蓝图扩展的类的，类下面就由刚才扩展的 函数 了。<br>&emsp;&emsp;行数名称自动将 C++ 的驼峰转为 Python pep8 规范的 sneak 写法。</p>
+</blockquote>
+<h2 id="C-蓝图获取当前-Sequencer-选择的元素"><a href="#C-蓝图获取当前-Sequencer-选择的元素" class="headerlink" title="C++ 蓝图获取当前 Sequencer 选择的元素"></a>C++ 蓝图获取当前 Sequencer 选择的元素</h2><blockquote>
+<p>&emsp;&emsp;上面介绍了 C++ 的编写的流程，就不再追溯，这里着重看蓝图的实现。<br>&emsp;&emsp;我最近有一个需求是要获取当前打开的 Sequencer 里面的元素，然后进行 FBX 导出。<br>&emsp;&emsp;但是查遍了 Unreal 的 Python 文档也没有找到这个方法。<br>&emsp;&emsp;对了这里记录一个天坑，之前被坑惨了的。<br>&emsp;&emsp;Unreal Python 的老外教程里面也记录一些使用 Sequencer 处理的 Python 方案。<br>&emsp;&emsp;但是我发现到我调用这些 API 的时候， Unreal 居然报错找不到这些 API。<br>&emsp;&emsp;然后我就以为是我当前 Unreal 版本出 BUG 了，或者是官方删除了这个功能。<br>&emsp;&emsp;后来折腾了好久之后才发现，我没有开启 Sequencer Scripting 插件，所以那些调用蓝图没有加载<em>(:з」∠)</em><br>&emsp;&emsp;我当时还不知道 Python 调用的就是蓝图， 踩了这个坑才有了深刻的认识。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;回到这里要实现的功能，我查了 C++ 相关的问题，总算是找到了一个比较可靠的回复。 <a href="https://answers.unrealengine.com/questions/553267/view.html" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;于是我就抄了这里的代码。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;不过上面的代码有点旧，其中 IAssetEditorInstance<em> AssetEditor = UAssetEditorSubsystem().FindEditorForAsset(LevelSeq, true); 编译会报错<br>&emsp;&emsp;修改为 IAssetEditorInstance</em> AssetEditor = GEditor-&gt;GetEditorSubsystem<UAssetEditorSubsystem>()-&gt;FindEditorForAsset(LevelSeq, true); 解决问题。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;经过修改之后上面的代码可以获取到当前 Sequencer 打开的 LevelSequence<br>&emsp;&emsp;原理也不复杂，就是遍历项目所有的 LevelSequence 然后找到那个开启了 Editor 的 LevelSequence<br>&emsp;&emsp;然后在从这个 LevelSequence 里获取 Editor 再从 Editor 获取 Sequencer。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;虽然这个遍历有点不太合理，但是我在测试的项目上还是很奏效的。<br>&emsp;&emsp;但是当我将代码编译放到我们正在开发的项目上之后，出现了大问题。<br>&emsp;&emsp;项目有大量的 LevelSequence ，遍历需要很长的时间，并且遍历之后大量的材质启动了编译，导致电脑很卡。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;于是我又查了一下 C++ API 文档，发现有个很有用的函数 GetAllEditedAssets。<br>&emsp;&emsp;这个函数可以获取当前打开在编辑器里面的 Assets ，能打开的 Asset 肯定就那么几个。<br>&emsp;&emsp;这样找 Editor 的速度可就快多了。</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ULevelSequence* <span class="title">URedArtToolkitBPLibrary::GetFocusSequence</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	UAssetEditorSubsystem* sub = GEditor-&gt;GetEditorSubsystem&lt;UAssetEditorSubsystem&gt;();</span><br><span class="line">	TArray &lt;UObject*&gt; assets = sub-&gt;GetAllEditedAssets();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (UObject* asset : assets)</span><br><span class="line">	&#123;</span><br><span class="line">		IAssetEditorInstance* AssetEditor = sub-&gt;FindEditorForAsset(asset, <span class="literal">false</span>);</span><br><span class="line">		FLevelSequenceEditorToolkit* LevelSequenceEditor = (FLevelSequenceEditorToolkit*)AssetEditor;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (LevelSequenceEditor != <span class="literal">nullptr</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			ULevelSequence* LevelSeq = Cast&lt;ULevelSequence&gt;(asset);</span><br><span class="line">			<span class="keyword">return</span> LevelSeq;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;上面只是找 LevelSequence ，还需要找当前 LevelSequence 里面选择的元素。<br>&emsp;&emsp;好在 Sequencer 提供了 GetSelectedObjects 的方法<br>&emsp;&emsp;通过 LevelSequence 可以获取到 Sequencer</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">TArray&lt;FGuid&gt; <span class="title">URedArtToolkitBPLibrary::GetFocusBindings</span><span class="params">(ULevelSequence* LevelSeq)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	IAssetEditorInstance* AssetEditor = GEditor-&gt;GetEditorSubsystem&lt;UAssetEditorSubsystem&gt;()-&gt;FindEditorForAsset(LevelSeq, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">	FLevelSequenceEditorToolkit* LevelSequenceEditor = (FLevelSequenceEditorToolkit*)AssetEditor;</span><br><span class="line">	TArray&lt;FGuid&gt; SelectedGuid;</span><br><span class="line">	<span class="keyword">if</span> (LevelSequenceEditor != <span class="literal">nullptr</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		ISequencer* Sequencer = LevelSequenceEditor-&gt;GetSequencer().Get();</span><br><span class="line">		Sequencer-&gt;GetSelectedObjects(SelectedGuid);</span><br><span class="line">		<span class="keyword">return</span> SelectedGuid;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> SelectedGuid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;这样获取返回的是 Guid ， Python 有 Guid 类。<br>&emsp;&emsp;可以通过 LevelSequence 的 get_bindings 方法获取 sequence 相关的 binding<br>&emsp;&emsp;再调用 get_id 方法获取 guid ，然后通过 C++ 的蓝图将获取到的 id 筛选一遍。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># NOTE 获取当前 Sequencer 中的 LevelSequence</span></span><br><span class="line">sequence = unreal.RedArtToolkitBPLibrary.get_focus_sequence()</span><br><span class="line"><span class="comment"># NOTE 获取当前 Sequencer 中选中的 Bindings</span></span><br><span class="line">id_list = unreal.RedArtToolkitBPLibrary.get_focus_bindings(sequence)</span><br><span class="line">bindings_list = [binding <span class="keyword">for</span> binding <span class="keyword">in</span> sequence.get_bindings() <span class="keyword">if</span> binding.get_id() <span class="keyword">in</span> id_list]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;这样就获取到了当前选择的 SequencerBindingProxy 类。<br>&emsp;&emsp;通过 unreal.SequencerTools.export_fbx 就可以将选择的元素导出 FBX 了。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unreal</span><br><span class="line"><span class="keyword">from</span> Qt <span class="keyword">import</span> QtCore, QtWidgets, QtGui</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">alert</span><span class="params">(msg=<span class="string">u"msg"</span>, title=<span class="string">u"警告"</span>, button_text=<span class="string">u"确定"</span>)</span>:</span></span><br><span class="line">    <span class="comment"># NOTE 生成 Qt 警告窗口</span></span><br><span class="line">    msg_box = QtWidgets.QMessageBox()</span><br><span class="line">    msg_box.setIcon(QtWidgets.QMessageBox.Warning)</span><br><span class="line">    msg_box.setWindowTitle(title)</span><br><span class="line">    msg_box.setText(msg)</span><br><span class="line">    msg_box.addButton(button_text, QtWidgets.QMessageBox.AcceptRole)</span><br><span class="line">    unreal.parent_external_window_to_slate(msg_box.winId())</span><br><span class="line">    msg_box.exec_()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unreal_export_fbx</span><span class="params">(fbx_file)</span>:</span></span><br><span class="line">    <span class="comment"># NOTE 获取当前 Sequencer 中的 LevelSequence</span></span><br><span class="line">    sequence = unreal.RedArtToolkitBPLibrary.get_focus_sequence()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> sequence:</span><br><span class="line">        alert(<span class="string">u"请打开定序器"</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># NOTE 获取当前 Sequencer 中选中的 Bindings</span></span><br><span class="line">    id_list = unreal.RedArtToolkitBPLibrary.get_focus_bindings(sequence)</span><br><span class="line">    bindings_list = [binding <span class="keyword">for</span> binding <span class="keyword">in</span> sequence.get_bindings() <span class="keyword">if</span> binding.get_id() <span class="keyword">in</span> id_list]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> bindings_list:</span><br><span class="line">        <span class="comment"># NOTE 导出 FBX 文件</span></span><br><span class="line">        option = unreal.FbxExportOption()</span><br><span class="line">        option.set_editor_property(<span class="string">"collision"</span>,<span class="literal">False</span>)</span><br><span class="line">        world = unreal.EditorLevelLibrary.get_editor_world()</span><br><span class="line">        unreal.SequencerTools.export_fbx(world,sequence,bindings_list,option,fbx_file)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        alert(<span class="string">u"请选择定序器的元素进行 FBX 导出"</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;上面就是完整的示例代码。<br>&emsp;&emsp;当然导出的 FBX 是带动画的，还需要将动画处理成带 蒙皮骨骼 的 FBX 。<br>&emsp;&emsp;这个操作我是通过 FBX Python SDK 实现的。<br>&emsp;&emsp;官方的 ExportScene01 包含了蒙皮创建，关键帧处理等等的操作，绝大部分的代码可以照抄。<br>&emsp;&emsp;这里蒙皮转换的需求很简单，因此稍微修改一下就可以用了。<br>&emsp;&emsp;处理完成之后将 FBX 输出到临时目录，然后用 Python 调 windows 命令打开路径。</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>&emsp;&emsp;其实调用 C++ API 并不难，这种程度的操作还没有修改到 Unreal 的底层，很多机制也没有用到，我作为个外行还是可以应付的。<br>&emsp;&emsp;而且 Unreal C++ 本身做了很多工作，比如实现了 垃圾回收，含有智能指针，都降低了开发难度（同时增加了学习的难度）</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;Unreal 开发比较难受的地方时教程文档各方面都不全， Unity 文档还有代码示例，Unreal 因为开源，基本上就是让你直接看源码<em>(:з」∠)</em><br>&emsp;&emsp;有时候遇到的一些奇奇怪怪的问题还找不到任何网上的提问，就很难受了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;最后引擎编译非常耗时，如果要搞这一块的研究，一定一定要配台好电脑。</p>
+</blockquote>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">智伤帝</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.l0v0.com/posts/c6f4bf5b.html">https://blog.l0v0.com/posts/c6f4bf5b.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.l0v0.com" target="_blank">智伤帝的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E0%A0%95Python/">ࠕPython</a><a class="post-meta__tags" href="/tags/%E0%A0%87Cpp/">ࠇCpp</a><a class="post-meta__tags" href="/tags/%E0%A0%83Unreal-blueprint/">ࠃUnreal/blueprint</a></div><div class="post_share"><div class="addtoany"><div class="a2a_kit a2a_kit_size_32 a2a_default_style"><a class="a2a_button_facebook"></a><a class="a2a_button_twitter"></a><a class="a2a_button_wechat"></a><a class="a2a_button_sina_weibo"></a><a class="a2a_button_facebook_messenger"></a><a class="a2a_button_email"></a><a class="a2a_button_copy_link"></a><a class="a2a_dd" href="https://www.addtoany.com/share" target="_blank" rel="noopener"></a></div></div><script async="async" src="https://static.addtoany.com/menu/page.js"></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/260a6911.html"><img class="prev-cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/260a6911/cover.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Hexo博客优化之路（十一） -  主题迁移</div></div></a></div><div class="next-post pull-right"><a href="/posts/115d5490.html"><img class="next-cover" data-lazy-src="/null" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">MG-PickerStudio 使用推荐</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/139a3d44.html" title="Unreal Python 修改蓝图组件属性"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/139a3d44/03.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-09</div><div class="title">Unreal Python 修改蓝图组件属性</div></div></a></div><div><a href="/posts/2c8022e3.html" title="Python marshmallow 库"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-28</div><div class="title">Python marshmallow 库</div></div></a></div><div><a href="/posts/31ab7cbe.html" title="Unreal C++ 蓝图插件部署到任意项目"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/31ab7cbe/01.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-20</div><div class="title">Unreal C++ 蓝图插件部署到任意项目</div></div></a></div><div><a href="/posts/fc07371d.html" title="Unreal Python Placer 工具"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/fc07371d/00.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-18</div><div class="title">Unreal Python Placer 工具</div></div></a></div><div><a href="/posts/5905c2c9.html" title="Unreal Python 路径定位启动器"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/5905c2c9/01.mp4" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-02</div><div class="title">Unreal Python 路径定位启动器</div></div></a></div><div><a href="/posts/afa45ca4.html" title="Unreal Python 骨骼 Socket 自动化工具"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/afa45ca4/11.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-29</div><div class="title">Unreal Python 骨骼 Socket 自动化工具</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><label><input id="switch-comments-btn" type="checkbox"/><span class="slider"></span></label><span class="second-comment">Gitalk</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="gitalk-container"></div></div></div></div></article></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 智伤帝</div><div class="framework-info"><span>框架 </span><a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener">Butterfly</a></div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.spacingElementById('content-inner')
+  else {
+    $.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js', () => {
+      pangu.spacingElementById('content-inner')
+    })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguFn)</script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'mrRioyNTSEAOvVLAsLgkhr4j-gzGzoHsz',
+      appKey: 'wHDm1kxC2FUpOA7FNdgTOEnx',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk({
+      clientID: '355e44f722e24963b9dd',
+      clientSecret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+      repo: 'FXTD-odyssey.github.io',
+      owner: 'FXTD-odyssey',
+      admin: ['FXTD-odyssey'],
+      id: '791619f83b7f667f2475f7c15790bfc1',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    })
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    $.getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js', initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Valine' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="https://cdn.jsdelivr.net/gh/wilq32/jqueryrotate/jQueryRotate.js"></script><script src="/js/classify.js"></script><script src="/js/jsdelivr.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https'){
+  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>

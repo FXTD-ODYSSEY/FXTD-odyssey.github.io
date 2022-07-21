@@ -1,0 +1,467 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VScode - 全面使用攻略（一） | 智伤帝的个人博客</title><meta name="keywords" content="࠶vscode"><meta name="author" content="智伤帝"><meta name="copyright" content="智伤帝"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="VScode 入门介绍">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VScode - 全面使用攻略（一）">
+<meta property="og:url" content="https://blog.l0v0.com/posts/1947fed4.html">
+<meta property="og:site_name" content="智伤帝的个人博客">
+<meta property="og:description" content="VScode 入门介绍">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/02.gif">
+<meta property="article:published_time" content="2019-11-15T01:22:25.000Z">
+<meta property="article:modified_time" content="2022-07-08T01:53:50.529Z">
+<meta property="article:author" content="智伤帝">
+<meta property="article:tag" content="࠶vscode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/02.gif"><link rel="shortcut icon" href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/favicon.png"><link rel="canonical" href="https://blog.l0v0.com/posts/1947fed4.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><meta name="google-site-verification" content="google15d1ccb0af66991a"/><meta name="msvalidate.01" content="D306EED72EF12BF89A2A951583FF91C7"/><meta name="baidu-site-verification" content="A3TUx6EZdy"/><meta name="360-site-verification" content="48ce68b0e3754c994b6e79677b842d48"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cda99107ced8e9ef4d02339065438d4f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  hexoversion: '4.2.1',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2022-07-08 09:53:50'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {
+  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }
+})()</script><link rel="stylesheet" href="/css/iconfont.css"><link rel="stylesheet" href="/css/extra.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/avatar.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">293</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">69</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">67</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" href="https://wiki.l0v0.com/" target="_blank" rel="noopener"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" href="http://hou.l0v0.com" target="_blank" rel="noopener"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是-VScode"><span class="toc-number">2.</span> <span class="toc-text">什么是 VScode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么推荐-VScode"><span class="toc-number">3.</span> <span class="toc-text">为什么推荐 VScode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VScode-安装"><span class="toc-number">4.</span> <span class="toc-text">VScode 安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VScode-使用"><span class="toc-number">5.</span> <span class="toc-text">VScode 使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VScode-新手讲解"><span class="toc-number">6.</span> <span class="toc-text">VScode 新手讲解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#文件资源管理器"><span class="toc-number">6.1.</span> <span class="toc-text">文件资源管理器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#跨文件搜索"><span class="toc-number">6.2.</span> <span class="toc-text">跨文件搜索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源代码管理"><span class="toc-number">6.3.</span> <span class="toc-text">源代码管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动和测试"><span class="toc-number">6.4.</span> <span class="toc-text">启动和测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#终端集成"><span class="toc-number">6.5.</span> <span class="toc-text">终端集成</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/02.gif)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">智伤帝的个人博客</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" href="https://wiki.l0v0.com/" target="_blank" rel="noopener"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" href="http://hou.l0v0.com" target="_blank" rel="noopener"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">VScode - 全面使用攻略（一）</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2019-11-15T01:22:25.000Z" title="发表于 2019-11-15 09:22:25">2019-11-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-07-08T01:53:50.529Z" title="更新于 2022-07-08 09:53:50">2022-07-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/VScode/">VScode</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/VScode/VScode-%E5%85%A8%E9%9D%A2%E4%BD%BF%E7%94%A8%E6%94%BB%E7%95%A5/">VScode - 全面使用攻略</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><a id="more"></a>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>&emsp;&emsp;其实一年多前就写了一篇文章专门来安利 VScode <a href="./3087.html">链接</a><br>&emsp;&emsp;那个时候还说 VScode 是个小众编辑器，其实得益于前端开发刚猛的势头，这个编辑器也越来越流行了。<br>&emsp;&emsp;结合了最近一年多的使用经验积累,我打算将自己使用 VScode 的经验总结归纳一下。<br>&emsp;&emsp;希望大家受用 |ू･ω･` )</p>
+<p>&emsp;&emsp;B站也有别人录下推荐的视频(偏PHP后端方向的) <a href="https://www.bilibili.com/video/av56583362" target="_blank" rel="noopener">av56583362</a></p>
+</blockquote>
+<h2 id="什么是-VScode"><a href="#什么是-VScode" class="headerlink" title="什么是 VScode"></a>什么是 VScode</h2><blockquote>
+<p>&emsp;&emsp;VScode 全称为 Visual Studio Code ,是微软公司开发的文本编辑器，由于名字过长，下面统统简称为 VScode。 <a href="https://baike.baidu.com/item/visual%20studio%20code/17514281?fr=aladdin" target="_blank" rel="noopener">百度百科</a></p>
+</blockquote>
+<h2 id="为什么推荐-VScode"><a href="#为什么推荐-VScode" class="headerlink" title="为什么推荐 VScode"></a>为什么推荐 VScode</h2><blockquote>
+<p>&emsp;&emsp;其实这个问题已经不需要我回答，网上也有大量推荐 比如 </p>
+<ul>
+<li><a href="https://www.cnblogs.com/clwydjgs/p/10078065.html" target="_blank" rel="noopener">Visual Studio Code（VS code）你们都在用吗？或许你们需要看一下这篇博文</a></li>
+<li><a href="https://segmentfault.com/a/1190000010750647" target="_blank" rel="noopener">为什么我选择使用 VS Code进行前端开发?</a></li>
+</ul>
+<p>&emsp;&emsp;他们给出的理由都很充分，有些东西也不需要我多加赘述。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;不过作为写给小白的教程，有些东西我还是需要明确一下。<br>&emsp;&emsp;在编程开发工具中，常用的代码编写工具有以下两种分类:</p>
+<ul>
+<li><strong>集成开发环境(Integrated  Development Environment)</strong></li>
+<li><strong>脚本编辑器(Text Editor)</strong></li>
+</ul>
+<p>&emsp;&emsp;可能会有人对这两个名词很陌生,不过只要指出一些编程开发的工具相信大家就明白了。</p>
+<p><strong>集成开发环境(Integrated  Development Environment)</strong></p>
+<ul>
+<li>Visual Studio</li>
+<li>Android Studio</li>
+<li>Eclipse</li>
+<li>Xcode</li>
+<li>Netbeans</li>
+<li>JetBrains 全家桶<ul>
+<li>PyCharm</li>
+<li>WebStorm</li>
+<li>Intellij IDEA</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+<p><strong>脚本编辑器(Text Editor)</strong></p>
+<ul>
+<li>VisaulStudioCode</li>
+<li>Atom</li>
+<li>Sublime</li>
+<li>NotePad ++</li>
+<li>Vim</li>
+<li>Emacs</li>
+<li>HBuilder</li>
+</ul>
+<p>&emsp;&emsp;关于这两者的区别可以参照我初学编程的时候翻译的教程 <a href="https://www.bilibili.com/video/av15609748/?p=6" target="_blank" rel="noopener">av15609748</a><br>&emsp;&emsp;因为当时初学所以翻译质量不太好，请见谅<em>(:з」∠)</em></p>
+</blockquote>
+<iframe class="center_iframe"  src="//player.bilibili.com/player.html?aid=15609748&cid=25396733&page=6&t=230" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
+<blockquote>
+<p>&emsp;&emsp;在 3m50s 的地方 Simon 指出了 IDE 和 脚本编辑器 的区别。<br>&emsp;&emsp;脚本编辑器其实就是纯文本编辑工具，它只是让代码更好地显示，但是涉及到一些专门的测试环境就需要使用 IDE 这种复杂的开发环境。<br>&emsp;&emsp;用通俗的话来讲就是 文本编辑器 是 导弹， 而 集成开发环境 是 核弹。<br>&emsp;&emsp;那更加强大的集成开发环境理应是最佳选择，那我们为什么还会选择导弹呢？<br>&emsp;&emsp;其实主要是因为杀鸡焉用牛刀的原理。<br>&emsp;&emsp;集成开发环境通常集成过多的东西导致很臃肿，然而普通程序员又有多少人会用到全部的工具呢？<br>&emsp;&emsp;因此文件体积更小，启动速度更快的脚本编辑器越来越受到程序员们的追捧。</p>
+<p>&emsp;&emsp;我们可以参照 VisualStudio 的大小 和 VisaulStudioCode 的文件大小比较就可以知道。<br>&emsp;&emsp;VisualStudio如果将所有语言的开发包都安装上需要几十个G<br>&emsp;&emsp;而VScode的安装包大小只有不到 100M </p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/02.gif" alt="VisualStudio 安装"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/03.png" alt="VisualStudioCode 安装包"></p>
+<blockquote>
+<p>&emsp;&emsp;由于集成开发环境的庞大臃肿，很多集成开发环境都是有自己的针对领域的，比如说 JetBrains 的全家桶IDE<br>&emsp;&emsp;每一个软件都针对特定的开发环境需求进行优化，比如说 PyCharm 是针对 Python 而 Intellij IDEA 是针对 Java 的<br>&emsp;&emsp;而在这方面脚本编辑器因为其轻量化的特点通常还可以支持多种语言的编辑。</p>
+<p>&emsp;&emsp;但是话说回来，即便是杀鸡焉用牛刀，随着开发越来越复杂，导弹的威力很可能并不能满足我们的开发需求的。<br>&emsp;&emsp;因此随着时代的发展 Atom 和 Sublime 这种带插件扩展的编辑器相继出现，而其他编辑器也紧跟其后。<br>&emsp;&emsp;我们可以通过编辑器的插件获取类似 IDE 的各种功能体验，而且插件相当于扩展模块，我们可以很轻松地开启和关闭无关的功能，也满足轻量化的需求。<br>&emsp;&emsp;如今 VScode 的插件的强大已经完全不输于专业IDE，比如Google的新技术Flutter 就钦定了 VScode 和 Android Studio 两个开发平台。<br>&emsp;&emsp;通过插件扩展的 VScode 开发 Flutter App 的体验几乎不输于 Android Studio 这种专业 IDE 。</p>
+<p>&emsp;&emsp;当然由于这种高度定制化的插件功能扩展，如何搭配这些插件加快开发效率就得花很多时间去研究，不像 IDE 那样一整套功能提供好了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;这里我总结一下 IDE 我不喜欢的点：</p>
+<ul>
+<li>按钮太多，功能太复杂，让人劝退，对新手不友好</li>
+<li>针对特定开发环境，无法兼容不同语言，不灵活</li>
+<li>插件较少，一些自定义开发需求难以满足</li>
+<li>启动缓慢，占用系统资源多</li>
+</ul>
+<p>&emsp;&emsp;纵然 IDE 有些不便的地方，我们也没必要全盘否定它，毕竟使用环境是不一样的。<br>&emsp;&emsp;IDE适合大型开发，特别是需要编译运行还要依赖各种环境的 C++ 或者 Java ，IDE的配套环境真的可以省去很多麻烦，调试使用 IDE 的工具也很省心。<br>&emsp;&emsp;脚本编辑器更加适合敏捷开发，比如 js python 这类的脚本语言。<br>&emsp;&emsp;而且现在很多IDE也支持插件开发进行功能扩展，并不是脚本编辑器特有的功能了。<br>&emsp;&emsp;以上就是我个人对 IDE 和 脚本编辑器 的看法，个人还是偏好 脚本编辑器 多一点</p>
+<p>&emsp;&emsp;<span style="color:red"><strong>另外必须强调 无论是 IDE 还是 脚本编辑器 都只是编程工具，编程最重要的是写程序的人，因此没有必要争自己使用的工具来秀优越感，适合自己才是最好的。</strong><span></p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;最后在众多脚本编辑器中 为什么 就选了 VScode呢？<br>&emsp;&emsp;其实几年前还是 Sublime 和 atom 称霸天下的时候。<br>&emsp;&emsp;不过后来 VScode 的插件生态建立起来之后，实现了弯道超车。<br>&emsp;&emsp;由于 atom 我没用过，Sublime 我也只是用了很短一段时间，所以我自己也不好做出评价。<br>&emsp;&emsp;我总结一下目前对VScode积极的认识：</p>
+<ul>
+<li>微软爸爸的财大气粗做后盾，维护很积极</li>
+<li>图形化图标，交互比较友好</li>
+<li>集成 Git 和 Cmd 以及 Debug 工具，我以前用 Sublime 的时候这些东西都没有内置</li>
+<li>安装插件有图形化界面，可以不敲命令行，对新手很舒服</li>
+<li>插件超级丰富，社区极度活跃，有问题基本都可以在 Github Issue 以及 Stack Overflow 上查到答案</li>
+</ul>
+<p>&emsp;&emsp;最重要一点是我自己也算是半个前端工程师，以前一直用 学校 教的 Dreamweaver ，自从接触了 Sublime 之后就爱不释手，后来另一个学前端的同学给我推荐了VScode真的就成了我编程开发的主力工具，大多数的开发都可以通过插件扩展实现在 VScode 上开发。<br>&emsp;&emsp;我印象最深刻的就是 VRML 语言，当时学校要求我们学习这个被淘汰的语言，而且还要用 VRML Pad 这种不知道是多少年前的开发工具，颜色高亮各种不清晰，操作各种不顺手。<br>&emsp;&emsp;最后还是通过 VScode 的插件来完美解决这些的问题。</p>
+</blockquote>
+<h2 id="VScode-安装"><a href="#VScode-安装" class="headerlink" title="VScode 安装"></a>VScode 安装</h2><p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/01.gif" alt="VScode 下载"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/03.png" alt="VScode 安装包"></p>
+<blockquote>
+<p>&emsp;&emsp;安装VScode 特别是简单，去百度搜索 VScode 点开第一个微软的官方链接，点击下载即可。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/04.gif" alt="VScode 安装"></p>
+<blockquote>
+<p>&emsp;&emsp;双击安装包 点击 安装，基本上点击下一步就可以了，几个要点可以重点说一下</p>
+<ul>
+<li><code>我接受协议</code> 必须勾选的</li>
+<li>路径可以自定义，不过一般默认就可以了</li>
+</ul>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/06.png" alt="VScode 安装勾选"></p>
+<blockquote>
+<ul>
+<li><code>添加到资源管理器上下文目录</code> 这个操作可以添加右键 Code 打开当前目录，非常方便。</li>
+</ul>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/07.png" alt="VScode 打开"></p>
+<blockquote>
+<ul>
+<li><code>将 Code 注册为受支持的文件类型的编辑器</code> 这个操作会让 VScode 支持的代码文件全部编程变成 VScode 默认打开，文件图标也会随之更改，很好辨认。</li>
+</ul>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/08.png" alt="VScode 文件格式"></p>
+<blockquote>
+<p>&emsp;&emsp;安装完成的界面如下图</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/05.png" alt="VScode 启动界面"></p>
+<h2 id="VScode-使用"><a href="#VScode-使用" class="headerlink" title="VScode 使用"></a>VScode 使用</h2><blockquote>
+<p>&emsp;&emsp;通过上面的步骤，我们已经顺利进入了软件的启动界面。</p>
+<p>&emsp;&emsp;然而看到的全部是英文，可能有些人会觉得很难受，有没有办法转换成中文界面呢？<br>&emsp;&emsp;当然是可以的，我们只需要安装一个中文补丁就没问题了。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/09.gif" alt="VScode 安装中文补丁"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/10.png" alt="VScode 中文启动界面"></p>
+<blockquote>
+<p>&emsp;&emsp;那就可以好好讲解一下 VScode 的界面的情况了</p>
+</blockquote>
+<h2 id="VScode-新手讲解"><a href="#VScode-新手讲解" class="headerlink" title="VScode 新手讲解"></a>VScode 新手讲解</h2><blockquote>
+<p>注：经过更新之后，新版本UI有点不同，请见谅。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/11.png" alt="VScode 中文启动界面"></p>
+<blockquote>
+<p>&emsp;&emsp;在欢迎使用的界面上，新手需要注意红色框的区域<br>&emsp;&emsp;特别是下划线的部分的 <code>入门视频</code> 和 <code>提示与技巧</code> 都是官方提供的说明讲解。<br>&emsp;&emsp;当然里面都是英文的，有点遗憾。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;另外右边的 <code>界面概览</code> 可以清晰显示出 VScode 各个区域的说明</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/12.png" alt="VScode 中文启动界面"></p>
+<blockquote>
+<p>&emsp;&emsp;交互式演练场 英文叫做 Interactive Playground 也是非常好的体验文档。<br>&emsp;&emsp;只可惜同样没有汉化。<br>&emsp;&emsp;关于交互式演练场的操作我将留到 VScode 的骚操作进行讲解。</p>
+</blockquote>
+<h3 id="文件资源管理器"><a href="#文件资源管理器" class="headerlink" title="文件资源管理器"></a>文件资源管理器</h3><p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/20.png" alt="文件资源管理器"></p>
+<blockquote>
+<p>&emsp;&emsp;默认情况下 文件资源管理器 是空的，可以打开一个文件夹作为工作区。<br>&emsp;&emsp;点击 打开文件夹 或者 拖拽文件夹进来都可以实现。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/21.png" alt="文件资源管理器"></p>
+<blockquote>
+<p>&emsp;&emsp;通过工作区可以管理当前文件夹里面的内容。<br>&emsp;&emsp;工作区上方的四个按钮可以帮助你创建文件和文件夹。<br>&emsp;&emsp;对文件右键还有更多的删除命令等等，也可以通过拖拽改变文件的位置。</p>
+</blockquote>
+<h3 id="跨文件搜索"><a href="#跨文件搜索" class="headerlink" title="跨文件搜索"></a>跨文件搜索</h3><p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/22.png" alt="跨文件搜索"></p>
+<blockquote>
+<p>&emsp;&emsp;通过跨文件搜索可以搜索当前工作区下的所有文件的内容。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/23.png" alt="跨文件搜索"></p>
+<blockquote>
+<p>&emsp;&emsp;通过这里找到的信息直接跳转到相应文件的相关行。</p>
+</blockquote>
+<h3 id="源代码管理"><a href="#源代码管理" class="headerlink" title="源代码管理"></a>源代码管理</h3><p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/24.png" alt="跨文件搜索"></p>
+<blockquote>
+<p>&emsp;&emsp;原代码管理提供了简单的 git 处理<br>&emsp;&emsp;基础的功能诸如 push pull commit 都封装好了<br>&emsp;&emsp;只需要点击按钮即可使用</p>
+</blockquote>
+<h3 id="启动和测试"><a href="#启动和测试" class="headerlink" title="启动和测试"></a>启动和测试</h3><p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/25.png" alt="启动和测试"></p>
+<blockquote>
+<p>&emsp;&emsp;启动和测试集成了 Debug 的模块<br>&emsp;&emsp;和浏览器的 Debug 模块基本相同。<br>&emsp;&emsp;这里可以通过 node.js 进行脚本测试</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/26.gif" alt="启动和测试"></p>
+<blockquote>
+<p>&emsp;&emsp;点击 F5 就可以启动 Debug 模式。<br>&emsp;&emsp;遇到设置红色的断点，代码执行就会暂停。</p>
+</blockquote>
+<h3 id="终端集成"><a href="#终端集成" class="headerlink" title="终端集成"></a>终端集成</h3><p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/46.png" alt="终端集成"></p>
+<blockquote>
+<p>&emsp;&emsp;通过快捷键 ctrl+` 可以呼叫出来<br>&emsp;&emsp;默认是 windows 的 cmd 窗口，也可以切换</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/1947fed4/47.png" alt="终端集成"></p>
+<blockquote>
+<p>&emsp;&emsp;也可以切换成其他的终端启动</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>&emsp;&emsp;VScode的生态真的越来越强，各种语言开发的支持都很全面了。<br>&emsp;&emsp;当然还是如上文说的，一般还是前端用它比较多，萝卜青菜各有所爱。<br>&emsp;&emsp;上面最后一张gif图稍微显示了一些 VScode 的便捷操作，关于这些骚操作以及插件运用我留到后面两篇文章进行介绍</p>
+<ul>
+<li><a href="./31de3e0f.html">VScode 插件推荐</a></li>
+<li><a href="./7cc09d5d.html">VSCode 使用骚操作</a></li>
+</ul>
+</blockquote>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">智伤帝</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.l0v0.com/posts/1947fed4.html">https://blog.l0v0.com/posts/1947fed4.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.l0v0.com" target="_blank">智伤帝的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E0%A0%B6vscode/">࠶vscode</a></div><div class="post_share"><div class="addtoany"><div class="a2a_kit a2a_kit_size_32 a2a_default_style"><a class="a2a_button_facebook"></a><a class="a2a_button_twitter"></a><a class="a2a_button_wechat"></a><a class="a2a_button_sina_weibo"></a><a class="a2a_button_facebook_messenger"></a><a class="a2a_button_email"></a><a class="a2a_button_copy_link"></a><a class="a2a_dd" href="https://www.addtoany.com/share" target="_blank" rel="noopener"></a></div></div><script async="async" src="https://static.addtoany.com/menu/page.js"></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/31de3e0f.html"><img class="prev-cover" data-lazy-src="/null" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">VScode - 全面使用攻略（二）</div></div></a></div><div class="next-post pull-right"><a href="/posts/26180f28.html"><img class="next-cover" data-lazy-src="/null" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">观看笔记 - AboutCG - Maya API 编程教学 for TD</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/a91a4c58.html" title="VScode 结合git的全面使用流程（下）"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/a91a4c58/19.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-03-15</div><div class="title">VScode 结合git的全面使用流程（下）</div></div></a></div><div><a href="/posts/94ffdbdf.html" title="VScode 结合git的全面使用流程（上）"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/94ffdbdf/01.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-03-15</div><div class="title">VScode 结合git的全面使用流程（上）</div></div></a></div><div><a href="/posts/614e755e.html" title="VScode - Setting Sync 配置同步之坑"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/614e755e/01.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-01-12</div><div class="title">VScode - Setting Sync 配置同步之坑</div></div></a></div><div><a href="/posts/7cc09d5d.html" title="VScode - 全面使用攻略（三）"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/7cc09d5d/26.gif" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-11-15</div><div class="title">VScode - 全面使用攻略（三）</div></div></a></div><div><a href="/posts/31de3e0f.html" title="VScode - 全面使用攻略（二）"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-11-15</div><div class="title">VScode - 全面使用攻略（二）</div></div></a></div><div><a href="/posts/4d164b82.html" title="VScode - MayaPy插件开发总结"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/4d164b82/01.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-09-23</div><div class="title">VScode - MayaPy插件开发总结</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><label><input id="switch-comments-btn" type="checkbox"/><span class="slider"></span></label><span class="second-comment">Gitalk</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="gitalk-container"></div></div></div></div></article></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 智伤帝</div><div class="framework-info"><span>框架 </span><a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener">Butterfly</a></div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.spacingElementById('content-inner')
+  else {
+    $.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js', () => {
+      pangu.spacingElementById('content-inner')
+    })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguFn)</script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'mrRioyNTSEAOvVLAsLgkhr4j-gzGzoHsz',
+      appKey: 'wHDm1kxC2FUpOA7FNdgTOEnx',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk({
+      clientID: '355e44f722e24963b9dd',
+      clientSecret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+      repo: 'FXTD-odyssey.github.io',
+      owner: 'FXTD-odyssey',
+      admin: ['FXTD-odyssey'],
+      id: '4d08e1d5d97c6eba50967c332061ea12',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    })
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    $.getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js', initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Valine' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="https://cdn.jsdelivr.net/gh/wilq32/jqueryrotate/jQueryRotate.js"></script><script src="/js/classify.js"></script><script src="/js/jsdelivr.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https'){
+  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>

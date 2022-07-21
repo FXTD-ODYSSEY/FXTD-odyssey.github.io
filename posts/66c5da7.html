@@ -1,0 +1,411 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Python pdb 调试模块研究 | 智伤帝的个人博客</title><meta name="keywords" content="ࠕPython"><meta name="author" content="智伤帝"><meta name="copyright" content="智伤帝"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="Maya mpdb 插件开发 做的准备研究">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python pdb 调试模块研究">
+<meta property="og:url" content="https://blog.l0v0.com/posts/66c5da7.html">
+<meta property="og:site_name" content="智伤帝的个人博客">
+<meta property="og:description" content="Maya mpdb 插件开发 做的准备研究">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/avatar.png">
+<meta property="article:published_time" content="2020-01-05T04:05:52.000Z">
+<meta property="article:modified_time" content="2022-07-07T12:59:24.707Z">
+<meta property="article:author" content="智伤帝">
+<meta property="article:tag" content="ࠕPython">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/avatar.png"><link rel="shortcut icon" href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/favicon.png"><link rel="canonical" href="https://blog.l0v0.com/posts/66c5da7.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><meta name="google-site-verification" content="google15d1ccb0af66991a"/><meta name="msvalidate.01" content="D306EED72EF12BF89A2A951583FF91C7"/><meta name="baidu-site-verification" content="A3TUx6EZdy"/><meta name="360-site-verification" content="48ce68b0e3754c994b6e79677b842d48"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cda99107ced8e9ef4d02339065438d4f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  hexoversion: '4.2.1',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2022-07-07 20:59:24'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {
+  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }
+})()</script><link rel="stylesheet" href="/css/iconfont.css"><link rel="stylesheet" href="/css/extra.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/avatar.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">293</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">69</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">67</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" href="https://wiki.l0v0.com/" target="_blank" rel="noopener"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" href="http://hou.l0v0.com" target="_blank" rel="noopener"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PDB-模块使用"><span class="toc-number">2.</span> <span class="toc-text">PDB 模块使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pdb-源码探讨"><span class="toc-number">3.</span> <span class="toc-text">pdb 源码探讨</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#set-trace-源码挖掘"><span class="toc-number">3.1.</span> <span class="toc-text">set_trace 源码挖掘</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#frame-类型说明"><span class="toc-number">3.2.</span> <span class="toc-text">frame 类型说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sys-settrace-讲解"><span class="toc-number">3.3.</span> <span class="toc-text">sys.settrace 讲解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#trace-dispatch-分析"><span class="toc-number">3.4.</span> <span class="toc-text">trace_dispatch 分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cmd模块"><span class="toc-number">3.5.</span> <span class="toc-text">cmd模块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/bg.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">智伤帝的个人博客</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" href="https://wiki.l0v0.com/" target="_blank" rel="noopener"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" href="http://hou.l0v0.com" target="_blank" rel="noopener"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">Python pdb 调试模块研究</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-01-05T04:05:52.000Z" title="发表于 2020-01-05 12:05:52">2020-01-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-07-07T12:59:24.707Z" title="更新于 2022-07-07 20:59:24">2022-07-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Python/">Python</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>13分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><a id="more"></a>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>&emsp;&emsp;最近录了一个关于 overlapper 插件的讲解视频。<br>&emsp;&emsp;使用 VSCode 调试 Python 代码的时候翻车了，而且使用外部软件调试会冻结 Python<br>&emsp;&emsp;导致 Maya 没有相应，交互非常不友好。<br>&emsp;&emsp;于是我就有了开发一个 Debug 插件的想法。<br>&emsp;&emsp;主要是要解决断点状态下Maya的GUI响应问题，这样可以很直观看到代码对 Maya 进行了哪些操作。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;最开始我是想要在 ptvsd 的模块上调用 API 开发 Debug 工具。<br>&emsp;&emsp;毕竟我自己做的 VScode 扩展就是基于这个原理，可是后来查了一番之后，发现 ptvsd 是基于 PyDev 的<br>&emsp;&emsp;API调用上我挖掘不太深，就是感觉太复杂了，很多杂七杂八的功能都不需要。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;而且我想要更加通用性的解决方案，利用代码来插入断点，进入断点之后开启一个 while 死循环来更新 UI 界面。<br>&emsp;&emsp;断点调试的时候就 break 掉死循环就好了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;再进一步研究之后，我发现 Python 自带的 pdb 模块就是实现这个功能的。<br>&emsp;&emsp;于是开始研究 pdb 模块有了今天这篇文章。 </p>
+</blockquote>
+<h2 id="PDB-模块使用"><a href="#PDB-模块使用" class="headerlink" title="PDB 模块使用"></a>PDB 模块使用</h2><blockquote>
+<p>&emsp;&emsp;PDB 全称是 Python Dubugger，是 python 的内置模块，可以实现命令行来对 python 代码 Debug<br>&emsp;&emsp;具体用法可以参考后端大佬的视频</p>
+</blockquote>
+<iframe class="center_iframe" src="//player.bilibili.com/player.html?aid=24202796&cid=40573510&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
+<blockquote>
+<p>&emsp;&emsp;特点就是在代码里面输入 pdb 的代码，程序会捕获到插入的 pdb 调试断点然后进入断点调试模式。<br>&emsp;&emsp;缺点就是纯命令行工具，所有的信息显示都需要通过键盘输入来进行调试，真 DOS 时代无鼠标的操作。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;其实 Maya 的官方博客也有提到过 关于 Maya Python Debug 的方案，其中还说到了 利用 pdb 模块debug 的方法 <a href="https://around-the-corner.typepad.com/adn/2012/10/python-debugging-in-maya.html" target="_blank" rel="noopener">around-corner地址</a><br>&emsp;&emsp;不过官方并不推荐使用 pdb ，因为 Maya 的脚本编辑器无法进行命令行输入输出，因此input命令将会弹出一个输入窗口<br>&emsp;&emsp;这样的交互方式是在是太过不友好了，连官方都吐槽了。。。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;另外 maya 的官方文档也有提到 Python Debug 的方案 <a href="http://help.autodesk.com/view/MAYAUL/2018/ENU/?guid=GUID-8A96A8DB-FD6F-434F-A878-288DD84E99C7" target="_blank" rel="noopener">Maya 文档</a><br>&emsp;&emsp;如何使用 pdb 可以参照 python 的 <a href="https://docs.python.org/2.7/library/pdb.html" target="_blank" rel="noopener">官方文档</a><br>&emsp;&emsp;不过官方文档其实也没有什么代码，都是命令解释，所以也不太友好。</p>
+</blockquote>
+<hr>
+<iframe class="center_iframe" width="560" height="315" src="https://www.youtube.com/embed/VQYbqsG-E1U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<blockquote>
+<p>&emsp;&emsp;youtube上也有视频专门讲解在 Maya 如何使用 pdb debug</p>
+</blockquote>
+<h2 id="pdb-源码探讨"><a href="#pdb-源码探讨" class="headerlink" title="pdb 源码探讨"></a>pdb 源码探讨</h2><h3 id="set-trace-源码挖掘"><a href="#set-trace-源码挖掘" class="headerlink" title="set_trace 源码挖掘"></a>set_trace 源码挖掘</h3><blockquote>
+<p>&emsp;&emsp;在 pdb 调试中，大多数时候就是在要设置断点的行数前插入一行 pdb 的代码 <code>pdb.set_trace()</code><br>&emsp;&emsp;那么这一句代码在背后做了什么呢？<br>&emsp;&emsp;我们可以去到 Python 的Lib目录下找到 pdb.py 文件<br>&emsp;&emsp;Maya 的 Python 内置代码封装到了 bin 目录的 python27.zip 压缩包当中<br>&emsp;&emsp;github上也可以查找到源码（代码是Python3的） <a href="https://github.com/python/cpython/blob/master/Lib/pdb.py" target="_blank" rel="noopener">https://github.com/python/cpython/blob/master/Lib/pdb.py</a></p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;在代码当中搜索 set_trace 可以找到下面这个函数</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_trace</span><span class="params">()</span>:</span></span><br><span class="line">    Pdb().set_trace(sys._getframe().f_back)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;Pdb 类里面是找不到 set_trace 函数的<br>&emsp;&emsp;而通过集成关系可以找到Pdb类是继承于 bdb模块的 Bdb 基类<br>&emsp;&emsp;因此我们可以去到 bdb.py 查找 set_trace 的代码 | <a href="https://github.com/python/cpython/blob/master/Lib/bdb.py" target="_blank" rel="noopener">https://github.com/python/cpython/blob/master/Lib/bdb.py</a></p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_trace</span><span class="params">(self, frame=None)</span>:</span></span><br><span class="line">    <span class="string">"""Start debugging from `frame`.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    If frame is not specified, debugging starts from caller's frame.</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">if</span> frame <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        frame = sys._getframe().f_back</span><br><span class="line">    self.reset()</span><br><span class="line">    <span class="keyword">while</span> frame:</span><br><span class="line">        frame.f_trace = self.trace_dispatch</span><br><span class="line">        self.botframe = frame</span><br><span class="line">        frame = frame.f_back</span><br><span class="line">    self.set_step()</span><br><span class="line">    sys.settrace(self.trace_dispatch)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;一顿操作猛如虎，一头雾水不清楚。 <em>(:з」∠)</em></p>
+</blockquote>
+<h3 id="frame-类型说明"><a href="#frame-类型说明" class="headerlink" title="frame 类型说明"></a>frame 类型说明</h3><blockquote>
+<p>&emsp;&emsp;首先需要理解参数输入的 frame 是什么<br>&emsp;&emsp;frame 其实 Python 内置的类，用来描述当前函数域相关的信息。<br>&emsp;&emsp;inspect 模块里面也有 currentFrame 函数获取当前代码域信息。<br>&emsp;&emsp;而上面的操作和 sys 模块的私有函数 _getframe 是一样的。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;关于 frame 的类型说明可以参考 <a href="https://docs.python.org/2.7/library/inspect.html#inspect.getframeinfo" target="_blank" rel="noopener">python inspect 模块的官方说明</a><br>&emsp;&emsp;国内还有大佬写了关于 Cpython 里面 frame object 底层的一些生成原理 <a href="https://blog.csdn.net/qq_31720329/article/details/86757892" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;可惜这个文章太过深奥，我就跳过了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;下面则是一些其他国内文章，内容通俗易懂，可惜缺乏深度↓↓↓</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/4d8a3c919500" target="_blank" rel="noopener">https://www.jianshu.com/p/4d8a3c919500</a></li>
+<li><a href="https://blog.csdn.net/zhuguiqin1/article/details/79290244" target="_blank" rel="noopener">https://blog.csdn.net/zhuguiqin1/article/details/79290244</a></li>
+<li><a href="https://blog.csdn.net/qq_29695701/article/details/94196732" target="_blank" rel="noopener">https://blog.csdn.net/qq_29695701/article/details/94196732</a></li>
+</ul>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;后来在 stack overflow 找到一篇<a href="https://stackoverflow.com/questions/1140194/in-python-how-do-i-obtain-the-current-frame" target="_blank" rel="noopener">问题</a><br>&emsp;&emsp;通过文章回答的链接找到了一篇很好的 frame 运行的代码 <a href="http://farmdev.com/src/secrets/framehack/index.html" target="_blank" rel="noopener">链接</a></p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">one</span><span class="params">()</span>:</span></span><br><span class="line">    two()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">two</span><span class="params">()</span>:</span></span><br><span class="line">    three()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">three</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> range(<span class="number">3</span>):</span><br><span class="line">        frame = sys._getframe(num)</span><br><span class="line">        show_frame(num, frame)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_frame</span><span class="params">(num, frame)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> frame</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"  frame     = sys._getframe(%s)"</span> % num</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"  function  = %s()"</span> % frame.f_code.co_name</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"  file/line = %s:%s"</span> % (frame.f_code.co_filename, frame.f_lineno)</span><br><span class="line"></span><br><span class="line">one()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output </span></span><br><span class="line"><span class="comment"># &lt;frame object at 0x606c50&gt;</span></span><br><span class="line"><span class="comment">#   frame     = sys._getframe(0)</span></span><br><span class="line"><span class="comment">#   function  = three()</span></span><br><span class="line"><span class="comment">#   file/line = stack.py:12</span></span><br><span class="line"><span class="comment"># &lt;frame object at 0x180be10&gt;</span></span><br><span class="line"><span class="comment">#   frame     = sys._getframe(1)</span></span><br><span class="line"><span class="comment">#   function  = two()</span></span><br><span class="line"><span class="comment">#   file/line = stack.py:7</span></span><br><span class="line"><span class="comment"># &lt;frame object at 0x608d30&gt;</span></span><br><span class="line"><span class="comment">#   frame     = sys._getframe(2)</span></span><br><span class="line"><span class="comment">#   function  = one()</span></span><br><span class="line"><span class="comment">#   file/line = stack.py:4</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;通过 frame 可以很好查找到当前代码运行的信息，所以在 pdb 和 traceback 模块里面都是非常重要的组成元素</p>
+</blockquote>
+<h3 id="sys-settrace-讲解"><a href="#sys-settrace-讲解" class="headerlink" title="sys.settrace 讲解"></a>sys.settrace 讲解</h3><blockquote>
+<p>&emsp;&emsp;了解了 frame 之后，我们可以继续测试后续的代码</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_step</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="string">"""Stop after one line of code."""</span></span><br><span class="line">    <span class="comment"># NOTE Issue #13183: pdb skips frames after hitting a breakpoint and running</span></span><br><span class="line">    <span class="comment"># NOTE step commands.</span></span><br><span class="line">    <span class="comment"># NOTE Restore the trace function in the caller (that may not have been set</span></span><br><span class="line">    <span class="comment"># NOTE for performance reasons) when returning from the current frame.</span></span><br><span class="line">    <span class="keyword">if</span> self.frame_returning:</span><br><span class="line">        caller_frame = self.frame_returning.f_back</span><br><span class="line">        <span class="keyword">if</span> caller_frame <span class="keyword">and</span> <span class="keyword">not</span> caller_frame.f_trace:</span><br><span class="line">            caller_frame.f_trace = self.trace_dispatch</span><br><span class="line">    self._set_stopinfo(<span class="literal">None</span>, <span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_set_stopinfo</span><span class="params">(self, stopframe, returnframe, stoplineno=<span class="number">0</span>)</span>:</span></span><br><span class="line">    self.stopframe = stopframe</span><br><span class="line">    self.returnframe = returnframe</span><br><span class="line">    self.quitting = <span class="number">0</span></span><br><span class="line">    <span class="comment"># NOTE stoplineno &gt;= 0 means: stop at line &gt;= the stoplineno</span></span><br><span class="line">    <span class="comment"># NOTE stoplineno -1 means: don't stop at all</span></span><br><span class="line">    self.stoplineno = stoplineno</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reset</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="keyword">import</span> linecache</span><br><span class="line">    linecache.checkcache()</span><br><span class="line">    self.botframe = <span class="literal">None</span></span><br><span class="line">    self._set_stopinfo(<span class="literal">None</span>, <span class="literal">None</span>)</span><br><span class="line">    self.lineno = <span class="literal">None</span></span><br><span class="line">    self.stack = []</span><br><span class="line">    self.curindex = <span class="number">0</span></span><br><span class="line">    self.curframe = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_trace</span><span class="params">(self, frame=None)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> frame <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        frame = sys._getframe().f_back</span><br><span class="line">    self.reset() <span class="comment"># NOTE 重置定义一些变量 我将代码父对象的代码都整合到一起 如上面的 reset 函数所示</span></span><br><span class="line">    <span class="comment"># 遍历找到最底层 frame | 并且设置 f_trace 函数到 trace_dispatch 上</span></span><br><span class="line">    <span class="keyword">while</span> frame:</span><br><span class="line">        frame.f_trace = self.trace_dispatch</span><br><span class="line">        self.botframe = frame</span><br><span class="line">        frame = frame.f_back</span><br><span class="line">    <span class="comment"># NOTE 不清楚作用作用 | 注释掉完全不影响程序运行，大概需要 return 触发才可行</span></span><br><span class="line">    self.set_step()</span><br><span class="line">    sys.settrace(self.trace_dispatch)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;上面我将 set_trace 调用掉的一些函数也贴出来了。<br>&emsp;&emsp;我发现最核心的代码其实最后一行 <code>sys.settrace(self.trace_dispatch)</code><br>&emsp;&emsp;只有这样在才能触发 断点输入 否则 pdb 不起作用了。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;其实我也不太清楚 <code>sys.settrace</code> 函数是怎么运作的<br>&emsp;&emsp;刚好又在 Stack Overflow 上找到了一些参考 <a href="https://stackoverflow.com/questions/1692866/what-cool-hacks-can-be-done-using-sys-settrace" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;根据这个参考可以知道这个函数是一个全局钩子，每个函数调用都会触发到这个函数。<br>&emsp;&emsp;因此通过这个操作可以实现一些 python 黑科技操作。<br>&emsp;&emsp;当然正如回答说的，如果不是为 Debug 的话，使用这个函数会让其他开代码的人非常难受，而且会导致性能下降。<br>&emsp;&emsp;所以我看 pdb 也是看得难受至极了。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">trace_func</span><span class="params">(frame,event,arg)</span>:</span></span><br><span class="line">    <span class="comment"># NOTE 获取局部变量 a 并修改变量</span></span><br><span class="line">    value = frame.f_locals[<span class="string">"a"</span>]</span><br><span class="line">    <span class="keyword">if</span> value % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">        value += <span class="number">1</span></span><br><span class="line">        frame.f_locals[<span class="string">"a"</span>] = value</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(a)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> a</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    sys.settrace(trace_func)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">5</span>):</span><br><span class="line">        f(i)</span><br><span class="line"></span><br><span class="line"><span class="comment"># NOTE 输出 ↓↓↓</span></span><br><span class="line"><span class="comment"># NOTE 1</span></span><br><span class="line"><span class="comment"># NOTE 1</span></span><br><span class="line"><span class="comment"># NOTE 3</span></span><br><span class="line"><span class="comment"># NOTE 3</span></span><br><span class="line"><span class="comment"># NOTE 5</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;frame 对象里面的 f_trace 属性就相当于 局部钩子函数 <a href="https://grokbase.com/t/python/pypy-dev/133nvqma2x/frame-f-trace-role" target="_blank" rel="noopener">链接</a></p>
+</blockquote>
+<h3 id="trace-dispatch-分析"><a href="#trace-dispatch-分析" class="headerlink" title="trace_dispatch 分析"></a>trace_dispatch 分析</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">trace_dispatch</span><span class="params">(self, frame, event, arg)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"trace_dispatch"</span>,frame,event,arg</span><br><span class="line">    <span class="keyword">if</span> self.quitting:</span><br><span class="line">        <span class="keyword">return</span> <span class="comment"># None</span></span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">'line'</span>:</span><br><span class="line">        <span class="keyword">return</span> self.dispatch_line(frame)</span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">'call'</span>:</span><br><span class="line">        <span class="keyword">return</span> self.dispatch_call(frame, arg)</span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">'return'</span>:</span><br><span class="line">        <span class="keyword">return</span> self.dispatch_return(frame, arg)</span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">'exception'</span>:</span><br><span class="line">        <span class="keyword">return</span> self.dispatch_exception(frame, arg)</span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">'c_call'</span>:</span><br><span class="line">        <span class="keyword">return</span> self.trace_dispatch</span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">'c_exception'</span>:</span><br><span class="line">        <span class="keyword">return</span> self.trace_dispatch</span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">'c_return'</span>:</span><br><span class="line">        <span class="keyword">return</span> self.trace_dispatch</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'bdb.Bdb.dispatch: unknown debugging event:'</span>, repr(event)</span><br><span class="line">    <span class="keyword">return</span> self.trace_dispatch</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;设置了 sys.settrace 之后，无论在 Python 进行任何代码操作都会触发钩子，这就为断点调试做好了准备。<br>&emsp;&emsp;可以看到钩子函数会默认传入当前触发 frame 和 事件。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;为了更好看清楚这个钩子所做的事情，可以继承 Pdb 对象 然后打印出内部的参数。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pdb <span class="keyword">import</span> Pdb</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestPdb</span><span class="params">(Pdb,object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">trace_dispatch</span><span class="params">(self, frame, event, arg)</span>:</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">"trace_dispatch"</span>,frame,event,arg</span><br><span class="line">        <span class="keyword">return</span> super(TestPdb,self).trace_dispatch(frame, event, arg)</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">combine</span><span class="params">(s1,s2)</span>:</span>      <span class="comment"># define subroutine combine, which... </span></span><br><span class="line">        s3 = s1 + s2 + s1    <span class="comment"># sandwiches s2 between copies of s1, ... </span></span><br><span class="line">        s3 = <span class="string">'"'</span> + s3 +<span class="string">'"'</span>   <span class="comment"># encloses it in double quotes,... </span></span><br><span class="line">        <span class="keyword">return</span> s3            <span class="comment"># and returns it. </span></span><br><span class="line">    a = <span class="string">"aaa"</span></span><br><span class="line">    b = <span class="string">"bbb"</span></span><br><span class="line">    TestPdb().set_trace() </span><br><span class="line">    final = combine(a,b) </span><br><span class="line">    <span class="keyword">print</span> final</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">F:\repo\Pdb_test&gt;<span class="string">"C:/Program Files/Autodesk/Maya2017/bin/mayapy.exe"</span> f:/repo/Pdb_test/frame_test.py</span><br><span class="line">trace_dispatch &lt;frame object at 0x00000222AF1DE048&gt; line None</span><br><span class="line">&gt; f:\repo\pdb_test\frame_test.py(16)&lt;module&gt;()</span><br><span class="line">-&gt; final = combine(a,b)</span><br><span class="line">(Pdb) s</span><br><span class="line">trace_dispatch &lt;frame object at 0x00000222AF243908&gt; call None</span><br><span class="line">--Call--</span><br><span class="line">&gt; f:\repo\pdb_test\frame_test.py(9)combine()</span><br><span class="line">-&gt; def combine(s1,s2):      <span class="comment"># define subroutine combine, which...</span></span><br><span class="line">(Pdb) n</span><br><span class="line">trace_dispatch &lt;frame object at 0x00000222AF243908&gt; line None</span><br><span class="line">&gt; f:\repo\pdb_test\frame_test.py(10)combine()</span><br><span class="line">-&gt; s3 = s1 + s2 + s1    <span class="comment"># sandwiches s2 between copies of s1, ...</span></span><br><span class="line">(Pdb) n</span><br><span class="line">trace_dispatch &lt;frame object at 0x00000222AF243908&gt; line None</span><br><span class="line">&gt; f:\repo\pdb_test\frame_test.py(11)combine()</span><br><span class="line">-&gt; s3 = <span class="string">'"'</span> + s3 +<span class="string">'"'</span>   <span class="comment"># encloses it in double quotes,...</span></span><br><span class="line">(Pdb) n</span><br><span class="line">trace_dispatch &lt;frame object at 0x00000222AF243908&gt; line None</span><br><span class="line">&gt; f:\repo\pdb_test\frame_test.py(12)combine()</span><br><span class="line">-&gt; <span class="built_in">return</span> s3            <span class="comment"># and returns it.</span></span><br><span class="line">(Pdb) n</span><br><span class="line">trace_dispatch &lt;frame object at 0x00000222AF243908&gt; <span class="built_in">return</span> <span class="string">"aaabbbaaa"</span></span><br><span class="line">--Return--</span><br><span class="line">&gt; f:\repo\pdb_test\frame_test.py(12)combine()-&gt;<span class="string">'"aaabbbaaa"'</span></span><br><span class="line">-&gt; <span class="built_in">return</span> s3            <span class="comment"># and returns it.</span></span><br><span class="line">(Pdb) l</span><br><span class="line">  7     <span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">  8</span><br><span class="line">  9         def combine(s1,s2):      <span class="comment"># define subroutine combine, which...</span></span><br><span class="line"> 10             s3 = s1 + s2 + s1    <span class="comment"># sandwiches s2 between copies of s1, ...</span></span><br><span class="line"> 11             s3 = <span class="string">'"'</span> + s3 +<span class="string">'"'</span>   <span class="comment"># encloses it in double quotes,...</span></span><br><span class="line"> 12  -&gt;         <span class="built_in">return</span> s3            <span class="comment"># and returns it.</span></span><br><span class="line"> 13         a = <span class="string">"aaa"</span></span><br><span class="line"> 14         b = <span class="string">"bbb"</span></span><br><span class="line"> 15         TestPdb().set_trace()</span><br><span class="line"> 16         final = combine(a,b)</span><br><span class="line"> 17         <span class="built_in">print</span> final</span><br><span class="line">(Pdb) n</span><br><span class="line">trace_dispatch &lt;frame object at 0x00000222AF1DE048&gt; line None</span><br><span class="line">&gt; f:\repo\pdb_test\frame_test.py(17)&lt;module&gt;()</span><br><span class="line">-&gt; <span class="built_in">print</span> final</span><br><span class="line">(Pdb) c</span><br><span class="line"><span class="string">"aaabbbaaa"</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;从上面的调试信息可以看到 </p>
+<ul>
+<li>代码运行的 event 是 line </li>
+<li>函数触发的 event 是 call </li>
+<li>函数返回的 event 是 return | 并且将返回值 到 arg 上</li>
+<li>函数报错的 event 是 exception | 同理可以推断</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>附注: 测试的时候 super 代码忘记前面添加 return 导致无法 step 进调试函数内部</p>
+</blockquote>
+<h3 id="cmd模块"><a href="#cmd模块" class="headerlink" title="cmd模块"></a>cmd模块</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dispatch_line</span><span class="params">(self, frame)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> self.stop_here(frame) <span class="keyword">or</span> self.break_here(frame):</span><br><span class="line">        self.user_line(frame)</span><br><span class="line">        <span class="keyword">if</span> self.quitting: <span class="keyword">raise</span> BdbQuit</span><br><span class="line">    <span class="keyword">return</span> self.trace_dispatch</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">user_line</span><span class="params">(self, frame)</span>:</span></span><br><span class="line">    <span class="string">"""This function is called when we stop or break at this line."""</span></span><br><span class="line">    <span class="keyword">if</span> self._wait_for_mainpyfile:</span><br><span class="line">        <span class="keyword">if</span> (self.mainpyfile != self.canonic(frame.f_code.co_filename)</span><br><span class="line">            <span class="keyword">or</span> frame.f_lineno&lt;= <span class="number">0</span>):</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        self._wait_for_mainpyfile = <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> self.bp_commands(frame):</span><br><span class="line">        self.interaction(frame, <span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">interaction</span><span class="params">(self, frame, traceback)</span>:</span></span><br><span class="line">    self.setup(frame, traceback)</span><br><span class="line">    self.print_stack_entry(self.stack[self.curindex])</span><br><span class="line">    self.cmdloop()</span><br><span class="line">    self.forget()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;那么可以知道一般情况下运行代码会执行 dispatch_line 会调用 user_line<br>&emsp;&emsp;而其中经过我的测试，触发输入调试的代码是 interaction 里面的 cmdloop</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;这个 cmdloop 可就是大有来头了，这个和 pdb 模块简称的 Cmd 对象有莫大的关系<br>&emsp;&emsp;Cmd 对象来自内置 cmd 库，用于快速构建命令行工具的库。<br>&emsp;&emsp;使用方法可以参考别人研究的 <a href="https://www.cnblogs.com/r00tuser/p/7515136.html" target="_blank" rel="noopener">文章</a><br>&emsp;&emsp;pdb的输入调用操作是完全基于 cmd 库的标准做的，也难怪我也开始找到一些 help 函数之类的信息却完全找不到调用的地方。<br>&emsp;&emsp;因为这个调用逻辑封装在 Cmd 对象里面了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;因此对应的操作函数其实都在 do_next do_list 这些函数上了。<br>&emsp;&emsp;那么将 cmdloop 替换成函数能否实现 settrace 状态下直接触发想要的调试效果呢？<br>&emsp;&emsp;答案是否定的，直接替换会报错，看了一下上面文章对 Cmd 的运用范例可以知道。<br>&emsp;&emsp;cmd 内部也有相应的执行前和执行后的钩子，pdb模块对执行前做了相应的处理，如果去掉就无法执行了。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pdb <span class="keyword">import</span> Pdb</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestPdb</span><span class="params">(Pdb,object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">interaction</span><span class="params">(self, frame, traceback)</span>:</span></span><br><span class="line">        self.setup(frame, traceback)</span><br><span class="line">        self.print_stack_entry(self.stack[self.curindex])</span><br><span class="line">        <span class="comment"># self.cmdloop()</span></span><br><span class="line">        arg = <span class="string">'c'</span></span><br><span class="line">        self.precmd(arg)</span><br><span class="line">        self.onecmd(arg)</span><br><span class="line"></span><br><span class="line">        self.forget()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">combine</span><span class="params">(s1,s2)</span>:</span>      <span class="comment"># define subroutine combine, which... </span></span><br><span class="line">        s3 = s1 + s2 + s1    <span class="comment"># sandwiches s2 between copies of s1, ... </span></span><br><span class="line">        s3 = <span class="string">'"'</span> + s3 +<span class="string">'"'</span>   <span class="comment"># encloses it in double quotes,... </span></span><br><span class="line">        <span class="keyword">return</span> s3            <span class="comment"># and returns it. </span></span><br><span class="line">    a = <span class="string">"aaa"</span></span><br><span class="line">    b = <span class="string">"bbb"</span></span><br><span class="line">    TestPdb().set_trace() </span><br><span class="line">    final = combine(a,b) </span><br><span class="line">    <span class="keyword">print</span> final</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;只要执行上面的代码就可以无条件跳过所有的断点了。<br>&emsp;&emsp;当然，如果将 c 改为 l 罗列断点的话就会陷入死循环了 <em>(:з」∠)</em></p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>&emsp;&emsp;以上就是这次 pdb 研究的情况了，其实还有很多pdb相关的东西没有深入探讨<br>&emsp;&emsp;这次研究的目的是为了移除 pdb 模块的输入等待方式，打算在 Maya 中引入 UI 相应实现动态 Debug 的效果。（mpdb 插件）<br>&emsp;&emsp;目前我已经得到了最核心的输入相应代码，因此见好就收了。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;个人觉得 pdb 模块写得非常不友好，注释不太够，太多乱七八糟的参数不明所以，网上讲解的文章也非常少。<br>&emsp;&emsp;还好自己总算是经过重重险阻找到了解决方案。</p>
+</blockquote>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">智伤帝</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.l0v0.com/posts/66c5da7.html">https://blog.l0v0.com/posts/66c5da7.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.l0v0.com" target="_blank">智伤帝的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E0%A0%95Python/">ࠕPython</a></div><div class="post_share"><div class="addtoany"><div class="a2a_kit a2a_kit_size_32 a2a_default_style"><a class="a2a_button_facebook"></a><a class="a2a_button_twitter"></a><a class="a2a_button_wechat"></a><a class="a2a_button_sina_weibo"></a><a class="a2a_button_facebook_messenger"></a><a class="a2a_button_email"></a><a class="a2a_button_copy_link"></a><a class="a2a_dd" href="https://www.addtoany.com/share" target="_blank" rel="noopener"></a></div></div><script async="async" src="https://static.addtoany.com/menu/page.js"></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/4120b797.html"><img class="prev-cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/4120b797/01.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Maya 轴心移动研究</div></div></a></div><div class="next-post pull-right"><a href="/posts/83897e45.html"><img class="next-cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/83897e45/01.gif" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Overlapper 动画插件研究</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/2c8022e3.html" title="Python marshmallow 库"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-28</div><div class="title">Python marshmallow 库</div></div></a></div><div><a href="/posts/5e6e2bc7.html" title="Python - Import 模块机制"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-15</div><div class="title">Python - Import 模块机制</div></div></a></div><div><a href="/posts/1b238b83.html" title="Unreal Python 导出 MetaHuman 控制器关键帧"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-24</div><div class="title">Unreal Python 导出 MetaHuman 控制器关键帧</div></div></a></div><div><a href="/posts/4831b5c7.html" title="TA 工具人知乎分享"><img class="cover" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-13</div><div class="title">TA 工具人知乎分享</div></div></a></div><div><a href="/posts/b552c0c3.html" title="Python doit 库"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-28</div><div class="title">Python doit 库</div></div></a></div><div><a href="/posts/7aa50252.html" title="Python dependencies 库"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-28</div><div class="title">Python dependencies 库</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><label><input id="switch-comments-btn" type="checkbox"/><span class="slider"></span></label><span class="second-comment">Gitalk</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="gitalk-container"></div></div></div></div></article></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 智伤帝</div><div class="framework-info"><span>框架 </span><a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener">Butterfly</a></div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.spacingElementById('content-inner')
+  else {
+    $.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js', () => {
+      pangu.spacingElementById('content-inner')
+    })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguFn)</script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'mrRioyNTSEAOvVLAsLgkhr4j-gzGzoHsz',
+      appKey: 'wHDm1kxC2FUpOA7FNdgTOEnx',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk({
+      clientID: '355e44f722e24963b9dd',
+      clientSecret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+      repo: 'FXTD-odyssey.github.io',
+      owner: 'FXTD-odyssey',
+      admin: ['FXTD-odyssey'],
+      id: '6c1136d99712ad85614cc9edf781bfd1',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    })
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    $.getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js', initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Valine' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="https://cdn.jsdelivr.net/gh/wilq32/jqueryrotate/jQueryRotate.js"></script><script src="/js/classify.js"></script><script src="/js/jsdelivr.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https'){
+  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>

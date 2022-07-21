@@ -1,0 +1,621 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vue 学习之路（五） | 智伤帝的个人博客</title><meta name="keywords" content="࠴编程/前端,࠷JavaScript,ࡂVue"><meta name="author" content="智伤帝"><meta name="copyright" content="智伤帝"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="Vue 源码分析 - 准备知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue 学习之路（五）">
+<meta property="og:url" content="https://blog.l0v0.com/posts/88b7d26d.html">
+<meta property="og:site_name" content="智伤帝的个人博客">
+<meta property="og:description" content="Vue 源码分析 - 准备知识">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/88b7d26d/01.png">
+<meta property="article:published_time" content="2019-06-30T08:28:49.000Z">
+<meta property="article:modified_time" content="2022-07-08T01:55:12.833Z">
+<meta property="article:author" content="智伤帝">
+<meta property="article:tag" content="࠴编程&#x2F;前端">
+<meta property="article:tag" content="࠷JavaScript">
+<meta property="article:tag" content="ࡂVue">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/88b7d26d/01.png"><link rel="shortcut icon" href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/favicon.png"><link rel="canonical" href="https://blog.l0v0.com/posts/88b7d26d.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><meta name="google-site-verification" content="google15d1ccb0af66991a"/><meta name="msvalidate.01" content="D306EED72EF12BF89A2A951583FF91C7"/><meta name="baidu-site-verification" content="A3TUx6EZdy"/><meta name="360-site-verification" content="48ce68b0e3754c994b6e79677b842d48"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cda99107ced8e9ef4d02339065438d4f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  hexoversion: '4.2.1',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2022-07-08 09:55:12'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {
+  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }
+})()</script><link rel="stylesheet" href="/css/iconfont.css"><link rel="stylesheet" href="/css/extra.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/avatar.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">293</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">69</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">67</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" href="https://wiki.l0v0.com/" target="_blank" rel="noopener"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" href="http://hou.l0v0.com" target="_blank" rel="noopener"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#根据伪数组生成对应的真数组"><span class="toc-number">2.</span> <span class="toc-text">根据伪数组生成对应的真数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#node-nodeType-得到节点类型"><span class="toc-number">3.</span> <span class="toc-text">node.nodeType: 得到节点类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#给对象添加属性"><span class="toc-number">4.</span> <span class="toc-text">给对象添加属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DocumentFragment-文档碎片-高效批量更新多个节点"><span class="toc-number">5.</span> <span class="toc-text">DocumentFragment: 文档碎片(高效批量更新多个节点)</span></a></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/88b7d26d/01.png)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">智伤帝的个人博客</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" href="https://wiki.l0v0.com/" target="_blank" rel="noopener"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" href="http://hou.l0v0.com" target="_blank" rel="noopener"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">Vue 学习之路（五）</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2019-06-30T08:28:49.000Z" title="发表于 2019-06-30 16:28:49">2019-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-07-08T01:55:12.833Z" title="更新于 2022-07-08 09:55:12">2022-07-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%89%8D%E7%AB%AF/Vue/">Vue</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/">Vue学习之路</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><a id="more"></a>
+<script>
+function transitionShow(id){
+    $(id).next().show(1000,function(){
+        window.dispatchEvent(new Event('resize'));
+    });
+}
+$(function(){
+    // 去除代码块中的换行
+    $('.demo').each(function(){
+        text = $(this).html().replace(/<br>/gi,'')
+        $(this).html(text)
+    })
+    // 将HTML代码与文本之间切换
+    $('.switchToHtml').each(function () {
+        $(this).click(function () {
+            let element = $(this).next();
+            if (element.hasClass("converted")) {
+                element.html(element.text())
+                element.removeClass("converted")
+                $(this).text('切换为HTML文本')
+            } else {
+                text = element.html()
+                element.text(text)
+                let regex = new RegExp("(&lt;\/.*?&gt;)", "gi");
+                text = element.html().replace(regex, "$1<br>")
+                // let regex2 = new RegExp("(&lt;.*?&gt;).*?(&lt;?!(\/))", "gi");
+                // text = text.replace(regex2, "$1<br>$2")
+                element.html(text)
+                element.addClass("converted")
+                $(this).text('切换为HTML渲染')
+            }
+        })
+    })
+})
+</script> 
+
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>本文章结合<a href="https://www.bilibili.com/video/av27145287" target="_blank" rel="noopener">VUE核心技术-尚硅谷</a>的45-48集做的归纳总结。<br>&emsp;&emsp;教程的文档里面提到仿照github上的朋友实现的库进行讲解 <a href="https://github.com/DMQ/mvvm" target="_blank" rel="noopener">github</a><br>&emsp;&emsp;抛开视频教程的讲解，其实github上的readme文档已经有了很详细的说明。<br>&emsp;&emsp;视频教程提供了几个点</p>
+<ul>
+<li>数据代理</li>
+<li>模板解析</li>
+<li>数据绑定</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;Hexo 博客的 Markdown 是支持嵌套 <code>&lt;script&gt;&lt;/script&gt;</code> 标签来执行js代码的。<br>&emsp;&emsp;下面我直接使用 Markdown 来写 js 验证教程的输出结果。<br>&emsp;&emsp;不仅将运行结果打印到控制台上，也添加了网页的显示。</p>
+</blockquote>
+<h2 id="根据伪数组生成对应的真数组"><a href="#根据伪数组生成对应的真数组" class="headerlink" title="根据伪数组生成对应的真数组"></a>根据伪数组生成对应的真数组</h2><p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/88b7d26d/01.png" alt="数组判定"></p>
+<blockquote>
+<p>&emsp;&emsp;当我们使用 <code>getElementsByTagName</code> 获取到元素数组，会发现这个并不是js的数组。<br>&emsp;&emsp;尽管它可以通过数组下标获取到对应的元素<br>&emsp;&emsp;数组的一些常规方法如 foreach 也无法识别</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/88b7d26d/02.png" alt="数组slice"></p>
+<blockquote>
+<p>&emsp;&emsp;在 es6 中可以使用 Array.from 来获取到真数组<br>&emsp;&emsp;在 es5 中可以借助 Array.slice() 不传参数获取到数组的浅拷贝<br>&emsp;&emsp;借助 slice.call 可以让非数组对象执行slice方法<br>&emsp;&emsp;在 es5 中可以使用 <code>Array.prototype.slice.call(lis)</code>来获取到真数组</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> lis = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'li'</span>) </span><br><span class="line"><span class="built_in">console</span>.log(lis <span class="keyword">instanceof</span> <span class="built_in">Array</span>)</span><br><span class="line"><span class="built_in">console</span>.log(lis[<span class="number">1</span>].innerHTML)</span><br><span class="line"><span class="built_in">console</span>.log(lis.forEach)</span><br><span class="line"><span class="keyword">const</span> lis2 = <span class="built_in">Array</span>.prototype.slice.call(lis);</span><br><span class="line"><span class="built_in">console</span>.log(lis2 <span class="keyword">instanceof</span> <span class="built_in">Array</span>);</span><br><span class="line"><span class="built_in">console</span>.log(lis2[<span class="number">1</span>].innerHTML);</span><br><span class="line"><span class="built_in">console</span>.log(lis2.forEach);</span><br></pre></td></tr></table></figure>
+<div class="demo" style="border-radius: 10px;border: 5px solid dimgray;padding: 5px"><br>    <strong id="demo_1" class="switchToHtml btn btn-primary" style="text-align: center;display: grid;margin:0px 5px;">切换为HTML文本</strong><br>    <div style="border-radius: 10px;border: 5px solid dimgray;margin: 5px;padding: 5px;background: white"><br>        <li>1</li><br>        <li>2</li><br>        <li>3</li><br>    </div><br>    <strong id="output_1" class="btn btn-primary" style="text-align: center;display: grid;margin:0px 5px;">点击执行js代码</strong><br>    <div style="border-radius: 10px;background:darkslategray;padding: 10px;margin: 5px;border: 5px solid dimgray;color: wheat"><br>    </div><br></div>
+
+<script>
+$(function(){
+    $('#output_1').next().hide()
+    $('#output_1').click(function(){
+        function outputData(output, data,display=false) {
+            if(display){
+                output.innerHTML = output.innerHTML + "<span style='color:#57a64a'>" + data + "</span>" + "<br>";
+                console.log(data);
+            }
+            else{
+                output.innerHTML = output.innerHTML + "<span style='color:coral'>" + data + "</span>" + " : " + "<span style='color:cyan'>" + eval(data) + "</span>" + "<br>";
+                console.log(eval(data));
+            }
+        }
+        const demo = document.getElementById('demo_1').nextElementSibling;
+        const lis = demo.getElementsByTagName('li');
+
+        const output = document.getElementById('output_1').nextElementSibling;
+        output.innerHTML = "";
+
+
+        outputData(output,"lis instanceof Array");
+        outputData(output,"lis[1].innerHTML");
+        outputData(output,"lis.forEach");
+
+        const lis2 = Array.prototype.slice.call(lis)
+
+        outputData(output,"-------------------------------------",display=true);
+        outputData(output,"执行 Array.prototype.slice.call(lis) 获取到真数组",display=true);
+        outputData(output,"lis2 instanceof Array");
+        outputData(output,"lis2[1].innerHTML");
+        outputData(output,"lis2.forEach");
+
+        transitionShow("#output_1");
+    })
+});
+</script>
+
+
+<h2 id="node-nodeType-得到节点类型"><a href="#node-nodeType-得到节点类型" class="headerlink" title="node.nodeType: 得到节点类型"></a>node.nodeType: 得到节点类型</h2><p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/88b7d26d/03.png" alt="nodeType"></p>
+<blockquote>
+<p>&emsp;&emsp;不同类型的节点 nodeType 值是不一样的</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> elementNode = <span class="built_in">document</span>.getElementById(<span class="string">'test'</span>)</span><br><span class="line"><span class="keyword">const</span> attrNode = elementNode.getAttributeNode(<span class="string">'id'</span>)</span><br><span class="line"><span class="keyword">const</span> textNode = elementNode.firstChild</span><br><span class="line"><span class="built_in">console</span>.log(elementNode.nodeType)</span><br><span class="line"><span class="built_in">console</span>.log(attrNode.nodeType)</span><br><span class="line"><span class="built_in">console</span>.log(textNode.nodeType)</span><br></pre></td></tr></table></figure>
+<div class="demo" style="border-radius: 10px;border: 5px solid dimgray;padding: 5px"><br>    <strong id="demo_2" class="switchToHtml btn btn-primary" style="text-align: center;display: grid;margin:0px 5px;">切换为HTML文本</strong><br>    <div style="border-radius: 10px;border: 5px solid dimgray;margin: 5px;padding: 5px;background: white"><br>        <div id="test">blog.l0v0.com</div><br>    </div><br>    <strong id="output_2" class="btn btn-primary" style="text-align: center;display: grid;margin:0px 5px;">点击执行js代码</strong><br>    <div style="border-radius: 10px;background:darkslategray;padding: 10px;margin: 5px;border: 5px solid dimgray;color: wheat"><br>    </div><br></div>
+
+<script>
+$(function(){
+    $('#output_2').next().hide()
+    $("#output_2").click(function(){
+        function outputData(output, data,display=false) {
+            if(display){
+                output.innerHTML = output.innerHTML + "<span style='color:#57a64a'>" + data + "</span>" + "<br>";
+                console.log(data);
+            }
+            else{
+                output.innerHTML = output.innerHTML + "<span style='color:coral'>" + data + "</span>" + " : " + "<span style='color:cyan'>" + eval(data) + "</span>" + "<br>";
+                console.log(eval(data));
+            }
+        }
+
+        const output = document.getElementById('output_2').nextElementSibling;
+        output.innerHTML = "";
+
+        const elementNode = document.getElementById('test');
+        const attrNode = elementNode.getAttributeNode('id');
+        const textNode = elementNode.firstChild
+
+        outputData(output,"elementNode");
+        outputData(output,"elementNode.nodeType");
+        outputData(output,"attrNode");
+        outputData(output,"attrNode.nodeType");
+        outputData(output,"textNode");
+        outputData(output,"textNode.nodeType");
+        transitionShow("#output_2");
+    })
+});
+</script>
+
+
+
+<h2 id="给对象添加属性"><a href="#给对象添加属性" class="headerlink" title="给对象添加属性"></a>给对象添加属性</h2><p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/88b7d26d/04.png" alt="defineProperty"></p>
+<blockquote>
+<p>defineProperty 的属性含义<br>属性描述符：</p>
+<blockquote>
+<p>数据描述符：</p>
+<ul>
+<li>configurable：是否可以重新定义</li>
+<li>enumerable：是否可以枚举</li>
+<li>value：初始值</li>
+<li>writable：是否可以修改属性值</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>访问描述符：</p>
+<ul>
+<li>get：回调函数，根据其它相关的属性动态计算得到当前属性值</li>
+<li>set：回调函数，监视当前属性值的变化，更新其它相关的属性值</li>
+</ul>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;通过设定 enumerable true 可以实现 <code>for .. in keys()</code> 的效果</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">    firstName: <span class="string">'A'</span>,</span><br><span class="line">    lastName: <span class="string">'B'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">'fullName'</span>, &#123;</span><br><span class="line">    <span class="comment">// 当读取对象此属性值时自动调用, 将函数返回的值作为属性值, this为obj</span></span><br><span class="line">    <span class="keyword">get</span> () &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.firstName + <span class="string">"-"</span> + <span class="keyword">this</span>.lastName;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 当修改了对象的当前属性值时自动调用, 监视当前属性值的变化, 修改相关的属性, this为obj</span></span><br><span class="line">    <span class="keyword">set</span> (value) &#123;</span><br><span class="line">      <span class="keyword">const</span> names = value.split(<span class="string">'-'</span>);</span><br><span class="line">      <span class="keyword">this</span>.firstName = names[<span class="number">0</span>];</span><br><span class="line">      <span class="keyword">this</span>.lastName = names[<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(obj.fullName); <span class="comment">// A-B</span></span><br><span class="line">obj.firstName = <span class="string">'C'</span>;</span><br><span class="line">obj.lastName = <span class="string">'D'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(obj.fullName); <span class="comment">// C-D</span></span><br><span class="line">obj.fullName = <span class="string">'E-F'</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.firstName); <span class="comment">// E</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.lastName); <span class="comment">// F</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 不可以使用两次 defineProperty </span></span><br><span class="line">  <span class="comment">/*Object.defineProperty(obj, 'fullName', &#123;</span></span><br><span class="line"><span class="comment">    configurable: true,</span></span><br><span class="line"><span class="comment">    enumerable: true,</span></span><br><span class="line"><span class="comment">    value: 'G-H',</span></span><br><span class="line"><span class="comment">    writable: true</span></span><br><span class="line"><span class="comment">  &#125;)*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Object.keys(obj): 得到对象自身可枚举属性组成的数组</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">'fullName2'</span>, &#123;</span><br><span class="line">    configurable: <span class="literal">false</span>, <span class="comment">//是否可以重新define</span></span><br><span class="line">    enumerable: <span class="literal">true</span>, <span class="comment">// 是否可以枚举(for..in / keys())</span></span><br><span class="line">    value: <span class="string">'A-B'</span>, <span class="comment">// 指定初始值</span></span><br><span class="line">    writable: <span class="literal">false</span> <span class="comment">// value是否可以修改</span></span><br><span class="line">  &#125;)</span><br><span class="line"><span class="built_in">console</span>.log(obj.fullName2)  <span class="comment">// A-B</span></span><br><span class="line">obj.fullName2 = <span class="string">'E-F'</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.fullName2) <span class="comment">// A-B</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">const</span> names = <span class="built_in">Object</span>.keys(obj)</span><br><span class="line"><span class="built_in">console</span>.log(names)</span><br><span class="line"></span><br><span class="line"><span class="comment">// obj.hasOwnProperty(prop): 判断prop是否是obj自身的属性</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.hasOwnProperty(<span class="string">'fullName'</span>))  <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.hasOwnProperty(<span class="string">'toString'</span>))  <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<div class="demo" style="border-radius: 10px;border: 5px solid dimgray;padding: 5px"><br>    <strong id="output_3" class="btn btn-primary" style="text-align: center;display: grid;margin:0px 5px;">点击执行js代码</strong><br>    <div
+        style="border-radius: 10px;background:darkslategray;padding: 10px;margin: 5px;border: 5px solid dimgray;color: wheat"><br>    </div><br></div>
+
+<script>
+$(function(){
+    $('#output_3').next().hide()
+    $('#output_3').click(function(){
+        function outputData(output, data,display=false) {
+            if(display){
+                output.innerHTML = output.innerHTML + "<span style='color:#57a64a'>" + data + "</span>" + "<br>";
+                console.log(data);
+            }
+            else{
+                output.innerHTML = output.innerHTML + "<span style='color:coral'>" + data + "</span>" + " : " + "<span style='color:cyan'>" + eval(data) + "</span>" + "<br>";
+                console.log(eval(data));
+            }
+        }
+
+        let output = document.getElementById('output_3').nextElementSibling;
+        output.innerHTML = "";
+
+        const obj = {
+            firstName: 'A',
+            lastName: 'B'
+        }
+
+        Object.defineProperty(obj, 'fullName', {
+            get () {
+                return this.firstName + "-" + this.lastName;
+            },
+            set (value) {
+                const names = value.split('-');
+                this.firstName = names[0];
+                this.lastName = names[1];
+            }
+        })
+
+        outputData(output,"obj.firstName");
+        outputData(output,"obj.lastName");
+        outputData(output,"obj.fullName");
+
+        obj.firstName = 'C';
+        obj.lastName = 'D';
+        outputData(output,"-------------------------------------",display=true);
+        outputData(output,"修改 firstName 和 lastName 的值",display=true);
+        outputData(output,"obj.firstName");
+        outputData(output,"obj.lastName");
+        outputData(output,"obj.fullName");
+
+        obj.fullName = 'E-F';
+        outputData(output,"-------------------------------------",display=true);
+        outputData(output,"修改 fullName 的值",display=true);
+        outputData(output,"obj.fullName");
+        outputData(output,"obj.firstName");
+        outputData(output,"obj.lastName");
+
+        Object.defineProperty(obj, 'fullName2', {
+            configurable: false, //是否可以重新define
+            enumerable: true, // 是否可以枚举(for..in / keys())
+            value: 'A-B', // 指定初始值
+            writable: false // value是否可以修改
+        })
+
+        outputData(output,"-------------------------------------",display=true);
+        outputData(output,"obj.fullName2");
+        obj.fullName2 = 'E-F'
+        outputData(output,"obj.fullName2 = 'E-F' 无法修改值",display=true);
+        outputData(output,"obj.fullName2");
+
+        const names = Object.keys(obj)
+        outputData(output,"-------------------------------------",display=true);
+        outputData(output,"通过 Object.keys(obj) 可以枚举数据",display=true);
+        outputData(output,"names");
+
+        outputData(output,"-------------------------------------",display=true);
+        outputData(output,"hasOwnProperty 判断是否含有相关的函数",display=true);
+        outputData(output,"obj.hasOwnProperty('fullName')");
+        outputData(output,"obj.hasOwnProperty('toString')");
+
+        transitionShow("#output_3");
+    });
+})
+</script>
+
+<blockquote>
+<p>&emsp;&emsp; defineProperty 属性直到 es5 才支持，因此 IE8 及以下的浏览器都不支持 defineProperty 属性<br>&emsp;&emsp;因此 Vue 也不支持 IE8 及以下的浏览器</p>
+</blockquote>
+<h2 id="DocumentFragment-文档碎片-高效批量更新多个节点"><a href="#DocumentFragment-文档碎片-高效批量更新多个节点" class="headerlink" title="DocumentFragment: 文档碎片(高效批量更新多个节点)"></a>DocumentFragment: 文档碎片(高效批量更新多个节点)</h2><blockquote>
+<p>&emsp;&emsp;document: 对应显示的页面, 包含n个element  一旦更新document内部的某个元素界面更新<br>&emsp;&emsp;documentFragment: 内存中保存n个element的容器对象(不与界面关联), 如果更新framgnet中的某个element, 界面不变。<br>&emsp;&emsp;使用documentFragment只需更新一次界面，执行效率更加高效！！！</p>
+</blockquote>
+<blockquote>
+<p>操作步骤：</p>
+<ol>
+<li>创建fragment</li>
+<li>取出ul中所有子节点取出保存到fragment</li>
+<li>更新fragment中所有li的文本</li>
+<li>将fragment插入ul</li>
+</ol>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> ul = <span class="built_in">document</span>.getElementById(<span class="string">'fragment_test'</span>)</span><br><span class="line"><span class="comment">// 1. 创建fragment</span></span><br><span class="line"><span class="keyword">const</span> fragment = <span class="built_in">document</span>.createDocumentFragment()</span><br><span class="line"><span class="comment">// 2. 取出ul中所有子节点取出保存到fragment</span></span><br><span class="line"><span class="keyword">let</span> child</span><br><span class="line"><span class="comment">// 注意：这里不是判断语句 ！！！ child 获取 ul 下的标签元素，然后判断child是否为真</span></span><br><span class="line"><span class="keyword">while</span>(child=ul.firstChild) &#123; </span><br><span class="line">    fragment.appendChild(child)  <span class="comment">// 先将child从ul中移除, 添加为fragment子节点</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 更新fragment中所有li的文本</span></span><br><span class="line"><span class="built_in">Array</span>.prototype.slice.call(fragment.childNodes).forEach(<span class="function"><span class="params">node</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (node.nodeType===<span class="number">1</span>) &#123; <span class="comment">// 判断元素节点 &lt;li&gt;</span></span><br><span class="line">        node.textContent = <span class="string">'l0v0.com'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 4. 将fragment插入ul</span></span><br><span class="line">ul.appendChild(fragment)</span><br></pre></td></tr></table></figure>
+<div class="demo" style="border-radius: 10px;border: 5px solid dimgray;padding: 5px"><br>    <strong id="demo_4" class="switchToHtml btn btn-primary" style="text-align: center;display: grid;margin:0px 5px;">切换为HTML文本</strong><br>    <div style="border-radius: 10px;border: 5px solid dimgray;margin: 5px;padding: 5px;background: white"><br>        <ul id="fragment_test"><br>            <li><a href="http://www.l0v0.com" target="_blank" rel="noopener">www.l0v0.com</a></li><br>            <li><a href="http://www.l0v0.com" target="_blank" rel="noopener">www.l0v0.com</a></li><br>            <li><a href="http://www.l0v0.com" target="_blank" rel="noopener">www.l0v0.com</a></li><br>        </ul><br>    </div><br>    <strong id="output_4" class="btn btn-primary" style="text-align: center;display: grid;margin:0px 5px;">点击执行js代码</strong><br></div>
+
+<script>
+$(function(){
+    let clickCheck = false;
+    $('#output_4').click(function(){
+        // Note 如果是文本显示模式 切换为渲染模式
+        let element = $('#output_4').prev()
+        if (element.hasClass("converted")) {
+            $('#demo_4').trigger('click')
+        }
+        function outputData(output, data,display=false) {
+            if(display){
+                output.innerHTML = output.innerHTML + "<span style='color:#57a64a'>" + data + "</span>" + "<br>";
+                console.log(data);
+            }
+            else{
+                output.innerHTML = output.innerHTML + "<span style='color:coral'>" + data + "</span>" + " : " + "<span style='color:cyan'>" + eval(data) + "</span>" + "<br>";
+                console.log(eval(data));
+            }
+        }
+        const demo = document.getElementById('demo_4').nextElementSibling;
+        const lis = demo.getElementsByTagName('li');
+
+
+        const ul = document.getElementById('fragment_test')
+        // 1. 创建fragment
+        const fragment = document.createDocumentFragment()
+        // 2. 取出ul中所有子节点取出保存到fragment
+        let child
+        while(child=ul.firstChild) { // 一个节点只能有一个父亲
+            fragment.appendChild(child)  // 先将child从ul中移除, 添加为fragment子节点
+        }
+
+        clickCheck = !clickCheck;
+        // 3. 更新fragment中所有li的文本
+        Array.prototype.slice.call(fragment.childNodes).forEach(node => {
+            if (node.nodeType===1) { // 元素节点 <li>
+                if(clickCheck)
+                    node.innerHTML = '<a href="https://blog.l0v0.com">blog.l0v0.com</a>';
+                else
+                    node.innerHTML = '<a href="https://www.l0v0.com" target="_blank" rel="noopener">www.l0v0.com</a>';
+            }
+        })
+
+        // 4. 将fragment插入ul
+        ul.appendChild(fragment)
+    })
+});
+</script>
+
+<!-- 
+<script>
+    var ImgArray = [];
+    $('button').each(function(){
+        if($(this).attr("id") == "processImg_btn"){
+            ImgArray.push($(this).parent().next());
+            $(this).parent().next().hide();
+            $(this).css('width','100%');
+            $(this).click(function(){
+                // Note 触发 resize 事件
+                window.dispatchEvent(new Event('resize'));
+                $(this).parent().next().slideToggle(1000);
+            });
+        }
+    });
+
+</script> 
+--></div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">智伤帝</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.l0v0.com/posts/88b7d26d.html">https://blog.l0v0.com/posts/88b7d26d.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.l0v0.com" target="_blank">智伤帝的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E0%A0%B4%E7%BC%96%E7%A8%8B-%E5%89%8D%E7%AB%AF/">࠴编程/前端</a><a class="post-meta__tags" href="/tags/%E0%A0%B7JavaScript/">࠷JavaScript</a><a class="post-meta__tags" href="/tags/%E0%A1%82Vue/">ࡂVue</a></div><div class="post_share"><div class="addtoany"><div class="a2a_kit a2a_kit_size_32 a2a_default_style"><a class="a2a_button_facebook"></a><a class="a2a_button_twitter"></a><a class="a2a_button_wechat"></a><a class="a2a_button_sina_weibo"></a><a class="a2a_button_facebook_messenger"></a><a class="a2a_button_email"></a><a class="a2a_button_copy_link"></a><a class="a2a_dd" href="https://www.addtoany.com/share" target="_blank" rel="noopener"></a></div></div><script async="async" src="https://static.addtoany.com/menu/page.js"></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/edb999b4.html"><img class="prev-cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/edb999b4/01.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Vue 学习之路（六）</div></div></a></div><div class="next-post pull-right"><a href="/posts/e729172a.html"><img class="next-cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/e729172a/01.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Vue 学习之路（四）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/284524f6.html" title="Vue 坑爹记录"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-07-08</div><div class="title">Vue 坑爹记录</div></div></a></div><div><a href="/posts/372dc2f3.html" title="Vue 学习之路（十）"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/372dc2f3/05.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-07-03</div><div class="title">Vue 学习之路（十）</div></div></a></div><div><a href="/posts/b21fe737.html" title="Vue 学习之路（九）"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/b21fe737/01.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-07-03</div><div class="title">Vue 学习之路（九）</div></div></a></div><div><a href="/posts/c8d2c668.html" title="Vue 学习之路（八）"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c8d2c668/01.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-07-02</div><div class="title">Vue 学习之路（八）</div></div></a></div><div><a href="/posts/3fb9ee2b.html" title="Vue 学习之路（七）"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/3fb9ee2b/01.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-07-01</div><div class="title">Vue 学习之路（七）</div></div></a></div><div><a href="/posts/edb999b4.html" title="Vue 学习之路（六）"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/edb999b4/01.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-07-01</div><div class="title">Vue 学习之路（六）</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><label><input id="switch-comments-btn" type="checkbox"/><span class="slider"></span></label><span class="second-comment">Gitalk</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="gitalk-container"></div></div></div></div></article></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 智伤帝</div><div class="framework-info"><span>框架 </span><a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener">Butterfly</a></div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.spacingElementById('content-inner')
+  else {
+    $.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js', () => {
+      pangu.spacingElementById('content-inner')
+    })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguFn)</script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'mrRioyNTSEAOvVLAsLgkhr4j-gzGzoHsz',
+      appKey: 'wHDm1kxC2FUpOA7FNdgTOEnx',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk({
+      clientID: '355e44f722e24963b9dd',
+      clientSecret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+      repo: 'FXTD-odyssey.github.io',
+      owner: 'FXTD-odyssey',
+      admin: ['FXTD-odyssey'],
+      id: '118126f6de1836c2b049a21a5d5129a6',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    })
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    $.getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js', initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Valine' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="https://cdn.jsdelivr.net/gh/wilq32/jqueryrotate/jQueryRotate.js"></script><script src="/js/classify.js"></script><script src="/js/jsdelivr.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https'){
+  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>

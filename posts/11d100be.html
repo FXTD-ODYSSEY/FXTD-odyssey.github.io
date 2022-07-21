@@ -1,0 +1,459 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>学习笔记 Udemy - Unlocking the Unreal Engine Material Editor | 智伤帝的个人博客</title><meta name="keywords" content="ࠃUnreal,ࡅOpenGL/Shader"><meta name="author" content="智伤帝"><meta name="copyright" content="智伤帝"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="Unreal 材质学习 第二部">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习笔记 Udemy - Unlocking the Unreal Engine Material Editor">
+<meta property="og:url" content="https://blog.l0v0.com/posts/11d100be.html">
+<meta property="og:site_name" content="智伤帝的个人博客">
+<meta property="og:description" content="Unreal 材质学习 第二部">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/01.png">
+<meta property="article:published_time" content="2019-08-18T05:11:01.000Z">
+<meta property="article:modified_time" content="2022-07-08T01:57:20.330Z">
+<meta property="article:author" content="智伤帝">
+<meta property="article:tag" content="ࠃUnreal">
+<meta property="article:tag" content="ࡅOpenGL&#x2F;Shader">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/01.png"><link rel="shortcut icon" href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/favicon.png"><link rel="canonical" href="https://blog.l0v0.com/posts/11d100be.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><meta name="google-site-verification" content="google15d1ccb0af66991a"/><meta name="msvalidate.01" content="D306EED72EF12BF89A2A951583FF91C7"/><meta name="baidu-site-verification" content="A3TUx6EZdy"/><meta name="360-site-verification" content="48ce68b0e3754c994b6e79677b842d48"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cda99107ced8e9ef4d02339065438d4f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  hexoversion: '4.2.1',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2022-07-08 09:57:20'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {
+  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }
+})()</script><link rel="stylesheet" href="/css/iconfont.css"><link rel="stylesheet" href="/css/extra.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/avatar.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">293</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">69</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">67</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" href="https://wiki.l0v0.com/" target="_blank" rel="noopener"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" href="http://hou.l0v0.com" target="_blank" rel="noopener"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#材质编辑器基础讲解"><span class="toc-number">2.</span> <span class="toc-text">材质编辑器基础讲解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多重UV叠加材质"><span class="toc-number">3.</span> <span class="toc-text">多重UV叠加材质</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#无缝投射贴图材质"><span class="toc-number">4.</span> <span class="toc-text">无缝投射贴图材质</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#积雪岩石材质"><span class="toc-number">5.</span> <span class="toc-text">积雪岩石材质</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#全息投影材质"><span class="toc-number">6.</span> <span class="toc-text">全息投影材质</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/01.png)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">智伤帝的个人博客</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" href="https://wiki.l0v0.com/" target="_blank" rel="noopener"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" href="http://hou.l0v0.com" target="_blank" rel="noopener"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">学习笔记 Udemy - Unlocking the Unreal Engine Material Editor</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2019-08-18T05:11:01.000Z" title="发表于 2019-08-18 13:11:01">2019-08-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-07-08T01:57:20.330Z" title="更新于 2022-07-08 09:57:20">2022-07-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/">游戏开发</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/">Unreal</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0/">教程笔记</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><a id="more"></a>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>&emsp;&emsp;最近深刻感觉到自己的学习不太在状态，需要重新调整状态，然后好好学习才行。<br>&emsp;&emsp;这次教程总结算是拖更了，本来应该更快完成的。</p>
+<p><a href="https://www.bilibili.com/video/av63474490" target="_blank" rel="noopener">Udemy - Unlocking the Unreal Engine Material Editor</a></p>
+</blockquote>
+<h2 id="材质编辑器基础讲解"><a href="#材质编辑器基础讲解" class="headerlink" title="材质编辑器基础讲解"></a>材质编辑器基础讲解</h2><blockquote>
+<p>&emsp;&emsp;这个教程的第一部分介绍了材质编辑器很基础且很常用的节点<br>&emsp;&emsp;比如 multiply subtract add 等等<br>&emsp;&emsp;也讲解了材质上可以连接的几个属性的意义。</p>
+</blockquote>
+<h2 id="多重UV叠加材质"><a href="#多重UV叠加材质" class="headerlink" title="多重UV叠加材质"></a>多重UV叠加材质</h2><blockquote>
+<p>&emsp;&emsp;当我们使用纹理来提高细节的时候，我们经常会添加 UV 重复来添加更多细节。<br>&emsp;&emsp;但是如果贴图属于不可重复的贴图再添加 UV 重复会导致方格贴图的出现。<br>&emsp;&emsp;如何才能让贴图的重复更加自然呢？<br>&emsp;&emsp;教程就给出了一种解决方案。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/01.png" alt="多重UV叠加材质"></p>
+<blockquote>
+<p>&emsp;&emsp;通过不同UV重复叠加的方式制作不重复纹理</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/02.png" alt="多重UV叠加材质"></p>
+<blockquote>
+<p>&emsp;&emsp;在不重复的纹路上叠加金属 铝 的颜色</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/03.png" alt="多重UV叠加材质"></p>
+<blockquote>
+<p>&emsp;&emsp;其他属性的连接方式都很常规</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/04.png" alt="多重UV叠加材质"></p>
+<h2 id="无缝投射贴图材质"><a href="#无缝投射贴图材质" class="headerlink" title="无缝投射贴图材质"></a>无缝投射贴图材质</h2><blockquote>
+<p>&emsp;&emsp;在复杂的模型上，如何在不考虑UV的情况下将将贴图完美贴合到物体上呢？<br>&emsp;&emsp;投射就是一个很好地解决方案。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/05.gif" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;对三个轴同时进行投射，然后再将边缘部分混合到一起就可以创建出完美贴合的贴图</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/06.png" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;这种贴图称之为 TriplanerProjection 三平面投射</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/28.gif" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;这种贴图有个缺点就是贴图是按世界坐标给的，如果物体旋转的话，纹理是不会发生变化的，因此只适合在静景中使用这个材质，不过正因为这样也为后面做积雪埋下伏笔。<br>&emsp;&emsp;如果要给这种静景添加动画就需要将贴图烘焙出来使用了。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;将三平面投射做成一个 MaterialFunction 方便后续贴图复用这种投射效果</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/07.png" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;那么如何才能在 Unreal 中实现贴图投射呢？<br>&emsp;&emsp;首先需要有相关模型的渐变图，然后只要将渐变图连接到UV通道上就可以实现投射。<br>&emsp;&emsp;当然渐变也不是说就线性渐变可以实现的，必须根据模型的空间坐标生成的渐变图才可以的。<br>&emsp;&emsp;因此根据这样的要求，我们可以利用 AbsoluteWroldPosition 节点获取模型当前的空间坐标的</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/08.png" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;通过节点的说明可以看到这个节点可以作为贴图坐标来使用。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/10.png" alt="无缝投射贴图材质"><br><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/09.gif" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;连接这个节点之后，材质球会有相应的颜色，但是颜色过强了，我们可以除以500来看看颜色效果。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/11.gif" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;这个颜色质感的感觉就非常像 TextureCoordinate 节点的渐变颜色效果。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/12.png" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;但是如果其实两者的颜色过渡是有区别的， TextureCoordinate 给的是二维的颜色渐变<br>&emsp;&emsp;而 AbsoluteWroldPosition 获取的三维的颜色渐变。<br>&emsp;&emsp;那么 AbsoluteWroldPosition 应该也可以像二维的 TextureCoordinate 分离出对应的渐变图。<br>&emsp;&emsp;因此也是用 mask 来提取渐变，不过这次的三维渐变不是二维的UV上的，而是三维的空间上的。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;通过 maskComponent 节点我们的确可以分离出模型三个轴向上的渐变图</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/13.gif" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;不过要实现贴图投射一个轴向还不够，贴图的UV是两个轴向的，因此需要传入平面来定义投射的方向</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/14.png" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;这样就实现了不同轴向上的贴图投射了。<br>&emsp;&emsp;问题是如何将这三个投射混合到一起，实现无缝拼接呢？<br>&emsp;&emsp;同样我们也需要相关的渐变图来实现。<br>&emsp;&emsp;但是这一次我们不可以使用 AbsoluteWroldPosition 节点了，否则渐变贴图不是物体坐标会无法实现混合效果。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/26.png" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;因此这里需要使用 VertexNoramlWS 节点来达到目的。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/15.png" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;<del>你会发现这个贴图的效果，基本上就和 AbsoluteWroldPosition 除以 500 之后的效果差不多的。</del><br>&emsp;&emsp;注：我发现这个效果差不多只有在球形的时候是，如果是方块面片，着色效果都是不一样的。<br>&emsp;&emsp;不过呢这里也不可以用 AbsoluteWroldPosition 节点来替代，否则生成的岩石纹理是不对的。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/27.png" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;通过 maskComponent 节点也可以分离出相应的渐变贴图。<br>&emsp;&emsp;不过这一次我们需要解决贴图投射的融合问题，因此也不需要单纯的渐变贴图。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/16.png" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;我们需要这种效果的贴图，其实也只不过是 abs 将黑色的部分也变成白色，中间会有黑色的过渡区域，通过 Power 可以控制黑色区域范围。<br>&emsp;&emsp;你可能会很疑惑，为啥 power 节点可以控制黑色区域的范围？</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/17.gif" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;其实通过 if 节点输出值就可以看到贴图输出的是完完全全的 0 - 1 渐变图<br>&emsp;&emsp;那么小数经过 power 之后会变得更小，更加趋向于 0 ，因此黑色的区域就会变得更多。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/18.png" alt="无缝投射贴图材质"></p>
+<blockquote>
+<p>&emsp;&emsp;最后一步其实就是将这些投射根据渐变效果混合到一起。<br>&emsp;&emsp;弄成一个材质函数的好处在于方便复用生成的方法</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/19.png" alt="无缝投射贴图材质"></p>
+<h2 id="积雪岩石材质"><a href="#积雪岩石材质" class="headerlink" title="积雪岩石材质"></a>积雪岩石材质</h2><blockquote>
+<p>&emsp;&emsp;根据之前做好的三面投射效果可以轻松做出雪的贴图。<br>&emsp;&emsp;另外雪需要开启<strong>次表面散射效</strong>（subsurfaceScattering）效果来增加透光效果，从而让雪的的质感更加真实。<br>&emsp;&emsp;什么是 次表面散射 呢？通常我们会简称为 SSS 三S模型 ，可以参照这个教程的讲解 <a href="https://www.bilibili.com/video/av10062889/?p=2" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;教程中用动画生动形象地表现了光线照射物体的过程，很好阐述了 次表面散射的产生原因 。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/21.png" alt="积雪岩石材质"></p>
+<blockquote>
+<p>&emsp;&emsp;好了，因此雪的材质根据教程的做法就如上图所示<br>&emsp;&emsp;下面需要将雪混合到演示材质上，并且确保雪永远都在岩石的上方，有种积雪的感觉。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/22.png" alt="积雪岩石材质"></p>
+<blockquote>
+<p>&emsp;&emsp;首先需要将岩石材质以及雪材质做成 材质函数 ，这样方便使用 BlendMaterialAttribute 来混合材质效果。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/23.png" alt="积雪岩石材质"></p>
+<blockquote>
+<p>&emsp;&emsp;在材质函数中使用 makeMaterialAttributes 节点连接输出即可</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/24.png" alt="积雪岩石材质"></p>
+<blockquote>
+<p>&emsp;&emsp;最后材质需要勾选 use Material Function 来完成连接</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;下面我们来看看积雪的制作效果</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/30.png" alt="积雪岩石材质"><br><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/31.png" alt="积雪岩石材质"><br><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/29.png" alt="积雪岩石材质"></p>
+<blockquote>
+<p>&emsp;&emsp;这里又用了 VertexNoramlWS 来生成相应的渐变，通过 HeightLerp 节点生成高度图的过渡效果。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/32.png" alt="积雪岩石材质"><br><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/33.png" alt="积雪岩石材质"></p>
+<blockquote>
+<p>&emsp;&emsp;最后通过 if 节点 生成不留积雪的部分。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/34.png" alt="积雪岩石材质"></p>
+<blockquote>
+<p>&emsp;&emsp;最后两层高度贴图混合到一起的效果，用这张图作为混合的alpha通道就可以生成和逼真的积雪贴图。<br>&emsp;&emsp;因为 VertexNoramlWS 也是世界坐标的，因此积雪永远在上方。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/35.gif" alt="积雪岩石材质"></p>
+<h2 id="全息投影材质"><a href="#全息投影材质" class="headerlink" title="全息投影材质"></a>全息投影材质</h2><p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/20.gif" alt="全息投影材质"></p>
+<blockquote>
+<p>&emsp;&emsp;全息投影材质 英文叫做 Hologram 材质，效果就是上图所示，只有接触模型的地方才有辉光效果。<br>&emsp;&emsp;下面就来详细讲解搭建方法。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/36.png" alt="全息投影材质"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/37.png" alt="全息投影材质"></p>
+<blockquote>
+<p>&emsp;&emsp;这里要介绍无比重要的节点 DistanceToNearestSurface 节点，通过这个节点就可以获取模型接触的面<br>&emsp;&emsp;从节点的面片可以看到，接触得部分是黑色，没有接触的部分是白色的。<br>&emsp;&emsp;可能这个面片看效果还不太明显，我们将材质连接到场景中看效果</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/38.png" alt="全息投影材质"></p>
+<blockquote>
+<p>&emsp;&emsp;由于直接输出的效果白刷刷的，所以这里先除一个数值来控制衰减，然后 clamp 0 到 1 之间，之后 1 减将黑白对调。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/39.png" alt="全息投影材质"></p>
+<blockquote>
+<p>&emsp;&emsp;这样就可以实现接触物体的地方亮起的效果。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/40.png" alt="全息投影材质"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/41.png" alt="全息投影材质"></p>
+<blockquote>
+<p>&emsp;&emsp;基于同样的原理就可以实现接触的地方产生网格动画的效果，动画效果主要通过 spanner 节点实现。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/42.png" alt="全息投影材质"></p>
+<blockquote>
+<p>&emsp;&emsp;将上面两种效果叠加到一起，基本上全息投影的效果基本完成了。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/43.png" alt="全息投影材质"><br><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/44.png" alt="全息投影材质"></p>
+<blockquote>
+<p>&emsp;&emsp;教程还加上扫描线的效果，增加了投影的真是质感。<br>&emsp;&emsp;扫描线使用 screenPosition 节点，使扫描叠加永远在屏幕上。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/11d100be/45.png" alt="全息投影材质"></p>
+<blockquote>
+<p>&emsp;&emsp;最后将扫描线的效果叠加上就大功告成了。</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>&emsp;&emsp;教程后面还有地形和粒子材质的制作，这部分我暂时放下了。<br>&emsp;&emsp;另外最后一部分制作水的效果是真的很牛逼，不过我打算结合着官方水包的讲解到时候一起讲，因此也挖个坑，后面再来填吧。<br>&emsp;&emsp;今天看了官方中文的直播视频，制作效果超牛逼的，近期也会更新关于直播中的骚操作。 <a href="https://www.bilibili.com/video/av38669358" target="_blank" rel="noopener">链接</a></p>
+</blockquote>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">智伤帝</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.l0v0.com/posts/11d100be.html">https://blog.l0v0.com/posts/11d100be.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.l0v0.com" target="_blank">智伤帝的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E0%A0%83Unreal/">ࠃUnreal</a><a class="post-meta__tags" href="/tags/%E0%A1%85OpenGL-Shader/">ࡅOpenGL/Shader</a></div><div class="post_share"><div class="addtoany"><div class="a2a_kit a2a_kit_size_32 a2a_default_style"><a class="a2a_button_facebook"></a><a class="a2a_button_twitter"></a><a class="a2a_button_wechat"></a><a class="a2a_button_sina_weibo"></a><a class="a2a_button_facebook_messenger"></a><a class="a2a_button_email"></a><a class="a2a_button_copy_link"></a><a class="a2a_dd" href="https://www.addtoany.com/share" target="_blank" rel="noopener"></a></div></div><script async="async" src="https://static.addtoany.com/menu/page.js"></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/99ca25ca.html"><img class="prev-cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/99ca25ca/01.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">学习笔记 水材质制作 Unlocking the Unreal Engine Material Editor</div></div></a></div><div class="next-post pull-right"><a href="/posts/c476f94c.html"><img class="next-cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c476f94c/01.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">学习笔记 Pluralsight - Unreal Engine 4 Materials Fundamentals</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/9915f9db.html" title="学习笔记 Unreal 官方 - Water Pack Overview"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/9915f9db/49.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-08-23</div><div class="title">学习笔记 Unreal 官方 - Water Pack Overview</div></div></a></div><div><a href="/posts/99ca25ca.html" title="学习笔记 水材质制作 Unlocking the Unreal Engine Material Editor"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/99ca25ca/01.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-08-21</div><div class="title">学习笔记 水材质制作 Unlocking the Unreal Engine Material Editor</div></div></a></div><div><a href="/posts/c476f94c.html" title="学习笔记 Pluralsight - Unreal Engine 4 Materials Fundamentals"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/c476f94c/01.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2019-08-13</div><div class="title">学习笔记 Pluralsight - Unreal Engine 4 Materials Fundamentals</div></div></a></div><div><a href="/posts/cab0d099.html" title="Unreal C++ 工具开发最小实践"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-15</div><div class="title">Unreal C++ 工具开发最小实践</div></div></a></div><div><a href="/posts/51c731db.html" title="Unreal C++ VScode 配置"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-12</div><div class="title">Unreal C++ VScode 配置</div></div></a></div><div><a href="/posts/1b238b83.html" title="Unreal Python 导出 MetaHuman 控制器关键帧"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-24</div><div class="title">Unreal Python 导出 MetaHuman 控制器关键帧</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><label><input id="switch-comments-btn" type="checkbox"/><span class="slider"></span></label><span class="second-comment">Gitalk</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="gitalk-container"></div></div></div></div></article></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 智伤帝</div><div class="framework-info"><span>框架 </span><a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener">Butterfly</a></div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.spacingElementById('content-inner')
+  else {
+    $.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js', () => {
+      pangu.spacingElementById('content-inner')
+    })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguFn)</script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'mrRioyNTSEAOvVLAsLgkhr4j-gzGzoHsz',
+      appKey: 'wHDm1kxC2FUpOA7FNdgTOEnx',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk({
+      clientID: '355e44f722e24963b9dd',
+      clientSecret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+      repo: 'FXTD-odyssey.github.io',
+      owner: 'FXTD-odyssey',
+      admin: ['FXTD-odyssey'],
+      id: '874cfc9f95e9d03bf9247cf57235b3b3',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    })
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    $.getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js', initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Valine' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="https://cdn.jsdelivr.net/gh/wilq32/jqueryrotate/jQueryRotate.js"></script><script src="/js/classify.js"></script><script src="/js/jsdelivr.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https'){
+  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>

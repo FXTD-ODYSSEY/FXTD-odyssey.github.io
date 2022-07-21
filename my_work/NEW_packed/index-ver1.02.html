@@ -1,0 +1,519 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1"  charset="utf-8">
+<title>穗源网络科技</title>
+<style>
+
+/* #webgl{position:absolute;width:100%;height:100%;z-index:-1;} */
+
+html , body {height:100%;width:100%;margin: 0px;padding: 0px;overflow: hidden}
+    
+/* #container{position:relative;} */
+
+@-webkit-keyframes fadeIn {
+0% {
+opacity: 0.1; /*初始状态 透明度为0*/
+}
+50% {
+opacity: 0.5; /*中间状态 透明度为0*/
+}
+100% {
+opacity: 1; /*结尾状态 透明度为1*/
+}
+}
+
+@-webkit-keyframes fadeOut {
+0% {
+opacity: 1; /*初始状态 透明度为0*/
+}
+50% {
+opacity: 0.5; /*中间状态 透明度为0*/
+}
+100% {
+opacity: 0.1; /*结尾状态 透明度为1*/
+}
+}
+    
+#logo{position:absolute;width:40%; left: 50%;top: 50%;transform: translate(-50%,-50%);}  
+    
+#main{position: fixed;bottom: 20px;right: 20px;padding: 1px 15px;color: #fff;background-color: #89a;opacity: 0.1;border-radius: 50%;font-size: 40px;transition: transform 0.2s linear;font-family: 微软雅黑;
+animation-name: fadeOut; /*动画名称*/
+animation-duration: 0.5s; /*动画持续时间*/
+animation-iteration-count: 1; /*动画次数*/
+animation-delay: 0s; /*延迟时间*/}
+
+#main:hover {cursor: pointer;opacity: 1;transform: rotate(360deg);
+animation-name: fadeIn; /*动画名称*/
+animation-duration: 0.5s; /*动画持续时间*/
+animation-iteration-count: 1; /*动画次数*/
+animation-delay: 0s; /*延迟时间*/}
+
+#help_btn {position: fixed;bottom: 100px;right: 30px;padding: 5px 5px;color: #fff;background-color: #89a;opacity: 0.7;border-radius: 50%;font-size: 50px;cursor:pointer;}
+
+#full_btn {position: fixed;bottom: 150px;right: 30px;padding: 5px 5px;color: #fff;background-color: #89a;opacity: 0.7;border-radius: 50%;font-size: 50px;cursor:pointer;}
+
+#share_btn {position: fixed;bottom: 200px;right: 30px;padding: 5px 5px;color: #fff;background-color: #89a;opacity: 0.7;border-radius: 50%;font-size: 50px;cursor:pointer;}
+
+#stop_btn {position: fixed;bottom: 250px;right: 30px;padding: 5px 5px;color: #fff;background-color: #89a;opacity: 0.7;border-radius: 50%;font-size: 50px;cursor:pointer;}
+
+#origin_btn {position: fixed;bottom: 300px;right: 30px;padding: 5px 5px;color: #fff;background-color: #89a;opacity: 0.7;border-radius: 50%;font-size: 50px;cursor:pointer;}
+    
+#color_dark_btn {position: fixed;bottom: 200px;right: 80px;padding: 5px 5px;color: #fff;background-color: #89a;opacity: 0.7;border-radius: 50%;font-size: 50px;cursor:pointer;}
+
+#color_white_btn {position: fixed;bottom: 200px;right: 80px;padding: 5px 5px;color: #fff;background-color: #89a;opacity: 0.7;border-radius: 50%;font-size: 50px;cursor:pointer;}
+
+#color_white_btn_small {position: fixed;bottom: 20px;right: 20px;padding: 5px 5px;color: #fff;background-color: #89a;opacity: 0.7;border-radius: 50%;font-size: 50px;cursor:pointer;}
+
+#color_dark_btn_small {position: fixed;bottom: 20px;right: 45px;padding: 5px 5px;color: #fff;background-color: #89a;opacity: 0.7;border-radius: 50%;font-size: 50px;cursor:pointer;}
+
+#panel {padding: 0; margin: 0; width: 200px;height: 500px;background: #a0a0f0;position: absolute;right:3px;top:20%;border:4px solid #000}
+
+#blocker {position: absolute;width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);}
+
+#instructions {width: 100%;height: 100%;display: -webkit-box;display: -moz-box;display: box;-webkit-box-orient: horizontal;-moz-box-orient: horizontal;box-orient: horizontal;-webkit-box-pack: center;-moz-box-pack: center;box-pack: center;-webkit-box-align: center;-moz-box-align: center;box-align: center;color: #ffffff;text-align: center;text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;}
+</style>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body>
+   <!--设置webgl的id让threejs链接-->
+    <div id="webgl">
+
+        <div id="logo">
+           <div id="container"></div>
+        </div>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/92/three.min.js"></script><!--链接threejs的库-->
+    <script src="https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/threejs/controls/OrbitControls.js"></script><!--Orbit摄像机脚本-->
+    <script src="https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/threejs/controls/EditorControls.js"></script><!--Editor摄像机脚本-->
+    <script src="https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/threejs/controls/PointerLockControls.js"></script><!--第一人称脚本-->
+    
+     <script src="https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/threejs/loaders/OBJLoader.js"></script><!--加载OBJ的脚本-->
+    <script src="https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/threejs/loaders/MTLLoader.js"></script><!--加载mtl的脚本-->
+    <script src="https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/threejs/loaders/DDSLoader.js"></script><!--加载DDS的脚本-->
+    <script src="https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/threejs/loaders/DDSLoader.js"></script><!--加载DDS的脚本-->
+    
+    <script src="https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/threejs/shaders/CopyShader.js"></script>
+    <script src="https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/threejs/shaders/FXAAShader.js"></script>
+    <script src="https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/threejs/postprocessing/EffectComposer.js"></script>
+    <script src="https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/threejs/postprocessing/RenderPass.js"></script>
+    <script src="https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/threejs/postprocessing/ShaderPass.js"></script>
+    <script src="https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/threejs/postprocessing/OutlinePass.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.0.1/progressbar.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5tooltipsjs/1.7.2/html5tooltips.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/html5tooltipsjs/1.7.2/html5tooltips.animation.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/html5tooltipsjs/1.7.2/html5tooltips.min.css" rel="stylesheet">
+    
+    <script src="https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/js/SuiYuan_THREE_View-ver1.0.6.js"></script>
+    
+    
+    <script type="text/javascript">
+        
+        var app = new SuiYuan.THREE_View();
+        
+        app.setCamera({focalLength:45});
+        app.setWebGLRenderer({antialias:true});
+//        
+        var init = app.initScene();
+        
+
+        init.scene.background = new THREE.Color(0x333333);
+        
+//        //背景图片hdr
+//        var BGsphere = init.backgroundImage('texture/blur.jpg');
+//        BGsphere.scale.x = BGsphere.scale.y = BGsphere.scale.z = 20;
+        
+//        //360控制
+//        var Control = init.EditorControl();
+        
+        //360控制
+        var Control = init.OrbitControl();
+        Control.maxDistance = 25;
+//        Control.enablePan = false;
+        Control.panSpeed = .1;
+        Control.maxPolarAngle = Math.PI*.45;//限制摄像机往下移动
+        
+        
+        //第一人称
+//        init.collide_Objects.push(cube);
+//        init.PointerLockControl();
+//        init.PointerLockControl_block();
+        
+//        //外轮廓显示
+        var pass = app.renderPass();
+        var outline = pass.outlinePass('#00ff00',false,true);
+        
+        var Area = "占地面积："
+        var price = "价格："
+        var sold = "出售情况："
+        var areaUnit = " 平方米"
+        var priceUnit = " 元/平方米"
+        var areaRandom_1 = 20 + Math.floor(Math.random()*100)
+        var areaRandom_2 = 20 + Math.floor(Math.random()*100)
+        var areaRandom_3 = 20 + Math.floor(Math.random()*100)
+        var areaRandom_4 = 20 + Math.floor(Math.random()*100)
+        var areaRandom_5 = 20 + Math.floor(Math.random()*100)
+        var areaRandom_6 = 20 + Math.floor(Math.random()*100)
+        var areaRandom_7 = 20 + Math.floor(Math.random()*100)
+        var areaRandom_8 = 20 + Math.floor(Math.random()*100)
+        var areaRandom_9 = 20 + Math.floor(Math.random()*100)
+        var priceRandom_1 = Math.floor(Math.random()*10000)
+        var priceRandom_2 = Math.floor(Math.random()*10000)
+        var priceRandom_3 = Math.floor(Math.random()*10000)
+        var priceRandom_4 = Math.floor(Math.random()*10000)
+        var priceRandom_5 = Math.floor(Math.random()*10000)
+        var priceRandom_6 = Math.floor(Math.random()*10000)
+        var priceRandom_7 = Math.floor(Math.random()*10000)
+        var priceRandom_8 = Math.floor(Math.random()*10000)
+        var priceRandom_9 = Math.floor(Math.random()*10000)
+        var lastSelected;
+//        var colorArray = []
+        
+        app.outlineIntersectCall(function(selected){
+            
+            
+            if(lastSelected != selected){//点击相同物体不触发
+                
+                //复原上一个点击的物体颜色
+               if(lastSelected != undefined){//最初点击的时候略过复原
+
+                     for(let t in lastSelected.material){
+                         
+
+                        lastSelected.material[t].emissive = new THREE.Color( 0x000000 );
+                           
+                    }    
+
+                }
+
+                if(selected.name != 'background_capsule:background_bowl' ){//点击背景不做操作
+                    
+                
+        //                    colorArray = []
+                        lastSelected = selected//备份上一个点击的物体
+                        for(let t in selected.material){  
+
+        //                        colorArray[t] = selected.material[t].color
+
+                            selected.material[t].emissive = new THREE.Color( 0x4400ff );
+                        }
+                    
+                    }
+            }
+            
+            
+            
+            
+            switch(selected.name){
+                case 'background_capsule:background_bowl':
+                    $('#attr2').text(Area + "空")
+                    $('#attr3').text(price + "空")
+                    $('#attr4').text(sold + "空")
+                    
+                break;
+                    
+                case 'polySurface4390':
+                    $('#attr2').text(Area + areaRandom_1 + areaUnit)
+                    $('#attr3').text(price + priceRandom_1 + priceUnit)
+                    $('#attr4').text(sold + "在售")
+                    
+                break;
+                    
+                case 'group16':
+                    $('#attr2').text(Area + areaRandom_2 + areaUnit)
+                    $('#attr3').text(price + priceRandom_2 + priceUnit)
+                    $('#attr4').text(sold + "售罄")
+                break;
+            
+                case 'group17':
+                    $('#attr2').text(Area + areaRandom_3 + areaUnit)
+                    $('#attr3').text(price + priceRandom_3 + priceUnit)
+                    $('#attr4').text(sold + "在售")
+                break;
+                    
+                case 'Line1645':
+                    $('#attr2').text(Area + areaRandom_4 + areaUnit)
+                    $('#attr3').text(price + priceRandom_4 + priceUnit)
+                    $('#attr4').text(sold + "售罄")
+                break;
+                    
+                case 'group18':
+                    $('#attr2').text(Area + areaRandom_5 + areaUnit)
+                    $('#attr3').text(price + priceRandom_5 + priceUnit)
+                    $('#attr4').text(sold + "在售")
+                break;
+                    
+                case 'group19':
+                    $('#attr2').text(Area + areaRandom_6 + areaUnit)
+                    $('#attr3').text(price + priceRandom_6 + priceUnit)
+                    $('#attr4').text(sold + "售罄")
+                break;
+                    
+                case 'group20':
+                    $('#attr2').text(Area + areaRandom_7 + areaUnit)
+                    $('#attr3').text(price + priceRandom_7 + priceUnit)
+                    $('#attr4').text(sold + "在售")
+                break;
+                    
+                case 'group21':
+                    $('#attr2').text(Area + areaRandom_8 + areaUnit)
+                    $('#attr3').text(price + priceRandom_8 + priceUnit)
+                    $('#attr4').text(sold + "售罄")
+                break;
+                    
+                case 'group22':
+                    $('#attr2').text(Area + areaRandom_9 + areaUnit)
+                    $('#attr3').text(price + priceRandom_9 + priceUnit)
+                    $('#attr4').text(sold + "在售")
+                break;
+            }
+            $('#panel').height($("#attr2").outerHeight(true)+$("#attr1").outerHeight(true)+$("#attr3").outerHeight(true)+$("#attr4").outerHeight(true)+$("#attr5").outerHeight(true))
+        })
+        /************************/
+        var bar = app.progressBarSVG(logo,undefined,'circle');
+        
+        app.cameraFixEnabled(function(){//在模型加载完之后执行
+            
+            setTimeout('app.camera_check = true;',1000);
+            
+            //循环遍历开启透明
+            (function traverseObjects( objects ) {
+
+                for ( var i = 0, l = objects.length; i < l; i ++ ) {
+
+                    var object = objects[ i ];
+
+                    console.log(object.material)
+                    if(object.material != undefined && object.material.type != "MeshBasicMaterial"){
+                        console.log("RotateGrp")
+                        console.log(RotateGrp)
+                        console.log("RotateGrp")
+                        for(let m in object.material){
+    //                        object.material[m].color =  new THREE.Color( 0x4400ff );
+                            object.material[m].transparent =  true;
+                            object.material[m].opacity = 0.7 
+                        }
+
+                    }
+
+
+                    traverseObjects( object.children );
+
+                }
+
+            } )(init.scene.children)
+            
+        },function(){
+            app.camera_check = false; 
+        });
+        
+        
+        var manager = app.LoadingManagement();
+        
+        var RotateGrp = new THREE.Group();
+        
+//        var geometry = new THREE.BoxGeometry( 4, 4, 4 );
+//        var geometry = new THREE.TorusBufferGeometry( 1, 0.3, 16, 100 );
+//        var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+//        var cube = new THREE.Mesh( geometry, material );
+//        cube.position.z = -4;
+//        init.scene.add(cube);
+        
+        var textureLoader = new THREE.TextureLoader();
+        var envPath = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/texture/skyboxsun25deg/';
+        var reflectionCube = app.getEnvMap(envPath);
+        
+        var background_mat = app.getMaterial('basic','rgb(222,222,222)',THREE.FrontSide);
+        var colorMap = textureLoader.load('https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/texture/background.jpg');
+        background_mat.map = colorMap;
+        var backgroundObj = app.background_obj('capsule',background_mat,0);
+        backgroundObj.name = "background";
+//        
+//        var path = 'model/cooker_top.obj';
+//        var geo_material = app.getMaterial('standard','rgb(200,200,200)');
+//        var colorMap = textureLoader.load('model/texture/gaizi.jpg');
+//        geo_material.matelness = 1;
+//        geo_material.roughness = .3;
+//        geo_material.map = colorMap;
+//        geo_material.envMap = reflectionCube;
+//        var model_source_1 = app.getModel(path,geo_material);
+//
+//        var path = 'model/cooker_bottom.obj';
+//        var geo_material = app.getMaterial('standard','rgb(200,200,200)');
+//        var colorMap = textureLoader.load('model/texture/guodi.jpg');
+//        geo_material.matelness = 1;
+//        geo_material.roughness = .1;
+//        geo_material.map = colorMap;
+//        geo_material.envMap = reflectionCube;
+//        var model_source_2 = app.getModel(path,geo_material);
+//
+//        var path = 'model/display.obj';
+//        var geo_material = app.getMaterial('standard','rgb(200,200,200)');
+//        var colorMap = textureLoader.load('model/texture/mianban.jpg');
+//        geo_material.matelness = 1;
+//        geo_material.roughness = .1;
+//        geo_material.map = colorMap;
+//        geo_material.envMap = reflectionCube;
+//        var model_source_3 = app.getModel(path,geo_material);
+//
+//        var path = 'model/white_body.obj';
+//        var geo_material = app.getMaterial('standard','rgb(200,200,200)');
+//        geo_material.matelness = 1;
+//        geo_material.roughness = .31;
+//        geo_material.envMap = reflectionCube;
+//        var model_source_4 = app.getModel(path,geo_material);
+//        
+//        var path = 'model/shopping_mall/Obj/1.obj';
+//        var mtl = 'model/shopping_mall/Obj/1.mtl';
+//        var model_source_5 = app.getModel(path,mtl);
+        
+        var path = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/1.obj';
+        var mtl = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/1.mtl';
+        var model_source_1= new app.getModel(path,mtl);
+        var path = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/2.obj';
+        var mtl = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/2.mtl';
+        var model_source_2= app.getModel(path,mtl)
+        var path = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/3.obj';
+        var mtl = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/3.mtl';
+        var model_source_3= app.getModel(path,mtl);
+        var path = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/4.obj';
+        var mtl = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/4.mtl';
+        var model_source_4= app.getModel(path,mtl);
+        var path = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/5.obj';
+        var mtl = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/5.mtl';
+        var model_source_5= app.getModel(path,mtl);
+        var path = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/6.obj';
+        var mtl = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/6.mtl';
+        var model_source_6= app.getModel(path,mtl);
+        var path = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/7.obj';
+        var mtl = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/7.mtl';
+        var model_source_7= app.getModel(path,mtl);
+        var path = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/8.obj';
+        var mtl = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/8.mtl';
+        var model_source_8= app.getModel(path,mtl);
+        var path = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/9.obj';
+        var mtl = 'https://blog-1257068932.cos.ap-guangzhou.myqcloud.com/NEW_packed/model/shopping_mall/Obj/9.mtl';
+        var model_source_9= app.getModel(path,mtl);
+        
+        RotateGrp.add(model_source_1,model_source_2,model_source_3,model_source_4,model_source_5,model_source_6,model_source_7,model_source_8,model_source_9);
+//        RotateGrp.rotation.y += 60;
+//        RotateGrp.position.y -= 3;
+        init.scene.add(RotateGrp);
+        
+
+        var light = app.initLight();
+        light.ambientLight.intensity = 1;
+        
+        
+        app.update(function(){
+            //RotateGrp.rotation.y += 0.01;
+            
+//            //限制摄像机移动范围
+//            if(init.camera.position.y <= 2)
+//            init.camera.position.y = 2
+        });
+        
+        app.animate();
+        
+       /* var app = new SuiYuan.THREE_View();
+        var bar = app.progressBar(webgl);
+        bar.animate(1.0);*/
+        
+        
+    </script>
+
+    <button id="main">+</button>
+    
+    <div id="panel">
+        <div id="attr1" style="text-align: center;font-size: 30px;"><strong>信息面板</strong></div>
+        <div id="attr2" style="padding: 15px 5px;font-size: 20px;">占地面积：</div>
+        <div id="attr3" style="padding: 15px 5px;font-size: 20px;">价格：</div>
+        <div id="attr4" style="padding: 15px 5px;font-size: 20px;">出售情况：</div>
+<!--        <div id="attr5" style="padding: 15px 5px;font-size: 20px;border:5px solid gray; word-wrap:break-word; word-break:break-all;text-indent: 2em; overflow:scroll;"><p>详细信息</p>test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5test5</div>-->
+        <div id="attr5">
+            <div class="pre-scrollable center-block" style="height: 270px;width: inherit; word-wrap:break-word; word-break:break-all;text-indent: 2em;">
+            <h2>详细信息</h2>
+           佳兆业未来城位于广州主城区黄埔区黄埔区是广州高新技术产能中心也是广州房地产市场成交面积最大、热度最高的区域2017年房价涨幅达28%，地价突破2万/平方米<br>
+           300米即达地铁13号线南岗站6站到天河，3站到广州新东站开创大道、黄埔东路、广园快速三大主干道广深沿江高速多条城际高速路网，半小时即达深圳<br>
+           约66万平方米未来生活城邦，10万平方米商业中心毗邻佳兆业·城市广场，更有万达项目即将入驻市一级幼儿园、省一级小学、区一级中学，一站式教育暨南大学暨华医院、黄埔区红十字会医院，为健康保驾护航
+            </div>  
+	    </div>
+    </div>
+    
+    <script>
+
+
+    function tooltip_anim(id,text,direction,animateType,color){
+        var tooltip = new HTML5TooltipUIComponent;
+        var target = document.getElementById(id);
+
+        //预设没有传参的数据
+        animateType = animateType ===undefined ? "scalein" : animateType;
+        color = color === undefined ? 'bamboo' :color;
+        direction = direction === undefined ?'top':direction;
+        tooltip.set({
+          animateFunction: animateType,
+          color: color,
+          contentText: text,
+          stickTo: direction,
+          target: target
+        });
+
+        target.addEventListener('mouseenter',function(){
+          tooltip.show();
+        });
+
+        target.addEventListener('mouseleave',function(){
+          tooltip.hide();
+        });
+
+        tooltip.mount();
+
+        return tooltip;
+    }
+        
+    tooltip_main = tooltip_anim("main","关闭面板")
+    var tooltip_check = true
+    
+    $('#main').click(function(){
+        $('#panel').fadeToggle(500)
+        if(tooltip_check){
+            tooltip_check = false
+           tooltip_main.set({contentText:"开启面板"}); 
+            
+            for(let i = 1; i<= $('#panel>div').length; i++){
+                $("#attr" + i).fadeToggle(100*($('#panel>div').length - i));
+            }
+        }else{
+            tooltip_check = true
+            tooltip_main.set({contentText:"关闭面板"}); 
+            
+            for(let i = 1; i<= $('#panel>div').length; i++){
+                $("#attr" + i).fadeToggle(100*i);
+            }
+            
+        }
+        
+        html5tooltips.refresh();
+    })
+    
+    for(let i = 1; i<= $('#panel>div').length; i++){
+//        $("#attr" + i).fadeToggle(100*($('#panel>div').length - i));
+    }   
+        
+    
+    </script>
+</body>
+</html>

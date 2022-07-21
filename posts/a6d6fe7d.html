@@ -1,0 +1,340 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Unreal Python 导出场景的 Actor 为 FBX | 智伤帝的个人博客</title><meta name="keywords" content="ࠕPython,ࠃUnreal"><meta name="author" content="智伤帝"><meta name="copyright" content="智伤帝"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="将模型关联的贴图资源也导出">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unreal Python 导出场景的 Actor 为 FBX">
+<meta property="og:url" content="https://blog.l0v0.com/posts/a6d6fe7d.html">
+<meta property="og:site_name" content="智伤帝的个人博客">
+<meta property="og:description" content="将模型关联的贴图资源也导出">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/a6d6fe7d/04.mp4">
+<meta property="article:published_time" content="2021-04-24T05:01:18.000Z">
+<meta property="article:modified_time" content="2022-07-07T13:05:54.844Z">
+<meta property="article:author" content="智伤帝">
+<meta property="article:tag" content="ࠕPython">
+<meta property="article:tag" content="ࠃUnreal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/a6d6fe7d/04.mp4"><link rel="shortcut icon" href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/favicon.png"><link rel="canonical" href="https://blog.l0v0.com/posts/a6d6fe7d.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><meta name="google-site-verification" content="google15d1ccb0af66991a"/><meta name="msvalidate.01" content="D306EED72EF12BF89A2A951583FF91C7"/><meta name="baidu-site-verification" content="A3TUx6EZdy"/><meta name="360-site-verification" content="48ce68b0e3754c994b6e79677b842d48"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cda99107ced8e9ef4d02339065438d4f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  hexoversion: '4.2.1',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2022-07-07 21:05:54'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {
+  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }
+})()</script><link rel="stylesheet" href="/css/iconfont.css"><link rel="stylesheet" href="/css/extra.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/avatar.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">293</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">69</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">67</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" href="https://wiki.l0v0.com/" target="_blank" rel="noopener"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" href="http://hou.l0v0.com" target="_blank" rel="noopener"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MergeStaticActor-方案"><span class="toc-number">2.</span> <span class="toc-text">MergeStaticActor 方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#导出贴图资源"><span class="toc-number">3.</span> <span class="toc-text">导出贴图资源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#直接导出场景模型方案"><span class="toc-number">4.</span> <span class="toc-text">直接导出场景模型方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/a6d6fe7d/04.mp4)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">智伤帝的个人博客</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" href="https://wiki.l0v0.com/" target="_blank" rel="noopener"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" href="http://hou.l0v0.com" target="_blank" rel="noopener"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">Unreal Python 导出场景的 Actor 为 FBX</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-04-24T05:01:18.000Z" title="发表于 2021-04-24 13:01:18">2021-04-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-07-07T13:05:54.844Z" title="更新于 2022-07-07 21:05:54">2022-07-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/">游戏开发</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/">Unreal</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python/">Python</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>&emsp;&emsp;上周的时候，有网友问过我相关的导出场景模型的问题。<br>&emsp;&emsp;当时他给我发了一篇微信公众号的文章 <a href="https://mp.weixin.qq.com/s/S_0Cvm4cL8niZD6vTQv72Q" target="_blank" rel="noopener">链接</a><br>&emsp;&emsp;导出需要附带 矩阵信息 实在是太麻烦了，其实并不需要如此的复杂。<br>&emsp;&emsp;碍于时间实在是太仓促，没有时间详细分析我这边具体的操作流程。<br>&emsp;&emsp;遂抽空总结了一波，并且在总结的逛论坛的时候发现了更好导出的方案。</p>
+</blockquote>
+<h2 id="MergeStaticActor-方案"><a href="#MergeStaticActor-方案" class="headerlink" title="MergeStaticActor 方案"></a>MergeStaticActor 方案</h2><blockquote>
+<p>&emsp;&emsp;最开始分析这个问题，我首先想到的是对 Actor 右键能否直接导出模型。<br>&emsp;&emsp;然而却没有发现相关的方案，于是只能采用对 StaticMesh 等静态资源导出模型的方案了。<br>&emsp;&emsp;但是采用这个方案，通过遍历场景的模型可以找到关联的静态模型，导出却没有了 场景的 位置，只能按照上面链接的方式，将矩阵重新实现一遍吗？<br>&emsp;&emsp;经过我对 Actor 右键的研究，我发现可以通过 <code>Merge Actors</code> 合并生成一个带世界坐标位置的新 StaticMesh ，通过这个 Mesh 导出 FBX 就是带世界坐标位置的模型了。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/a6d6fe7d/01.png" alt="alt"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/a6d6fe7d/02.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;配置窗口勾选 <code>Pivot Point at Zero</code> 点击下方的 <code>Merge Actors</code> 会生成一个带世界坐标的 StaticMesh 静态模型资产。<br>&emsp;&emsp;随后右键进行导出即可。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/a6d6fe7d/03.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;使用这个方案需要遍历场景中需要导出的资源，然后将临时的静态资源生成到临时的目录里，然后再逐个导出即可，最后再把临时目录删除干净。<br>&emsp;&emsp;Python 都提供了相应的 API 可以批量处理执行。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">level_lib = unreal.EditorLevelLibrary</span><br><span class="line">asset_lib = unreal.EditorAssetLibrary</span><br><span class="line"></span><br><span class="line">selected_static_actors = [</span><br><span class="line">      a</span><br><span class="line">      <span class="keyword">for</span> a <span class="keyword">in</span> level_lib.get_selected_level_actors()</span><br><span class="line">      <span class="keyword">if</span> isinstance(a, unreal.StaticMeshActor)</span><br><span class="line">  ]</span><br><span class="line">options = unreal.EditorScriptingMergeStaticMeshActorsOptions()</span><br><span class="line">options.set_editor_property(<span class="string">"destroy_source_actors"</span>, <span class="literal">False</span>)</span><br><span class="line">options.set_editor_property(<span class="string">"spawn_merged_actor"</span>, <span class="literal">False</span>)</span><br><span class="line">setting = unreal.MeshMergingSettings()</span><br><span class="line"><span class="comment"># NOTE 保留 Actor 的坐标</span></span><br><span class="line">setting.set_editor_property(<span class="string">"pivot_point_at_zero"</span>, <span class="literal">True</span>)</span><br><span class="line">options.set_editor_property(<span class="string">"mesh_merging_settings"</span>, setting)</span><br><span class="line"></span><br><span class="line"><span class="comment"># NOTE 配置 FBX 导出选项</span></span><br><span class="line">fbx_exporter = unreal.StaticMeshExporterFBX()</span><br><span class="line">fbx_option = unreal.FbxExportOption()</span><br><span class="line">fbx_option.export_morph_targets = <span class="literal">False</span></span><br><span class="line">fbx_option.export_preview_mesh = <span class="literal">False</span></span><br><span class="line">fbx_option.level_of_detail = <span class="literal">False</span></span><br><span class="line">fbx_option.collision = <span class="literal">False</span></span><br><span class="line">fbx_option.export_local_time = <span class="literal">False</span></span><br><span class="line">fbx_option.ascii = <span class="literal">False</span></span><br><span class="line">fbx_option.vertex_color = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># NOTE 在工程里面创建一个临时导出路径</span></span><br><span class="line">temp_directory = <span class="string">"/Game/Temp_FBX_Export"</span></span><br><span class="line"><span class="comment"># NOTE 设置 FBX 导出路径</span></span><br><span class="line">export_path = <span class="string">r"C:\FBX_EXPORT"</span></span><br><span class="line"><span class="keyword">for</span> actor <span class="keyword">in</span> selected_static_actors:</span><br><span class="line">    actor_name = actor.get_name()</span><br><span class="line">    asset_path = posixpath.join(temp_directory, actor_name)</span><br><span class="line">    options.set_editor_property(<span class="string">"base_package_name"</span>, asset_path)</span><br><span class="line">    <span class="comment"># NOTE 将选中的 Actor 合并为 StaticMesh 资源</span></span><br><span class="line">    level_lib.merge_static_mesh_actors([actor], options)</span><br><span class="line"></span><br><span class="line">    fbx_path = os.path.join(export_path, <span class="string">"%s.fbx"</span> % actor_name)</span><br><span class="line"></span><br><span class="line">    mesh = unreal.load_asset(asset_path)</span><br><span class="line">    task = unreal.AssetExportTask()</span><br><span class="line">    task.set_editor_property(<span class="string">"object"</span>, mesh)</span><br><span class="line">    task.set_editor_property(<span class="string">"filename"</span>, fbx_path)</span><br><span class="line">    task.set_editor_property(<span class="string">"exporter"</span>, fbx_exporter)</span><br><span class="line">    task.set_editor_property(<span class="string">"automated"</span>, <span class="literal">True</span>)</span><br><span class="line">    task.set_editor_property(<span class="string">"prompt"</span>, <span class="literal">False</span>)</span><br><span class="line">    task.set_editor_property(<span class="string">"options"</span>, fbx_option)</span><br><span class="line"></span><br><span class="line">    unreal.Exporter.run_asset_export_task(task)</span><br><span class="line"></span><br><span class="line"><span class="comment"># NOTE 删除临时目录</span></span><br><span class="line">asset_lib.delete_directory(temp_directory)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;上面的代码就可以实现选中场景的静态模型导出 FBX 的效果，每个 Actor 都是单独的 Mesh 进行命名导出。</p>
+</blockquote>
+<video src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/a6d6fe7d/04.mp4" autoplay="autoplay" loop="loop" style="width: 100%; height:100%;"></video>
+
+
+<h2 id="导出贴图资源"><a href="#导出贴图资源" class="headerlink" title="导出贴图资源"></a>导出贴图资源</h2><blockquote>
+<p>&emsp;&emsp;可以看到上面的方案导出如果是没有带上贴图的，如果需要贴图，需要从 Unreal 的材质里面查找。<br>&emsp;&emsp;这里我可以通过依赖关系的方式找到模型关联的材质。<br>&emsp;&emsp;然后也通过依赖的方式将关联的贴图全部导出来。<br>&emsp;&emsp;这样可以实现宁可误杀，绝不放过的将所有贴图导出。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">mesh_lib = unreal.EditorStaticMeshLibrary</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ls_dependencies</span><span class="params">(path)</span>:</span></span><br><span class="line">    <span class="comment"># NOTE 获取资产的依赖资产</span></span><br><span class="line">    data = asset_lib.find_asset_data(path)</span><br><span class="line">    options = unreal.AssetRegistryDependencyOptions()</span><br><span class="line">    dependencies = asset_registry.get_dependencies(data.package_name, options)</span><br><span class="line">    <span class="keyword">return</span> dependencies</span><br><span class="line"></span><br><span class="line">total = mesh_lib.get_number_materials(mesh)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(total):</span><br><span class="line">    material = mesh.get_material(i)</span><br><span class="line">    textures = ls_dependencies(material.get_path_name())</span><br><span class="line">    <span class="keyword">for</span> texture_path <span class="keyword">in</span> textures:</span><br><span class="line">        data = asset_lib.find_asset_data(texture_path)</span><br><span class="line">        <span class="comment"># NOTE 过滤非贴图资产 | 不用 `isinstance` 的方式可以不用加载资产</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> issubclass(getattr(unreal,str(data.asset_class)), unreal.Texture):</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        </span><br><span class="line">        texture_name = str(data.asset_name)</span><br><span class="line">        tga_path = os.path.join(texture_folder, <span class="string">"%s.tga"</span> % texture_name)</span><br><span class="line">        tga_exporter = unreal.TextureExporterTGA()</span><br><span class="line">        mesh = unreal.load_asset(asset_path)</span><br><span class="line">        task = unreal.AssetExportTask()</span><br><span class="line">        task.set_editor_property(<span class="string">"object"</span>, data.get_asset())</span><br><span class="line">        task.set_editor_property(<span class="string">"filename"</span>, tga_path)</span><br><span class="line">        task.set_editor_property(<span class="string">"exporter"</span>, tga_exporter)</span><br><span class="line">        task.set_editor_property(<span class="string">"automated"</span>, <span class="literal">True</span>)</span><br><span class="line">        task.set_editor_property(<span class="string">"prompt"</span>, <span class="literal">False</span>)</span><br><span class="line">        task.set_editor_property(<span class="string">"options"</span>, fbx_option)</span><br><span class="line"></span><br><span class="line">        unreal.Exporter.run_asset_export_task(task)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;通过 ls_dependencies 的方式将静态资产关联的所有资产全部罗列出来。<br>&emsp;&emsp;然后通过 AssetData 获取相关的数据。<br>&emsp;&emsp;最后可以获取到关联在材质上的贴图导出。<br>&emsp;&emsp;如果想要在 DCC 重建贴图需要将相关的 Diffuse Normal 贴图信息导出去，比如用 Json 进行存储，然后 DCC  端写一个读取配置工具。根据记录的贴图数据将关联的贴图贴到 DCC 材质的相关贴图通道上。</p>
+</blockquote>
+<h2 id="直接导出场景模型方案"><a href="#直接导出场景模型方案" class="headerlink" title="直接导出场景模型方案"></a>直接导出场景模型方案</h2><blockquote>
+<p>&emsp;&emsp;上面的方案有个缺点，只能导出静态资产，如果是 SkeletalMesh 或者是 Foliage 相关的 Mesh 都无法导出。<br>&emsp;&emsp;因为 <code>EditorScriptingMergeStaticMeshActorsOptions</code> 这个类只对 静态模型 起作用。<br>&emsp;&emsp;然而 Unreal 的 Level 是可以直接导出场景所有的资产的。<br>&emsp;&emsp;那么有没有解决问题的办法呢？<br>&emsp;&emsp;非常凑巧，最近逛 Unreal 的论坛还真就找到了更加简单的方法。</p>
+</blockquote>
+<p><a href="https://forums.unrealengine.com/t/python-convert-actors-to-static-mesh/152073" target="_blank" rel="noopener">https://forums.unrealengine.com/t/python-convert-actors-to-static-mesh/152073</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unreal</span><br><span class="line">level_lib = unreal.EditorLevelLibrary</span><br><span class="line">output_file = <span class="string">r'C:\FBX_EXPORT\ue4_output.fbx'</span></span><br><span class="line"> </span><br><span class="line">selected_actors = level_lib.get_selected_level_actors()</span><br><span class="line"><span class="keyword">if</span> len(selected_actors) == <span class="number">0</span>:</span><br><span class="line">    print(<span class="string">"No actor selected, nothing to export"</span>)</span><br><span class="line">    quit()</span><br><span class="line"> </span><br><span class="line">task = unreal.AssetExportTask()</span><br><span class="line"><span class="comment"># NOTE 关键在于设置当前 world 为导出对象</span></span><br><span class="line">task.object = level_lib.get_editor_world()</span><br><span class="line">task.filename = output_file</span><br><span class="line"><span class="comment"># NOTE 加上 selected 只导出选中的物体</span></span><br><span class="line">task.selected = <span class="literal">True</span></span><br><span class="line">task.replace_identical = <span class="literal">False</span></span><br><span class="line">task.prompt = <span class="literal">False</span></span><br><span class="line">task.automated = <span class="literal">True</span></span><br><span class="line">task.options = unreal.FbxExportOption()</span><br><span class="line">task.options.vertex_color = <span class="literal">False</span></span><br><span class="line">task.options.collision = <span class="literal">False</span></span><br><span class="line">task.options.level_of_detail = <span class="literal">False</span></span><br><span class="line">unreal.Exporter.run_asset_export_task(task)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;使用这个方案可以导出 Foliage landscape 等特殊的 Actor</p>
+</blockquote>
+<video src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/a6d6fe7d/05.mp4" autoplay="autoplay" loop="loop" style="width: 100%; height:100%;"></video>
+
+<blockquote>
+<p>&emsp;&emsp;只是使用这个方案查询材质需要在 关联的 component 下进行操作。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> actor <span class="keyword">in</span> unreal.EditorLevelLibrary.get_selected_level_actors():</span><br><span class="line">    comp = actor.root_component</span><br><span class="line">    <span class="keyword">for</span> comp <span class="keyword">in</span> comp.get_children_components(<span class="literal">True</span>):</span><br><span class="line">        <span class="comment"># NOTE 查询继承于静态模型的 component</span></span><br><span class="line">        <span class="keyword">if</span> isinstance(comp,unreal.StaticMeshComponent):</span><br><span class="line">            mesh = comp.static_mesh</span><br><span class="line">            print(mesh)</span><br><span class="line">            <span class="comment"># NOTE 再通过 mesh 查找材质和贴图</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;通过上面的代码可以获取到关联继承的 StaticMeshComponent<br>&emsp;&emsp;即便 InstancedFoliageActor 没有材质模型贴图的属性显示。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/a6d6fe7d/06.png" alt="alt"></p>
+<blockquote>
+<p>&emsp;&emsp;还是可以通过获取 actor 的 component 找到 <a href="https://docs.unrealengine.com/en-US/PythonAPI/class/FoliageInstancedStaticMeshComponent.html" target="_blank" rel="noopener">FoliageInstancedStaticMeshComponent</a> ，从而找到关联的 static_mesh</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>&emsp;&emsp;至于在 DCC 里面重建贴图的方式没有细说。<br>&emsp;&emsp;其实可以通过通配符匹配 _N _D 后缀的贴图，然后将这些通用的贴图在 DCC 里面自动连接上。<br>&emsp;&emsp;主要通过 json 的配置描述每个 fbx 关联的贴图即可。</p>
+</blockquote>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">智伤帝</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.l0v0.com/posts/a6d6fe7d.html">https://blog.l0v0.com/posts/a6d6fe7d.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.l0v0.com" target="_blank">智伤帝的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E0%A0%95Python/">ࠕPython</a><a class="post-meta__tags" href="/tags/%E0%A0%83Unreal/">ࠃUnreal</a></div><div class="post_share"><div class="addtoany"><div class="a2a_kit a2a_kit_size_32 a2a_default_style"><a class="a2a_button_facebook"></a><a class="a2a_button_twitter"></a><a class="a2a_button_wechat"></a><a class="a2a_button_sina_weibo"></a><a class="a2a_button_facebook_messenger"></a><a class="a2a_button_email"></a><a class="a2a_button_copy_link"></a><a class="a2a_dd" href="https://www.addtoany.com/share" target="_blank" rel="noopener"></a></div></div><script async="async" src="https://static.addtoany.com/menu/page.js"></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/8c385876.html"><img class="prev-cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/8c385876/02.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Maya Mel &amp; Pymel 妙用总结</div></div></a></div><div class="next-post pull-right"><a href="/posts/50c81a5e.html"><img class="next-cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/50c81a5e/01.gif" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Maya Qt.py loadUi 问题记录</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/1b238b83.html" title="Unreal Python 导出 MetaHuman 控制器关键帧"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-24</div><div class="title">Unreal Python 导出 MetaHuman 控制器关键帧</div></div></a></div><div><a href="/posts/2c8022e3.html" title="Python marshmallow 库"><img class="cover" data-lazy-src="/null" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-28</div><div class="title">Python marshmallow 库</div></div></a></div><div><a href="/posts/d197a8b3.html" title="Unreal Python UV 图自动渲染输出"><img class="cover" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/d197a8b3/01.mp4" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-26</div><div class="title">Unreal Python UV 图自动渲染输出</div></div></a></div><div><a href="/posts/4d4b3024.html" title="Unreal Python 贴图多重 resize 菜单选项"><img class="cover" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/4d4b3024/01.mp4" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-19</div><div class="title">Unreal Python 贴图多重 resize 菜单选项</div></div></a></div><div><a href="/posts/90c2e3db.html" title="Unreal Python 保存 导入 Hook 触发实现"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/90c2e3db/01.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-18</div><div class="title">Unreal Python 保存 导入 Hook 触发实现</div></div></a></div><div><a href="/posts/84f275f9.html" title="Unreal Python 实现 Function 调用"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/84f275f9/01.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-18</div><div class="title">Unreal Python 实现 Function 调用</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><label><input id="switch-comments-btn" type="checkbox"/><span class="slider"></span></label><span class="second-comment">Gitalk</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="gitalk-container"></div></div></div></div></article></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 智伤帝</div><div class="framework-info"><span>框架 </span><a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener">Butterfly</a></div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.spacingElementById('content-inner')
+  else {
+    $.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js', () => {
+      pangu.spacingElementById('content-inner')
+    })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguFn)</script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'mrRioyNTSEAOvVLAsLgkhr4j-gzGzoHsz',
+      appKey: 'wHDm1kxC2FUpOA7FNdgTOEnx',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk({
+      clientID: '355e44f722e24963b9dd',
+      clientSecret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+      repo: 'FXTD-odyssey.github.io',
+      owner: 'FXTD-odyssey',
+      admin: ['FXTD-odyssey'],
+      id: '1c7d905b6c275c477692e849d9a5cb73',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    })
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    $.getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js', initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Valine' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="https://cdn.jsdelivr.net/gh/wilq32/jqueryrotate/jQueryRotate.js"></script><script src="/js/classify.js"></script><script src="/js/jsdelivr.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https'){
+  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>
