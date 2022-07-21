@@ -30,3 +30,9 @@ pre .vex_variable{color:#eecd10}
 pre .vex_function{color:#66d9ef}
 pre .vex_title{color:#66d9ef}
 /* pre .vex_number{color:#7163d7} */
+
+
+/* add iconfont */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Lato, Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif, "iconfont";
+}
