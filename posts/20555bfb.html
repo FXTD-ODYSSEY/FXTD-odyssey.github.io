@@ -1,0 +1,388 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>C++ 基础入门 | 智伤帝的个人博客</title><meta name="keywords" content="ࠇCpp"><meta name="author" content="智伤帝"><meta name="copyright" content="智伤帝"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="C++ MasterClass">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++ 基础入门">
+<meta property="og:url" content="https://blog.l0v0.com/posts/20555bfb.html">
+<meta property="og:site_name" content="智伤帝的个人博客">
+<meta property="og:description" content="C++ MasterClass">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/cover_01.png">
+<meta property="article:published_time" content="2022-11-13T03:39:03.000Z">
+<meta property="article:modified_time" content="2022-12-14T02:54:16.747Z">
+<meta property="article:author" content="智伤帝">
+<meta property="article:tag" content="ࠇCpp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/cover_01.png"><link rel="shortcut icon" href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/favicon.png"><link rel="canonical" href="https://blog.l0v0.com/posts/20555bfb.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><meta name="google-site-verification" content="google15d1ccb0af66991a"/><meta name="msvalidate.01" content="D306EED72EF12BF89A2A951583FF91C7"/><meta name="baidu-site-verification" content="A3TUx6EZdy"/><meta name="360-site-verification" content="48ce68b0e3754c994b6e79677b842d48"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cda99107ced8e9ef4d02339065438d4f";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  hexoversion: '5.4.2',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2022-12-14 10:54:16'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {
+  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }
+})()</script><link rel="stylesheet" href="/css/iconfont.css"><link rel="stylesheet" href="/css/extra.css"><meta name="generator" content="Hexo 5.4.2"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/avatar.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">301</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">63</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">70</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" target="_blank" rel="noopener" href="https://wiki.l0v0.com/"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" target="_blank" rel="noopener" href="http://hou.l0v0.com"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BE%E7%A8%8B%E6%8E%A8%E8%8D%90"><span class="toc-number">2.</span> <span class="toc-text">课程推荐</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#C-MasterClass"><span class="toc-number">2.1.</span> <span class="toc-text">C++ MasterClass</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#The-Cherno-C"><span class="toc-number">2.2.</span> <span class="toc-text">The Cherno C++</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#parallel-101"><span class="toc-number">2.3.</span> <span class="toc-text">parallel 101</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%AD%90%E4%B9%8B%E5%A3%B0"><span class="toc-number">2.4.</span> <span class="toc-text">原子之声</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-%E9%81%93%E6%B3%95%E5%99%A8%E6%9C%AF"><span class="toc-number">2.5.</span> <span class="toc-text">C++ 道法器术</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%AD%E5%BB%BA%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83"><span class="toc-number">3.</span> <span class="toc-text">搭建运行环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%99%A8%E4%B8%8B%E8%BD%BD%E9%85%8D%E7%BD%AE"><span class="toc-number">3.1.</span> <span class="toc-text">编译器下载配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VScode-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">3.2.</span> <span class="toc-text">VScode 环境配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E5%85%A5%E9%97%A8"><span class="toc-number">4.</span> <span class="toc-text">C++ 入门</span></a></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/cover_01.png)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">智伤帝的个人博客</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 系列总结</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E6%8C%87%E5%8D%97/"><span> 效率提升指南</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unreal/Python"><span> Unreal Python</span></a></li><li><a class="site-page" href="/categories/Python/Python-%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83/"><span> Python 编程规范</span></a></li><li><a class="site-page" href="/categories/CG/Qt/Python%E7%BB%93%E5%90%88Qt%E7%B3%BB%E5%88%97%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B/"><span> Python Qt 开发教程</span></a></li><li><a class="site-page" href="/tags/VScode/"><span> VScode 全面使用攻略</span></a></li><li><a class="site-page" href="/categories/Wiki/TiddlyWiki-%E9%A3%9F%E7%94%A8%E6%8C%87%E5%8D%97"><span> TiddlyWiki 使用指南</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/hexo/"><span> Hexo博客搭建历程</span></a></li><li><a class="site-page" href="/categories/Photogrammetry/"><span> Photogrammetry</span></a></li><li><a class="site-page" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/Shader%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Shader学习之路</span></a></li><li><a class="site-page" href="/categories/CG/Maya/Maya%20%E7%A0%94%E7%A9%B6%E8%AE%B0%E5%BD%95"><span> Maya 研究记录</span></a></li><li><a class="site-page" href="/categories/%E5%89%8D%E7%AB%AF/Vue/Vue%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/"><span> Vue学习之路</span></a></li><li><a class="site-page" href="/categories/%E5%9B%9E%E5%BF%86%E5%BD%95/"><span> 回忆录</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-user"></i><span> 关于我</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 博客初心</span></a></li><li><a class="site-page" href="/about/log.html"><i class="fa-fw fa fa-gift"></i><span> 博客日志</span></a></li><li><a class="site-page" target="_blank" rel="noopener" href="https://wiki.l0v0.com/"><i class="fa-fw fa fa-book"></i><span> wiki 文档</span></a></li><li><a class="site-page" target="_blank" rel="noopener" href="http://hou.l0v0.com"><i class="fa-fw fa fa-futbol"></i><span> Houdini Wiki</span></a></li><li><a class="site-page" href="/about/todo.html"><i class="fa-fw fa fa-check"></i><span> 更新计划</span></a></li><li><a class="site-page" href="/about/plan.html"><i class="fa-fw fa fa-lightbulb"></i><span> 教程计划</span></a></li><li><a class="site-page" href="/about/focus.html"><i class="fa-fw fa fa-bullseye"></i><span> 关注列表</span></a></li><li><a class="site-page" href="/about/note/note.html"><i class="fa-fw fa fa-sticky-note"></i><span> 我的笔记</span></a></li><li><a class="site-page" href="/about/my_work.html"><i class="fa-fw fa fa-briefcase"></i><span> 我的作品</span></a></li><li><a class="site-page" href="/about/contact.html"><i class="fa-fw fa fa-id-badge"></i><span> 联系我</span></a></li></ul></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">C++ 基础入门</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-13T03:39:03.000Z" title="发表于 2022-11-13 11:39:03">2022-11-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-12-14T02:54:16.747Z" title="更新于 2022-12-14 10:54:16">2022-12-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/C/">C++</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>&emsp;&emsp;随着学习的深入，C++ 的学习越来越迫在眉睫。<br>&emsp;&emsp;虽然我在学习 Maya API 以及 Unreal 过程中已经写过不少的 C++ 代码。<br>&emsp;&emsp;但以前写 C++ 都是用 Python 的经验迁移过去使用的，很多 C++ 的特性都不懂，很多库也不怎么会用。<br>&emsp;&emsp;所以正因为如此，才希望自己可以深入学习好 C++</p>
+</blockquote>
+<h2 id="课程推荐"><a href="#课程推荐" class="headerlink" title="课程推荐"></a>课程推荐</h2><h3 id="C-MasterClass"><a href="#C-MasterClass" class="headerlink" title="C++ MasterClass"></a>C++ MasterClass</h3><p>在 youtube 上找到了一个非常棒的教程<br>Youtube地址(不完整): <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=8jLOx1hD3_o">https://www.youtube.com/watch?v=8jLOx1hD3_o</a><br>udemy 完整版地址: <a target="_blank" rel="noopener" href="https://www.udemy.com/course/the-modern-cpp-20-masterclass/">https://www.udemy.com/course/the-modern-cpp-20-masterclass/</a><br>B站<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Hr4y1H7wB">https://www.bilibili.com/video/BV1Hr4y1H7wB</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1JY4y1Y7uZ">https://www.bilibili.com/video/BV1JY4y1Y7uZ</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1iA4y1X76r">https://www.bilibili.com/video/BV1iA4y1X76r</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1A34y1e7KS">https://www.bilibili.com/video/BV1A34y1e7KS</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1434y1e7N4">https://www.bilibili.com/video/BV1434y1e7N4</a></p>
+<p>Github地址: <a target="_blank" rel="noopener" href="https://github.com/rutura/The-C-20-Masterclass-Source-Code">https://github.com/rutura/The-C-20-Masterclass-Source-Code</a></p>
+<blockquote>
+<p>&emsp;&emsp;教程足足有 30 小时长，而且还是 <a target="_blank" rel="noopener" href="https://www.udemy.com/course/the-modern-cpp-20-masterclass/">udemy</a> 教程的阉割版本，不过里面有第一章会教导如何使用 <code>MSVC</code> <code>gcc</code> <code>clang</code> 三种 C++ 编译器构建环境。<br>&emsp;&emsp;我 fork 了他的仓库加上我自己的 VSCode 配置 仓库地址: <a target="_blank" rel="noopener" href="https://github.com/FXTD-ODYSSEY/The-C-20-Masterclass-Source-Code">https://github.com/FXTD-ODYSSEY/The-C-20-Masterclass-Source-Code</a></p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;默认 tasks 是配置了三中不同编译的选项，如果注释掉两个的话，那就可以直接在 VScode 实现 ctrl+shift+b 实现编译并运行。<br>&emsp;&emsp;教程里面主要 IDE 环境是使用 VScode 搭建的，可能会有人困惑，why not VS。<br>&emsp;&emsp;我很久以前开发 Maya C++ 就是使用 VS 进行开发的，说实话，IDE 隐藏了太多细节，一旦出错，反而是无头苍蝇，无从查起。  <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/393152726/answer/1206640121">知乎回答</a><br>&emsp;&emsp;当然也同其他回答说得也对，用什么工具都无所谓，关键是懂得 C++ 的整个编译流程。</p>
+</blockquote>
+<h3 id="The-Cherno-C"><a href="#The-Cherno-C" class="headerlink" title="The Cherno C++"></a>The Cherno C++</h3><p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=18c3MTX0PK0&amp;list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb">https://www.youtube.com/watch?v=18c3MTX0PK0&amp;list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1gk4y1r7UH">https://www.bilibili.com/video/BV1gk4y1r7UH</a></p>
+<blockquote>
+<p>&emsp;&emsp;游戏开发大佬推出的一系列编程课程。</p>
+</blockquote>
+<h3 id="parallel-101"><a href="#parallel-101" class="headerlink" title="parallel 101"></a>parallel 101</h3><blockquote>
+<p>&emsp;&emsp;后来非常偶然地，我翻到一个大佬 (小彭老师) 的课程</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/parallel101/course">https://github.com/parallel101/course</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1fa411r7zp">https://www.bilibili.com/video/BV1fa411r7zp</a></p>
+<blockquote>
+<p>&emsp;&emsp;这个课程用直播和录播的形式详细介绍了从 cmake 到 C++ 的使用。<br>&emsp;&emsp;而且老师年轻有为，能力很强，经验丰富。</p>
+</blockquote>
+<h3 id="原子之声"><a href="#原子之声" class="headerlink" title="原子之声"></a>原子之声</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1S54y1Z7Wc">C++现代实用教程(一):基础主线(VSCODE)</a> <a target="_blank" rel="noopener" href="https://gitlab.com/yzzy/modern-cpp">gitlab地址</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1eg411Q7nG">C++现代实用教程(二):面向对象基础</a> <a target="_blank" rel="noopener" href="https://gitlab.com/yzzy/modern-oop">gitlab地址</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1ZZ4y1e7zy">C++现代实用教程(三):面向对象之友元与继承</a> <a target="_blank" rel="noopener" href="https://gitlab.com/yzzy/modern-friend">gitlab地址</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV15v4y1M7fF">C++现代实用教程(四):面向对象核心多态</a> <a target="_blank" rel="noopener" href="https://gitlab.com/yzzy/modern-polymorphic">gitlab地址</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV18B4y187uL">C++现代实用教程:智能指针</a> <a target="_blank" rel="noopener" href="https://gitlab.com/yzzy/smart-pointer">gitlab地址</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Va411T7TJ">C++现代实用教程: Namespace命名空间</a> <a target="_blank" rel="noopener" href="https://gitlab.com/yzzy/namespace">gitlab地址</a></p>
+<blockquote>
+<p>&emsp;&emsp;这位老师也很赞~<br>&emsp;&emsp;但是还没仔细看…</p>
+</blockquote>
+<h3 id="C-道法器术"><a href="#C-道法器术" class="headerlink" title="C++ 道法器术"></a>C++ 道法器术</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1pu411y7n1">https://www.bilibili.com/video/BV1pu411y7n1</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1RV4y1x7qH">https://www.bilibili.com/video/BV1RV4y1x7qH</a></p>
+<blockquote>
+<p>&emsp;&emsp;C++ 是一门很复杂的语言，像我是从 Python 开始进阶编程的。<br>&emsp;&emsp;当我将 Python 很多用法摸透之后，进入到 Python 底层，发现 C++ 还很多底层的内容等待我去学习<em>(:з」∠)</em><br>&emsp;&emsp;那上面的视频，比较系统地总结了 C++ 从入门到进阶的各个不同阶段地内容，学习 C++ 有很清晰的整体图谱。<br>&emsp;&emsp;当然视频里面其实是介绍作者推出的课程的~</p>
+</blockquote>
+<p>个人剖析文章 <a target="_blank" rel="noopener" href="http://tw.l0v0.com/#01_C%2B%2B%20%E9%81%93%E6%B3%95%E5%99%A8%E6%9C%AF.md">01_C++ 道法器术.md</a></p>
+<h2 id="搭建运行环境"><a href="#搭建运行环境" class="headerlink" title="搭建运行环境"></a>搭建运行环境</h2><blockquote>
+<p>&emsp;&emsp;C++ 语言和 Python 运行方式有相当大的不同，</p>
+</blockquote>
+<p>参考: <a target="_blank" rel="noopener" href="https://smartkeyerror.com/Python-Virtual-Machine">https://smartkeyerror.com/Python-Virtual-Machine</a></p>
+<blockquote>
+<p>&emsp;&emsp;编译 C++ 需要有 C++ 编译器来生成汇编代码(二进制机器码) ，不同的编译器有不同的优化策略，所以版本和编译器平台都会对生成的汇编有很大影响。<br>&emsp;&emsp;教程提供了 <a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/compiler_support">https://en.cppreference.com/w/cpp/compiler_support</a> 这个网站。<br>&emsp;&emsp;可以看到不同平台编译器对各种 CPP 规范的支持情况，如果用了老版本就不能使用新版本的 C++ 写法<br>&emsp;&emsp;目前 C++ 也在不断演进，从古老的 C++98 到现在 C++11 C++14 C++17 C++20 以及后续即将推出的 C++23 C++26<br>&emsp;&emsp;目前主流编译器的最新版本都支持到 C++17 了。</p>
+</blockquote>
+<h3 id="编译器下载配置"><a href="#编译器下载配置" class="headerlink" title="编译器下载配置"></a>编译器下载配置</h3><blockquote>
+<p>&emsp;&emsp;市面上最主流的 C++ 编译器有 <code>MSVC</code> <code>gcc</code> <code>clang</code> ，其中 <code>MSVC</code> 是 windows 平台的，另外两个是可跨平台开发。<br>&emsp;&emsp;windows 下如何安装环境呢？ 推荐使用 <a target="_blank" rel="noopener" href="https://chocolatey.org/">choco</a> 进行安装</p>
+</blockquote>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Set</span>-ExecutionPolicy Bypass -Scope Process -Force; [System.<span class="built_in">Net</span>.ServicePointManager]::SecurityProtocol = [System.<span class="built_in">Net</span>.ServicePointManager]::SecurityProtocol -bor <span class="number">3072</span>; iex ((New-Object System.<span class="built_in">Net</span>.WebClient).DownloadString(&#x27;https://community.chocolatey.org/install.ps1&#x27;))</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;用管理员权限打开 powershell 然后输入上面的命令进行安装。</p>
+</blockquote>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">::安装 MSVC</span><br><span class="line">choco install visualstudio2019buildtools --yes</span><br><span class="line">choco install vcredist140 --yes</span><br><span class="line"></span><br><span class="line">::安装 gcc</span><br><span class="line">choco install mingw --yes</span><br><span class="line"></span><br><span class="line">::安装 clang</span><br><span class="line">choco install llvm --yes</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;执行上面的命令可以安装相对应的环境到系统中。<br>&emsp;&emsp;需要注意的是 MSVC 需要打开 VS installer 配置 windows SDK <code>C:\Program Files (x86)\Microsoft Visual Studio\Installer\setup.exe</code> </p>
+</blockquote>
+<p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/20555bfb/n_v285b0b4d8f4df41b999777df16203be55.png" alt="image"></p>
+<p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/20555bfb/n_v22aa2ef04a31645f59c6f4ddc91cf8e35.png" alt="image"></p>
+<blockquote>
+<p>&emsp;&emsp;然后选择下载 Windows 10 SDK 再到右下角点击修改。<br>&emsp;&emsp;这样才能将 MSVC 编译器安装到电脑上。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;使用 MSVC 进行编译，需要调用 <code>C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat</code> 脚本启动环境。<br>&emsp;&emsp;激活环境之后可以使用 cl.exe 来接链编译 C++ 代码。<br>&emsp;&emsp;而其他编译器默认安装完之后 choco 添加到 PATH 路径下了。</p>
+</blockquote>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">C:\<span class="title">Program</span> <span class="title">Files</span> (<span class="title">x86</span>)\<span class="title">Microsoft</span> <span class="title">Visual</span> <span class="title">Studio</span>\2019\<span class="title">BuildTools</span>\<span class="title">Common7</span>\<span class="title">Tools</span>\<span class="title">VsDevCmd.bat</span></span></span><br><span class="line"><span class="function"><span class="title">cl</span> /<span class="title">Zi</span> /<span class="title">std:c</span>++20 /<span class="title">EHsc</span> /<span class="title">Fe</span>: <span class="title">main.exe</span> <span class="title">main.cpp</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g++ -g -std=c++<span class="number">20</span> main.exe main.cpp</span><br></pre></td></tr></table></figure>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clang -g -std=c++<span class="number">20</span> main.exe main.cpp</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;使用上面的命令就可以实现 C++20 标准代码的编译。<br>&emsp;&emsp;如果你使用 Visual Studio 之类的 IDE，那背后其实也是调用编译器对 C++ 代码编译生成二进制机器码文件。</p>
+</blockquote>
+<h3 id="VScode-环境配置"><a href="#VScode-环境配置" class="headerlink" title="VScode 环境配置"></a>VScode 环境配置</h3><blockquote>
+<p>&emsp;&emsp;有了上述的环境之后，只要运行命令就可以执行代码了。<br>&emsp;&emsp;开发工具比较推荐使用 <a target="_blank" rel="noopener" href="https://code.visualstudio.com/">VScode</a><br>&emsp;&emsp;个人体验了 VS 感觉过于笨重，而且隐藏了很多编译的细节，导致很多环节出错了不知道从何查起。<br>&emsp;&emsp;所以我推荐使用 VScode 编辑器作为入门，了解了基础再使用复杂的 IDE 才能事半功倍。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>&emsp;&emsp;安装 VScode 之后，可以安装微软官方提供的 <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools">C++ 扩展</a><br>&emsp;&emsp;实际上 VScode 官方是比较推荐用 <code>tasks.json</code> 配置来管理编译 用 <code>launch.json</code> 来管理启动的。<br>&emsp;&emsp;但是这些配置对小白来说还是稍显复杂。<br>&emsp;&emsp;这里我推荐安装 <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=formulahendry.code-runner">Code Runner</a> 插件</p>
+</blockquote>
+<p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/20555bfb/n_v21e4552e31949456090f6e78599693550.png" alt="image"></p>
+<blockquote>
+<p>&emsp;&emsp;去到对应的代码就有启动图标，在右上角，点击一下默认会调用 gcc 编译并执行。</p>
+</blockquote>
+<p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/20555bfb/n_v234ae967db8bb48c4bf2df017554f3462.png" alt="image"></p>
+<blockquote>
+<p>&emsp;&emsp;如果想要修改默认的执行命令，可以去修改 code runner 的配置</p>
+</blockquote>
+<p><img src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/20555bfb/n_v2d84c274019634fefa2e181f3ef1bae83.png" alt="image"></p>
+<blockquote>
+<p>&emsp;&emsp;默认会有不同语言对应执行的命令，我们这里可以把 Cpp 执行的命令改成我们想要的样子即可。<br>&emsp;&emsp;比如我们想要改成 clang 编译也或者 MSVC 编译也是完全可以的。<br>&emsp;&emsp;MSVC 比较麻烦，需要先跑 <code>VsDevCmd.bat</code> 激活环境才能使用 cl 命令。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;另外输入源可以改成通配符识别 <code>*.cpp</code> ，这样多个文件只要都在一个目录里面都会一同编译，方便我们初学跑程序。</p>
+</blockquote>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;cpp&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cd $dir &amp;&amp; g++ -g -std=c++20 *.cpp -o $fileNameWithoutExt &amp;&amp; $dir$fileNameWithoutExt&quot;</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&emsp;&emsp;另外在线网站 <a target="_blank" rel="noopener" href="https://godbolt.org/">https://godbolt.org/</a> 内置了很多不用语言的编译器<br>&emsp;&emsp;可以在线编写代码去验证，也能很方便地查看编译出来的汇编语言。<br>&emsp;&emsp;没有本地环境的时候也可以用这个工具来跑代码进行验证。</p>
+</blockquote>
+<h2 id="C-入门"><a href="#C-入门" class="headerlink" title="C++ 入门"></a>C++ 入门</h2><blockquote>
+<p>&emsp;&emsp;学习一门语言，是骡子是马总得遛 一遛才知道代码是否有问题。<br>&emsp;&emsp;所以只是看教程，脑内编译代码是不行的。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;这里我用 C++ 入门会以 <a target="_blank" rel="noopener" href="https://github.com/rutura/The-C-20-Masterclass-Source-Code">The-C-20-Masterclass-Source-Code</a><br>&emsp;&emsp;只要按照我上面的配置，就可以愉快地跑这个仓库任意路径的代码，并编译出可执行文件了~</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;如果你已经有编程基础，比如学过其他的编程语言，那么我更推荐直接看代码执行来学习，遇到不懂的部分再翻视频。<br>&emsp;&emsp;这样比起纯看看视频会更快上手。</p>
+</blockquote>
+<blockquote>
+<p>&emsp;&emsp;另外为了方便能够查阅 <a target="_blank" rel="noopener" href="https://en.cppreference.com/w/">cppreference.com</a> <a target="_blank" rel="noopener" href="https://cplusplus.com/">cplusplus.com</a> 等官方文档，可以快速跑里面的案例 Demo<br>&emsp;&emsp;我用 Python 做了个简单的爬虫，将不同的资料汇总到一起 <a target="_blank" rel="noopener" href="https://github.com/FXTD-ODYSSEY/cppreference">REPO</a> </p>
+</blockquote>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">智伤帝</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.l0v0.com/posts/20555bfb.html">https://blog.l0v0.com/posts/20555bfb.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.l0v0.com" target="_blank">智伤帝的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E0%A0%87Cpp/">ࠇCpp</a></div><div class="post_share"><div class="addtoany"><div class="a2a_kit a2a_kit_size_32 a2a_default_style"><a class="a2a_button_facebook"></a><a class="a2a_button_twitter"></a><a class="a2a_button_wechat"></a><a class="a2a_button_sina_weibo"></a><a class="a2a_button_facebook_messenger"></a><a class="a2a_button_email"></a><a class="a2a_button_copy_link"></a><a class="a2a_dd" target="_blank" rel="noopener" href="https://www.addtoany.com/share"></a></div></div><script async="async" src="https://static.addtoany.com/menu/page.js"></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/wechatimg.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/alipayimg.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/9d8a36c5.html"><img class="prev-cover" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/cover_02.jpg" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">C++ 道法器术</div></div></a></div><div class="next-post pull-right"><a href="/posts/8207ba23.html"><img class="next-cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/8207ba23/n_v2c9af2c88fe7d412b8a9f65a2da99ebf0.png" onerror="onerror=null;src='//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">FBX 二进制数据解析</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/9d8a36c5.html" title="C++ 道法器术"><img class="cover" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/cover_02.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-26</div><div class="title">C++ 道法器术</div></div></a></div><div><a href="/posts/cacaf61d.html" title="Maya CurveBrush 笔刷开发"><img class="cover" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/cacaf61d/curve_brush.mp4" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-09</div><div class="title">Maya CurveBrush 笔刷开发</div></div></a></div><div><a href="/posts/cab0d099.html" title="Unreal C++ 工具开发最小实践"><img class="cover" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/cover_01.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-15</div><div class="title">Unreal C++ 工具开发最小实践</div></div></a></div><div><a href="/posts/ce449c32.html" title="Maya C++ pyd 模块开发"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/ce449c32/ea63da79573f07279f606f9b77b16f21.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-14</div><div class="title">Maya C++ pyd 模块开发</div></div></a></div><div><a href="/posts/51c731db.html" title="Unreal C++ VScode 配置"><img class="cover" data-lazy-src="//cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/img/cover_02.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-12</div><div class="title">Unreal C++ VScode 配置</div></div></a></div><div><a href="/posts/e6dc9087.html" title="Maya C++ mll hot reload 研究"><img class="cover" data-lazy-src="https://cdn.jsdelivr.net/gh/FXTD-odyssey/FXTD-odyssey.github.io@master/post_img/e6dc9087/90f7f29f4db2deb75e3cad0924734436.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-07-08</div><div class="title">Maya C++ mll hot reload 研究</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><label><input id="switch-comments-btn" type="checkbox"/><span class="slider"></span></label><span class="second-comment">Gitalk</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="gitalk-container"></div></div></div></div></article></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 智伤帝</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.spacingElementById('content-inner')
+  else {
+    $.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js', () => {
+      pangu.spacingElementById('content-inner')
+    })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguFn)</script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'mrRioyNTSEAOvVLAsLgkhr4j-gzGzoHsz',
+      appKey: 'wHDm1kxC2FUpOA7FNdgTOEnx',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk({
+      clientID: '355e44f722e24963b9dd',
+      clientSecret: 'f8ec08d349714aa06152735a75b6d9ac9ef77016',
+      repo: 'FXTD-odyssey.github.io',
+      owner: 'FXTD-odyssey',
+      admin: ['FXTD-odyssey'],
+      id: 'bdb643ca041374d6fe397d06f2b123ca',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    })
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    $.getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js', initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Valine' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="https://cdn.jsdelivr.net/gh/wilq32/jqueryrotate/jQueryRotate.js"></script><script src="/js/classify.js"></script><script src="/js/jsdelivr.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https'){
+  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>
